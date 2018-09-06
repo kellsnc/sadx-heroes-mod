@@ -66,6 +66,12 @@
     <ClCompile Include="..\sadx-mod-loader\libmodutils\LandTableInfo.cpp">
       <Filter>Source Files\Extern</Filter>
     </ClCompile>
+    <ClCompile Include="ocean-palace.cpp">
+      <Filter>Source Files\Levels</Filter>
+    </ClCompile>
+    <ClCompile Include="ocean-palace-objects.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -97,6 +103,15 @@
     </ClInclude>
     <ClInclude Include="Data\seaside-hill-objects.h">
       <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\ocean-palace-paths.h">
+      <Filter>Header Files\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\ocean-palace-objects.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="ocean-palace.h">
+      <Filter>Header Files\Levels</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

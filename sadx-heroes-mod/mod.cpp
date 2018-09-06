@@ -9,6 +9,7 @@ bool ChunkSwapped = false;
 
 unsigned int anim = 0;
 uint8_t CurrentChunk = 0;
+NJS_TEXLIST * CurrentLevelTexlist;
 
 void CommonObjects_OnFrame();
 

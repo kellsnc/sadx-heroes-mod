@@ -11,7 +11,7 @@ void ModelHandler_Draw(ObjectMaster * a1) {
 					if (List[i].soientry[j].soidisplay != 1) {
 
 						if (List[i].soientry[j].soichunk == CurrentChunk || List[i].soientry[j].soichunk == 0) {
-							njSetTexture((NJS_TEXLIST*)&BEACH01_TEXLIST);
+							njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
 							njPushMatrix(0);
 							njTranslate(nullptr, List[i].soientry[j].soipos.x, List[i].soientry[j].soipos.y, List[i].soientry[j].soipos.z); //Position of object
 							njRotateXYZ(nullptr, List[i].soientry[j].soirot[0], List[i].soientry[j].soirot[1], List[i].soientry[j].soirot[2]); //Rotation of object
@@ -47,7 +47,7 @@ void ModelHandler_Init(ObjectMaster * a1) {
 	while (a1->Data1->NextAction == 0) {
 		a1->Data1->Action += 1;
 
-		if (List[a1->Data1->Action].soicharid == NULL) {
+		if (List[a1->Data1->Action].soicount == NULL) {
 			a1->Data1->NextAction = 1;
 		}
 	}

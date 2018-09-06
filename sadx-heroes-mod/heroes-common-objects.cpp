@@ -9,7 +9,6 @@ NJS_TEXNAME SHTexNames[40];
 NJS_TEXLIST SHCommonTextures = { arrayptrandlength(SHTexNames) };
 PVMEntry shobjpvm = { "heroescommon", &SHCommonTextures };
 
-int LoadedLevel = 1;
 bool Animate = false;
 
 #pragma region CameraModeSwitch
@@ -58,9 +57,10 @@ void ObjFan_Main(ObjectMaster *a1)
 
 		a1->Data1->Scale.z += a1->Data1->Scale.y;
 
-		if (IsPlayerInsideSphere(&a1->Data1->Position, 45.0f) == true) {
-			auto entity = EntityData1Ptrs[0];
-			CharObj2 *co2 = GetCharObj2(0);
+		int slot = IsPlayerInsideSphere(&a1->Data1->Position, 45.0f);
+		if (slot > 0) {
+			auto entity = EntityData1Ptrs[slot - 1];
+			CharObj2 *co2 = GetCharObj2(slot - 1);
 			if (co2 != NULL) {
 				co2->Speed.y = a1->Data1->Scale.x;
 				if (GetCharacterID(0) == Characters_Sonic && !SuperSonicFlag) {
@@ -306,7 +306,7 @@ void __cdecl ObjBalloon(ObjectMaster *a1)
 
 void __cdecl SHDashPanel(ObjectMaster *a1)
 {
-	if ((LoadedLevel == 5 || LoadedLevel == 6) && a1->Data1->Scale.z == 1) {
+	if ((CurrentLevel == 3 || CurrentLevel == 4) && a1->Data1->Scale.z == 1) {
 		//CPDashPanel(a1);
 	}
 	else {
@@ -370,7 +370,7 @@ void __cdecl SHDashHoop(ObjectMaster *a1)
 		{
 			njRotateZ(0, v4);
 		}
-		if (LoadedLevel != 5 && LoadedLevel != 6) DrawModel(&SH_DASHHOOP);
+		if (CurrentLevel != 3 && CurrentLevel != 4) DrawModel(&SH_DASHHOOP);
 		else DrawModel(&SH_DASHRING);
 		njPopMatrix(1u);
 	}

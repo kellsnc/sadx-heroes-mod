@@ -30,7 +30,7 @@ extern float ruin = 0;
 
 void SH_MOVINGPLATFORMS_Display(ObjectMaster *a1) {
 	if (!DroppedFrames) {
-		njSetTexture((NJS_TEXLIST*)&BEACH01_TEXLIST);
+		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
@@ -207,7 +207,7 @@ void Flags_Animate() {
 void __cdecl SHSPIKES_Display(ObjectMaster *a1)
 {
 	if (!DroppedFrames) {
-		njSetTexture((NJS_TEXLIST*)&BEACH01_TEXLIST);
+		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
@@ -250,36 +250,35 @@ void __cdecl SHSPIKES(ObjectMaster *a1)
 }
 #pragma endregion
 
-#pragma region Object List
 PVMEntry SeasideHillObjectTextures[] = {
-	{ "OBJ_BEACH", (TexList *)0x103A970 },
-	{ "BEACH_SEA", (TexList *)0x10C0508 },
-	{ "E_SAI", (TexList *)0x38C8EA8 },
-	{ "BG_BEACH", (TexList *)0x103B3D4 },
-	{ "E_AMENBO", (TexList *)0x38CD5E0 },
-	{ "ishidai", (TexList *)0x1719DB0 },
-	{ "E_SARU", (TexList *)0x962560 },
-	{ "big_kaeru", (TexList *)0x91D780 },
-	{ "kajiki", (TexList *)0x171E6F0 },
-	{ "PEN", (TexList *)0x92D39C },
-	{ "KOAR", (TexList *)0x9359B4 },
-	{ "RAKO", (TexList *)0x949FC4 },
-	{ "mecha", (TexList *)0x1726108 },
-	{ "sea_bass", (TexList *)0x170FABC },
-	{ "USA", (TexList *)0x93CF74 },
-	{ "utsubo", (TexList *)0x172EE40 },
-	{ "GOMA", (TexList *)0x92ACE4 },
-	{ "tai", (TexList *)0x1717A28 },
-	{ "hammer", (TexList *)0x1723CF4 },
-	{ "same", (TexList *)0x172AAC4 },
-	{ "TOGEBALL_TOGEBALL", (TexList *)0x96BC54 },
-	{ "E_BOMB", (TexList *)0x96B464 },
+	{ "OBJ_BEACH", &OBJ_BEACH_TEXLIST },
+	{ "BEACH_SEA", &BEACH_SEA_TEXLIST },
+	{ "E_SAI", &E_SAI_TEXLIST },
+	{ "BG_BEACH", &BG_BEACH_TEXLIST },
+	{ "E_AMENBO", &E_AMENBO_TEXLIST },
+	{ "ishidai", &ishidai_TEXLIST },
+	{ "E_SARU", &E_SARU_TEXLIST },
+	{ "big_kaeru", &big_kaeru_TEXLIST },
+	{ "kajiki", &kajiki_TEXLIST },
+	{ "PEN", &PEN_TEXLIST },
+	{ "KOAR", &KOAR_TEXLIST },
+	{ "RAKO", &RAKO_TEXLIST },
+	{ "mecha", &mecha_TEXLIST },
+	{ "sea_bass", &sea_bass_TEXLIST },
+	{ "USA", &USA_TEXLIST },
+	{ "utsubo", &utsubo_TEXLIST },
+	{ "GOMA", &GOMA_TEXLIST },
+	{ "tai", &tai_TEXLIST },
+	{ "hammer", &HAMMER_TEXLIST },
+	{ "same", &SAME_TEXLIST },
+	{ "TOGEBALL_TOGEBALL", &TOGEBALL_TOGEBALL_TEXLIST },
+	{ "E_BOMB", &E_BOMB_TEXLIST },
 	{ NULL, (TexList *)0x10A3130 },
 	{ NULL, (TexList *)0x10C786C },
-	{ "SUPI_SUPI", (TexList *)0x96F518 },
-	{ "UNI_C_UNIBODY", (TexList *)0x96DC48 },
-	{ "UNI_A_UNIBODY", (TexList *)0x96CB5C },
-{ 0 }
+	{ "SUPI_SUPI", &SUPI_SUPI_TEXLIST },
+	{ "UNI_C_UNIBODY", &UNI_C_UNIBODY_TEXLIST },
+	{ "UNI_A_UNIBODY", &UNI_A_UNIBODY_TEXLIST },
+	{ 0 }
 };
 
 ObjectListEntry SeasideHillObjectList_list[] = {
@@ -378,7 +377,6 @@ ObjectListEntry SeasideHillObjectList_list[] = {
 };
 
 ObjectList SeasideHillObjectList = { arraylengthandptrT(SeasideHillObjectList_list, int) };
-#pragma endregion
 
 void SeasideHillObjects_Init(const char *path) {
 	WriteData((PVMEntry**)0x90EB6C, SeasideHillObjectTextures);

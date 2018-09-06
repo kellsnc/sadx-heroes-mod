@@ -3,8 +3,11 @@
 void SeasideHillObjects_Init(const char *path);
 void SeasideHillObjects_OnFrame(EntityData1 * entity);
 
+extern SOI_LISTS seaside_hill_objects[];
+extern float ruin;
+
 StartPosition SeasideHill_StartPositions[]{
-	{ 1, 0,{ 0, 6.800581f, 5.217285f }, 8000 }
+	{ 1, 0,{ 0, 6.800581f, 5.217285f }, 0xBFFF }
 };
 
 CHUNK_LIST SeasideHillChunks[]{
@@ -40,5 +43,3 @@ DeathZone SeasideHillDeathZones[] = {
 	{ CharacterFlags_Sonic | CharacterFlags_Tails | CharacterFlags_Knuckles | CharacterFlags_Amy | CharacterFlags_Gamma | CharacterFlags_Big, &S01_DZ8 },
 	{ 0 }
 };
-
-extern SOI_LISTS seaside_hill_objects[];

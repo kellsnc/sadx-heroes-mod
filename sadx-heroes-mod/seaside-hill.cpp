@@ -8,18 +8,22 @@
 static int slowtimer = 0;
 static uint8_t sh_trigger = 1;
 
-DataArray(FogData, EmeraldCoast1Fog, 0x00E99DDC, 3);
-
 void SHSuns_Init(ObjectMaster * a1);
 
 void SeasideHill_OnFrame(EntityData1 * entity, CharObj2 * co2) {
-	SeasideHillObjects_OnFrame(entity);
-
 	if (anim % 4 == 0) {
-		if (CurrentChunk == 16 && entity->Position.z > -1000)
-			CurrentLandTable->Col[CurrentLandTable->COLCount - 1].Flags = 1;
-		if (CurrentChunk == 16 && entity->Position.z > -1994 && entity->Position.z < -1974)
-			CurrentLandTable->Col[CurrentLandTable->COLCount - 1].Flags = 0;
+		if (CurrentChunk == 16) {
+			if (entity->Position.z > -200) {
+				co2->AnimationThing.Index = 13;
+				entity->Action = 2;
+				ruin = 0;
+			}
+				
+			if (entity->Position.z > -1000)
+				CurrentLandTable->Col[CurrentLandTable->COLCount - 1].Flags = 1;
+			if (entity->Position.z > -1994 && entity->Position.z < -1974)
+				CurrentLandTable->Col[CurrentLandTable->COLCount - 1].Flags = 0;
+		}
 	}
 
 	if (EnableSounds == 1) {
@@ -50,14 +54,18 @@ void SeasideHillHandler(ObjectMaster * a1) {
 		InitializeSoundManager();
 		PlayMusic(MusicIDs_EmeraldCoastAzureBlueWorld);
 		SoundManager_Delete2();
+		CurrentLevelTexlist = &BEACH01_TEXLIST;
 		a1->Data1->Action = 1;
 		a1->DeleteSub = LevelHandler_Delete;
 
 		if (CurrentAct == 0) {
 			ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
 			modelhandler->Data1->LoopData = (Loop*)&seaside_hill_objects;
-
+			matlist_waterfall[0].attr_texId = 87;
 			LoadObject(LoadObj_Data1, 3, SHSuns_Init); //load the sun
+		}
+		else {
+			matlist_waterfall[0].attr_texId = 83;
 		}
 
 		if (entity->Position.z > -6264) {
@@ -65,7 +73,6 @@ void SeasideHillHandler(ObjectMaster * a1) {
 			case 0: LoadLevelFile("SH", 16); break;
 			case 2: LoadLevelFile("SG", 01); break;
 			}
-
 		}
 	}
 	else {
@@ -74,6 +81,7 @@ void SeasideHillHandler(ObjectMaster * a1) {
 			ChunkHandler("SH", SeasideHillChunks, LengthOfArray(SeasideHillChunks), entity->Position);
 			AnimateTextures(SeasideHillAnimTexs, LengthOfArray(SeasideHillAnimTexs));
 			SeasideHill_OnFrame(entity, co2);
+			SeasideHillObjects_OnFrame(entity);
 			break;
 		}
 	}
@@ -83,6 +91,7 @@ void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions) 
 	//Initiliazing files
 	ReplacePVM("BEACH01", "seaside-hill");
 	ReplaceBIN("SET0100S", "seaside-hill-set");
+	ReplaceBIN("SET0100M", "seaside-hill-set-tails");
 	ReplaceBIN("CAM0100S", "heroes-cam");
 	ReplaceDAT("EMERALD_COAST_BANK01", "HEROES_BANK");
 	ReplaceADX("ecoast1", "seaside-hill");
@@ -96,7 +105,7 @@ void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions) 
 	//Static stuff
 	for (uint8_t i = 0; i < 3; i++) {
 		DrawDist_EmeraldCoast1[i].Maximum = -999999.0f;
-		EmeraldCoast1Fog[i].Toggle = false;
+		FogData_EmeraldCoast1[i].Toggle = false;
 	}
 
 	WriteData((DeathZone**)0x102F8E8, SeasideHillDeathZones);

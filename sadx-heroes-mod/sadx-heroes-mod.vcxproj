@@ -83,6 +83,8 @@
     <ClCompile Include="LevelHelper.cpp" />
     <ClCompile Include="levels.cpp" />
     <ClCompile Include="ObjectHelper.cpp" />
+    <ClCompile Include="ocean-palace-objects.cpp" />
+    <ClCompile Include="ocean-palace.cpp" />
     <ClCompile Include="seaside-hill.cpp" />
     <ClCompile Include="mod.cpp" />
     <ClCompile Include="seaside-hill-objects.cpp" />
@@ -94,10 +96,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Data\heroes-common-objects.h" />
+    <ClInclude Include="Data\ocean-palace-objects.h" />
+    <ClInclude Include="Data\ocean-palace-paths.h" />
     <ClInclude Include="levels.h" />
     <ClInclude Include="objects.h" />
     <ClInclude Include="Data\seaside-hill-deathzones.h" />
     <ClInclude Include="Data\seaside-hill-objects.h" />
+    <ClInclude Include="ocean-palace.h" />
     <ClInclude Include="seaside-hill.h" />
     <ClInclude Include="mod.h" />
     <ClInclude Include="Data\seaside-hill-paths.h" />

@@ -2,19 +2,10 @@
 #include "mod.h"
 #include <math.h>
 
-float RailValues[]{ 5, 8, 0.2f, 0.03f };
-
-enum EnumRailPhysics {
-	RailPhysics_MaxSpeed,
-	RailPhysics_MaxAcceleration,
-	RailPhysics_SpeedIncrement,
-	RailPhysics_GravityInfluence,
-};
-
 void TransformPlayer(char player, NJS_VECTOR orig, NJS_VECTOR dest, float state) {
 	auto entity = EntityData1Ptrs[player];
 	entity->Position.x = (dest.x - orig.x) * state + orig.x;
-	entity->Position.y = ((dest.y - orig.y) * state + orig.y) + 5;
+	entity->Position.y = ((dest.y - orig.y) * state + orig.y);
 	entity->Position.z = (dest.z - orig.z) * state + orig.z;
 }
 
@@ -34,6 +25,14 @@ void LookAt(char player, NJS_VECTOR orig, NJS_VECTOR point) {
 }
 
 #pragma region Rails
+float RailValues[]{ 5, 8, 0.2f, 0.03f };
+
+enum EnumRailPhysics {
+	RailPhysics_MaxSpeed,
+	RailPhysics_MaxAcceleration,
+	RailPhysics_SpeedIncrement,
+	RailPhysics_GravityInfluence,
+};
 
 //Physics mess
 void RailPhysics(ObjectMaster * a1, EntityData1 * player, CharObj2 * co2, LoopHead * loopdata) {
@@ -153,6 +152,7 @@ void RailMain(ObjectMaster * a1) {
 			if (GetCharacterID(a1->Data1->NextAction) == Characters_Knuckles) co2->AnimationThing.Index = 0;
 
 			TransformPlayer(a1->Data1->NextAction, loopdata->LoopList[a1->Data1->Index].Position, loopdata->LoopList[a1->Data1->Index + 1].Position, a1->Data1->Scale.x);
+			entity->Position.y += 5;
 			LookAt(a1->Data1->NextAction, loopdata->LoopList[a1->Data1->Index].Position, loopdata->LoopList[a1->Data1->Index + 1].Position);
 			
 			
@@ -235,6 +235,129 @@ void Railpath(ObjectMaster * a1) {
 								if (players[slot]->Rotation.y > min && players[slot]->Rotation.y < max) tempobj->Data1->CharIndex = 0; //forward
 								else tempobj->Data1->CharIndex = 1; //backward
 							}
+
+							break;
+						}
+					}
+					if (a1->Data1->Action == 1) break;
+				}
+			}
+		}
+	}
+	else a1->Data1->Action = 0;
+}
+#pragma endregion
+
+#pragma region AutoLoop
+//On autoloop
+void AutoLoopMain(ObjectMaster * a1) {
+	LoopHead * loopdata = (LoopHead*)a1->Data1->LoopData; //current rail
+	EntityData1 * entity = a1->Data1; //we can store data in this
+
+	if (a1->Data1->Action == 0) {
+		EntityData1 * player = EntityData1Ptrs[a1->Data1->NextAction];
+
+		if (!player) {
+			a1->Data1->Action = 1;
+			return;
+		}
+
+		CharObj2 * co2 = GetCharObj2(a1->Data1->NextAction);
+
+		//detach from rail if it's the last point / if the player press jump
+		if (loopdata->LoopList[a1->Data1->Index].Dist == 0 || ControllerPointers[a1->Data1->NextAction]->PressedButtons & Buttons_A) {
+			a1->Data1->Action = 1;
+
+			//Animations
+			if (ControllerPointers[a1->Data1->NextAction]->PressedButtons & Buttons_A) {
+				player->Status = Status_Ball;
+				player->Action = 8;
+				co2->AnimationThing.Index = 14;
+				co2->Speed.y = 2;
+			}
+			else {
+				co2->Speed.x = 4;
+				player->Status = 0;
+				player->Action = 2;
+				co2->AnimationThing.Index = 13;
+			}
+
+			if (player = EntityData1Ptrs[0]) camera_flags = 7;
+			return;
+		}
+		else {
+			//next position in spline
+			a1->Data1->Scale.x = a1->Data1->Scale.x + (loopdata->TotalDist / loopdata->LoopList[a1->Data1->Index].Dist) / loopdata->TotalDist * 8;
+			
+			//animations
+			player->Status = 0;
+			switch (GetCharacterID(a1->Data1->NextAction)) {
+			case Characters_Sonic:
+			case Characters_Tails: 
+				player->Action = 4;
+				co2->AnimationThing.Index = 15; 
+				break;
+			case Characters_Knuckles:
+				player->Action = 4;
+				co2->AnimationThing.Index = 35;
+				break;
+			}
+
+			TransformPlayer(a1->Data1->NextAction, loopdata->LoopList[a1->Data1->Index].Position, loopdata->LoopList[a1->Data1->Index + 1].Position, a1->Data1->Scale.x);
+			LookAt(a1->Data1->NextAction, loopdata->LoopList[a1->Data1->Index].Position, loopdata->LoopList[a1->Data1->Index + 1].Position);
+
+			//go to next point
+			if (a1->Data1->Scale.x > 1) { a1->Data1->Scale.x = 0; a1->Data1->Index++; }
+		}
+	}
+
+	//hold before removing the path object so that the character
+	//don't immediately go back on the path
+	if (a1->Data1->Action == 1) {
+		if (a1->Data1->CharIndex < 20) a1->Data1->CharIndex += 1;
+		else {
+			auto entity = EntityData1Ptrs[a1->Data1->NextAction];
+			entity->NextAction = 0;
+			DeleteObjectMaster(a1);
+		}
+	}
+}
+
+//Initialize autoloop
+void AutoLoop(ObjectMaster * a1) {
+	LoopHead * loopdata = (LoopHead*)a1->Data1->LoopData;
+	EntityData1 * entity = a1->Data1;
+
+	if (!a1->Data1->Action) {
+		EntityData1 ** players = EntityData1Ptrs; //suport for 8 players, let's get all the pointers
+		for (uint8_t slot = 0; slot < 8; ++slot) {
+			if (players[slot]) {
+
+				if (players[slot]->NextAction == 1) return;
+
+				for (uint8_t point = 0; point < loopdata->Count; ++point) {
+					for (float l = 0; l <= 1; l += 0.01f) {
+						a1->Data1->Position.x = (loopdata->LoopList[point + 1].Position.x - loopdata->LoopList[point].Position.x) * l + loopdata->LoopList[point].Position.x;
+						a1->Data1->Position.y = (loopdata->LoopList[point + 1].Position.y - loopdata->LoopList[point].Position.y) * l + loopdata->LoopList[point].Position.y;
+						a1->Data1->Position.z = (loopdata->LoopList[point + 1].Position.z - loopdata->LoopList[point].Position.z) * l + loopdata->LoopList[point].Position.z;
+
+						if ((a1->Data1->Position.x >(players[slot]->Position.x - 10) && a1->Data1->Position.x < (players[slot]->Position.x + 10))
+							&& (a1->Data1->Position.y >(players[slot]->Position.y - 10) && a1->Data1->Position.y < (players[slot]->Position.y + 10))
+							&& (a1->Data1->Position.z >(players[slot]->Position.z - 10) && a1->Data1->Position.z < (players[slot]->Position.z + 10))) {
+
+							players[slot]->Position = a1->Data1->Position;
+							a1->Data1->Action = 1;
+
+							//we create a new object to support 8 players (one object per character)
+							ObjectMaster * tempobj = LoadObject(LoadObj_Data1, 0, AutoLoopMain);
+							CharObj2 * co2 = GetCharObj2(slot);
+							tempobj->Data1->Index = point; //store current spline point
+							tempobj->Data1->Scale.x = l; //store position in spline
+							tempobj->Data1->NextAction = slot; //store character it applies to
+							tempobj->Data1->LoopData = a1->Data1->LoopData;
+							players[slot]->NextAction = 1;
+
+							if (slot == 0) camera_flags = 6;
 
 							break;
 						}

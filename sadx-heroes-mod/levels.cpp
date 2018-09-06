@@ -49,6 +49,45 @@ void __cdecl FreeCurrentChunk(int level, int act)
 	if (!IsLoaded) SetQueueDrawingState_BlankScreen();
 }
 
+void SwapCurrentLandTable() {
+	LandTable *land = info->getlandtable();
+	for (Int j = 0; j < land->COLCount; ++j) {
+		land->TexList = &BEACH01_TEXLIST;
+		if (land->Col[j].Flags == 0x80000000) {
+			for (Int k = 0; k < land->Col[j].Model->basicdxmodel->nbMat; ++k) {
+				land->Col[j].Model->basicdxmodel->mats[k].attrflags |= NJD_FLAG_IGNORE_LIGHT;
+			}
+		}
+	}
+
+	switch (CurrentLevel) {
+	case 1:
+		switch (CurrentAct) {
+		case 0:
+			WriteData((LandTable**)0x97DA28, land);
+			land->TexList = &BEACH01_TEXLIST;
+			break;
+		case 2: 
+			WriteData((LandTable**)0x97DA28, land);
+			land->TexList = &BEACH03_TEXLIST;
+			break;
+		}
+		break;
+	case 2:
+		switch (CurrentAct) {
+		case 0:
+			WriteData((LandTable**)0x97DA48, land);
+			land->TexList = &WINDY01_TEXLIST;
+			break;
+		case 1:
+			WriteData((LandTable**)0x97DA48, land);
+			land->TexList = &WINDY02_TEXLIST;
+			break;
+		}
+		break;
+	}
+}
+
 void LoadLevelFile(const char *shortname, int chunknb) {
 	std::string fullPath = modpath + "\\system\\levels\\" + shortname;
 	std::string numtos = std::to_string(chunknb);
@@ -73,18 +112,8 @@ void LoadLevelFile(const char *shortname, int chunknb) {
 	}
 
 	info = new LandTableInfo(foo);
-	LandTable *land = info->getlandtable();
-	for (Int j = 0; j < land->COLCount; ++j) {
-		land->TexList = &BEACH01_TEXLIST;
-		if (land->Col[j].Flags == 0x80000000) {
-			for (Int k = 0; k < land->Col[j].Model->basicdxmodel->nbMat; ++k) {
-				land->Col[j].Model->basicdxmodel->mats[k].attrflags |= NJD_FLAG_IGNORE_LIGHT;
-			}
-		}
-	}
-	land->Flags = 0xC;
 	CurrentChunk = chunknb;
-	WriteData((LandTable**)0x97DA28, land);
+	SwapCurrentLandTable();
 	SetCurrentLandTable();
 }
 
@@ -150,6 +179,7 @@ void Levels_Init(const char *path, const HelperFunctions &helperFunctions)
 	}
 
 	if (EnableSeasideHill) SeasideHill_Init(path, helperFunctions);
+	if (EnableOceanPalace) OceanPalace_Init(path, helperFunctions);
 
 	Objects_Init(path, helperFunctions);
 }
