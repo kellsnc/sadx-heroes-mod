@@ -36,12 +36,6 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\SADX\programming\LandTableInfo.cpp">
-      <Filter>Source Files\Extern</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\SADX\programming\ModelInfo.cpp">
-      <Filter>Source Files\Extern</Filter>
-    </ClCompile>
     <ClCompile Include="paths.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -66,6 +60,12 @@
     <ClCompile Include="LevelHelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\sadx-mod-loader\libmodutils\ModelInfo.cpp">
+      <Filter>Source Files\Extern</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sadx-mod-loader\libmodutils\LandTableInfo.cpp">
+      <Filter>Source Files\Extern</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -80,23 +80,23 @@
     <ClInclude Include="seaside-hill.h">
       <Filter>Header Files\Levels</Filter>
     </ClInclude>
-    <ClInclude Include="seaside-hill-paths.h">
-      <Filter>Header Files\Levels</Filter>
-    </ClInclude>
     <ClInclude Include="objects.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="seaside-hill-objects.h">
-      <Filter>Header Files\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="heroes-common-objects.h">
-      <Filter>Header Files\Objects</Filter>
     </ClInclude>
     <ClInclude Include="levels.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="seaside-hill-deathzones.h">
+    <ClInclude Include="Data\seaside-hill-deathzones.h">
       <Filter>Header Files\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\seaside-hill-paths.h">
+      <Filter>Header Files\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\heroes-common-objects.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\seaside-hill-objects.h">
+      <Filter>Header Files\Objects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

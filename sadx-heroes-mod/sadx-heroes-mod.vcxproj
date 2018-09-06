@@ -76,8 +76,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\SADX\programming\LandTableInfo.cpp" />
-    <ClCompile Include="..\..\..\..\SADX\programming\ModelInfo.cpp" />
+    <ClCompile Include="..\sadx-mod-loader\libmodutils\LandTableInfo.cpp" />
+    <ClCompile Include="..\sadx-mod-loader\libmodutils\ModelInfo.cpp" />
     <ClCompile Include="heroes-common-objects.cpp" />
     <ClCompile Include="objects.cpp" />
     <ClCompile Include="LevelHelper.cpp" />
@@ -93,14 +93,14 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="heroes-common-objects.h" />
+    <ClInclude Include="Data\heroes-common-objects.h" />
     <ClInclude Include="levels.h" />
     <ClInclude Include="objects.h" />
-    <ClInclude Include="seaside-hill-deathzones.h" />
-    <ClInclude Include="seaside-hill-objects.h" />
+    <ClInclude Include="Data\seaside-hill-deathzones.h" />
+    <ClInclude Include="Data\seaside-hill-objects.h" />
     <ClInclude Include="seaside-hill.h" />
     <ClInclude Include="mod.h" />
-    <ClInclude Include="seaside-hill-paths.h" />
+    <ClInclude Include="Data\seaside-hill-paths.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>

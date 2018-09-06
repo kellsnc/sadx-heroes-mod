@@ -20,6 +20,35 @@ LandTableInfo *info = nullptr;
 LandTableInfo *oldinfo = nullptr;
 
 #pragma region Chunks
+void __cdecl FreeCurrentChunk(int level, int act)
+{
+	LandTable *CurrentLand; // esi
+	int COL_Length; // ebp
+	int COL_LengthT; // ebx
+	NJS_OBJECT **LandObject; // edi
+
+	CurrentLand = GeoLists[act + 8 * level];
+	if (CurrentLand)
+	{
+		COL_Length = CurrentLand->COLCount;
+		if (COL_Length > 0)
+		{
+			LandObject = &CurrentLand->Col->Model;
+			COL_LengthT = CurrentLand->COLCount;
+			do
+			{
+				if (((unsigned int)LandObject[2] & (ColFlags_Visible | ColFlags_UvManipulation)) == ColFlags_Visible)
+				{
+					FreeLandTableObject(*LandObject);
+				}
+				LandObject += 9;
+				--COL_LengthT;
+			} while (COL_LengthT);
+		}
+	}
+	if (!IsLoaded) SetQueueDrawingState_BlankScreen();
+}
+
 void LoadLevelFile(const char *shortname, int chunknb) {
 	std::string fullPath = modpath + "\\system\\levels\\" + shortname;
 	std::string numtos = std::to_string(chunknb);
@@ -31,7 +60,7 @@ void LoadLevelFile(const char *shortname, int chunknb) {
 	PrintDebug(foo);
 	PrintDebug("\n");
 
-	FreeLandTable(1, 0);
+	FreeCurrentChunk(CurrentLevel, CurrentAct);
 
 	if (info) {
 		if (oldinfo) {
@@ -84,109 +113,10 @@ void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size, NJS_
 }
 
 void LevelHandler_Delete(ObjectMaster * a1) {
-	FreeLandTable(1, 0);
+	FreeCurrentChunk(CurrentLevel, CurrentAct);
 	delete oldinfo;
 	oldinfo = nullptr;
 	anim = 0;
-}
-
-void __cdecl FreeLandTable_h(int level, int act)
-{
-	LandTable *v2; // esi
-	int v3; // ebp
-	int v4; // ebx
-	NJS_OBJECT **v5; // edi
-	GeoAnimData *v6; // ebx
-	signed int v7; // edi
-	__int16 v8; // ax
-	__int16 v9; // ax
-	__int16 original_a10; // ax
-	__int16 original_a11; // ax
-	__int16 original_a12; // ax
-	GeoAnimData *original_a13; // esi
-
-	v2 = GeoLists[act + 8 * level];
-	if (v2)
-	{
-		v3 = v2->COLCount;
-		if (v3 > 0)
-		{
-			v5 = &v2->Col->Model;
-			v4 = v2->COLCount;
-			do
-			{
-				if (((unsigned int)v5[2] & (ColFlags_Visible | ColFlags_UvManipulation)) == ColFlags_Visible)
-				{
-					FreeLandTableObject(*v5);
-				}
-				v5 += 9;
-				--v4;
-			} while (v4);
-		}
-		if (ClipLevel < 2)
-		{
-			v6 = v2->AnimData;
-			v7 = 0;
-			if (v2->AnimCount > 0)
-			{
-				do
-				{
-					FreeLandTableObject(v6->Model);
-					++v7;
-				} while (v7 < v2->AnimCount);
-			}
-		}
-		v8 = v2->Flags;
-		if (v8 & LandTableFlags_TextureList)
-		{
-			v9 = HIWORD(v2->Flags);
-			if (v9 & 3)
-			{
-				original_a10 = v9 - 1;
-				v2->Flags = original_a10;
-				if (!(original_a10 & 3))
-				{
-					njReleaseTexture(v2->TexList);
-					if (!IsLoaded) SetQueueDrawingState_BlankScreen();
-					return;
-				}
-			}
-		}
-		else if (v8 & LandTableFlags_TextureName)
-		{
-			if (v2->TexName)
-			{
-				original_a11 = HIWORD(v2->Flags);
-				if (original_a11 & 3)
-				{
-					original_a12 = original_a11 - 1;
-					v2->Flags = original_a12;
-					if (!(original_a12 & 3))
-					{
-						njReleaseTexture(v2->TexList);
-						if (!IsLoaded) SetQueueDrawingState_BlankScreen();
-						return;
-					}
-				}
-			}
-		}
-		else if (v8 & LandTableFlags_Animation)
-		{
-			original_a13 = v2->AnimData;
-			if (v3 > 0)
-			{
-				do
-				{
-					if (original_a13->TexList)
-					{
-						njReleaseTexture(original_a13->TexList);
-					}
-					--v3;
-				} while (v3);
-			}
-		}
-	}
-	if (!IsLoaded) SetQueueDrawingState_BlankScreen();
 }
 #pragma endregion
 
@@ -206,9 +136,6 @@ void Levels_Init(const char *path, const HelperFunctions &helperFunctions)
 	EnableBingoHighway = config->getBool("Levels", "EnableBingoHighway", true);
 	EnableHangCastle = config->getBool("Levels", "EnableHangCastle", true);
 	delete config;
-
-	//black screen fix
-	WriteJump((void*)0x0043A350, FreeLandTable_h);
 
 	//Init sound effects
 	if (EnableSounds >= 1) {
