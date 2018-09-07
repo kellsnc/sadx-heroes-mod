@@ -4,7 +4,7 @@
 //Basic drawing call
 void DrawObjModel(ObjectMaster *a1, NJS_MODEL_SADX *m, bool scalable) {
 	if (!MissedFrames) {
-		njSetTexture((NJS_TEXLIST*)&BEACH01_TEXLIST); //Current heroes level texlist is always onto Emerald Coast
+		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);

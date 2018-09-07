@@ -4,10 +4,12 @@ void SeasideHillObjects_Init(const char *path);
 void SeasideHillObjects_OnFrame(EntityData1 * entity);
 
 extern SOI_LISTS seaside_hill_objects[];
+extern SOI_LISTS sea_gate_objects[];
 extern float ruin;
 
 StartPosition SeasideHill_StartPositions[]{
-	{ 1, 0,{ 0, 6.800581f, 5.217285f }, 0xBFFF }
+	{ 1, 0,{ 0, 6.800581f, 5.217285f }, 0xBFFF },
+	{ 1, 1,{ 6090, 30, 1000 }, 0xBFFF }
 };
 
 CHUNK_LIST SeasideHillChunks[]{
@@ -41,5 +43,24 @@ DeathZone SeasideHillDeathZones[] = {
 	{ CharacterFlags_Sonic | CharacterFlags_Tails | CharacterFlags_Knuckles | CharacterFlags_Amy | CharacterFlags_Gamma | CharacterFlags_Big, &S01_DZ6 },
 	{ CharacterFlags_Sonic | CharacterFlags_Tails | CharacterFlags_Knuckles | CharacterFlags_Amy | CharacterFlags_Gamma | CharacterFlags_Big, &S01_DZ7 },
 	{ CharacterFlags_Sonic | CharacterFlags_Tails | CharacterFlags_Knuckles | CharacterFlags_Amy | CharacterFlags_Gamma | CharacterFlags_Big, &S01_DZ8 },
+	{ 0 }
+};
+
+CHUNK_LIST SeaGateChunks[]{
+	{ 1,{ 0, 0, 0 },{ 0, 0, -133 } },
+	{ 2,{ 0, 0, -268 },{ 0, 0, -2049 } },
+	{ 3,{ 0, 0, -2049 },{ 0, 0, -3955 } },
+	{ 4,{ 0, 0, -4148 },{ 0, 0, -6501 } },
+	{ 5,{ 0, 0, -6708 },{ 0, 0, -8159 } },
+	{ 6,{ 0, 0, -8282 },{ 0, 0, -9392 } },
+	{ 7,{ 0, 0, -9534 },{ 0, 0, 0 } }
+};
+
+SH_ANIMTEXS SeaGateAnimTexs[]{
+	{ 0, 19,{ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4 } },
+	{ 84, 19,{ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 } }
+};
+
+DeathZone SeaGateDeathZones[] = {
 	{ 0 }
 };

@@ -5,10 +5,12 @@ void OceanPalaceObjects_OnFrame(EntityData1 * entity);
 
 extern SOI_LIST ocean_palace_objects_common[];
 extern SOI_LISTS ocean_palace_objects[];
+extern SOI_LISTS road_rock_objects[];
 extern DeathZone SeasideHillDeathZones[];
 
 StartPosition OceanPalace_StartPositions[]{
-	{ 2, 0,{ -8771, 1303, -2819.688f }, 0xBFFF }
+	{ 2, 0,{ -8771, 1303, -2819.688f }, 0xBFFF },
+	{ 2, 1,{ 0, 3020, 4462 }, 0xBFFF },
 };
 
 NJS_VECTOR OceanPalaceTriggers[]{
@@ -196,4 +198,15 @@ SH_PATHS OP_ROCKS[]{
 	{ OP_ROCK1, 13859.4589f,{ 0, 0, 0 } },
 	{ OP_ROCK2, 6461.67217f,{ 0, 0, 0 } },
 	{ OP_ROCK3, 4527.60408f,{ 0, 0, 0 } }
+};
+
+SH_ANIMTEXS RoadRockAnimTexs[]{
+	{ 0, 19,{ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4 } },
+	{ 47, 19,{ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 } }
+};
+
+DeathZone RoadRockDeathZones[] = {
+	{ CharacterFlags_Sonic | CharacterFlags_Tails | CharacterFlags_Knuckles | CharacterFlags_Amy | CharacterFlags_Gamma, &S69_DZ },
+	{ CharacterFlags_Big, &S69_DZ_BIG },
+	{ 0 }
 };

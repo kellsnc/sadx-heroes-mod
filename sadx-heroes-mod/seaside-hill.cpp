@@ -32,7 +32,6 @@ void SeasideHill_OnFrame(EntityData1 * entity, CharObj2 * co2) {
 		if (sh_trigger == 1) {
 			auto entity = EntityData1Ptrs[0];
 			if (entity != nullptr) {
-				if (entity->Position.z > -801) { PlaySound(44, 0, 0, 0); sh_trigger = 0; }
 				if (entity->Position.z < -2676 && entity->Position.z > -4364) { PlaySound(44, 0, 0, 0); sh_trigger = 0; }
 				if (entity->Position.z < -7228 && entity->Position.z > -8029 && entity->Position.x > -90) { PlaySound(44, 0, 0, 0); sh_trigger = 0; }
 				if (entity->Position.z < -13345 && entity->Position.z > -14023) { PlaySound(44, 0, 0, 0); sh_trigger = 0; }
@@ -49,30 +48,36 @@ void SeasideHillHandler(ObjectMaster * a1) {
 	if (a1->Data1->Action == 0) {
 		MovePlayerToStartPoint(entity);
 		camerahax_b();
-		PlaySound2(946, (void *)0xFFFFFFFF, 8, 0);
-		PlaySound2(948, (void *)0xFFFFFFFF, 8, 0);
+
+		PlaySound(44, 0, 0, 0);
 		InitializeSoundManager();
 		PlayMusic(MusicIDs_EmeraldCoastAzureBlueWorld);
 		SoundManager_Delete2();
-		CurrentLevelTexlist = &BEACH01_TEXLIST;
+
+		LoadObject(LoadObj_Data1, 3, SHSuns_Init); //load the sun
+
 		a1->Data1->Action = 1;
 		a1->DeleteSub = LevelHandler_Delete;
 
 		if (CurrentAct == 0) {
+			//Seaside Hill
+			CurrentLevelTexlist = &BEACH01_TEXLIST;
+			CurrentLandAddress = (LandTable**)0x97DA28;
+			matlist_waterfall[0].attr_texId = 87;
+
 			ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
 			modelhandler->Data1->LoopData = (Loop*)&seaside_hill_objects;
-			matlist_waterfall[0].attr_texId = 87;
-			LoadObject(LoadObj_Data1, 3, SHSuns_Init); //load the sun
+
+			if (entity->Position.z > -6264) LoadLevelFile("SH", 16);
 		}
 		else {
+			//Sea Gate
+			CurrentLevelTexlist = &BEACH02_TEXLIST;
+			CurrentLandAddress = (LandTable**)0x97DA2C;
 			matlist_waterfall[0].attr_texId = 83;
-		}
 
-		if (entity->Position.z > -6264) {
-			switch (CurrentAct) {
-			case 0: LoadLevelFile("SH", 16); break;
-			case 2: LoadLevelFile("SG", 01); break;
-			}
+			ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
+			modelhandler->Data1->LoopData = (Loop*)&sea_gate_objects;
 		}
 	}
 	else {
@@ -83,8 +88,40 @@ void SeasideHillHandler(ObjectMaster * a1) {
 			SeasideHill_OnFrame(entity, co2);
 			SeasideHillObjects_OnFrame(entity);
 			break;
-		}
+		case 1:
+			ChunkHandler("SG", SeaGateChunks, LengthOfArray(SeaGateChunks), entity->Position);
+			AnimateTextures(SeaGateAnimTexs, LengthOfArray(SeaGateAnimTexs));
+			SeasideHillObjects_OnFrame(entity);
+			break;
+		}	
 	}
+}
+
+void SeaGate_Init(const char *path, const HelperFunctions &helperFunctions) {
+	ReplacePVM("BEACH02", "sea-gate");
+	ReplaceBIN("SET0101S", "sea-gate-set-gamma");
+	ReplaceBIN("SET0101A", "sea-gate-set-amy");
+	ReplaceBIN("CAM0101S", "heroes-cam");
+	ReplaceDAT("EMERALD_COAST_BANK01", "HEROES_BANK");
+	ReplaceADX("ecoast2", "sea-gate");
+	ReplaceBIN("PL_10B", "heroes-shaders");
+
+	helperFunctions.RegisterStartPosition(Characters_Sonic, SeasideHill_StartPositions[1]);
+	helperFunctions.RegisterStartPosition(Characters_Amy, SeasideHill_StartPositions[1]);
+	helperFunctions.RegisterStartPosition(Characters_Gamma, SeasideHill_StartPositions[1]);
+	helperFunctions.RegisterTrialLevel(Characters_Amy, { 1, 1 });
+	helperFunctions.RegisterTrialLevel(Characters_Gamma, { 1, 1 });
+	helperFunctions.RegisterPathList(SeaGatePaths);
+
+	for (uint8_t i = 0; i < 3; i++) {
+		DrawDist_EmeraldCoast2[i].Maximum = -999999.0f;
+		FogData_EmeraldCoast2[i].Toggle = false;
+	}
+
+	WriteData((DeathZone**)0x102F8EC, SeaGateDeathZones);
+
+	//Do not draw ocean
+	WriteData<5>((void*)0x004F7A46, 0x09);
 }
 
 void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions) {
@@ -111,7 +148,7 @@ void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions) 
 	WriteData((DeathZone**)0x102F8E8, SeasideHillDeathZones);
 
 	//Do not draw ocean
-	WriteData<5>((void*)0x005011B7, 0x90u);
+	WriteData<5>((void*)0x004F6A1A, 0x90u);
 
 	//Do not draw skybox
 	WriteData<5>((void*)0x00408591, 0x90u);
@@ -123,5 +160,6 @@ void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions) 
 	//Load the level handler
 	WriteJump((void *)0x4F6D60, &SeasideHillHandler);
 
+	SeaGate_Init(path, helperFunctions);
 	SeasideHillObjects_Init(path);
 }

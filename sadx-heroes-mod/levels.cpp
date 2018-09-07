@@ -15,6 +15,8 @@ static bool EnableCasinoPark = true;
 static bool EnableBingoHighway = true;
 static bool EnableHangCastle = true;
 
+LandTable** CurrentLandAddress;
+
 std::string modpath;
 LandTableInfo *info = nullptr;
 LandTableInfo *oldinfo = nullptr;
@@ -60,32 +62,8 @@ void SwapCurrentLandTable() {
 		}
 	}
 
-	switch (CurrentLevel) {
-	case 1:
-		switch (CurrentAct) {
-		case 0:
-			WriteData((LandTable**)0x97DA28, land);
-			land->TexList = &BEACH01_TEXLIST;
-			break;
-		case 2: 
-			WriteData((LandTable**)0x97DA28, land);
-			land->TexList = &BEACH03_TEXLIST;
-			break;
-		}
-		break;
-	case 2:
-		switch (CurrentAct) {
-		case 0:
-			WriteData((LandTable**)0x97DA48, land);
-			land->TexList = &WINDY01_TEXLIST;
-			break;
-		case 1:
-			WriteData((LandTable**)0x97DA48, land);
-			land->TexList = &WINDY02_TEXLIST;
-			break;
-		}
-		break;
-	}
+	WriteData((LandTable**)CurrentLandAddress, land);
+	land->TexList = CurrentLevelTexlist;
 }
 
 void LoadLevelFile(const char *shortname, int chunknb) {
@@ -156,9 +134,7 @@ void Levels_Init(const char *path, const HelperFunctions &helperFunctions)
 	//Get the config.ini information
 	const IniFile *config = new IniFile(modpath + "\\config.ini");
 	EnableSeasideHill = config->getBool("Levels", "EnableSeasideHill", true);
-	EnableSeaGate = config->getBool("Levels", "EnableSeaGate", true);
 	EnableOceanPalace = config->getBool("Levels", "EnableOceanPalace", true);
-	EnableRoadRock = config->getBool("Levels", "EnableRoadRock", true);
 	EnableGrandMetropolis = config->getBool("Levels", "EnableGrandMetropolis", true);
 	EnablePowerPlant = config->getBool("Levels", "EnablePowerPlant", true);
 	EnableCasinoPark = config->getBool("Levels", "EnableCasinoPark", true);

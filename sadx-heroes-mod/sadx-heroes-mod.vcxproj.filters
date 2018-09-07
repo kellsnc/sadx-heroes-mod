@@ -113,5 +113,8 @@
     <ClInclude Include="ocean-palace.h">
       <Filter>Header Files\Levels</Filter>
     </ClInclude>
+    <ClInclude Include="Data\road-rock-deathzones.h">
+      <Filter>Header Files\Levels</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

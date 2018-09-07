@@ -2,6 +2,7 @@
 #include "mod.h"
 #include "levels.h"
 #include "ocean-palace-paths.h"
+#include "road-rock-deathzones.h"
 #include "ocean-palace.h"
 
 static int finsstate = 0;
@@ -15,7 +16,8 @@ static float rocktimer3 = 0;
 
 void SHSuns_Init(ObjectMaster * a1);
 
-void InitSomeAnim() {
+//Sometimes sonic skip the running animation
+void OP_AnimFix() {
 	auto entity = EntityData1Ptrs[0];
 	CharObj2 *co2 = GetCharObj2(0);
 	if (!SuperSonicFlag) {
@@ -28,12 +30,13 @@ void InitSomeAnim() {
 	}
 }
 
+//A huge mess that was supposed to be temporary but then got lazy to rewrite
 void GiantRockHandler() {
-	if (IsPlayerInsideSphere(&OceanPalaceTriggers[1], 45.0f) == true) InitSomeAnim();
+	if (IsPlayerInsideSphere(&OceanPalaceTriggers[1], 45.0f) == 1) OP_AnimFix();
 
-	if (IsPlayerInsideSphere(&OceanPalaceTriggers[0], 45.0f) == true) {
+	if (IsPlayerInsideSphere(&OceanPalaceTriggers[0], 45.0f) == 1) {
 		rocktrigger = 1;
-		InitSomeAnim();
+		OP_AnimFix();
 		FreeCam = 0;
 	}
 
@@ -41,7 +44,7 @@ void GiantRockHandler() {
 	if (ocean_palace_objects_common[2].soipos.z < -46553) rocktrigger = 3;
 
 	if (rocktrigger > 0) {
-		if (IsPlayerInsideSphere(&ocean_palace_objects_common[2].soipos, 120.0f) == true || IsPlayerInsideSphere(&ocean_palace_objects_common[3].soipos, 120.0f) == true || IsPlayerInsideSphere(&ocean_palace_objects_common[4].soipos, 120.0f) == true) GameState = 7;
+		if (IsPlayerInsideSphere(&ocean_palace_objects_common[2].soipos, 120.0f) == 1 || IsPlayerInsideSphere(&ocean_palace_objects_common[3].soipos, 120.0f) == 1 || IsPlayerInsideSphere(&ocean_palace_objects_common[4].soipos, 120.0f) == 1) GameState = 7;
 
 		ocean_palace_objects_common[2].soirot[0] = ocean_palace_objects_common[2].soirot[0] + 1500;
 		if (rocktimer > 1) { rocktimer = 0; rockstate++; }
@@ -84,6 +87,7 @@ void GiantRockHandler() {
 	}
 }
 
+//Got lazy to make turtle fins an object so hardcode everything
 void FinsHandler() {
 	if (CurrentChunk == 5) {
 		finsstate++;
@@ -164,23 +168,37 @@ void OceanPalaceHandler(ObjectMaster * a1) {
 	if (a1->Data1->Action == 0) {
 		MovePlayerToStartPoint(entity);
 		camerahax_b();
-		PlaySound2(946, (void *)0xFFFFFFFF, 8, 0);
-		PlaySound2(948, (void *)0xFFFFFFFF, 8, 0);
-		InitializeSoundManager();
-		PlayMusic(MusicIDs_WindyValleyWindyHill);
-		SoundManager_Delete2();
-		CurrentLevelTexlist = &WINDY01_TEXLIST;
+
 		a1->Data1->Action = 1;
 		a1->DeleteSub = OceanPalace_delete;
 
 		if (CurrentAct == 0) {
+			//Ocean Palace
+			PlaySound(44, 0, 0, 0);
+			InitializeSoundManager();
+			PlayMusic(MusicIDs_WindyValleyWindyHill);
+			SoundManager_Delete2();
+
+			CurrentLevelTexlist = &WINDY01_TEXLIST;
+			CurrentLandAddress = (LandTable**)0x97DA48;
+			matlist_waterfall[0].attr_texId = 66;
+
 			ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
 			modelhandler->Data1->LoopData = (Loop*)&ocean_palace_objects;
-			matlist_waterfall[0].attr_texId = 66;
 			LoadObject(LoadObj_Data1, 3, SHSuns_Init); //load the sun
 		}
 		else {
+			InitializeSoundManager();
+			PlayMusic(MusicIDs_WindyValleyTornado);
+			SoundManager_Delete2();
+
+			CurrentLevelTexlist = &WINDY02_TEXLIST;
+			CurrentLandAddress = (LandTable**)0x97DA4C;
 			matlist_waterfall[0].attr_texId = 45;
+
+			ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
+			modelhandler->Data1->LoopData = (Loop*)&road_rock_objects;
+			LoadLevelFile("RR", 01);
 		}
 	}
 	else {
@@ -191,12 +209,42 @@ void OceanPalaceHandler(ObjectMaster * a1) {
 			OceanPalace_OnFrame(entity, co2);
 			OceanPalaceObjects_OnFrame(entity);
 			break;
+		case 1:
+			AnimateTextures(RoadRockAnimTexs, LengthOfArray(RoadRockAnimTexs));
+			OceanPalaceObjects_OnFrame(entity);
+			break;
 		}
 	}
 }
 
-void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions) {
+void RoadRock_Init(const char *path, const HelperFunctions &helperFunctions) {
 	//Initiliazing files
+	ReplacePVM("WINDY02", "road-rock");
+	ReplaceBIN("SET0201B", "road-rock-set-big");
+	ReplaceBIN("SET0201A", "road-rock-set-amy");
+	ReplaceBIN("SET0201S", "road-rock-set-gamma");
+	ReplaceBIN("CAM0201S", "heroes-cam");
+	ReplaceDAT("WINDY_VALLEY_BANK01", "HEROES_BANK");
+	ReplaceADX("wndyvly2", "road-rock");
+	ReplaceBIN("PL_21B", "heroes-shaders");
+
+	helperFunctions.RegisterStartPosition(Characters_Sonic, OceanPalace_StartPositions[1]);
+	helperFunctions.RegisterStartPosition(Characters_Amy, OceanPalace_StartPositions[1]);
+	helperFunctions.RegisterStartPosition(Characters_Gamma, OceanPalace_StartPositions[1]);
+	helperFunctions.RegisterStartPosition(Characters_Big, OceanPalace_StartPositions[1]);
+	helperFunctions.RegisterTrialLevel(Characters_Amy, { 2, 1 });
+	helperFunctions.RegisterTrialLevel(Characters_Gamma, { 2, 1 });
+	helperFunctions.RegisterTrialLevel(Characters_Big, { 2, 1 });
+
+	for (uint8_t i = 0; i < 3; i++) {
+		DrawDist_WindyValley2[i].Maximum = -999999.0f;
+		FogData_WindyValley2[i].Toggle = false;
+	}
+
+	WriteData((DeathZone**)0xBFD824, RoadRockDeathZones);
+}
+
+void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions) {
 	ReplacePVM("WINDY01", "ocean-palace");
 	ReplaceBIN("SET0200S", "ocean-palace-set");
 	ReplaceBIN("SET0200M", "ocean-palace-set-tails");
@@ -205,12 +253,11 @@ void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions) 
 	ReplaceADX("wndyvly1", "ocean-palace");
 	ReplaceBIN("PL_20B", "heroes-shaders");
 
-	//HelperFunctions allows our mod to not override other mods' data that also use HelperFunctions
-	helperFunctions.RegisterStartPosition(Characters_Sonic, OceanPalace_StartPositions[0]); //startpos
-	helperFunctions.RegisterPathList(OceanPalacePaths); //splines
-	helperFunctions.RegisterTrialLevel(Characters_Knuckles, { 2, 0 }); //trial menu
+	helperFunctions.RegisterStartPosition(Characters_Sonic, OceanPalace_StartPositions[0]);
+	helperFunctions.RegisterPathList(OceanPalacePaths);
+	helperFunctions.RegisterTrialLevel(Characters_Tails, { 2, 0 });
+	helperFunctions.RegisterTrialLevel(Characters_Knuckles, { 2, 0 });
 
-	//Static stuff
 	for (uint8_t i = 0; i < 3; i++) {
 		DrawDist_WindyValley1[i].Maximum = -999999.0f;
 		FogData_WindyValley1[i].Toggle = false;
@@ -224,5 +271,6 @@ void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions) 
 	//Load the level handler
 	WriteJump((void *)0x4DDB30, &OceanPalaceHandler);
 
+	RoadRock_Init(path, helperFunctions);
 	OceanPalaceObjects_Init(path);
 }

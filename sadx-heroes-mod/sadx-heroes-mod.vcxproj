@@ -98,6 +98,7 @@
     <ClInclude Include="Data\heroes-common-objects.h" />
     <ClInclude Include="Data\ocean-palace-objects.h" />
     <ClInclude Include="Data\ocean-palace-paths.h" />
+    <ClInclude Include="Data\road-rock-deathzones.h" />
     <ClInclude Include="levels.h" />
     <ClInclude Include="objects.h" />
     <ClInclude Include="Data\seaside-hill-deathzones.h" />

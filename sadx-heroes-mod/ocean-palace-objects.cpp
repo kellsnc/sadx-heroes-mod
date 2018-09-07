@@ -151,7 +151,6 @@ void OceanPalaceObjects_Init(const char *path) {
 	WriteData((PVMEntry**)0x90EB70, CommonObjectTextures);
 	WriteData((ObjectList**)0x974B38, &OceanPalaceObjectList);
 	WriteData((ObjectList**)0x974B3C, &OceanPalaceObjectList);
-	WriteData((ObjectList**)0x974B40, &OceanPalaceObjectList);
 }
 
 void OceanPalaceObjects_OnFrame(EntityData1 * entity) {

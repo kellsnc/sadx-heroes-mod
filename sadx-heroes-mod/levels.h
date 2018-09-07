@@ -8,6 +8,8 @@
 extern NJS_MATERIAL matlist_col[1];
 extern NJS_MATERIAL matlist_waterfall[1];
 
+extern LandTable** CurrentLandAddress;
+
 void AutoLoop(ObjectMaster * a1);
 void RailPath(ObjectMaster * a1);
 
