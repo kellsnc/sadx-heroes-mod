@@ -5,10 +5,16 @@
 #include "seaside-hill-deathzones.h"
 #include "seaside-hill.h"
 
+void SeasideHillObjects_Init(const char *path);
+void SeasideHillObjects_OnFrame(EntityData1 * entity);
+void SHSuns_Init(ObjectMaster * a1);
+
+extern SOI_LISTS seaside_hill_objects[];
+extern SOI_LISTS sea_gate_objects[];
+extern float ruin;
+
 static int slowtimer = 0;
 static uint8_t sh_trigger = 1;
-
-void SHSuns_Init(ObjectMaster * a1);
 
 void SeasideHill_OnFrame(EntityData1 * entity, CharObj2 * co2) {
 	if (anim % 4 == 0) {
@@ -137,7 +143,8 @@ void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions) 
 	//HelperFunctions allows our mod to not override other mods' data that also use HelperFunctions
 	helperFunctions.RegisterStartPosition(Characters_Sonic, SeasideHill_StartPositions[0]); //startpos
 	helperFunctions.RegisterPathList(SeasideHillPaths); //splines
-	helperFunctions.RegisterTrialLevel(Characters_Knuckles, { 1, 0 }); //trial menu
+	helperFunctions.RegisterTrialLevel(Characters_Tails, { 1, 0 });
+	helperFunctions.RegisterTrialLevel(Characters_Knuckles, { 1, 0 });
 
 	//Static stuff
 	for (uint8_t i = 0; i < 3; i++) {

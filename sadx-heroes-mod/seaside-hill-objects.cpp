@@ -23,9 +23,6 @@ void SHSuns_Init(ObjectMaster * a1) {
 #pragma endregion
 
 #pragma region Moving Ruins
-extern NJS_OBJECT SH_MovingRuin1obj;
-extern NJS_OBJECT SH_MovingRuin2obj;
-extern NJS_OBJECT SH_MovingRuin3obj;
 extern float ruin = 0;
 
 void SH_MOVINGPLATFORMS_Display(ObjectMaster *a1) {
@@ -124,8 +121,6 @@ void __cdecl SHRUINTRIGGER(ObjectMaster *a1)
 #pragma endregion
 
 #pragma region Small stone platforms
-extern NJS_OBJECT SH_ConcretePlatformobj;
-
 void __cdecl SHPlatforms_Display(ObjectMaster *a1)
 {
 	DrawObjModel(a1, a1->Data1->Object->basicdxmodel, true);

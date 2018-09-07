@@ -1,12 +1,5 @@
 #pragma once
 
-void SeasideHillObjects_Init(const char *path);
-void SeasideHillObjects_OnFrame(EntityData1 * entity);
-
-extern SOI_LISTS seaside_hill_objects[];
-extern SOI_LISTS sea_gate_objects[];
-extern float ruin;
-
 StartPosition SeasideHill_StartPositions[]{
 	{ 1, 0,{ 0, 6.800581f, 5.217285f }, 0xBFFF },
 	{ 1, 1,{ 6090, 30, 1000 }, 0xBFFF }

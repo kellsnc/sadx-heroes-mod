@@ -72,6 +72,12 @@
     <ClCompile Include="ocean-palace-objects.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
+    <ClCompile Include="grand-metropolis.cpp">
+      <Filter>Source Files\Levels</Filter>
+    </ClCompile>
+    <ClCompile Include="grand-metropolis-objects.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -114,6 +120,18 @@
       <Filter>Header Files\Levels</Filter>
     </ClInclude>
     <ClInclude Include="Data\road-rock-deathzones.h">
+      <Filter>Header Files\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\grand-metropolis-paths.h">
+      <Filter>Header Files\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\grand-metropolis-deathzones.h">
+      <Filter>Header Files\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\grand-metropolis-objects.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="grand-metropolis.h">
       <Filter>Header Files\Levels</Filter>
     </ClInclude>
   </ItemGroup>

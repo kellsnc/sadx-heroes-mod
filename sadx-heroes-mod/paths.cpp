@@ -179,7 +179,7 @@ void RailMain(ObjectMaster * a1) {
 }
 
 //Initialize rails
-void Railpath(ObjectMaster * a1) {
+void RailPath(ObjectMaster * a1) {
 	LoopHead * loopdata = (LoopHead*)a1->Data1->LoopData;
 	EntityData1 * entity = a1->Data1;
 	

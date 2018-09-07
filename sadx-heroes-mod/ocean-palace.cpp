@@ -5,6 +5,15 @@
 #include "road-rock-deathzones.h"
 #include "ocean-palace.h"
 
+void OceanPalaceObjects_Init(const char *path);
+void OceanPalaceObjects_OnFrame(EntityData1 * entity);
+void SHSuns_Init(ObjectMaster * a1);
+
+extern SOI_LIST ocean_palace_objects_common[];
+extern SOI_LISTS ocean_palace_objects[];
+extern SOI_LISTS road_rock_objects[];
+extern DeathZone SeasideHillDeathZones[];
+
 static int finsstate = 0;
 static uint8_t rocktrigger = 0;
 static uint8_t rockstate = 0;
@@ -13,8 +22,6 @@ static uint8_t rockstate2 = 0;
 static float rocktimer2 = 0;
 static uint8_t rockstate3 = 0;
 static float rocktimer3 = 0;
-
-void SHSuns_Init(ObjectMaster * a1);
 
 //Sometimes sonic skip the running animation
 void OP_AnimFix() {

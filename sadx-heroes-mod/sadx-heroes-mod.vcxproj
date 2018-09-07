@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -78,6 +78,8 @@
   <ItemGroup>
     <ClCompile Include="..\sadx-mod-loader\libmodutils\LandTableInfo.cpp" />
     <ClCompile Include="..\sadx-mod-loader\libmodutils\ModelInfo.cpp" />
+    <ClCompile Include="grand-metropolis-objects.cpp" />
+    <ClCompile Include="grand-metropolis.cpp" />
     <ClCompile Include="heroes-common-objects.cpp" />
     <ClCompile Include="objects.cpp" />
     <ClCompile Include="LevelHelper.cpp" />
@@ -95,10 +97,14 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Data\grand-metropolis-deathzones.h" />
+    <ClInclude Include="Data\grand-metropolis-objects.h" />
+    <ClInclude Include="Data\grand-metropolis-paths.h" />
     <ClInclude Include="Data\heroes-common-objects.h" />
     <ClInclude Include="Data\ocean-palace-objects.h" />
     <ClInclude Include="Data\ocean-palace-paths.h" />
     <ClInclude Include="Data\road-rock-deathzones.h" />
+    <ClInclude Include="grand-metropolis.h" />
     <ClInclude Include="levels.h" />
     <ClInclude Include="objects.h" />
     <ClInclude Include="Data\seaside-hill-deathzones.h" />

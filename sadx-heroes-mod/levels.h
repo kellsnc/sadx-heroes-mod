@@ -18,5 +18,7 @@ void LevelHandler_Delete(ObjectMaster * a1);
 void AnimateTextures(SH_ANIMTEXS *list, Int listcount);
 void LoadLevelFile(const char *shortname, int chunknb);
 void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size, NJS_VECTOR pos);
+
 void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions);
 void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions);
+void GrandMetropolis_Init(const char *path, const HelperFunctions &helperFunctions);

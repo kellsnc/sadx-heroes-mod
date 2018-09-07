@@ -1,13 +1,5 @@
 #pragma once
 
-void OceanPalaceObjects_Init(const char *path);
-void OceanPalaceObjects_OnFrame(EntityData1 * entity);
-
-extern SOI_LIST ocean_palace_objects_common[];
-extern SOI_LISTS ocean_palace_objects[];
-extern SOI_LISTS road_rock_objects[];
-extern DeathZone SeasideHillDeathZones[];
-
 StartPosition OceanPalace_StartPositions[]{
 	{ 2, 0,{ -8771, 1303, -2819.688f }, 0xBFFF },
 	{ 2, 1,{ 0, 3020, 4462 }, 0xBFFF },
