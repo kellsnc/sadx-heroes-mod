@@ -157,6 +157,7 @@ void Levels_Init(const char *path, const HelperFunctions &helperFunctions)
 	if (EnableSeasideHill) SeasideHill_Init(path, helperFunctions);
 	if (EnableOceanPalace) OceanPalace_Init(path, helperFunctions);
 	if (EnableGrandMetropolis) GrandMetropolis_Init(path, helperFunctions);
+	if (EnablePowerPlant) PowerPlant_Init(path, helperFunctions);
 
 	Objects_Init(path, helperFunctions);
 }

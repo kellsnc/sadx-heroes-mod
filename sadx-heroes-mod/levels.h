@@ -22,3 +22,4 @@ void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size, NJS_
 void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions);
 void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions);
 void GrandMetropolis_Init(const char *path, const HelperFunctions &helperFunctions);
+void PowerPlant_Init(const char *path, const HelperFunctions &helperFunctions);

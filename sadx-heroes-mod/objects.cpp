@@ -22,6 +22,7 @@ PVMEntry CommonObjectTextures[] = {
 	{ "OUM", &OUM_TEXLIST },
 	{ "TUBA", &TUBA_TEXLIST },
 	{ "MOGU", &MOGU_TEXLIST },
+	{ "GORI", &GORI_TEXLIST },
 	{ "tai", &tai_TEXLIST },
 	{ "hammer", &HAMMER_TEXLIST },
 	{ "same", &SAME_TEXLIST },

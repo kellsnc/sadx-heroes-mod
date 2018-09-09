@@ -129,3 +129,31 @@ void AnimateObjectsTextures(NJS_MODEL_SADX * *objlist, int size, SH_ANIMTEXS *li
 		}
 	}
 }
+
+//is player in non-rotated box
+bool IsPlayerInBox(NJS_VECTOR playerpos, NJS_VECTOR pos1, NJS_VECTOR pos2) {
+	if ((playerpos.x > pos1.x) && (playerpos.x < pos2.x)
+		&& (playerpos.y > pos1.y) && (playerpos.y < pos2.y)
+		&& (playerpos.z > pos1.z) && (playerpos.z < pos2.z)
+		) return true;
+	else return false;
+}
+
+//elevate player
+void ElevatePlayer(uint8_t slot) {
+	auto entity = EntityData1Ptrs[slot];
+	CharObj2 *co2 = GetCharObj2(slot);
+	co2->Speed.y = 2;
+	if (GetCharacterID(slot) == Characters_Sonic && !SuperSonicFlag) {
+		co2->AnimationThing.Index = 26;
+		entity->Status = 0;
+	}
+	else if (GetCharacterID(slot) == Characters_Tails) {
+		co2->AnimationThing.Index = 33;
+		entity->Status = 0;
+	}
+	else if (GetCharacterID(slot) == Characters_Knuckles) {
+		co2->AnimationThing.Index = 34;
+		entity->Status = 0;
+	}
+}

@@ -87,6 +87,8 @@
     <ClCompile Include="ObjectHelper.cpp" />
     <ClCompile Include="ocean-palace-objects.cpp" />
     <ClCompile Include="ocean-palace.cpp" />
+    <ClCompile Include="power-plant-objects.cpp" />
+    <ClCompile Include="power-plant.cpp" />
     <ClCompile Include="seaside-hill.cpp" />
     <ClCompile Include="mod.cpp" />
     <ClCompile Include="seaside-hill-objects.cpp" />
@@ -103,6 +105,9 @@
     <ClInclude Include="Data\heroes-common-objects.h" />
     <ClInclude Include="Data\ocean-palace-objects.h" />
     <ClInclude Include="Data\ocean-palace-paths.h" />
+    <ClInclude Include="Data\power-plant-deathzones.h" />
+    <ClInclude Include="Data\power-plant-objects.h" />
+    <ClInclude Include="Data\power-plant-paths.h" />
     <ClInclude Include="Data\road-rock-deathzones.h" />
     <ClInclude Include="grand-metropolis.h" />
     <ClInclude Include="levels.h" />
@@ -110,6 +115,7 @@
     <ClInclude Include="Data\seaside-hill-deathzones.h" />
     <ClInclude Include="Data\seaside-hill-objects.h" />
     <ClInclude Include="ocean-palace.h" />
+    <ClInclude Include="power-plant.h" />
     <ClInclude Include="seaside-hill.h" />
     <ClInclude Include="mod.h" />
     <ClInclude Include="Data\seaside-hill-paths.h" />

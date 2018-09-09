@@ -12,6 +12,8 @@ void displaySub_Global(ObjectMaster *a1);
 void mainSub_Global(ObjectMaster *a1);
 void AnimateUV(SH_UVSHIFT *uvshift, int size);
 void AnimateObjectsTextures(NJS_MODEL_SADX * *objlist, int size, SH_ANIMTEXS *list, Int listcount);
+bool IsPlayerInBox(NJS_VECTOR playerpos, NJS_VECTOR pos1, NJS_VECTOR pos2);
+void ElevatePlayer(uint8_t slot);
 
 void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions);
 void CommonObjects_OnFrame();

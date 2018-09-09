@@ -132,63 +132,75 @@ void ObjReel_Main(ObjectMaster *a1)
 		float max = a1->Data1->Scale.x;
 		float min = a1->Data1->Scale.z;
 		NJS_VECTOR * pos = &a1->Data1->Position;
-		auto entity = EntityData1Ptrs[0];
 
-		if (a1->Data1->Scale.y != 2 && IsPlayerInsideSphere(pos, 10)) a1->Data1->Scale.y = 1;
-
-		if (a1->Data1->Scale.y == 1) {
-			CharObj2 *co2 = GetCharObj2(0);
-
-			if (GetCharacterID(0) == Characters_Sonic) co2->AnimationThing.Index = 47;
-			if (GetCharacterID(0) == Characters_Tails) co2->AnimationThing.Index = 100;
-			if (GetCharacterID(0) == Characters_Knuckles) co2->AnimationThing.Index = 110;
-			if (GetCharacterID(0) == Characters_Amy) co2->AnimationThing.Index = 80;
-			entity->Status = 0;
-
-			//Getting off
-			if (ControllerPointers[0]->PressedButtons & Buttons_A) {
-				a1->Data1->Scale.y = 2;
-
-				if (GetCharacterID(0) == Characters_Sonic) {
-					entity->Action = 8;
-					entity->Status = Status_Ball;
-					co2->AnimationThing.Index = 14;
+		if (a1->Data1->Scale.y != 9) {
+			EntityData1 ** players = EntityData1Ptrs; //suport for 8 players, let's get all the pointers
+			for (uint8_t slot = 0; slot < 8; ++slot) {
+				if (players[slot]) {
+					int temp = IsPlayerInsideSphere(pos, 10);
+					if (temp == slot + 1) a1->Data1->Scale.y = slot + 1;
 				}
-				if (GetCharacterID(0) == Characters_Tails || GetCharacterID(0) == Characters_Knuckles) {
-					entity->Action = 6;
-					entity->Status = Status_Ball;
-					co2->AnimationThing.Index = 14;
-				}
-				if (GetCharacterID(0) == Characters_Amy) {
-					entity->Action = 5;
-					co2->AnimationThing.Index = 14;
-				}
-				if (GetCharacterID(0) == Characters_Big) {
-					entity->Action = 4;
-					co2->AnimationThing.Index = 15;
-				}
-				if (GetCharacterID(0) == Characters_Gamma) {
-					entity->Action = 4;
-					co2->AnimationThing.Index = 6;
-				}
-
-				co2->Speed.y = 2;
-				co2->Speed.x = 2;
 			}
+		}
+		
+		if (a1->Data1->Scale.y > 0 && a1->Data1->Scale.y < 9) {
+			uint8_t slot = a1->Data1->Scale.y - 1;
+			auto entity = EntityData1Ptrs[slot];
+			if (!entity) a1->Data1->Scale.y = 9; //out
+			else {
+				CharObj2 *co2 = GetCharObj2(slot);
 
-			entity->Position = a1->Data1->Position;
-			entity->Position.y -= 13;
-			entity->Rotation.y = a1->Data1->Rotation.y - 0x4000;
+				if (GetCharacterID(slot) == Characters_Sonic) co2->AnimationThing.Index = 47;
+				if (GetCharacterID(slot) == Characters_Tails) co2->AnimationThing.Index = 100;
+				if (GetCharacterID(slot) == Characters_Knuckles) co2->AnimationThing.Index = 110;
+				if (GetCharacterID(slot) == Characters_Amy) co2->AnimationThing.Index = 80;
+				entity->Status = 0;
 
-			if (a1->Data1->Position.y < max - 15) {
-				a1->Data1->Position.y += 1;
-				if (anim % 40) if (EnableSounds) PlaySound(53, 0, 0, 0);
+				//Getting off
+				if (ControllerPointers[slot]->PressedButtons & Buttons_A) {
+					a1->Data1->Scale.y = 9;
+
+					if (GetCharacterID(slot) == Characters_Sonic) {
+						entity->Action = 8;
+						entity->Status = Status_Ball;
+						co2->AnimationThing.Index = 14;
+					}
+					if (GetCharacterID(slot) == Characters_Tails || GetCharacterID(0) == Characters_Knuckles) {
+						entity->Action = 6;
+						entity->Status = Status_Ball;
+						co2->AnimationThing.Index = 14;
+					}
+					if (GetCharacterID(slot) == Characters_Amy) {
+						entity->Action = 5;
+						co2->AnimationThing.Index = 14;
+					}
+					if (GetCharacterID(slot) == Characters_Big) {
+						entity->Action = 4;
+						co2->AnimationThing.Index = 15;
+					}
+					if (GetCharacterID(slot) == Characters_Gamma) {
+						entity->Action = 4;
+						co2->AnimationThing.Index = 6;
+					}
+
+					co2->Speed.y = 2;
+					co2->Speed.x = 2;
+				}
+
+				entity->Position = a1->Data1->Position;
+				entity->Position.y -= 13;
+				entity->Rotation.y = a1->Data1->Rotation.y - 0x4000;
+
+				if (a1->Data1->Position.y < max - 15) {
+					a1->Data1->Position.y += 1;
+					if (anim % 40) if (EnableSounds) PlaySound(53, 0, 0, 0);
+				}
 			}
 		}
 		else AddToCollisionList(a1->Data1);
 
-		if (a1->Data1->Scale.y > 1) {
-			if (anim % 50 == 0) a1->Data1->Scale.y = 3;
+		if (a1->Data1->Scale.y > 8) {
+			if (anim % 50 == 0) a1->Data1->Scale.y = 10;
 
 			if (a1->Data1->Position.y > min) {
 				a1->Data1->Position.y -= 1;
