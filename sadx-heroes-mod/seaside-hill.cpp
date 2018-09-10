@@ -110,7 +110,7 @@ void SeaGate_Init(const char *path, const HelperFunctions &helperFunctions) {
 	ReplaceBIN("CAM0101S", "heroes-cam");
 	ReplaceDAT("EMERALD_COAST_BANK01", "HEROES_BANK");
 	ReplaceADX("ecoast2", "sea-gate");
-	ReplaceBIN("PL_10B", "sea-gate-shaders");
+	ReplaceBIN("PL_11B", "sea-gate-shaders");
 
 	helperFunctions.RegisterStartPosition(Characters_Sonic, SeasideHill_StartPositions[1]);
 	helperFunctions.RegisterStartPosition(Characters_Amy, SeasideHill_StartPositions[1]);

@@ -314,12 +314,12 @@ void __cdecl ObjBalloon(ObjectMaster *a1)
 #pragma endregion
 
 #pragma region DashPanels
-//extern void CPDashPanel(ObjectMaster *a1);
+void CPDashPanel(ObjectMaster *a1);
 
 void __cdecl SHDashPanel(ObjectMaster *a1)
 {
 	if ((CurrentLevel == 3 || CurrentLevel == 4) && a1->Data1->Scale.z == 1) {
-		//CPDashPanel(a1);
+		CPDashPanel(a1);
 	}
 	else {
 		if (!MissedFrames) {

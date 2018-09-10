@@ -10,6 +10,8 @@ PVMEntry CommonObjectTextures[] = {
 	{ "E_SARU", &E_SARU_TEXLIST },
 	{ "big_kaeru", &big_kaeru_TEXLIST },
 	{ "kajiki", &kajiki_TEXLIST },
+
+	//animals
 	{ "PEN", &PEN_TEXLIST },
 	{ "KOAR", &KOAR_TEXLIST },
 	{ "RAKO", &RAKO_TEXLIST },
@@ -23,7 +25,11 @@ PVMEntry CommonObjectTextures[] = {
 	{ "TUBA", &TUBA_TEXLIST },
 	{ "MOGU", &MOGU_TEXLIST },
 	{ "GORI", &GORI_TEXLIST },
+	{ "ZOU", &ZOU_TEXLIST },
+	{ "BANB", &BANB_TEXLIST },
 	{ "tai", &tai_TEXLIST },
+	{ "WARA", &WARA_TEXLIST },
+
 	{ "hammer", &HAMMER_TEXLIST },
 	{ "same", &SAME_TEXLIST },
 	{ "TOGEBALL_TOGEBALL", &TOGEBALL_TOGEBALL_TEXLIST },

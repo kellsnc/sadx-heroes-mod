@@ -40,8 +40,6 @@ void PowerPlantHandler(ObjectMaster * a1) {
 
 			ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
 			modelhandler->Data1->LoopData = (Loop*)&power_plant_objects;
-
-			if (entity->Position.z > 3675) LoadLevelFile("PP", 01);
 		}
 	}
 	else {

@@ -10,8 +10,11 @@ extern NJS_MATERIAL matlist_waterfall[1];
 
 extern LandTable** CurrentLandAddress;
 
+extern bool NoPinball;
+
 void AutoLoop(ObjectMaster * a1);
 void RailPath(ObjectMaster * a1);
+void SlopePath(ObjectMaster * a1);
 
 void ModelHandler_Init(ObjectMaster * a1);
 void LevelHandler_Delete(ObjectMaster * a1);
@@ -23,3 +26,4 @@ void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions);
 void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions);
 void GrandMetropolis_Init(const char *path, const HelperFunctions &helperFunctions);
 void PowerPlant_Init(const char *path, const HelperFunctions &helperFunctions);
+void CasinoPark_Init(const char *path, const HelperFunctions &helperFunctions);

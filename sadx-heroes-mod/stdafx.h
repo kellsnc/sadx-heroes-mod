@@ -7,3 +7,6 @@
 
 #include <SADXModLoader.h>
 #include "lanternapi.h"
+#include "Trampoline.h"
+
+#include <stdlib.h>

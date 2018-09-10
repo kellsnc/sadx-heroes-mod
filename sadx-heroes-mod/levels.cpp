@@ -15,6 +15,8 @@ static bool EnableCasinoPark = true;
 static bool EnableBingoHighway = true;
 static bool EnableHangCastle = true;
 
+bool NoPinball = false;
+
 LandTable** CurrentLandAddress;
 
 std::string modpath;
@@ -151,6 +153,7 @@ void Levels_Init(const char *path, const HelperFunctions &helperFunctions)
 	EnableCasinoPark = config->getBool("Levels", "EnableCasinoPark", true);
 	EnableBingoHighway = config->getBool("Levels", "EnableBingoHighway", true);
 	EnableHangCastle = config->getBool("Levels", "EnableHangCastle", true);
+	NoPinball = config->getBool("General", "NoPinball", false);
 	delete config;
 
 	//Init sound effects
@@ -169,6 +172,7 @@ void Levels_Init(const char *path, const HelperFunctions &helperFunctions)
 	if (EnableOceanPalace) OceanPalace_Init(path, helperFunctions);
 	if (EnableGrandMetropolis) GrandMetropolis_Init(path, helperFunctions);
 	if (EnablePowerPlant) PowerPlant_Init(path, helperFunctions);
+	if (EnableCasinoPark) CasinoPark_Init(path, helperFunctions);
 
 	Objects_Init(path, helperFunctions);
 }
