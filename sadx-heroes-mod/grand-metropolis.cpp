@@ -14,6 +14,7 @@ extern SOI_LISTS grand_metropolis_objects[];
 
 void GrandMetropolis_Delete(ObjectMaster * a1) {
 	GrandMetropolisObjects_Reset();
+	set_shader_flags(ShaderFlags_Blend, false);
 	LevelHandler_Delete(a1);
 }
 
@@ -31,6 +32,8 @@ void GrandMetropolisHandler(ObjectMaster * a1) {
 
 		LevelDrawDistance.Maximum = -999999.0f;
 		Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
+
+		set_shader_flags(ShaderFlags_Blend, true);
 
 		LoadObject(LoadObj_Data1, 3, SHSuns_Init); //load the sun
 
@@ -65,7 +68,7 @@ void GrandMetropolis_Init(const char *path, const HelperFunctions &helperFunctio
 	ReplaceBIN("CAM0900S", "heroes-cam");
 	ReplaceDAT("CASINOPOLIS_BANK01", "HEROES_BANK");
 	ReplaceADX("casino1", "grand-metropolis");
-	ReplaceBIN("PL_90B", "heroes-shaders");
+	ReplaceBIN("PL_90B", "grand-metropolis-shaders");
 
 	helperFunctions.RegisterStartPosition(Characters_Sonic, GrandMetropolis_StartPositions[0]);
 	helperFunctions.RegisterPathList(GrandMetropolisPaths);

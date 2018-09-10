@@ -152,5 +152,8 @@
     <ClInclude Include="power-plant.h">
       <Filter>Header Files\Levels</Filter>
     </ClInclude>
+    <ClInclude Include="lanternapi.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

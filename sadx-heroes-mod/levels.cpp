@@ -21,6 +21,16 @@ std::string modpath;
 LandTableInfo *info = nullptr;
 LandTableInfo *oldinfo = nullptr;
 
+NJS_MATERIAL* landmtl[] = { nullptr };
+
+bool ForceWhiteDiffuse(NJS_MATERIAL* material, Uint32 flags)
+{
+	set_diffuse(1, false);
+	set_specular(7, false);
+	use_default_diffuse(true);
+	return true;
+}
+
 #pragma region Chunks
 void __cdecl FreeCurrentChunk(int level, int act)
 {
@@ -54,10 +64,11 @@ void __cdecl FreeCurrentChunk(int level, int act)
 void SwapCurrentLandTable() {
 	LandTable *land = info->getlandtable();
 	for (Int j = 0; j < land->COLCount; ++j) {
-		land->TexList = &BEACH01_TEXLIST;
+		land->TexList = CurrentLevelTexlist;
 		if (land->Col[j].Flags == 0x80000000) {
 			for (Int k = 0; k < land->Col[j].Model->basicdxmodel->nbMat; ++k) {
-				land->Col[j].Model->basicdxmodel->mats[k].attrflags |= NJD_FLAG_IGNORE_LIGHT;
+				landmtl[0] = &land->Col[j].Model->basicdxmodel->mats[k];
+				material_register(landmtl, LengthOfArray(landmtl), &ForceWhiteDiffuse);
 			}
 		}
 	}

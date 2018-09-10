@@ -138,22 +138,3 @@ bool IsPlayerInBox(NJS_VECTOR playerpos, NJS_VECTOR pos1, NJS_VECTOR pos2) {
 		) return true;
 	else return false;
 }
-
-//elevate player
-void ElevatePlayer(uint8_t slot) {
-	auto entity = EntityData1Ptrs[slot];
-	CharObj2 *co2 = GetCharObj2(slot);
-	co2->Speed.y = 2;
-	if (GetCharacterID(slot) == Characters_Sonic && !SuperSonicFlag) {
-		co2->AnimationThing.Index = 26;
-		entity->Status = 0;
-	}
-	else if (GetCharacterID(slot) == Characters_Tails) {
-		co2->AnimationThing.Index = 33;
-		entity->Status = 0;
-	}
-	else if (GetCharacterID(slot) == Characters_Knuckles) {
-		co2->AnimationThing.Index = 34;
-		entity->Status = 0;
-	}
-}

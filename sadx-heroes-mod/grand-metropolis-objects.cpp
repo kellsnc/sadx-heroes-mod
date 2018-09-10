@@ -363,6 +363,9 @@ void AutoPathsMovs() {
 			CharObj2 *co2 = GetCharObj2(slot);
 			if (co2) {
 				if (co2->SurfaceFlags == 0x8a1 || co2->SurfaceFlags == 0xA81) {
+					set_diffuse_blend(2, 4);
+					set_diffuse_blend_factor(0.3f);
+
 					auto entity = EntityData1Ptrs[slot];
 					if (entity->Position.z > 472) entity->Position.z -= 2;
 					else if (entity->Position.z > -743) {}
@@ -389,6 +392,9 @@ void AutoPathsMovs() {
 						else if (entity->Position.x < 9352) { entity->Position.x += 1.4f; entity->Position.z -= 2; }
 						else entity->Position.x += 1;
 					}
+				}
+				else {
+					if (anim % 4 == true) set_diffuse_blend_factor(0);
 				}
 			}
 		}

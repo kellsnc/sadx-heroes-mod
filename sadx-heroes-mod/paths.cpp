@@ -14,7 +14,7 @@ float fPositionToRotation(CharObj2 * co2, NJS_VECTOR orig, NJS_VECTOR point) {
 	co2->SoManyVectors[8].y = orig.y - point.y;
 	co2->SoManyVectors[8].z = orig.z - point.z;
 	float len = co2->SoManyVectors[8].z * co2->SoManyVectors[8].z + co2->SoManyVectors[8].y * co2->SoManyVectors[8].y;
-	return (atan2(co2->SoManyVectors[8].x, squareroot(len)) * 65536.0 * 0.1591549762031479) + 0x4000;
+	return (atan2(co2->SoManyVectors[8].x, squareroot(len)) * 65536.0 * 0.1591549762031479) + 0xBFFF;
 }
 
 void LookAt(char player, NJS_VECTOR orig, NJS_VECTOR point) {
@@ -184,6 +184,8 @@ void RailPath(ObjectMaster * a1) {
 	EntityData1 * entity = a1->Data1;
 	
 	if (!a1->Data1->Action) {
+		if (anim < 500) return; //fixes a very weird and rare bug
+
 		EntityData1 ** players = EntityData1Ptrs; //suport for 8 players, let's get all the pointers
 		for (uint8_t slot = 0; slot < 8; ++slot) {
 			if (players[slot]) {

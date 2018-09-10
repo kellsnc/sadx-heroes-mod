@@ -31,17 +31,32 @@ void PathsFunctions(float a) {
 			for (uint8_t slot = 0; slot < 8; ++slot) {
 				if (players[slot]) {
 					auto entity = EntityData1Ptrs[slot];
+					bool elevate = false;
 					if (CurrentChunk == 2) {
-						if (IsSwitchPressed(41) && IsPlayerInBox(entity->Position, { 4819.545f, 1334.25f, -2807.884f }, { 4920.795f, 1599.75f, -2750.509f })) ElevatePlayer(slot);
-						if (IsSwitchPressed(1) && IsPlayerInBox(entity->Position, { 4922.578f, 1746.016f, -3249.482f }, { 4969.469f, 1998.652f, -3149.415f })) ElevatePlayer(slot);
-						if ((IsSwitchPressed(2) || GetCharacterID(0) == 2) && IsPlayerInBox(entity->Position, { 5881.667f, 2366.625f, -3249.78f }, { 5914.292f, 2619.75f, -3150.78f })) ElevatePlayer(slot);
-						if (IsSwitchPressed(3) && IsPlayerInBox(entity->Position, { 7105.375f, 3070.897f, -3249.61f }, { 7149, 3319.522F, -3150.61F })) ElevatePlayer(slot);
+						if (IsSwitchPressed(41) && IsPlayerInBox(entity->Position, { 4819.545f, 1334.25f, -2807.884f }, { 4920.795f, 1599.75f, -2750.509f })) elevate = true;
+						if (IsSwitchPressed(1) && IsPlayerInBox(entity->Position, { 4922.578f, 1746.016f, -3249.482f }, { 4969.469f, 1998.652f, -3149.415f })) elevate = true;
+						if ((IsSwitchPressed(2) || GetCharacterID(0) == 2) && IsPlayerInBox(entity->Position, { 5881.667f, 2366.625f, -3249.78f }, { 5914.292f, 2619.75f, -3150.78f })) elevate = true;
+						if (IsSwitchPressed(3) && IsPlayerInBox(entity->Position, { 7105.375f, 3070.897f, -3249.61f }, { 7149, 3319.522F, -3150.61F })) elevate = true;
 					}
 					else if (CurrentChunk == 8) {
-						if (IsSwitchPressed(42) && IsPlayerInBox(entity->Position, { 15416.52f, 5784.375f, -13523.97f }, { 15516.36f, 6038.875f, -13492.27f })) ElevatePlayer(slot);
-						if (IsSwitchPressed(12) && IsPlayerInBox(entity->Position, { 15518.6f, 6186.64f, -13974.12f }, { 15566.68f, 6438.71f, -13874.49f })) ElevatePlayer(slot);
+						if (IsSwitchPressed(42) && IsPlayerInBox(entity->Position, { 15416.52f, 5784.375f, -13523.97f }, { 15516.36f, 6038.875f, -13492.27f })) elevate = true;
+						if (IsSwitchPressed(12) && IsPlayerInBox(entity->Position, { 15518.6f, 6186.64f, -13974.12f }, { 15566.68f, 6438.71f, -13874.49f })) elevate = true;
 					}
-					else if (CurrentChunk == 11 && IsPlayerInBox(entity->Position, { 22186.03f, 8432.125f, -12439.87f }, { 22232.81f, 8689.5f, -12340.5f })) ElevatePlayer(slot);
+					else if (CurrentChunk == 11 && IsPlayerInBox(entity->Position, { 22186.03f, 8432.125f, -12439.87f }, { 22232.81f, 8689.5f, -12340.5f })) elevate = true;
+
+					if (elevate) {
+						set_blend(2, 4);
+						set_diffuse_blend_factor(0.6f);
+						set_specular_blend_factor(0.4f);
+						ElevatePlayer(slot);
+					}
+					else {
+						if (anim % 60 == true) {
+							set_diffuse_blend_factor(0);
+							set_specular_blend_factor(0);
+							elevate = false;
+						}
+					}
 				}
 			}
 		}
@@ -68,6 +83,8 @@ void PP_ENERGYPATHS_Main(ObjectMaster *a1) {
 	if (IsPlayerInsideSphere(&a1->Data1->Position, 2500.0f)) {
 		if (a1->Data1->Scale.z < 1) if (IsSwitchPressed(a1->Data1->Scale.y)) a1->Data1->Scale.z += 0.1f;
 		if (a1->Data1->Scale.z == 0.1f) PlaySound(52, 0, 0, 0);
+
+		a1->Data1->CharID = a1->Data1->CharID;
 
 		PathsFunctions(a1->Data1->Scale.x);
 
@@ -456,6 +473,10 @@ void PPPathsHandler() {
 
 			if (co2) {
 				if (co2->SurfaceFlags == 0x8A1 || co2->SurfaceFlags == 0xA81) {
+					
+					set_diffuse_blend(2, 4);
+					set_diffuse_blend_factor(0.3f);
+					
 					if (entity->Position.x < 2404 && entity->Position.z > -1274) entity->Position.z -= 2;
 					else if (entity->Position.x < 3494 && entity->Position.x > 3132) entity->Position.x += 2;
 					else if (entity->Position.x < 4955 && entity->Position.z > -2014 && entity->Position.z < -1446 && entity->Position.x > 4788) entity->Position.z -= 2;
@@ -468,14 +489,33 @@ void PPPathsHandler() {
 					else if (entity->Position.x > 14561 && entity->Position.x < 15522) entity->Position.z -= 2;
 					else if (entity->Position.x > 19094) entity->Position.x += 2;
 				}
+				else {
+					if (anim % 4 == true) set_diffuse_blend_factor(0);
+				}
 			}
 
-			if (CurrentChunk == 3 && IsPlayerInBox(entity->Position, { 8515.642f, 2990, -5468.255f }, { 8549.026f, 3298.125f, -5421.717f })) ElevatePlayer(slot);
-			if (CurrentChunk == 7 && IsPlayerInBox(entity->Position, { 14766.78f, 4832.125f, -11680.85f }, { 14865.47f, 5138.778f, -11637.85f })) ElevatePlayer(slot);
+			bool elevate = false;
+
+			if (CurrentChunk == 3 && IsPlayerInBox(entity->Position, { 8515.642f, 2990, -5468.255f }, { 8549.026f, 3298.125f, -5421.717f })) elevate = true;
+			if (CurrentChunk == 7 && IsPlayerInBox(entity->Position, { 14766.78f, 4832.125f, -11680.85f }, { 14865.47f, 5138.778f, -11637.85f })) elevate = true;
 			if (CurrentChunk == 4) {
-				if (IsPlayerInBox(entity->Position, { 10179.34f, 3300, -6031.539f }, { 10209.77f, 3662.876f, -5980.835f })) ElevatePlayer(slot);
-				else if (IsPlayerInBox(entity->Position, { 10198.59f, 3300, -6003.414f }, { 10239, 3662.876f, -5952.71f })) ElevatePlayer(slot);
-				else if (IsPlayerInBox(entity->Position, { 10210.96f, 3300, -5975.289f }, { 10251.39f, 3662.876f, -5924.585f })) ElevatePlayer(slot);
+				if (IsPlayerInBox(entity->Position, { 10179.34f, 3300, -6031.539f }, { 10209.77f, 3662.876f, -5980.835f })) elevate = true;
+				else if (IsPlayerInBox(entity->Position, { 10198.59f, 3300, -6003.414f }, { 10239, 3662.876f, -5952.71f })) elevate = true;
+				else if (IsPlayerInBox(entity->Position, { 10210.96f, 3300, -5975.289f }, { 10251.39f, 3662.876f, -5924.585f })) elevate = true;
+			}
+
+			if (elevate) {
+				set_blend(2, 4);
+				set_diffuse_blend_factor(0.6f);
+				set_specular_blend_factor(0.4f);
+				ElevatePlayer(slot);
+			}
+			else {
+				if (anim % 60 == true) {
+					set_diffuse_blend_factor(0);
+					set_specular_blend_factor(0);
+					elevate = false;
+				}
 			}
 		}
 	}

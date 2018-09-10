@@ -233,7 +233,7 @@ void RoadRock_Init(const char *path, const HelperFunctions &helperFunctions) {
 	ReplaceBIN("CAM0201S", "heroes-cam");
 	ReplaceDAT("WINDY_VALLEY_BANK01", "HEROES_BANK");
 	ReplaceADX("wndyvly2", "road-rock");
-	ReplaceBIN("PL_21B", "heroes-shaders");
+	ReplaceBIN("PL_21B", "road-rock-shaders");
 
 	helperFunctions.RegisterStartPosition(Characters_Sonic, OceanPalace_StartPositions[1]);
 	helperFunctions.RegisterStartPosition(Characters_Amy, OceanPalace_StartPositions[1]);
@@ -258,7 +258,7 @@ void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions) 
 	ReplaceBIN("CAM0200S", "heroes-cam");
 	ReplaceDAT("WINDY_VALLEY_BANK01", "HEROES_BANK");
 	ReplaceADX("wndyvly1", "ocean-palace");
-	ReplaceBIN("PL_20B", "heroes-shaders");
+	ReplaceBIN("PL_20B", "ocean-palace-shaders");
 
 	helperFunctions.RegisterStartPosition(Characters_Sonic, OceanPalace_StartPositions[0]);
 	helperFunctions.RegisterPathList(OceanPalacePaths);

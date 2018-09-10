@@ -13,6 +13,7 @@ extern SOI_LISTS power_plant_objects[];
 
 void PowerPlant_Delete(ObjectMaster * a1) {
 	PowerPlantObjects_Reset();
+	set_shader_flags(ShaderFlags_Blend, false);
 	LevelHandler_Delete(a1);
 }
 
@@ -30,6 +31,8 @@ void PowerPlantHandler(ObjectMaster * a1) {
 
 		a1->Data1->Action = 1;
 		a1->DeleteSub = PowerPlant_Delete;
+
+		set_shader_flags(ShaderFlags_Blend, true);
 
 		if (CurrentAct == 0) {
 			CurrentLevelTexlist = &ICECAP01_TEXLIST;
@@ -59,7 +62,7 @@ void PowerPlant_Init(const char *path, const HelperFunctions &helperFunctions) {
 	ReplaceBIN("CAM0800S", "heroes-cam");
 	ReplaceDAT("ICE_CAP_BANK01", "HEROES_BANK");
 	ReplaceADX("icecap1", "power-plant");
-	ReplaceBIN("PL_80B", "heroes-shaders");
+	ReplaceBIN("PL_80B", "power-plant-shaders");
 
 	helperFunctions.RegisterStartPosition(Characters_Sonic, PowerPlant_StartPositions[0]);
 	helperFunctions.RegisterPathList(PowerPlantPaths);

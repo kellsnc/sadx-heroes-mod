@@ -1,7 +1,5 @@
 #pragma once
 
-#include <SADXModLoader.h>
-
 DataPointer(int, DroppedFrames, 0x03B1117C);
 DataPointer(int, FramerateSetting, 0x0389D7DC);
 DataArray(int, HeldButtons2, 0x3B0E3A8, 8);

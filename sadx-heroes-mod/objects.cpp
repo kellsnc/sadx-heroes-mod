@@ -47,7 +47,6 @@ NJS_MATERIAL matlist_waterfall[] = {
 
 #pragma region Killcount of entities
 uint8_t killcount = 0;
-
 void __cdecl ObjectData2_SetStartPosition_r(EntityData1 *a1, ObjectData2 *a2)
 {
 	NJS_VECTOR *v2; // ecx
@@ -62,6 +61,25 @@ void __cdecl ObjectData2_SetStartPosition_r(EntityData1 *a1, ObjectData2 *a2)
 	}
 }
 #pragma endregion
+
+void ElevatePlayer(uint8_t slot) {
+	auto entity = EntityData1Ptrs[slot];
+	CharObj2 *co2 = GetCharObj2(slot);
+	co2->Speed.y = 2;
+
+	if (GetCharacterID(slot) == Characters_Sonic && !SuperSonicFlag) {
+		co2->AnimationThing.Index = 26;
+		entity->Status = 0;
+	}
+	else if (GetCharacterID(slot) == Characters_Tails) {
+		co2->AnimationThing.Index = 33;
+		entity->Status = 0;
+	}
+	else if (GetCharacterID(slot) == Characters_Knuckles) {
+		co2->AnimationThing.Index = 34;
+		entity->Status = 0;
+	}
+}
 
 void Objects_Init(const char *path, const HelperFunctions &helperFunctions) {
 	if (EnableModels) CommonObjects_Init(path, helperFunctions);
