@@ -27,3 +27,4 @@ void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions);
 void GrandMetropolis_Init(const char *path, const HelperFunctions &helperFunctions);
 void PowerPlant_Init(const char *path, const HelperFunctions &helperFunctions);
 void CasinoPark_Init(const char *path, const HelperFunctions &helperFunctions);
+void BingoHighway_Init(const char *path, const HelperFunctions &helperFunctions);

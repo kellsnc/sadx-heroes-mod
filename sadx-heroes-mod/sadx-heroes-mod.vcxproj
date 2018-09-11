@@ -78,6 +78,8 @@
   <ItemGroup>
     <ClCompile Include="..\sadx-mod-loader\libmodutils\LandTableInfo.cpp" />
     <ClCompile Include="..\sadx-mod-loader\libmodutils\ModelInfo.cpp" />
+    <ClCompile Include="bingo-highway-objects.cpp" />
+    <ClCompile Include="bingo-highway.cpp" />
     <ClCompile Include="casino-common-objects.cpp" />
     <ClCompile Include="casino-common.cpp" />
     <ClCompile Include="casino-park-objects.cpp" />
@@ -103,7 +105,11 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bingo-highway.h" />
     <ClInclude Include="casino-park.h" />
+    <ClInclude Include="Data\bingo-highway-deathzones.h" />
+    <ClInclude Include="Data\bingo-highway-objects.h" />
+    <ClInclude Include="Data\bingo-highway-paths.h" />
     <ClInclude Include="Data\casino-common-objects.h" />
     <ClInclude Include="Data\casino-park-deathzones.h" />
     <ClInclude Include="Data\casino-park-objects.h" />

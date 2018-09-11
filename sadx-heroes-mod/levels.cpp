@@ -173,6 +173,7 @@ void Levels_Init(const char *path, const HelperFunctions &helperFunctions)
 	if (EnableGrandMetropolis) GrandMetropolis_Init(path, helperFunctions);
 	if (EnablePowerPlant) PowerPlant_Init(path, helperFunctions);
 	if (EnableCasinoPark) CasinoPark_Init(path, helperFunctions);
+	if (EnableBingoHighway) BingoHighway_Init(path, helperFunctions);
 
 	Objects_Init(path, helperFunctions);
 }
