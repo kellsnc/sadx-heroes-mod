@@ -194,6 +194,26 @@ void __cdecl GM_ENERGYPATHS(ObjectMaster *a1)
 }
 #pragma endregion
 
+PVMEntry GrandMetropolisObjectTextures[] = {
+	{ "E_SAI", &E_SAI_TEXLIST },
+	{ "E_AMENBO", &E_AMENBO_TEXLIST },
+	{ "ishidai", &ishidai_TEXLIST },
+	{ "E_SARU", &E_SARU_TEXLIST },
+	{ "big_kaeru", &big_kaeru_TEXLIST },
+	{ "OUM", &OUM_TEXLIST },
+	{ "KUJA", &KUJA_TEXLIST },
+	{ "KOAR", &KOAR_TEXLIST },
+	{ "USA", &USA_TEXLIST },
+	{ "TUBA", &TUBA_TEXLIST },
+	{ "TOGEBALL_TOGEBALL", &TOGEBALL_TOGEBALL_TEXLIST },
+	{ "E_BOMB", &E_BOMB_TEXLIST },
+	{ "SUPI_SUPI", &SUPI_SUPI_TEXLIST },
+	{ "UNI_C_UNIBODY", &UNI_C_UNIBODY_TEXLIST },
+	{ "UNI_A_UNIBODY", &UNI_A_UNIBODY_TEXLIST },
+	{ "E_LEON", (TexList *)0x9599F4 },
+	{ 0 }
+};
+
 ObjectListEntry GrandMetropolisObjectList_list[] = {
 	{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x450370, "RING   " } /* "RING   " */,
 { 2, 2, 1, 360000, 0, (ObjectFuncPtr)0x7A4C30, "SPRING " } /* "SPRING " */,
@@ -292,7 +312,7 @@ ObjectListEntry GrandMetropolisObjectList_list[] = {
 ObjectList GrandMetropolisObjectList = { arraylengthandptrT(GrandMetropolisObjectList_list, int) };
 
 void GrandMetropolisObjects_Init(const char *path) {
-	WriteData((PVMEntry**)0x90EB8C, CommonObjectTextures);
+	WriteData((PVMEntry**)0x90EB8C, GrandMetropolisObjectTextures);
 	WriteData((ObjectList**)0x974C18, &GrandMetropolisObjectList);
 	WriteData((ObjectList**)0x974C1C, &GrandMetropolisObjectList);
 }

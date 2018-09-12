@@ -175,6 +175,27 @@ void __cdecl CPRoulette(ObjectMaster *a1)
 }
 #pragma endregion
 
+PVMEntry CasinoParkObjectTextures[] = {
+	{ "E_SAI", &E_SAI_TEXLIST },
+	{ "E_AMENBO", &E_AMENBO_TEXLIST },
+	{ "ishidai", &ishidai_TEXLIST },
+	{ "E_SARU", &E_SARU_TEXLIST },
+	{ "big_kaeru", &big_kaeru_TEXLIST },
+	{ "UNAGI", &UNAGI_TEXLIST },
+	{ "KOAR", &KOAR_TEXLIST },
+	{ "WARA", &WARA_TEXLIST },
+	{ "USA", &USA_TEXLIST },
+	{ "ZOU", &ZOU_TEXLIST },
+	{ "BANB", &BANB_TEXLIST },
+	{ "TOGEBALL_TOGEBALL", &TOGEBALL_TOGEBALL_TEXLIST },
+	{ "E_BOMB", &E_BOMB_TEXLIST },
+	{ "SUPI_SUPI", &SUPI_SUPI_TEXLIST },
+	{ "UNI_C_UNIBODY", &UNI_C_UNIBODY_TEXLIST },
+	{ "UNI_A_UNIBODY", &UNI_A_UNIBODY_TEXLIST },
+	{ "E_LEON", (TexList *)0x9599F4 },
+	{ 0 }
+};
+
 ObjectListEntry CasinoParkObjectList_list[] = {
 	{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x450370, "RING   " } /* "RING   " */,
 { 2, 2, 1, 360000, 0, (ObjectFuncPtr)0x7A4C30, "SPRING " } /* "SPRING " */,
@@ -253,7 +274,7 @@ ObjectListEntry CasinoParkObjectList_list[] = {
 ObjectList CasinoParkObjectList = { arraylengthandptrT(CasinoParkObjectList_list, int) };
 
 void CasinoParkObjects_Init(const char *path) {
-	WriteData((PVMEntry**)0x90EB74, CommonObjectTextures);
+	WriteData((PVMEntry**)0x90EB74, CasinoParkObjectTextures);
 	WriteData((ObjectList**)0x974B58, &CasinoParkObjectList); //974B5C 974B60
 }
 

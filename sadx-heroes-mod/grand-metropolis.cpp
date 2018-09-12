@@ -65,12 +65,15 @@ void GrandMetropolis_Init(const char *path, const HelperFunctions &helperFunctio
 	ReplacePVM("CASINO01", "grand-metropolis");
 	ReplaceBIN("SET0900S", "grand-metropolis-set");
 	ReplaceBIN("SET0900M", "grand-metropolis-set-tails");
+	ReplaceBIN("SET0900K", "grand-metropolis-set");
 	ReplaceBIN("CAM0900S", "heroes-cam");
 	ReplaceDAT("CASINOPOLIS_BANK01", "HEROES_BANK");
 	ReplaceADX("casino1", "grand-metropolis");
 	ReplaceBIN("PL_90B", "grand-metropolis-shaders");
 
 	helperFunctions.RegisterStartPosition(Characters_Sonic, GrandMetropolis_StartPositions[0]);
+	helperFunctions.RegisterStartPosition(Characters_Tails, GrandMetropolis_StartPositions[0]);
+	helperFunctions.RegisterStartPosition(Characters_Knuckles, GrandMetropolis_StartPositions[0]);
 	helperFunctions.RegisterPathList(GrandMetropolisPaths);
 	helperFunctions.RegisterTrialLevel(Characters_Tails, { 9, 0 });
 	helperFunctions.RegisterTrialLevel(Characters_Knuckles, { 9, 0 });

@@ -7232,6 +7232,7 @@ SOI_LIST hang_castle_objects_common[] = {
 
 SOI_LISTS hang_castle_objects[]{
 	{ 0, LengthOfArray(hang_castle_objects_common), hang_castle_objects_common },
+	NULL
 };
 
 extern NJS_MODEL_SADX HC_FLAME;

@@ -55,8 +55,20 @@ void SeasideHillHandler(ObjectMaster * a1) {
 
 	if (a1->Data1->Action == 0) {
 		if (CurrentAct == 2) {
+			//if act 2, load back Emerald Coast
 			LoadObject(LoadObj_Data1, 1, EmeraldCoast_SkyBox_Load);
-			CurrentLevelObject = LoadObject(LoadObj_Data1, 0, Obj_EmeraldCoast);
+			Obj_EmeraldCoast_InitOceanData();
+			ObjectMaster * water = LoadObject(LoadObj_Data1, 6, (ObjectFuncPtr)0x4F7A00);
+			water->Data1->Action = 3;
+			LoadObject((LoadObj)(LoadObj_UnknownB | LoadObj_Data1), 1, (ObjectFuncPtr)0x4F75D0);
+			LoadObject((LoadObj)(LoadObj_UnknownB | LoadObj_Data1), 1, (ObjectFuncPtr)0x4F7550);
+			LoadObject((LoadObj)(LoadObj_UnknownB | LoadObj_Data1), 1, (ObjectFuncPtr)0x4F7640);
+			PlayMusic(MusicIDs_EmeraldCoastBigFishin);
+
+			LoadPVM("BEACH_SEA", &BEACH_SEA_TEXLIST);
+			LoadPVM("BG_BEACH", &BG_BEACH_TEXLIST);
+			LoadPVM("MECHA", &MECHA_TEXLIST);
+
 			DeleteObjectMaster(a1);
 		}
 		else {
@@ -154,6 +166,8 @@ void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions) 
 
 	//HelperFunctions allows our mod to not override other mods' data that also use HelperFunctions
 	helperFunctions.RegisterStartPosition(Characters_Sonic, SeasideHill_StartPositions[0]); //startpos
+	helperFunctions.RegisterStartPosition(Characters_Tails, SeasideHill_StartPositions[0]);
+	helperFunctions.RegisterStartPosition(Characters_Knuckles, SeasideHill_StartPositions[0]);
 	helperFunctions.RegisterPathList(SeasideHillPaths); //splines
 	helperFunctions.RegisterTrialLevel(Characters_Tails, { 1, 0 });
 	helperFunctions.RegisterTrialLevel(Characters_Knuckles, { 1, 0 });

@@ -3,47 +3,6 @@
 
 #include "objects.h"
 
-PVMEntry CommonObjectTextures[] = {
-	{ "E_SAI", &E_SAI_TEXLIST },
-	{ "E_AMENBO", &E_AMENBO_TEXLIST },
-	{ "ishidai", &ishidai_TEXLIST },
-	{ "E_SARU", &E_SARU_TEXLIST },
-	{ "big_kaeru", &big_kaeru_TEXLIST },
-	{ "kajiki", &kajiki_TEXLIST },
-
-	//animals
-	{ "PEN", &PEN_TEXLIST },
-	{ "KOAR", &KOAR_TEXLIST },
-	{ "RAKO", &RAKO_TEXLIST },
-	{ "mecha", &mecha_TEXLIST },
-	{ "sea_bass", &sea_bass_TEXLIST },
-	{ "USA", &USA_TEXLIST },
-	{ "utsubo", &utsubo_TEXLIST },
-	{ "GOMA", &GOMA_TEXLIST },
-	{ "KUJA", &KUJA_TEXLIST },
-	{ "OUM", &OUM_TEXLIST },
-	{ "TUBA", &TUBA_TEXLIST },
-	{ "MOGU", &MOGU_TEXLIST },
-	{ "GORI", &GORI_TEXLIST },
-	{ "ZOU", &ZOU_TEXLIST },
-	{ "BANB", &BANB_TEXLIST },
-	{ "tai", &tai_TEXLIST },
-	{ "WARA", &WARA_TEXLIST },
-	{ "LION", &LION_TEXLIST },
-
-	{ "hammer", &HAMMER_TEXLIST },
-	{ "same", &SAME_TEXLIST },
-	{ "TOGEBALL_TOGEBALL", &TOGEBALL_TOGEBALL_TEXLIST },
-	{ "E_BOMB", &E_BOMB_TEXLIST },
-	{ NULL, (TexList *)0x10A3130 },
-	{ NULL, (TexList *)0x10C786C },
-	{ "SUPI_SUPI", &SUPI_SUPI_TEXLIST},
-	{ "UNI_C_UNIBODY", &UNI_C_UNIBODY_TEXLIST },
-	{ "UNI_A_UNIBODY", &UNI_A_UNIBODY_TEXLIST },
-	{ "E_LEON", (TexList *)0x9599F4 },
-	{ 0 }
-};
-
 NJS_MATERIAL matlist_col[] = {
 	{ { 0xFFFFFFFF },{ 0xFFFFFFFF }, 0, 0, NJD_DA_INV_SRC | NJD_SA_SRC }
 };

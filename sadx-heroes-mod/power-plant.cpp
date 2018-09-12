@@ -23,15 +23,32 @@ void PowerPlantHandler(ObjectMaster * a1) {
 
 	if (a1->Data1->Action == 0) {
 		if (CurrentAct != 0) {
+			//if act > 0, load back ice cap
 			CurrentLevelObject = LoadObject(LoadObj_Data1, 0, Obj_Icecap);
+
+			LevelObjTexlists[0] = &OBJ_ICECAP_TEXLIST;
+			LoadPVM("OBJ_ICECAP", &OBJ_ICECAP_TEXLIST);
+			LoadPVM("OBJ_ICECAP2", &OBJ_ICECAP2_TEXLIST);
+			LoadPVM("E102TIME", &E102TIME_TEXLIST);
+			LoadPVM("E_SNOWMAN", &E_SNOWMAN_TEXLIST);
+			LoadPVM("MILESRACE", &MILESRACE_TEXLIST);
+			LoadPVM("E_SNAKE", &E_SNAKE_TEXLIST);
+			LoadPVM("KAOS_EME", &KAOS_EME_TEXLIST);
+			LoadPVM("PIRANIA", &PIRANIA_TEXLIST);
+			LoadPVM("NEW_BB", &NEW_BB_TEXLIST);
+			LoadPVM("BOARD_SCORE", &BOARD_SCORE_TEXLIST);
+
 			DeleteObjectMaster(a1);
 		}
 		else {
 			MovePlayerToStartPoint(entity);
 			camerahax_b();
 
+			LevelDrawDistance.Maximum = -999999.0f;
+			Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
+
 			InitializeSoundManager();
-			PlayMusic(MusicIDs_casino1);
+			PlayMusic(MusicIDs_icecap1);
 			SoundManager_Delete2();
 
 			a1->Data1->Action = 1;
@@ -69,6 +86,8 @@ void PowerPlant_Init(const char *path, const HelperFunctions &helperFunctions) {
 	ReplaceBIN("PL_80B", "power-plant-shaders");
 
 	helperFunctions.RegisterStartPosition(Characters_Sonic, PowerPlant_StartPositions[0]);
+	helperFunctions.RegisterStartPosition(Characters_Tails, PowerPlant_StartPositions[0]);
+	helperFunctions.RegisterStartPosition(Characters_Knuckles, PowerPlant_StartPositions[0]);
 	helperFunctions.RegisterPathList(PowerPlantPaths);
 	helperFunctions.RegisterTrialLevel(Characters_Tails, { 9, 0 });
 	helperFunctions.RegisterTrialLevel(Characters_Knuckles, { 9, 0 });
@@ -78,6 +97,8 @@ void PowerPlant_Init(const char *path, const HelperFunctions &helperFunctions) {
 		FogData_Icecap1[i].Toggle = false;
 	}
 	
+	WriteData<4>((void*)0x0090C210, 0x00u);
+
 	WriteData((DeathZone**)0xE2FE4C, PowerPlantDeathZones);
 
 	//Load the level handler

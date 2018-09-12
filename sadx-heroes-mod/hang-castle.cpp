@@ -5,6 +5,8 @@
 #include "hang-castle-deathzones.h"
 #include "hang-castle.h"
 
+ObjectFunc(LostWorld_SkyBox_Load, 0x5E1FC0);
+
 void HangCastleObjects_Init(const char *path);
 void HangCastleObjects_OnFrame(EntityData1 * entity);
 void HCFlags_Reset();
@@ -23,6 +25,13 @@ void HangCastleHandler(ObjectMaster * a1) {
 	if (a1->Data1->Action == 0) {
 		if (CurrentAct != 0) {
 			CurrentLevelObject = LoadObject(LoadObj_Data1, 0, Obj_LostWorld);
+			LoadObject(LoadObj_Data1, 1, LostWorld_SkyBox_Load);
+
+			LevelObjTexlists[0] = &OBJ_RUIN_TEXLIST;
+			LoadPVM("OBJ_RUIN", &OBJ_RUIN_TEXLIST);
+			LoadPVM("OBJ_RUIN2", &OBJ_RUIN2_TEXLIST);
+			LoadPVM("E_SNAKE", &E_SNAKE_TEXLIST);
+
 			DeleteObjectMaster(a1);
 		}
 		else {
@@ -86,6 +95,8 @@ void HangCastle_Init(const char *path, const HelperFunctions &helperFunctions) {
 	ReplaceBIN("PL_70B", "hang-castle-shaders");
 
 	helperFunctions.RegisterStartPosition(Characters_Sonic, HangCastle_StartPositions[0]);
+	helperFunctions.RegisterStartPosition(Characters_Tails, HangCastle_StartPositions[0]);
+	helperFunctions.RegisterStartPosition(Characters_Knuckles, HangCastle_StartPositions[0]);
 	helperFunctions.RegisterPathList(HangCastlePaths);
 	helperFunctions.RegisterTrialLevel(Characters_Tails, { 7, 0 });
 	helperFunctions.RegisterTrialLevel(Characters_Knuckles, { 7, 0 });

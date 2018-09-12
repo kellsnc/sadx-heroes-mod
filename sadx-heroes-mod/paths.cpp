@@ -14,7 +14,9 @@ float fPositionToRotation(CharObj2 * co2, NJS_VECTOR orig, NJS_VECTOR point) {
 	co2->SoManyVectors[8].y = orig.y - point.y;
 	co2->SoManyVectors[8].z = orig.z - point.z;
 	float len = co2->SoManyVectors[8].z * co2->SoManyVectors[8].z + co2->SoManyVectors[8].y * co2->SoManyVectors[8].y;
-	return (atan2(co2->SoManyVectors[8].x, squareroot(len)) * 65536.0 * 0.1591549762031479) + 0xBFFF;
+	float temp = 0xBFFF;
+	if (CurrentLevel == 7) temp = 0x4000;
+	return (atan2(co2->SoManyVectors[8].x, squareroot(len)) * 65536.0 * 0.1591549762031479) + temp;
 }
 
 void LookAt(char player, NJS_VECTOR orig, NJS_VECTOR point) {
@@ -153,6 +155,7 @@ void RailMain(ObjectMaster * a1) {
 
 			TransformPlayer(a1->Data1->NextAction, loopdata->LoopList[a1->Data1->InvulnerableTime].Position, loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position, a1->Data1->Scale.x);
 			entity->Position.y += 5;
+			if (CurrentLevel == 7) entity->Position.y += 5;
 			LookAt(a1->Data1->NextAction, loopdata->LoopList[a1->Data1->InvulnerableTime].Position, loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position);
 			
 			

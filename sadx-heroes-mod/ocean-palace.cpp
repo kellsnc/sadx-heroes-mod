@@ -176,8 +176,17 @@ void OceanPalaceHandler(ObjectMaster * a1) {
 
 	if (a1->Data1->Action == 0) {
 		if (CurrentAct == 2) {
+			//If act 2, load windy valley back
 			LoadObject(LoadObj_Data1, 1, WindyValley_SkyBox_Load);
 			CurrentLevelObject = LoadObject(LoadObj_Data1, 0, Obj_WindyValley);
+
+			LevelObjTexlists[0] = &OBJ_WINDY_TEXLIST;
+			LoadPVM("OBJ_WINDY", &OBJ_WINDY_TEXLIST);
+			LoadPVM("E_LEON", &E_LEON_TEXLIST);
+			LoadPVM("Milesrace", &MILESRACE_TEXLIST);
+			LoadPVM("E_SNAKE", &E_SNAKE_TEXLIST);
+			LoadPVM("Kaos_eme", &KAOS_EME_TEXLIST);
+
 			DeleteObjectMaster(a1);
 		}
 		else {
@@ -276,6 +285,8 @@ void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions) 
 	ReplaceBIN("PL_20B", "ocean-palace-shaders");
 
 	helperFunctions.RegisterStartPosition(Characters_Sonic, OceanPalace_StartPositions[0]);
+	helperFunctions.RegisterStartPosition(Characters_Tails, OceanPalace_StartPositions[0]);
+	helperFunctions.RegisterStartPosition(Characters_Knuckles, OceanPalace_StartPositions[0]);
 	helperFunctions.RegisterPathList(OceanPalacePaths);
 	helperFunctions.RegisterTrialLevel(Characters_Tails, { 2, 0 });
 	helperFunctions.RegisterTrialLevel(Characters_Knuckles, { 2, 0 });

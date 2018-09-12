@@ -319,6 +319,29 @@ void __cdecl PPStopper(ObjectMaster *a1)
 }
 #pragma endregion
 
+PVMEntry PowerPlantObjectTextures[] = {
+	{ "E_SAI", &E_SAI_TEXLIST },
+	{ "E_AMENBO", &E_AMENBO_TEXLIST },
+	{ "ishidai", &ishidai_TEXLIST },
+	{ "E_SARU", &E_SARU_TEXLIST },
+	{ "big_kaeru", &big_kaeru_TEXLIST },
+	{ "UNAGI", &UNAGI_TEXLIST },
+	{ "PEN", &PEN_TEXLIST },
+	{ "SAKE", &SAKE_TEXLIST },
+	{ "RAKO", &RAKO_TEXLIST },
+	{ "same", &SAME_TEXLIST },
+	{ "GOMA", &GOMA_TEXLIST },
+	{ "GORI", &GORI_TEXLIST },
+	{ "hammer", &HAMMER_TEXLIST },
+	{ "TOGEBALL_TOGEBALL", &TOGEBALL_TOGEBALL_TEXLIST },
+	{ "E_BOMB", &E_BOMB_TEXLIST },
+	{ "SUPI_SUPI", &SUPI_SUPI_TEXLIST },
+	{ "UNI_C_UNIBODY", &UNI_C_UNIBODY_TEXLIST },
+	{ "UNI_A_UNIBODY", &UNI_A_UNIBODY_TEXLIST },
+	{ "E_LEON", (TexList *)0x9599F4 },
+	{ 0 }
+};
+
 ObjectListEntry PowerPlantObjectList_list[] = {
 	{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x450370, "RING   " } /* "RING   " */,
 { 2, 2, 1, 360000, 0, (ObjectFuncPtr)0x7A4C30, "SPRING " } /* "SPRING " */,
@@ -370,7 +393,7 @@ ObjectListEntry PowerPlantObjectList_list[] = {
 { 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FFD80, "O CORA   " } /* "O CORA   " */,
 { 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FFDA0, "O CORB   " } /* "O CORB   " */,
 { 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FFD00, "O GRASA   " } /* "O GRASA   " */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FFD20, "O GRASB   " } /* "O GRASB   " */,
+{ 2, 3, 1, 360000, 0, nullptr, "O GRASB   " } /* "O GRASB   " */,
 { 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FFD40, "O GRASC   " } /* "O GRASC   " */,
 { 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FFD60, "O GRASD   " } /* "O GRASD   " */,
 { 10, 3, 1, 1640000, 0, &PPPlatformsH, "PP Plat H" } /* "PP Horizontal platforms" */,
@@ -562,7 +585,7 @@ void PowerPlantObjects_Reset() {
 }
 
 void PowerPlantObjects_Init(const char *path) {
-	WriteData((PVMEntry**)0x90EB88, CommonObjectTextures);
+	WriteData((PVMEntry**)0x90EB88, PowerPlantObjectTextures);
 	WriteData((ObjectList**)0x974BF8, &PowerPlantObjectList); //974BFC 974C00 974C04
 }
 

@@ -290,7 +290,7 @@ void ObjBalloon_Main(ObjectMaster *a1)
 				}
 			}
 		}
-		else if (a1->Data1->Scale.z == 4 && a1->Data1->NextAction == 1) {
+		else if (a1->Data1->Scale.z > 4 && a1->Data1->NextAction == 1) {
 			a1->Data1->NextAction == 2;
 		}
 
@@ -433,21 +433,26 @@ void ObjCannon_Main(ObjectMaster *a1)
 {
 	if (IsPlayerInsideSphere(&a1->Data1->Position, 1500.0f)) {
 
-		if (a1->Data1->Action == 0 && IsPlayerInsideSphere(&a1->Data1->Position, 40)) {
-			a1->Data1->Action = 1;
-			a1->Data1->Scale.z = 20;
+		if (a1->Data1->Action == 0) {
+			a1->Data1->Status = IsPlayerInsideSphere(&a1->Data1->Position, 40);
 
-			auto entity = EntityData1Ptrs[0];
-			CharObj2 *co2 = GetCharObj2(0);
+			if (a1->Data1->Status) {
+				a1->Data1->Action = 1;
+				a1->Data1->Scale.z = 20;
+				a1->Data1->Status -= 1;
 
-			co2->Speed.y += 2;
-			DoBall(entity);
+				auto entity = EntityData1Ptrs[a1->Data1->Status];
+				CharObj2 *co2 = GetCharObj2(a1->Data1->Status);
+
+				co2->Speed.y += 2;
+				DoBall(entity);
+			}
 		}
 
 		if (a1->Data1->Action == 1) {
 			if (a1->Data1->Scale.z != 0) a1->Data1->Scale.z -= 1;
 			else {
-				auto entity = EntityData1Ptrs[0];
+				auto entity = EntityData1Ptrs[a1->Data1->Status];
 
 				NJS_VECTOR startPos = entity->Position;
 				NJS_VECTOR targetPos = a1->Data1->Position;
@@ -480,8 +485,7 @@ void ObjCannon_Main(ObjectMaster *a1)
 		}
 
 		if (a1->Data1->Action == 2) {
-
-			auto entity = EntityData1Ptrs[0];
+			auto entity = EntityData1Ptrs[a1->Data1->Status];
 
 			NJS_VECTOR startPos = entity->Position;
 			NJS_VECTOR targetPos = a1->Data1->Position;
@@ -517,16 +521,15 @@ void ObjCannon_Main(ObjectMaster *a1)
 				a1->Data1->Action = 4;
 			}
 
-			auto entity = EntityData1Ptrs[0];
+			auto entity = EntityData1Ptrs[a1->Data1->Status];
 			entity->Position = a1->Data1->Position;
 			entity->Rotation.y = a1->Data1->Rotation.y;
 			DoBall(entity);
 		}
 
 		if (a1->Data1->Action == 4) {
-			auto entity = EntityData1Ptrs[0];
+			auto entity = EntityData1Ptrs[a1->Data1->Status];
 			if (a1->Data1->NextAction < 101) {
-
 				a1->Data1->NextAction += 1;
 			}
 			else {
@@ -536,8 +539,7 @@ void ObjCannon_Main(ObjectMaster *a1)
 
 
 			if (a1->Data1->NextAction == 1) {
-
-				CharObj2 *co2 = GetCharObj2(0);
+				CharObj2 *co2 = GetCharObj2(a1->Data1->Status);
 				entity->Rotation.y = a1->Data1->Rotation.y - 0x4000;
 				co2->Speed.x = a1->Data1->Scale.x;
 				co2->Speed.y = a1->Data1->Scale.y;

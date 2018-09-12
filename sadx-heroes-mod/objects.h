@@ -1,6 +1,5 @@
 #pragma once
 
-extern PVMEntry CommonObjectTextures[];
 extern NJS_MATERIAL matlist_col[1];
 extern NJS_MATERIAL matlist_waterfall[1];
 extern uint8_t killcount;

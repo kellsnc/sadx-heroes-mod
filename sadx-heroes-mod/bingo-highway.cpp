@@ -20,8 +20,16 @@ void BingoHighwayHandler(ObjectMaster * a1) {
 
 	if (a1->Data1->Action == 0) {
 		if (CurrentAct != 0) {
+			//load back speed highway
 			LoadObject(LoadObj_Data1, 1, SpeedHighway_SkyBox_Load);
 			CurrentLevelObject = LoadObject(LoadObj_Data1, 0, Obj_SpeedHighway);
+
+			LevelObjTexlists[0] = &OBJ_HIGHWAY_TEXLIST;
+			LoadPVM("OBJ_HIGHWAY", &OBJ_HIGHWAY_TEXLIST);
+			LoadPVM("OBJ_HIGHWAY2", &OBJ_HIGHWAY2_TEXLIST);
+			LoadPVM("MILESRACE", &MILESRACE_TEXLIST);
+			LoadPVM("NISEPAT", &NISEPAT_TEXLIST);
+
 			DeleteObjectMaster(a1);
 		}
 		else {
@@ -62,12 +70,15 @@ void BingoHighwayHandler(ObjectMaster * a1) {
 void BingoHighway_Init(const char *path, const HelperFunctions &helperFunctions) {
 	ReplacePVM("HIGHWAY01", "bingo-highway");
 	ReplaceBIN("SET0400S", "bingo-highway-set");
+	ReplaceBIN("SET0400M", "bingo-highway-set");
 	ReplaceBIN("CAM0400S", "heroes-cam");
 	ReplaceDAT("HIGHWAY_BANK01", "CASINO_BANK");
 	ReplaceADX("highway1", "bingo-highway");
 	ReplaceBIN("PL_40B", "bingo-highway-shaders");
 
 	helperFunctions.RegisterStartPosition(Characters_Sonic, BingoHighway_StartPositions[0]);
+	helperFunctions.RegisterStartPosition(Characters_Tails, BingoHighway_StartPositions[0]);
+	helperFunctions.RegisterStartPosition(Characters_Knuckles, BingoHighway_StartPositions[0]);
 	helperFunctions.RegisterPathList(BingoHighwayPaths);
 	helperFunctions.RegisterTrialLevel(Characters_Tails, { 4, 0 });
 	helperFunctions.RegisterTrialLevel(Characters_Knuckles, { 4, 0 });

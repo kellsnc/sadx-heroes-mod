@@ -20,8 +20,15 @@ void CasinoParkHandler(ObjectMaster * a1) {
 
 	if (a1->Data1->Action == 0) {
 		if (CurrentAct != 0) {
+			//load back twinkle park
 			LoadObject(LoadObj_Data1, 1, TwinklePark_SkyBox_Load);
 			CurrentLevelObject = LoadObject(LoadObj_Data1, 0, Obj_TwinklePark);
+
+			LevelObjTexlists[0] = &OBJ_TWINKLE_TEXLIST;
+			LoadPVM("OBJ_TWINKLE", &OBJ_TWINKLE_TEXLIST);
+			LoadPVM("E_BUYON", &E_BUYON_TEXLIST);
+			LoadPVM("BG_SHAREOBJ", &BG_SHAREOBJ_TEXLIST);
+
 			DeleteObjectMaster(a1);
 		}
 		else {
@@ -68,6 +75,8 @@ void CasinoPark_Init(const char *path, const HelperFunctions &helperFunctions) {
 	ReplaceBIN("PL_30B", "casino-park-shaders");
 
 	helperFunctions.RegisterStartPosition(Characters_Sonic, CasinoPark_StartPositions[0]);
+	helperFunctions.RegisterStartPosition(Characters_Tails, CasinoPark_StartPositions[0]);
+	helperFunctions.RegisterStartPosition(Characters_Knuckles, CasinoPark_StartPositions[0]);
 	helperFunctions.RegisterPathList(CasinoParkPaths);
 	helperFunctions.RegisterTrialLevel(Characters_Tails, { 3, 0 });
 	helperFunctions.RegisterTrialLevel(Characters_Knuckles, { 3, 0 });

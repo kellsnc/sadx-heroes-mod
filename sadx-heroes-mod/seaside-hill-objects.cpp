@@ -247,9 +247,7 @@ void __cdecl SHSPIKES(ObjectMaster *a1)
 
 PVMEntry SeasideHillObjectTextures[] = {
 	{ "OBJ_BEACH", &OBJ_BEACH_TEXLIST },
-	{ "BEACH_SEA", &BEACH_SEA_TEXLIST },
 	{ "E_SAI", &E_SAI_TEXLIST },
-	{ "BG_BEACH", &BG_BEACH_TEXLIST },
 	{ "E_AMENBO", &E_AMENBO_TEXLIST },
 	{ "ishidai", &ishidai_TEXLIST },
 	{ "E_SARU", &E_SARU_TEXLIST },
@@ -271,8 +269,6 @@ PVMEntry SeasideHillObjectTextures[] = {
 	{ NULL, (TexList *)0x10A3130 },
 	{ NULL, (TexList *)0x10C786C },
 	{ "SUPI_SUPI", &SUPI_SUPI_TEXLIST },
-	{ "UNI_C_UNIBODY", &UNI_C_UNIBODY_TEXLIST },
-	{ "UNI_A_UNIBODY", &UNI_A_UNIBODY_TEXLIST },
 	{ 0 }
 };
 

@@ -47,6 +47,22 @@ void __cdecl OPPOLE(ObjectMaster *a1)
 }
 #pragma endregion
 
+PVMEntry OceanPalaceTextures[] = {
+	{ "E_SAI", &E_SAI_TEXLIST },
+	{ "E_AMENBO", &E_AMENBO_TEXLIST },
+	{ "E_SARU", &E_SARU_TEXLIST },
+	{ "big_kaeru", &big_kaeru_TEXLIST },
+	{ "GOMA", &GOMA_TEXLIST },
+	{ "KUJA", &KUJA_TEXLIST },
+	{ "OUM", &OUM_TEXLIST },
+	{ "TUBA", &TUBA_TEXLIST },
+	{ "MOGU", &MOGU_TEXLIST },
+	{ "TOGEBALL_TOGEBALL", &TOGEBALL_TOGEBALL_TEXLIST },
+	{ "E_BOMB", &E_BOMB_TEXLIST },
+	{ "SUPI_SUPI", &SUPI_SUPI_TEXLIST },
+	{ 0 }
+};
+
 ObjectListEntry OceanPalaceObjectList_list[] = {
 	{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x450370, "RING   " } /* "RING   " */,
 	{ 2, 2, 1, 360000, 0, (ObjectFuncPtr)0x7A4C30, "SPRING " } /* "SPRING " */,
@@ -143,7 +159,7 @@ ObjectListEntry OceanPalaceObjectList_list[] = {
 ObjectList OceanPalaceObjectList = { arraylengthandptrT(OceanPalaceObjectList_list, int) };
 
 void OceanPalaceObjects_Init(const char *path) {
-	WriteData((PVMEntry**)0x90EB70, CommonObjectTextures);
+	WriteData((PVMEntry**)0x90EB70, OceanPalaceTextures);
 	WriteData((ObjectList**)0x974B38, &OceanPalaceObjectList);
 	WriteData((ObjectList**)0x974B3C, &OceanPalaceObjectList);
 }
