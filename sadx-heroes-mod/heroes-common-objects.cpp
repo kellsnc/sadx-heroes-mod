@@ -4,6 +4,7 @@
 #include "IniFile.hpp"
 
 #include "heroes-common-objects.h"
+#include "bobsled-paths.h"
 
 NJS_TEXNAME SHTexNames[40];
 NJS_TEXLIST SHCommonTextures = { arrayptrandlength(SHTexNames) };
@@ -43,9 +44,9 @@ void ObjFan_Display(ObjectMaster *a1)
 		njRotateXYZ(nullptr, 0, a1->Data1->Rotation.y, 0);
 		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
-		DrawModel(a1->Data1->Object->basicdxmodel);
+		njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
 		njRotateXYZ(nullptr, 0, a1->Data1->Scale.z, 0);
-		DrawModel(&SH_FanBlades);
+		njDrawModel_SADX(&SH_FanBlades);
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 	}
@@ -110,15 +111,15 @@ void ObjReel_Display(ObjectMaster *a1)
 	njTranslate(0, a1->Data1->Position.x, a1->Data1->Scale.x, a1->Data1->Position.z);
 	njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
 	njScale(nullptr, 1, 1, 1);
-	DrawModel(&PP_REEL_TOP);
+	njDrawModel_SADX(&PP_REEL_TOP);
 
 	njTranslate(0, 0, a1->Data1->Position.y - a1->Data1->Scale.x + 15, 0);
 	njScale(nullptr, 1, 1, 1);
-	DrawModel(&PP_REEL_RING);
+	njDrawModel_SADX(&PP_REEL_RING);
 
 	njTranslate(0, 0, a1->Data1->Scale.x - a1->Data1->Position.y - 15, 0);
 	njScale(nullptr, 1, (a1->Data1->Scale.x - a1->Data1->Position.y) / 10.15f, 1);
-	DrawModel(&PP_REEL);
+	njDrawModel_SADX(&PP_REEL);
 
 	DrawQueueDepthBias = 0;
 	njPopMatrix(1u);
@@ -259,7 +260,7 @@ void ObjBalloon_Display(ObjectMaster *a1)
 			SetMaterialAndSpriteColor_Float(a, 1.0f, 1.0f, 1.0f);
 		}
 		DrawQueueDepthBias = -6000.0f;
-		DrawModel(&SH_BALLOON);
+		njDrawModel_SADX(&SH_BALLOON);
 		DrawQueueDepthBias = 0;
 		SetMaterialAndSpriteColor_Float(1.0f, 1.0f, 1.0f, 1.0f);
 		njPopMatrix(1u);
@@ -345,7 +346,7 @@ void __cdecl SHDashPanel(ObjectMaster *a1)
 			}
 			njScale(nullptr, 1, 1, 1);
 			DrawQueueDepthBias = -6000.0f;
-			DrawModel(&SH_DASHPANEL);
+			njDrawModel_SADX(&SH_DASHPANEL);
 			DrawQueueDepthBias = 0;
 			njPopMatrix(1u);
 		}
@@ -382,8 +383,8 @@ void __cdecl SHDashHoop(ObjectMaster *a1)
 		{
 			njRotateZ(0, v4);
 		}
-		if (CurrentLevel != 3 && CurrentLevel != 4) DrawModel(&SH_DASHHOOP);
-		else DrawModel(&SH_DASHRING);
+		if (CurrentLevel != 3 && CurrentLevel != 4) njDrawModel_SADX(&SH_DASHHOOP);
+		else njDrawModel_SADX(&SH_DASHRING);
 		njPopMatrix(1u);
 	}
 }
@@ -417,11 +418,11 @@ void ObjCannon_Display(ObjectMaster *a1)
 		njRotateXYZ(nullptr, 0, a1->Data1->Rotation.y, 0);
 		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
-		DrawModel(&SH_CANNONBASE);
+		njDrawModel_SADX(&SH_CANNONBASE);
 
 		njTranslate(0, 0, 5, 0);
 		njRotateXYZ(0, a1->Data1->Rotation.x, 0, 0);
-		DrawModel(&SH_CANNON);
+		njDrawModel_SADX(&SH_CANNON);
 
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
@@ -586,7 +587,7 @@ void __cdecl SHLaunchRamp(ObjectMaster *a1)
 		njRotateX(0, a1->Data1->Rotation.x * 2);*/
 		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
-		DrawModel(&SH_LAUNCHRAMP);
+		njDrawModel_SADX(&SH_LAUNCHRAMP);
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 	}
@@ -609,19 +610,19 @@ void OBJCASE_Display(ObjectMaster *a1) {
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
 		njScale(nullptr, 1.5f, 1.5f, 1.5f);
 		DrawQueueDepthBias = -6000.0f;
-		DrawModel(&OBJ_CASEBOTTOM);
+		njDrawModel_SADX(&OBJ_CASEBOTTOM);
 
 		if (a1->Data1->Action == 0) {
 			njTranslate(0, 0, 9.5f, 0);
-			DrawModel(&OBJ_CASEMIDDLE);
+			njDrawModel_SADX(&OBJ_CASEMIDDLE);
 			njTranslate(0, 0, 7, 0);
-			DrawModel(&OBJ_CASETOP);
+			njDrawModel_SADX(&OBJ_CASETOP);
 		}
 		else if (a1->Data1->Action == 1) {
 			njTranslate(0, 0, a1->Data1->Scale.z, 0);
-			DrawModel(&OBJ_CASEMIDDLE);
+			njDrawModel_SADX(&OBJ_CASEMIDDLE);
 		}
-		else if (a1->Data1->Action == 2) DrawModel(&OBJ_CASEMIDDLE);
+		else if (a1->Data1->Action == 2) njDrawModel_SADX(&OBJ_CASEMIDDLE);
 
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
@@ -689,13 +690,13 @@ void Capsule_Display_r(ObjectMaster *a1) {
 		njRotateY(nullptr, -(v1->Rotation.y * 2));
 
 		DrawQueueDepthBias = -6000.0f;
-		DrawModel(&SH_GOALRING_THING);
+		njDrawModel_SADX(&SH_GOALRING_THING);
 
 		njRotateY(nullptr, -v1->Rotation.y);
-		DrawModel(&SH_GOALRING_STAR);
+		njDrawModel_SADX(&SH_GOALRING_STAR);
 
 		njScale(nullptr, v1->Scale.x * 1.2f, v1->Scale.y *1.2f, v1->Scale.z *1.2f);
-		DrawModel(&SH_GOALRING_RING);
+		njDrawModel_SADX(&SH_GOALRING_RING);
 
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
@@ -761,30 +762,30 @@ void ObjBob_Display(ObjectMaster *a1)
 
 		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
-		DrawModel(&SH_BOBSLED);
+		njDrawModel_SADX(&SH_BOBSLED);
 
 		//Handles
 		njTranslate(0, 0, 6.78f, -6.355f);
 		int btn = HeldButtons2[0];
 		if (btn & Buttons_Left) {
 			njRotateZ(0, 0x1000);
-			DrawModel(&SH_BOBHANDLES);
+			njDrawModel_SADX(&SH_BOBHANDLES);
 			njRotateZ(0, -0x1000);
 		}
 		else if (btn & Buttons_Right) {
 			njRotateZ(0, -0x1000);
-			DrawModel(&SH_BOBHANDLES);
+			njDrawModel_SADX(&SH_BOBHANDLES);
 			njRotateZ(0, 0x1000);
 		}
 		else {
-			DrawModel(&SH_BOBHANDLES);
+			njDrawModel_SADX(&SH_BOBHANDLES);
 		}
 		njTranslate(0, 0, -6.78f, 6.355f);
 
 		//Star
 		njTranslate(0, 0, 5.445f, -18.989f);
 		njRotateZ(0, -a1->Data1->Scale.z);
-		DrawModel(&SH_BOBSTAR);
+		njDrawModel_SADX(&SH_BOBSTAR);
 		njRotateZ(0, a1->Data1->Scale.z);
 		njTranslate(0, 0, -5.445f, 18.989f);
 
@@ -792,7 +793,7 @@ void ObjBob_Display(ObjectMaster *a1)
 		njTranslate(0, 0, 5.029f, 14.417f);
 		njScale(nullptr, 1.33F, 1, 1);
 		njRotateX(0, -a1->Data1->Scale.z);
-		DrawModel(&SH_BOBWHEELS);
+		njDrawModel_SADX(&SH_BOBWHEELS);
 
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
@@ -854,22 +855,22 @@ void ObjBoxW_Display(ObjectMaster *a1)
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
 		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
-		if (a1->Data1->Action == 0) DrawModel(SH_BOXW.basicdxmodel);
+		if (a1->Data1->Action == 0) njDrawModel_SADX(SH_BOXW.basicdxmodel);
 		else if (a1->Data1->Action == 1) {
 			njTranslate(0, 0, -(a1->Data1->Scale.y / 3), 0);
 
 			njTranslate(0, 0, 0, 12 + a1->Data1->Scale.y / 90);
-			DrawModel(&SH_BOXW_A); //bar
+			njDrawModel_SADX(&SH_BOXW_A); //bar
 			njTranslate(0, 0, 20, 0);
 
 			njTranslate(0, 0, -(a1->Data1->Scale.y), (a1->Data1->Scale.y / 3));
 			njRotateY(0, 0x5000 + a1->Data1->Scale.y * 5);
-			DrawModel(&SH_BOXW_B); //big one
+			njDrawModel_SADX(&SH_BOXW_B); //big one
 			njRotateY(0, -(0x5000 + a1->Data1->Scale.y * 5));
 
 			njTranslate(0, 0, -(a1->Data1->Scale.y * 2), -(a1->Data1->Scale.y / 5));
 			njRotateY(0, -0x3000);
-			DrawModel(&SH_BOXW_C); //right
+			njDrawModel_SADX(&SH_BOXW_C); //right
 		}
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);

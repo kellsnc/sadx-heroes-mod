@@ -29,6 +29,7 @@ PVMEntry CommonObjectTextures[] = {
 	{ "BANB", &BANB_TEXLIST },
 	{ "tai", &tai_TEXLIST },
 	{ "WARA", &WARA_TEXLIST },
+	{ "LION", &LION_TEXLIST },
 
 	{ "hammer", &HAMMER_TEXLIST },
 	{ "same", &SAME_TEXLIST },

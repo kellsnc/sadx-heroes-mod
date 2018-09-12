@@ -47,8 +47,8 @@ void FLIPPERS_display(ObjectMaster *a1)
 
 	njScale(nullptr, 1, 1, 1);
 	DrawQueueDepthBias = 6000;
-	if (a1->SETData.SETData->SETEntry->ObjectType == 42)  DrawModel(&CP_FLIPPERL);
-	else DrawModel(&CP_FLIPPERR);
+	if (a1->SETData.SETData->SETEntry->ObjectType == 42)  njDrawModel_SADX(&CP_FLIPPERL);
+	else njDrawModel_SADX(&CP_FLIPPERR);
 	DrawQueueDepthBias = 0;
 	njPopMatrix(1u);
 }
@@ -132,7 +132,7 @@ void __cdecl sub_5DBCD0_h(ObjectMaster *a2)
 			else njRotateXYZ(nullptr, v1->Rotation.x, v1->Rotation.y, 0);
 			njScale(nullptr, 1, 1, 1);
 			DrawQueueDepthBias = 6000;
-			DrawModel(&CP_BOBIN);
+			njDrawModel_SADX(&CP_BOBIN);
 			DrawQueueDepthBias = 0;
 			njPopMatrix(1u);
 		}
@@ -156,7 +156,7 @@ void CPDICE_Display(ObjectMaster *a1) {
 		njRotateXYZ(nullptr, 0, a1->Data1->Rotation.y, 0);
 		njScale(nullptr, 1, a1->Data1->Scale.x, 1);
 		DrawQueueDepthBias = -6000.0f;
-		DrawModel(a1->Data1->Object->basicdxmodel);
+		njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 	}
@@ -357,7 +357,7 @@ void CPDashPanel(ObjectMaster *a1) {
 
 		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
-		DrawModel(&CP_DASHPANEL);
+		njDrawModel_SADX(&CP_DASHPANEL);
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 	}
@@ -394,7 +394,7 @@ void CPSLOTS_Display(ObjectMaster *a1) {
 		njRotateXYZ(nullptr, 8192, a1->Data1->Rotation.y, 0);
 		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
-		DrawModel(&CP_SLOTS);
+		njDrawModel_SADX(&CP_SLOTS);
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 	}
@@ -537,7 +537,7 @@ void CPSLOTL_Display(ObjectMaster *a1) {
 		njRotateXYZ(nullptr, 8192, a1->Data1->Rotation.y, 0);
 		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
-		DrawModel(&CP_SLOTL);
+		njDrawModel_SADX(&CP_SLOTL);
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 	}
@@ -816,19 +816,19 @@ void CPDOOR_Display(ObjectMaster *a1) {
 
 		if (a1->Data1->Scale.z != 0) {
 			njTranslate(0, -a1->Data1->Scale.z, 0, 0);
-			DrawModel(&CP_DOORLEFT);
+			njDrawModel_SADX(&CP_DOORLEFT);
 			njTranslate(0, a1->Data1->Scale.z * 2, 0, 0);
-			DrawModel(&CP_DOORRIGHT);
+			njDrawModel_SADX(&CP_DOORRIGHT);
 			njTranslate(0, -a1->Data1->Scale.z, -a1->Data1->Scale.z, 0);
-			DrawModel(&CP_DOORBOTTOM);
+			njDrawModel_SADX(&CP_DOORBOTTOM);
 			njTranslate(0, 0, a1->Data1->Scale.z * 2, 0);
-			DrawModel(&CP_DOORTOP);
+			njDrawModel_SADX(&CP_DOORTOP);
 		}
 		else {
-			DrawModel(&CP_DOORLEFT);
-			DrawModel(&CP_DOORRIGHT);
-			DrawModel(&CP_DOORTOP);
-			DrawModel(&CP_DOORBOTTOM);
+			njDrawModel_SADX(&CP_DOORLEFT);
+			njDrawModel_SADX(&CP_DOORRIGHT);
+			njDrawModel_SADX(&CP_DOORTOP);
+			njDrawModel_SADX(&CP_DOORBOTTOM);
 		}
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);

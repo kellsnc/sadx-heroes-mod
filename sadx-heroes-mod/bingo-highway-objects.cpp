@@ -28,79 +28,79 @@ void BHBingoCard_Display(ObjectMaster *a1) {
 		njTranslate(0, 0, 40, 0);
 		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
-		DrawModel(&BH_BINGOCARD);
+		njDrawModel_SADX(&BH_BINGOCARD);
 
 		njTranslate(0, 0, 0, -10);
 
 		njTranslate(0, 45, 45, 0);
-		DrawModel(&BH_BINGO1);
+		njDrawModel_SADX(&BH_BINGO1);
 		njTranslate(0, -45, -45, 0);
 
 		njTranslate(0, 45, 0, 0);
-		DrawModel(&BH_BINGO2);
+		njDrawModel_SADX(&BH_BINGO2);
 		njTranslate(0, -45, 0, 0);
 
-		DrawModel(&BH_BINGO3);
+		njDrawModel_SADX(&BH_BINGO3);
 
 		njTranslate(0, 0, 45, 0);
-		DrawModel(&BH_BINGO4);
+		njDrawModel_SADX(&BH_BINGO4);
 		njTranslate(0, 0, -45, 0);
 
 		njTranslate(0, 45, -45, 0);
-		DrawModel(&BH_BINGO5);
+		njDrawModel_SADX(&BH_BINGO5);
 		njTranslate(0, -45, 45, 0);
 
 		njTranslate(0, -45, 45, 0);
-		DrawModel(&BH_BINGO6);
+		njDrawModel_SADX(&BH_BINGO6);
 		njTranslate(0, 45, -45, 0);
 
 		njTranslate(0, -45, 0, 0);
-		DrawModel(&BH_BINGO7);
+		njDrawModel_SADX(&BH_BINGO7);
 		njTranslate(0, 45, 0, 0);
 
 		njTranslate(0, 0, -45, 0);
-		DrawModel(&BH_BINGO8);
+		njDrawModel_SADX(&BH_BINGO8);
 		njTranslate(0, 0, 45, 0);
 
 		njTranslate(0, -45, -45, 0);
-		DrawModel(&BH_BINGO9);
+		njDrawModel_SADX(&BH_BINGO9);
 		njTranslate(0, 45, 45, 0);
 
 		njTranslate(0, 0, 0, 10);
 		njRotateZ(0, 0x4000);
 		if (BingoLines[0]) {
 			njTranslate(0, 45, 0, 0);
-			DrawModel(&BH_BINGOBAR);
+			njDrawModel_SADX(&BH_BINGOBAR);
 			njTranslate(0, -45, 0, 0);
 		}
-		if (BingoLines[1]) DrawModel(&BH_BINGOBAR);
+		if (BingoLines[1]) njDrawModel_SADX(&BH_BINGOBAR);
 		if (BingoLines[2]) {
 			njTranslate(0, -45, 0, 0);
-			DrawModel(&BH_BINGOBAR);
+			njDrawModel_SADX(&BH_BINGOBAR);
 			njTranslate(0, 45, 0, 0);
 		}
 		njRotateZ(0, -0x4000);
 
 		if (BingoLines[3]) {
 			njTranslate(0, -45, 0, 0);
-			DrawModel(&BH_BINGOBAR);
+			njDrawModel_SADX(&BH_BINGOBAR);
 			njTranslate(0, 45, 0, 0);
 		}
-		if (BingoLines[4]) DrawModel(&BH_BINGOBAR);
+		if (BingoLines[4]) njDrawModel_SADX(&BH_BINGOBAR);
 		if (BingoLines[5]) {
 			njTranslate(0, 45, 0, 0);
-			DrawModel(&BH_BINGOBAR);
+			njDrawModel_SADX(&BH_BINGOBAR);
 			njTranslate(0, -45, 0, 0);
 		}
 
 		if (BingoLines[6]) {
 			njRotateZ(0, 0x2000);
-			DrawModel(&BH_BINGOBAR);
+			njDrawModel_SADX(&BH_BINGOBAR);
 			njRotateZ(0, -0x2000);
 		}
 		if (BingoLines[7]) {
 			njRotateZ(0, -0x2000);
-			DrawModel(&BH_BINGOBAR);
+			njDrawModel_SADX(&BH_BINGOBAR);
 			njRotateZ(0, 0x2000);
 		}
 
@@ -227,15 +227,15 @@ void BHBingoNumber_Display(ObjectMaster *a1) {
 		DrawQueueDepthBias = -6000.0f;
 
 		uint8_t nb = a1->Data1->Scale.z;
-		if (nb == 1) DrawModel(&BH_BINGO1);
-		else if (nb == 2) DrawModel(&BH_BINGO2);
-		else if (nb == 3) DrawModel(&BH_BINGO3);
-		else if (nb == 4) DrawModel(&BH_BINGO4);
-		else if (nb == 5) DrawModel(&BH_BINGO5);
-		else if (nb == 6) DrawModel(&BH_BINGO6);
-		else if (nb == 7) DrawModel(&BH_BINGO7);
-		else if (nb == 8) DrawModel(&BH_BINGO8);
-		else if (nb == 9) DrawModel(&BH_BINGO9);
+		if (nb == 1) njDrawModel_SADX(&BH_BINGO1);
+		else if (nb == 2) njDrawModel_SADX(&BH_BINGO2);
+		else if (nb == 3) njDrawModel_SADX(&BH_BINGO3);
+		else if (nb == 4) njDrawModel_SADX(&BH_BINGO4);
+		else if (nb == 5) njDrawModel_SADX(&BH_BINGO5);
+		else if (nb == 6) njDrawModel_SADX(&BH_BINGO6);
+		else if (nb == 7) njDrawModel_SADX(&BH_BINGO7);
+		else if (nb == 8) njDrawModel_SADX(&BH_BINGO8);
+		else if (nb == 9) njDrawModel_SADX(&BH_BINGO9);
 
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
@@ -313,11 +313,11 @@ void BHGiantTokens_Display(ObjectMaster *a1) {
 		else njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
 
-		if (a1->Data1->Scale.x == 0) DrawModel(&BH_GIANTCHIP1);
-		else if (a1->Data1->Scale.x == 1) DrawModel(&BH_GIANTCHIP5);
-		else if (a1->Data1->Scale.x == 2) DrawModel(&BH_GIANTCHIP4);
-		else if (a1->Data1->Scale.x == 3) DrawModel(&BH_GIANTCHIP2);
-		else if (a1->Data1->Scale.x == 4) DrawModel(&BH_GIANTCHIP3);
+		if (a1->Data1->Scale.x == 0) njDrawModel_SADX(&BH_GIANTCHIP1);
+		else if (a1->Data1->Scale.x == 1) njDrawModel_SADX(&BH_GIANTCHIP5);
+		else if (a1->Data1->Scale.x == 2) njDrawModel_SADX(&BH_GIANTCHIP4);
+		else if (a1->Data1->Scale.x == 3) njDrawModel_SADX(&BH_GIANTCHIP2);
+		else if (a1->Data1->Scale.x == 4) njDrawModel_SADX(&BH_GIANTCHIP3);
 
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
@@ -375,7 +375,7 @@ void BHRoulette_Display(ObjectMaster *a1) {
 		njRotateY(0, a1->Data1->Scale.z);
 		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
-		DrawModel(a1->Data1->Object->basicdxmodel);
+		njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 	}

@@ -14,12 +14,12 @@ void OPPOLE_Display(ObjectMaster *a1) {
 		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
 		if (a1->Data1->Scale.x == 1) {
-			DrawModel(OP_PoleR.basicdxmodel);
-			DrawModel(&OP_PoleRWater);
+			njDrawModel_SADX(OP_PoleR.basicdxmodel);
+			njDrawModel_SADX(&OP_PoleRWater);
 		}
 		else {
-			DrawModel(OP_PoleL.basicdxmodel);
-			DrawModel(&OP_PoleLWater);
+			njDrawModel_SADX(OP_PoleL.basicdxmodel);
+			njDrawModel_SADX(&OP_PoleLWater);
 		}
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);

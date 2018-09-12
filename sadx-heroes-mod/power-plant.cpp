@@ -22,24 +22,30 @@ void PowerPlantHandler(ObjectMaster * a1) {
 	CharObj2 * co2 = GetCharObj2(0);
 
 	if (a1->Data1->Action == 0) {
-		MovePlayerToStartPoint(entity);
-		camerahax_b();
+		if (CurrentAct != 0) {
+			CurrentLevelObject = LoadObject(LoadObj_Data1, 0, Obj_Icecap);
+			DeleteObjectMaster(a1);
+		}
+		else {
+			MovePlayerToStartPoint(entity);
+			camerahax_b();
 
-		InitializeSoundManager();
-		PlayMusic(MusicIDs_casino1);
-		SoundManager_Delete2();
+			InitializeSoundManager();
+			PlayMusic(MusicIDs_casino1);
+			SoundManager_Delete2();
 
-		a1->Data1->Action = 1;
-		a1->DeleteSub = PowerPlant_Delete;
+			a1->Data1->Action = 1;
+			a1->DeleteSub = PowerPlant_Delete;
 
-		set_shader_flags(ShaderFlags_Blend, true);
+			set_shader_flags(ShaderFlags_Blend, true);
 
-		if (CurrentAct == 0) {
-			CurrentLevelTexlist = &ICECAP01_TEXLIST;
-			CurrentLandAddress = (LandTable**)0x97DB08;
+			if (CurrentAct == 0) {
+				CurrentLevelTexlist = &ICECAP01_TEXLIST;
+				CurrentLandAddress = (LandTable**)0x97DB08;
 
-			ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
-			modelhandler->Data1->LoopData = (Loop*)&power_plant_objects;
+				ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
+				modelhandler->Data1->LoopData = (Loop*)&power_plant_objects;
+			}
 		}
 	}
 	else {
@@ -75,7 +81,7 @@ void PowerPlant_Init(const char *path, const HelperFunctions &helperFunctions) {
 	WriteData((DeathZone**)0xE2FE4C, PowerPlantDeathZones);
 
 	//Load the level handler
-	WriteJump((void *)0x4E9D90, &PowerPlantHandler);
+	WriteData((ObjectFuncPtr*)0x90BF58, &PowerPlantHandler);
 
 	PowerPlantObjects_Init(path);
 }

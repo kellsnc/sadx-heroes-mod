@@ -5,6 +5,8 @@
 #include "bingo-highway-deathzones.h"
 #include "bingo-highway.h"
 
+ObjectFunc(SpeedHighway_SkyBox_Load, 0x610A70);
+
 void BingoHighwayObjects_Init(const char *path);
 void BingoHighwayObjects_OnFrame(EntityData1 * entity);
 void CasinoCommon_OnFrame();
@@ -17,25 +19,32 @@ void BingoHighwayHandler(ObjectMaster * a1) {
 	CharObj2 * co2 = GetCharObj2(0);
 
 	if (a1->Data1->Action == 0) {
-		MovePlayerToStartPoint(entity);
-		camerahax_b();
+		if (CurrentAct != 0) {
+			LoadObject(LoadObj_Data1, 1, SpeedHighway_SkyBox_Load);
+			CurrentLevelObject = LoadObject(LoadObj_Data1, 0, Obj_SpeedHighway);
+			DeleteObjectMaster(a1);
+		}
+		else {
+			MovePlayerToStartPoint(entity);
+			camerahax_b();
 
-		InitializeSoundManager();
-		PlayMusic(MusicIDs_SpeedHighwaySpeedHighway);
-		SoundManager_Delete2();
+			InitializeSoundManager();
+			PlayMusic(MusicIDs_SpeedHighwaySpeedHighway);
+			SoundManager_Delete2();
 
-		LevelDrawDistance.Maximum = -999999.0f;
-		Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
+			LevelDrawDistance.Maximum = -999999.0f;
+			Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
 
-		a1->Data1->Action = 1;
-		a1->DeleteSub = CasinoCommon_Delete;
+			a1->Data1->Action = 1;
+			a1->DeleteSub = CasinoCommon_Delete;
 
-		if (CurrentAct == 0) {
-			CurrentLevelTexlist = &HIGHWAY01_TEXLIST;
-			CurrentLandAddress = (LandTable**)0x97DA88;
+			if (CurrentAct == 0) {
+				CurrentLevelTexlist = &HIGHWAY01_TEXLIST;
+				CurrentLandAddress = (LandTable**)0x97DA88;
 
-			ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
-			modelhandler->Data1->LoopData = (Loop*)&bingo_highway_objects;
+				ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
+				modelhandler->Data1->LoopData = (Loop*)&bingo_highway_objects;
+			}
 		}
 	}
 	else {
@@ -73,7 +82,7 @@ void BingoHighway_Init(const char *path, const HelperFunctions &helperFunctions)
 	WriteData((DeathZone**)0x26A5A94, BingoHighwayDeathZones);
 
 	//Load the level handler
-	WriteJump((void *)0x610980, &BingoHighwayHandler);
+	WriteData((ObjectFuncPtr*)0x90BF48, &BingoHighwayHandler);
 
 	BingoHighwayObjects_Init(path);
 }

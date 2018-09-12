@@ -11,6 +11,7 @@ extern NJS_MATERIAL matlist_waterfall[1];
 extern LandTable** CurrentLandAddress;
 
 extern bool NoPinball;
+extern bool chunkswapped;
 
 void AutoLoop(ObjectMaster * a1);
 void RailPath(ObjectMaster * a1);
@@ -28,3 +29,4 @@ void GrandMetropolis_Init(const char *path, const HelperFunctions &helperFunctio
 void PowerPlant_Init(const char *path, const HelperFunctions &helperFunctions);
 void CasinoPark_Init(const char *path, const HelperFunctions &helperFunctions);
 void BingoHighway_Init(const char *path, const HelperFunctions &helperFunctions);
+void HangCastle_Init(const char *path, const HelperFunctions &helperFunctions);

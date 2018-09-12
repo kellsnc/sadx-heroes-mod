@@ -127,7 +127,7 @@ void CPGiantDice_Display(ObjectMaster *a1) {
 
 		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
-		DrawModel(&CP_DICEREF);
+		njDrawModel_SADX(&CP_DICEREF);
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 	}

@@ -2,7 +2,16 @@
 #include "mod.h"
 
 //Load an object that simply draw models every frame
-void ModelHandler_Draw(ObjectMaster * a1) {
+void ModelHandler_Draw(NJS_MODEL_SADX * model) {
+	if (model->meshsets[0].vertcolor) {
+		LastRenderFlags = (RenderFlags)(RenderFlags_10);
+		njDrawModel_SADX(model);
+		ResetRenderFlags();
+	}
+	njDrawModel_SADX(model);
+}
+
+void ModelHandler_Display(ObjectMaster * a1) {
 	SOI_LISTS * List = (SOI_LISTS*)a1->Data1->LoopData;
 	if (!DroppedFrames) {
 		for (int i = 0; i < a1->Data1->Action; ++i) {
@@ -18,12 +27,11 @@ void ModelHandler_Draw(ObjectMaster * a1) {
 							njScale(nullptr, List[i].soientry[j].soiscl.x, List[i].soientry[j].soiscl.y, List[i].soientry[j].soiscl.z); //Scale of object
 							DrawQueueDepthBias = List[i].soientry[j].soibias;
 							if (List[i].soientry[j].soidrawdist == 0.0f) {
-								DrawModel(List[i].soientry[j].soiobject);
+								ModelHandler_Draw(List[i].soientry[j].soiobject);
 							}
 							else {
-								if (IsPlayerInsideSphere(&List[i].soientry[j].soipos, List[i].soientry[j].soidrawdist) == true) {
-									DrawModel(List[i].soientry[j].soiobject);
-								}
+								if (IsPlayerInsideSphere(&List[i].soientry[j].soipos, List[i].soientry[j].soidrawdist) == true)
+									ModelHandler_Draw(List[i].soientry[j].soiobject);
 							}
 							DrawQueueDepthBias = 0;
 							njPopMatrix(1u);
@@ -37,7 +45,7 @@ void ModelHandler_Draw(ObjectMaster * a1) {
 }
 
 void ModelHandler_Main(ObjectMaster * a1) {
-	ModelHandler_Draw(a1);
+	ModelHandler_Display(a1);
 }
 
 void ModelHandler_Init(ObjectMaster * a1) {
@@ -54,7 +62,7 @@ void ModelHandler_Init(ObjectMaster * a1) {
 
 	a1->Data1->Scale.x = 0;
 	
-	a1->DisplaySub = ModelHandler_Draw;
+	a1->DisplaySub = ModelHandler_Display;
 	a1->MainSub = ModelHandler_Main;
 }
 

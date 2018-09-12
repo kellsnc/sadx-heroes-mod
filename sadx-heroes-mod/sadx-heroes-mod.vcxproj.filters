@@ -102,6 +102,15 @@
     <ClCompile Include="bingo-highway-objects.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
+    <ClCompile Include="hang-castle.cpp">
+      <Filter>Source Files\Levels</Filter>
+    </ClCompile>
+    <ClCompile Include="mystic-common-objects.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="hang-castle-objects.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -199,6 +208,21 @@
     </ClInclude>
     <ClInclude Include="bingo-highway.h">
       <Filter>Header Files\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\hang-castle-deathzones.h">
+      <Filter>Header Files\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\hang-castle-paths.h">
+      <Filter>Header Files\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\hang-castle-objects.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="hang-castle.h">
+      <Filter>Header Files\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\mystic-common-objects.h">
+      <Filter>Header Files\Objects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

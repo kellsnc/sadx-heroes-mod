@@ -16,6 +16,7 @@ static bool EnableBingoHighway = true;
 static bool EnableHangCastle = true;
 
 bool NoPinball = false;
+bool chunkswapped = false;
 
 LandTable** CurrentLandAddress;
 
@@ -75,6 +76,7 @@ void SwapCurrentLandTable() {
 		}
 	}
 
+	chunkswapped = true;
 	WriteData((LandTable**)CurrentLandAddress, land);
 	land->TexList = CurrentLevelTexlist;
 }
@@ -174,6 +176,7 @@ void Levels_Init(const char *path, const HelperFunctions &helperFunctions)
 	if (EnablePowerPlant) PowerPlant_Init(path, helperFunctions);
 	if (EnableCasinoPark) CasinoPark_Init(path, helperFunctions);
 	if (EnableBingoHighway) BingoHighway_Init(path, helperFunctions);
+	if (EnableHangCastle) HangCastle_Init(path, helperFunctions);
 
 	Objects_Init(path, helperFunctions);
 }

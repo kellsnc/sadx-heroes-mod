@@ -11,7 +11,7 @@ void DrawObjModel(ObjectMaster *a1, NJS_MODEL_SADX *m, bool scalable) {
 		if (scalable) njScale(nullptr, a1->Data1->Scale.x, a1->Data1->Scale.y, a1->Data1->Scale.z);
 		else njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
-		DrawModel(m);
+		njDrawModel_SADX(m);
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 	}

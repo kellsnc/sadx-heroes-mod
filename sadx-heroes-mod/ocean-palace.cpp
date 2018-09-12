@@ -5,6 +5,8 @@
 #include "road-rock-deathzones.h"
 #include "ocean-palace.h"
 
+ObjectFunc(WindyValley_SkyBox_Load, 0x4DDBF0);
+
 void OceanPalaceObjects_Init(const char *path);
 void OceanPalaceObjects_OnFrame(EntityData1 * entity);
 void SHSuns_Init(ObjectMaster * a1);
@@ -173,39 +175,52 @@ void OceanPalaceHandler(ObjectMaster * a1) {
 	CharObj2 * co2 = GetCharObj2(0);
 
 	if (a1->Data1->Action == 0) {
-		MovePlayerToStartPoint(entity);
-		camerahax_b();
-
-		a1->Data1->Action = 1;
-		a1->DeleteSub = OceanPalace_delete;
-
-		if (CurrentAct == 0) {
-			//Ocean Palace
-			PlaySound(44, 0, 0, 0);
-			InitializeSoundManager();
-			PlayMusic(MusicIDs_WindyValleyWindyHill);
-			SoundManager_Delete2();
-
-			CurrentLevelTexlist = &WINDY01_TEXLIST;
-			CurrentLandAddress = (LandTable**)0x97DA48;
-			matlist_waterfall[0].attr_texId = 66;
-
-			ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
-			modelhandler->Data1->LoopData = (Loop*)&ocean_palace_objects;
-			LoadObject(LoadObj_Data1, 3, SHSuns_Init); //load the sun
+		if (CurrentAct == 2) {
+			LoadObject(LoadObj_Data1, 1, WindyValley_SkyBox_Load);
+			CurrentLevelObject = LoadObject(LoadObj_Data1, 0, Obj_WindyValley);
+			DeleteObjectMaster(a1);
 		}
 		else {
-			InitializeSoundManager();
-			PlayMusic(MusicIDs_WindyValleyTornado);
-			SoundManager_Delete2();
+			MovePlayerToStartPoint(entity);
+			camerahax_b();
 
-			CurrentLevelTexlist = &WINDY02_TEXLIST;
-			CurrentLandAddress = (LandTable**)0x97DA4C;
-			matlist_waterfall[0].attr_texId = 45;
+			a1->Data1->Action = 1;
+			a1->DeleteSub = OceanPalace_delete;
 
-			ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
-			modelhandler->Data1->LoopData = (Loop*)&road_rock_objects;
-			LoadLevelFile("RR", 01);
+			if (CurrentAct == 0) {
+				//Ocean Palace
+
+				PlaySound(44, 0, 0, 0);
+				InitializeSoundManager();
+				PlayMusic(MusicIDs_WindyValleyWindyHill);
+				SoundManager_Delete2();
+
+				LevelDrawDistance.Maximum = -999999.0f;
+				Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
+
+				CurrentLevelTexlist = &WINDY01_TEXLIST;
+				CurrentLandAddress = (LandTable**)0x97DA48;
+				matlist_waterfall[0].attr_texId = 66;
+
+				ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
+				modelhandler->Data1->LoopData = (Loop*)&ocean_palace_objects;
+				LoadObject(LoadObj_Data1, 3, SHSuns_Init); //load the sun
+			}
+			else {
+				//Road Rock
+
+				InitializeSoundManager();
+				PlayMusic(MusicIDs_WindyValleyTornado);
+				SoundManager_Delete2();
+
+				CurrentLevelTexlist = &WINDY02_TEXLIST;
+				CurrentLandAddress = (LandTable**)0x97DA4C;
+				matlist_waterfall[0].attr_texId = 45;
+
+				ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
+				modelhandler->Data1->LoopData = (Loop*)&road_rock_objects;
+				LoadLevelFile("RR", 01);
+			}
 		}
 	}
 	else {
@@ -273,10 +288,10 @@ void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions) 
 	WriteData((DeathZone**)0xBFD820, SeasideHillDeathZones);
 
 	//Do not draw skybox
-	WriteData<3>((void*)0x004DD71A, 0x90u);
+	WriteData<4>((void*)0x0090C1F8, 0x00u);
 
 	//Load the level handler
-	WriteJump((void *)0x4DDB30, &OceanPalaceHandler);
+	WriteData((ObjectFuncPtr*)0x90BF40, OceanPalaceHandler);
 
 	RoadRock_Init(path, helperFunctions);
 	OceanPalaceObjects_Init(path);

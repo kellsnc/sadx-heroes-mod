@@ -18,7 +18,7 @@ void __cdecl GMEnergyH_Display(ObjectMaster *a1)
 		njRotateXYZ(nullptr, 0, a1->Data1->Rotation.y, 0);
 		njScale(nullptr, 1, a1->Data1->Scale.y, 1);
 		DrawQueueDepthBias = -6000.0f;
-		DrawModel(&s03_door_energy);
+		njDrawModel_SADX(&s03_door_energy);
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 	}
@@ -57,8 +57,8 @@ void GM_ENERGYDOORS_Display(ObjectMaster *a1) {
 		njRotateXYZ(nullptr, 0, a1->Data1->Rotation.y, 0);
 		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
-		if (a1->Data1->Rotation.x == 1) DrawModel(s03_door_2obj.basicdxmodel);
-		else DrawModel(s03_door_1obj.basicdxmodel);
+		if (a1->Data1->Rotation.x == 1) njDrawModel_SADX(s03_door_2obj.basicdxmodel);
+		else njDrawModel_SADX(s03_door_1obj.basicdxmodel);
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 	}
@@ -160,8 +160,8 @@ void GM_ENERGYPATHS_Display(ObjectMaster *a1) {
 		njRotateXYZ(nullptr, 0, a1->Data1->Rotation.y, 0);
 		njScale(nullptr, a1->Data1->Scale.z, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
-		if (a1->Data1->Scale.x == 1) DrawModel(&s03_fluid_02);
-		else DrawModel(&s03_fluid_01);
+		if (a1->Data1->Scale.x == 1) njDrawModel_SADX(&s03_fluid_02);
+		else njDrawModel_SADX(&s03_fluid_01);
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 	}

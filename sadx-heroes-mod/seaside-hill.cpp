@@ -5,6 +5,8 @@
 #include "seaside-hill-deathzones.h"
 #include "seaside-hill.h"
 
+ObjectFunc(EmeraldCoast_SkyBox_Load, 0x4F7230);
+
 void SeasideHillObjects_Init(const char *path);
 void SeasideHillObjects_OnFrame(EntityData1 * entity);
 void SHSuns_Init(ObjectMaster * a1);
@@ -52,38 +54,48 @@ void SeasideHillHandler(ObjectMaster * a1) {
 	CharObj2 * co2 = GetCharObj2(0);
 
 	if (a1->Data1->Action == 0) {
-		MovePlayerToStartPoint(entity);
-		camerahax_b();
-
-		PlaySound(44, 0, 0, 0);
-		InitializeSoundManager();
-		PlayMusic(MusicIDs_EmeraldCoastAzureBlueWorld);
-		SoundManager_Delete2();
-
-		LoadObject(LoadObj_Data1, 3, SHSuns_Init); //load the sun
-
-		a1->Data1->Action = 1;
-		a1->DeleteSub = LevelHandler_Delete;
-
-		if (CurrentAct == 0) {
-			//Seaside Hill
-			CurrentLevelTexlist = &BEACH01_TEXLIST;
-			CurrentLandAddress = (LandTable**)0x97DA28;
-			matlist_waterfall[0].attr_texId = 87;
-
-			ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
-			modelhandler->Data1->LoopData = (Loop*)&seaside_hill_objects;
-
-			if (entity->Position.z > -6264) LoadLevelFile("SH", 16);
+		if (CurrentAct == 2) {
+			LoadObject(LoadObj_Data1, 1, EmeraldCoast_SkyBox_Load);
+			CurrentLevelObject = LoadObject(LoadObj_Data1, 0, Obj_EmeraldCoast);
+			DeleteObjectMaster(a1);
 		}
 		else {
-			//Sea Gate
-			CurrentLevelTexlist = &BEACH02_TEXLIST;
-			CurrentLandAddress = (LandTable**)0x97DA2C;
-			matlist_waterfall[0].attr_texId = 83;
+			MovePlayerToStartPoint(entity);
+			camerahax_b();
 
-			ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
-			modelhandler->Data1->LoopData = (Loop*)&sea_gate_objects;
+			LevelDrawDistance.Maximum = -999999.0f;
+			Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
+
+			PlaySound(44, 0, 0, 0);
+			InitializeSoundManager();
+			PlayMusic(MusicIDs_EmeraldCoastAzureBlueWorld);
+			SoundManager_Delete2();
+
+			LoadObject(LoadObj_Data1, 3, SHSuns_Init); //load the sun
+
+			a1->Data1->Action = 1;
+			a1->DeleteSub = LevelHandler_Delete;
+
+			if (CurrentAct == 0) {
+				//Seaside Hill
+				CurrentLevelTexlist = &BEACH01_TEXLIST;
+				CurrentLandAddress = (LandTable**)0x97DA28;
+				matlist_waterfall[0].attr_texId = 87;
+
+				ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
+				modelhandler->Data1->LoopData = (Loop*)&seaside_hill_objects;
+
+				if (entity->Position.z > -6264) LoadLevelFile("SH", 16);
+			}
+			else {
+				//Sea Gate
+				CurrentLevelTexlist = &BEACH02_TEXLIST;
+				CurrentLandAddress = (LandTable**)0x97DA2C;
+				matlist_waterfall[0].attr_texId = 83;
+
+				ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
+				modelhandler->Data1->LoopData = (Loop*)&sea_gate_objects;
+			}
 		}
 	}
 	else {
@@ -158,14 +170,16 @@ void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions) 
 	WriteData<5>((void*)0x004F6A1A, 0x90u);
 
 	//Do not draw skybox
-	WriteData<5>((void*)0x00408591, 0x90u);
+	WriteData<4>((void*)0x0090C1F4, 0x00u);
 
 	//Do not draw suns
 	WriteData<5>((void*)0x004F6EC7, 0x90u);
 	WriteData<5>((void*)0x004F6EE9, 0x90u);
 
 	//Load the level handler
-	WriteJump((void *)0x4F6D60, &SeasideHillHandler);
+	WriteData((ObjectFuncPtr*)0x90BF3C, SeasideHillHandler);
+
+	//WriteJump((void *)0x90BF3C, &SeasideHillHandler);
 
 	SeaGate_Init(path, helperFunctions);
 	SeasideHillObjects_Init(path);

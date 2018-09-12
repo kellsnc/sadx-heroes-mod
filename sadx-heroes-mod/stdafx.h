@@ -10,3 +10,4 @@
 #include "Trampoline.h"
 
 #include <stdlib.h>
+#include <cmath>

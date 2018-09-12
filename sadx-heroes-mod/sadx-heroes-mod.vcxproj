@@ -86,7 +86,10 @@
     <ClCompile Include="casino-park.cpp" />
     <ClCompile Include="grand-metropolis-objects.cpp" />
     <ClCompile Include="grand-metropolis.cpp" />
+    <ClCompile Include="hang-castle-objects.cpp" />
+    <ClCompile Include="hang-castle.cpp" />
     <ClCompile Include="heroes-common-objects.cpp" />
+    <ClCompile Include="mystic-common-objects.cpp" />
     <ClCompile Include="objects.cpp" />
     <ClCompile Include="LevelHelper.cpp" />
     <ClCompile Include="levels.cpp" />
@@ -117,7 +120,11 @@
     <ClInclude Include="Data\grand-metropolis-deathzones.h" />
     <ClInclude Include="Data\grand-metropolis-objects.h" />
     <ClInclude Include="Data\grand-metropolis-paths.h" />
+    <ClInclude Include="Data\hang-castle-deathzones.h" />
+    <ClInclude Include="Data\hang-castle-objects.h" />
+    <ClInclude Include="Data\hang-castle-paths.h" />
     <ClInclude Include="Data\heroes-common-objects.h" />
+    <ClInclude Include="Data\mystic-common-objects.h" />
     <ClInclude Include="Data\ocean-palace-objects.h" />
     <ClInclude Include="Data\ocean-palace-paths.h" />
     <ClInclude Include="Data\power-plant-deathzones.h" />
@@ -125,6 +132,7 @@
     <ClInclude Include="Data\power-plant-paths.h" />
     <ClInclude Include="Data\road-rock-deathzones.h" />
     <ClInclude Include="grand-metropolis.h" />
+    <ClInclude Include="hang-castle.h" />
     <ClInclude Include="lanternapi.h" />
     <ClInclude Include="levels.h" />
     <ClInclude Include="objects.h" />

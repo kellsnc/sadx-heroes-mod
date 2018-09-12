@@ -33,9 +33,9 @@ void SH_MOVINGPLATFORMS_Display(ObjectMaster *a1) {
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
 		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
-		if (a1->Data1->Action == 0) DrawModel(SH_MovingRuin1obj.basicdxmodel);
-		if (a1->Data1->Action == 1) DrawModel(SH_MovingRuin2obj.basicdxmodel);
-		if (a1->Data1->Action == 2) DrawModel(SH_MovingRuin3obj.basicdxmodel);
+		if (a1->Data1->Action == 0) njDrawModel_SADX(SH_MovingRuin1obj.basicdxmodel);
+		if (a1->Data1->Action == 1) njDrawModel_SADX(SH_MovingRuin2obj.basicdxmodel);
+		if (a1->Data1->Action == 2) njDrawModel_SADX(SH_MovingRuin3obj.basicdxmodel);
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 	}
@@ -208,10 +208,10 @@ void __cdecl SHSPIKES_Display(ObjectMaster *a1)
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
 		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
-		DrawModel(a1->Data1->Object->basicdxmodel);
+		njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
 		njRotateY(0, -a1->Data1->Rotation.y + a1->Data1->Scale.z);
 		njScale(nullptr, 0.8f, 1, 1);
-		DrawModel(&SH_Flag);
+		njDrawModel_SADX(&SH_Flag);
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 	}

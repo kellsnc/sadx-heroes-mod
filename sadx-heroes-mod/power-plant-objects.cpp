@@ -71,9 +71,9 @@ void PP_ENERGYPATHS_Display(ObjectMaster *a1) {
 		njRotateXYZ(nullptr, 0, a1->Data1->Rotation.y, 0);
 		njScale(nullptr, a1->Data1->Scale.z, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
-		if (a1->Data1->Scale.x == 0) DrawModel(&PP_PATH_H1);
-		if (a1->Data1->Scale.x == 1) DrawModel(&PP_PATH_H2);
-		if (a1->Data1->Scale.x == 2) DrawModel(&PP_PATH_V);
+		if (a1->Data1->Scale.x == 0) njDrawModel_SADX(&PP_PATH_H1);
+		if (a1->Data1->Scale.x == 1) njDrawModel_SADX(&PP_PATH_H2);
+		if (a1->Data1->Scale.x == 2) njDrawModel_SADX(&PP_PATH_V);
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 	}
@@ -113,7 +113,7 @@ void __cdecl PPPlatformsV_Display(ObjectMaster *a1)
 		njRotateXYZ(nullptr, 0, a1->Data1->Rotation.y, 0);
 		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
-		DrawModel(a1->Data1->Object->basicdxmodel);
+		njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 	}
@@ -161,7 +161,7 @@ void __cdecl PPPlatformsH_Display(ObjectMaster *a1)
 		njRotateXYZ(nullptr, 0, a1->Data1->Rotation.y, 0);
 		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
-		DrawModel(a1->Data1->Object->basicdxmodel);
+		njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 	}
