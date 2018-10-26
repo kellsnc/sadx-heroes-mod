@@ -107,6 +107,8 @@ void SeasideHillHandler(ObjectMaster * a1) {
 
 				ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
 				modelhandler->Data1->LoopData = (Loop*)&sea_gate_objects;
+
+				if (entity->Position.z > -6264) LoadLevelFile("SG", 01);
 			}
 		}
 	}

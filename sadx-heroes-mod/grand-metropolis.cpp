@@ -15,6 +15,7 @@ extern SOI_LISTS grand_metropolis_objects[];
 void GrandMetropolis_Delete(ObjectMaster * a1) {
 	GrandMetropolisObjects_Reset();
 	set_shader_flags(ShaderFlags_Blend, false);
+	set_blend(-1, -1);
 	LevelHandler_Delete(a1);
 }
 

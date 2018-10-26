@@ -63,6 +63,9 @@ void ObjFan_Main(ObjectMaster *a1)
 			auto entity = EntityData1Ptrs[slot - 1];
 			CharObj2 *co2 = GetCharObj2(slot - 1);
 			if (co2 != NULL) {
+				co2->Speed.x = 0; co2->Speed.z = 0;
+				entity->Rotation.x = 0;
+				entity->Rotation.z = 0;
 				co2->Speed.y = a1->Data1->Scale.x;
 				if (GetCharacterID(0) == Characters_Sonic && !SuperSonicFlag) {
 					co2->AnimationThing.Index = 26;

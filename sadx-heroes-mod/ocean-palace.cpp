@@ -214,6 +214,8 @@ void OceanPalaceHandler(ObjectMaster * a1) {
 				ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
 				modelhandler->Data1->LoopData = (Loop*)&ocean_palace_objects;
 				LoadObject(LoadObj_Data1, 3, SHSuns_Init); //load the sun
+
+				if (entity->Position.z > -10637) LoadLevelFile("OP", 01);
 			}
 			else {
 				//Road Rock

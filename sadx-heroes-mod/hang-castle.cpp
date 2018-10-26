@@ -15,6 +15,8 @@ extern SOI_LISTS hang_castle_objects[];
 
 void HangCastle_Delete(ObjectMaster * a1) {
 	HCFlags_Reset();
+	set_shader_flags(ShaderFlags_Blend, false);
+	set_blend(-1, -1);
 	LevelHandler_Delete(a1);
 }
 
@@ -53,8 +55,12 @@ void HangCastleHandler(ObjectMaster * a1) {
 				CurrentLandAddress = (LandTable**)0x97DAE8;
 				HCFlags_Reset();
 
+				set_shader_flags(ShaderFlags_Blend, true);
+
 				ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
 				modelhandler->Data1->LoopData = (Loop*)&hang_castle_objects;
+
+				if (entity->Position.z > -3111 && entity->Position.x < 8000) LoadLevelFile("HC", 01);
 			}
 		}
 	}

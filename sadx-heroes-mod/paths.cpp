@@ -154,8 +154,8 @@ void RailMain(ObjectMaster * a1) {
 			if (GetCharacterID(a1->Data1->NextAction) == Characters_Knuckles) co2->AnimationThing.Index = 0;
 
 			TransformPlayer(a1->Data1->NextAction, loopdata->LoopList[a1->Data1->InvulnerableTime].Position, loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position, a1->Data1->Scale.x);
-			entity->Position.y += 5;
-			if (CurrentLevel == 7) entity->Position.y += 5;
+			player->Position.y += 5;
+			if (CurrentLevel == 7) player->Position.y += 5;
 			LookAt(a1->Data1->NextAction, loopdata->LoopList[a1->Data1->InvulnerableTime].Position, loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position);
 			
 			
@@ -240,6 +240,8 @@ void RailPath(ObjectMaster * a1) {
 								if (players[slot]->Rotation.y > min && players[slot]->Rotation.y < max) tempobj->Data1->CharIndex = 0; //forward
 								else tempobj->Data1->CharIndex = 1; //backward
 							}
+
+							tempobj->Data1->CharIndex = 0;
 
 							break;
 						}

@@ -2,7 +2,6 @@
 #include "mod.h"
 #include "levels.h"
 #include "bingo-highway-paths.h"
-#include "bingo-highway-deathzones.h"
 #include "bingo-highway.h"
 
 ObjectFunc(SpeedHighway_SkyBox_Load, 0x610A70);
@@ -52,6 +51,8 @@ void BingoHighwayHandler(ObjectMaster * a1) {
 
 				ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
 				modelhandler->Data1->LoopData = (Loop*)&bingo_highway_objects;
+
+				if (entity->Position.z > -3440 && entity->Position.y > 370) LoadLevelFile("BH", 01);
 			}
 		}
 	}

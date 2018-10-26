@@ -51,6 +51,8 @@ void CasinoParkHandler(ObjectMaster * a1) {
 
 				ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
 				modelhandler->Data1->LoopData = (Loop*)&casino_park_objects;
+
+				if (entity->Position.z > -1697 && entity->Position.x > -8696) LoadLevelFile("CP", 01);
 			}
 		}
 	}

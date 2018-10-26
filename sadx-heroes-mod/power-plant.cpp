@@ -14,6 +14,7 @@ extern SOI_LISTS power_plant_objects[];
 void PowerPlant_Delete(ObjectMaster * a1) {
 	PowerPlantObjects_Reset();
 	set_shader_flags(ShaderFlags_Blend, false);
+	set_blend(-1, -1);
 	LevelHandler_Delete(a1);
 }
 
@@ -62,6 +63,8 @@ void PowerPlantHandler(ObjectMaster * a1) {
 
 				ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
 				modelhandler->Data1->LoopData = (Loop*)&power_plant_objects;
+
+				if (entity->Position.z > -2081) LoadLevelFile("PP", 01);
 			}
 		}
 	}

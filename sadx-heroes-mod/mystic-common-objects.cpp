@@ -5,6 +5,8 @@
 #include "mystic-common-objects.h"
 
 #pragma region Warps
+float hclight = 0;
+
 CollisionData Warps_col[]{
 	{ 0, 0, 0x77, 0, 0x800400,{ 0, 0, 0 },{ 10, 10, 10 }, 0, 0 },
 	{ 0, 0, 0x77, 0, 0x800400,{ 0, 10, 0 },{ 10, 10, 10 }, 0, 0 },
@@ -64,15 +66,35 @@ void HCWARP_Main(ObjectMaster *a1) {
 			else if (GetCharacterID(0) == Characters_Tails || GetCharacterID(0) == Characters_Knuckles) {
 				co2->AnimationThing.Index = 19;
 			}
-			if (a1->Data1->NextAction < 100) a1->Data1->NextAction += 1;
+			if (a1->Data1->NextAction < 100) { 
+				a1->Data1->NextAction += 1; 
+				set_specular_blend(0, 4);
+				set_specular_blend(1, 4);
+				set_specular_blend(2, 4);
+				set_specular_blend(3, 4);
+				set_specular_blend(7, 4);
+				hclight = a1->Data1->NextAction;
+				hclight /= 100;
+				set_specular_blend_factor(hclight);
+			}
 			else {
 				if (a1->Data1->Scale.x != 0) {
 					entity->Position = a1->Data1->Scale;
 					if (EnableSounds) PlaySound(42, 0, 0, 0);
-					a1->Data1->NextAction = 0;
 					if (a1->Data1->Rotation.z == 1) Camera_Data1->Position = entity->Position;
 				}
 				a1->Data1->Action = 2;
+			}
+		}
+
+		if (a1->Data1->Action == 2) {
+			if (hclight > 0) {
+				hclight -= 0.05f;
+				set_specular_blend_factor(hclight);
+			}
+			else {
+				a1->Data1->Action = 3;
+				set_blend(-1, -1);
 			}
 		}
 
