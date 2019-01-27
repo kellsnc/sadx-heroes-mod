@@ -709,7 +709,7 @@ Loop MM_CamPath8_Entries[] = {
 LoopHead MM_CamPath8 = { 0, LengthOfArray<int16_t>(MM_CamPath8_Entries), 9133.605f, MM_CamPath8_Entries, (ObjectFuncPtr)0x613460 };
 
 Loop MM_CartPath3_Entries[] = {
-	{ 0, 0, 329.756f,{ 6939.943f, -3680, -21968.5f } },
+	{ 0, 0x4000, 329.756f,{ 6939.943f, -3680, -21968.5f } },
 	{ 0, 0, 20.9597f,{ 7269.699f, -3680, -21968.5f } },
 	{ 0, 0, 21.9413f,{ 7290.628f, -3681.134f, -21968.5f } },
 	{ 0, 0, 20.93776f,{ 7312.211f, -3685.083f, -21968.5f } },

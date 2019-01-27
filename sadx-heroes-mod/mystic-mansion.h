@@ -2,7 +2,7 @@
 
 StartPosition MysticMansion_StartPositions[]{
 	{ 10, 0,{ 0, 23, 777 }, 0xBFFF },
-	{ 10, 0,{ 19804.73, -9523.75, -44216.48 }, 0xBFFF }
+	{ 10, 0,{ 2001.5f, 302, -3710.068f }, 0xBFFF }
 };
 
 CHUNK_LIST MysticMansionChunks[]{

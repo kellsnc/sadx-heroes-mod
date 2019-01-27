@@ -9,6 +9,13 @@ void TransformPlayer(char player, NJS_VECTOR orig, NJS_VECTOR dest, float state)
 	entity->Position.z = (dest.z - orig.z) * state + orig.z;
 }
 
+void TransformSpline(ObjectMaster * a1, NJS_VECTOR orig, NJS_VECTOR dest, float state) {
+	EntityData1 * entity = a1->Data1;
+	entity->Position.x = (dest.x - orig.x) * state + orig.x;
+	entity->Position.y = ((dest.y - orig.y) * state + orig.y);
+	entity->Position.z = (dest.z - orig.z) * state + orig.z;
+}
+
 float fPositionToRotation(CharObj2 * co2, NJS_VECTOR orig, NJS_VECTOR point) {
 	co2->SoManyVectors[8].x = orig.x - point.x;
 	co2->SoManyVectors[8].y = orig.y - point.y;

@@ -116,15 +116,33 @@ void __cdecl MysticFan(ObjectMaster *a1)
 
 #pragma region Cart
 void DoBall(EntityData1 * entity);
-void TransformPlayer(char player, NJS_VECTOR orig, NJS_VECTOR dest, float state);
-float fPositionToRotation(CharObj2 * co2, NJS_VECTOR orig, NJS_VECTOR point);
+void TransformSpline(ObjectMaster * a1, NJS_VECTOR orig, NJS_VECTOR dest, float state);
+ObjectFunc(RotateToCharacter, 0x5BBE50);
+
+void CartActions(ObjectMaster * a1) {
+	EntityData1 * entity = a1->Data1;
+	auto player = EntityData1Ptrs[entity->Index - 1];
+
+	if (entity->NextAction == 0 && ControllerPointers[entity->Index - 1]->PressedButtons & Buttons_A) entity->NextAction = 1;
+	
+	if (entity->NextAction > 0) {
+		entity->NextAction += 1;
+
+		if (entity->NextAction == 40) entity->NextAction = 0;
+		if (entity->NextAction > 20) a1->Data1->Position.y += abs(entity->NextAction - 40);
+		else a1->Data1->Position.y += entity->NextAction;
+
+		player->Position.y = entity->Position.y;
+	}
+}
 
 void CartDisplay(ObjectMaster * a1) {
 	if (!MissedFrames) {
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
-		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
+		if (a1->Data1->Action == 3) njRotateXYZ(0, HIWORD(a1->Data1->Object), LOWORD(a1->Data1->Object), a1->Data1->Rotation.z);
+		else njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
 		njScale(nullptr, 1, 1, 1);
 		njTranslate(0, -1.5f, 0, 0);
 		DrawQueueDepthBias = -6000.0f;
@@ -137,7 +155,7 @@ void CartDisplay(ObjectMaster * a1) {
 void MysticCart(ObjectMaster * a1) {
 	LoopHead * loopdata = (LoopHead*)a1->Data1->LoopData;
 	EntityData1 * entity = a1->Data1;
-
+	
 	//Initialize
 	if (entity->Action == 0) {
 		a1->Data1->Position = loopdata->LoopList[0].Position;
@@ -154,7 +172,7 @@ void MysticCart(ObjectMaster * a1) {
 			entity->Action = 2;
 		}
 	}
-
+	
 	//Launch found player
 	else if (entity->Action == 2) {
 		auto player = EntityData1Ptrs[entity->Index - 1];
@@ -162,11 +180,6 @@ void MysticCart(ObjectMaster * a1) {
 		NJS_VECTOR startPos = player->Position;
 		NJS_VECTOR targetPos = a1->Data1->Position;
 
-		if (a1->Data1->NextAction < 21) a1->Data1->NextAction += 1;
-		else {
-			entity->NextAction = 0;
-			entity->Action = 3;
-		}
 		float timer = (float)entity->NextAction / 100;
 
 		float x0 = startPos.x;
@@ -185,6 +198,12 @@ void MysticCart(ObjectMaster * a1) {
 		player->Position.z = (distz)* timer + z0;
 
 		DoBall(player);
+
+		if (a1->Data1->NextAction < 21) a1->Data1->NextAction += 1;
+		else {
+			entity->NextAction = 0;
+			entity->Action = 3;
+		}
 	}
 
 	//Launch Cart
@@ -194,22 +213,28 @@ void MysticCart(ObjectMaster * a1) {
 
 		DoBall(player);
 
-		entity->Scale.x = entity->Scale.x + (loopdata->TotalDist / loopdata->LoopList[entity->InvulnerableTime].Dist) / loopdata->TotalDist * 22;
-		TransformPlayer(entity->NextAction, loopdata->LoopList[entity->InvulnerableTime].Position, loopdata->LoopList[entity->InvulnerableTime + 1].Position, a1->Data1->Scale.x);
-		player->Position.y += 8;
-		entity->Position = player->Position;
-		entity->Position.y -= 6;
+		int speed = 22;
+		if (ControllerPointers[entity->Index - 1]->HeldButtons & Buttons_X) speed += 6;
+		if (ControllerPointers[entity->Index - 1]->HeldButtons & Buttons_Down) speed -= 6;
 
-		entity->Rotation.x = loopdata->LoopList[entity->InvulnerableTime].Ang_X;
-		entity->Rotation.y = loopdata->LoopList[entity->InvulnerableTime].Ang_Y;
-		entity->Rotation.z = 0;
+		entity->Scale.x = entity->Scale.x + (loopdata->TotalDist / loopdata->LoopList[entity->InvulnerableTime].Dist) / loopdata->TotalDist * speed;
+		TransformSpline(a1, loopdata->LoopList[entity->InvulnerableTime].Position, loopdata->LoopList[entity->InvulnerableTime + 1].Position, a1->Data1->Scale.x);
+		player->Position.y -= 8;
+		RotateToCharacter(a1);
+
+		player->Position = entity->Position;
+		entity->Position.y += 2;
+		player->Position.y += 6;
+		
 		player->Rotation = entity->Rotation;
+		player->Rotation.y -= 0x4000;
+
+		CartActions(a1);
 
 		if (a1->Data1->Scale.x > 1) { entity->Scale.x = 0; entity->InvulnerableTime++; }
 
 		if (IsPlayerInsideSphere(&loopdata->LoopList[loopdata->Count - 1].Position, 20) == entity->Index) {
 			entity->Action = 4;
-			player->Rotation.y = loopdata->LoopList[loopdata->Count - 1].Ang_Y;
 			
 			co2->Speed.y = 4;
 			co2->Speed.x = 6;
