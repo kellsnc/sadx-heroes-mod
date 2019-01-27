@@ -143,6 +143,8 @@ void SeaGate_Init(const char *path, const HelperFunctions &helperFunctions) {
 	helperFunctions.RegisterStartPosition(Characters_Gamma, SeasideHill_StartPositions[1]);
 	helperFunctions.RegisterTrialLevel(Characters_Amy, { 1, 1 });
 	helperFunctions.RegisterTrialLevel(Characters_Gamma, { 1, 1 });
+	SaveFile.LevelClear[(Characters_Amy * 43) + LevelIDs_EmeraldCoast] = 1;
+	SaveFile.LevelClear[(Characters_Gamma * 43) + LevelIDs_EmeraldCoast] = 1;
 	helperFunctions.RegisterPathList(SeaGatePaths);
 
 	for (uint8_t i = 0; i < 3; i++) {
@@ -173,6 +175,8 @@ void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions) 
 	helperFunctions.RegisterPathList(SeasideHillPaths); //splines
 	helperFunctions.RegisterTrialLevel(Characters_Tails, { 1, 0 });
 	helperFunctions.RegisterTrialLevel(Characters_Knuckles, { 1, 0 });
+	SaveFile.LevelClear[(Characters_Tails * 43) + LevelIDs_EmeraldCoast] = 1;
+	SaveFile.LevelClear[(Characters_Knuckles * 43) + LevelIDs_EmeraldCoast] = 1;
 
 	//Static stuff
 	for (uint8_t i = 0; i < 3; i++) {

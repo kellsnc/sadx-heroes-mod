@@ -10,12 +10,17 @@ extern NJS_MATERIAL matlist_waterfall[1];
 
 extern LandTable** CurrentLandAddress;
 
-extern bool NoPinball;
 extern bool chunkswapped;
 
 void AutoLoop(ObjectMaster * a1);
 void RailPath(ObjectMaster * a1);
 void SlopePath(ObjectMaster * a1);
+
+void AnimateObjectsTextures(NJS_MODEL_SADX * *objlist, int size, SH_ANIMTEXS *list, Int listcount);
+void AnimateUV(SH_UVSHIFT *uvshift, int size);
+
+ModelInfo* LoadMDL(const char *shortname);
+void FreeMDL(ModelInfo * pointer);
 
 void ModelHandler_Init(ObjectMaster * a1);
 void LevelHandler_Delete(ObjectMaster * a1);
@@ -30,3 +35,4 @@ void PowerPlant_Init(const char *path, const HelperFunctions &helperFunctions);
 void CasinoPark_Init(const char *path, const HelperFunctions &helperFunctions);
 void BingoHighway_Init(const char *path, const HelperFunctions &helperFunctions);
 void HangCastle_Init(const char *path, const HelperFunctions &helperFunctions);
+void MysticMansion_Init(const char *path, const HelperFunctions &helperFunctions);

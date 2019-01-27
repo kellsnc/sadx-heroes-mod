@@ -9,5 +9,7 @@
 #include "lanternapi.h"
 #include "Trampoline.h"
 
+#include "ModelInfo.h"
+
 #include <stdlib.h>
 #include <cmath>

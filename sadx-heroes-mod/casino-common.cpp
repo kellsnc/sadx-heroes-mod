@@ -4,6 +4,7 @@
 
 extern uint8_t SlotState = 0;
 
+extern bool NoPinball;
 extern bool IsRolling = false;
 extern bool inSlot;
 bool IsPinRolling = false;

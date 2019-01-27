@@ -14,6 +14,7 @@ static bool EnablePowerPlant = true;
 static bool EnableCasinoPark = true;
 static bool EnableBingoHighway = true;
 static bool EnableHangCastle = true;
+static bool EnableMysticMansion = true;
 
 bool NoPinball = false;
 bool chunkswapped = false;
@@ -67,7 +68,6 @@ void __cdecl FreeCurrentChunk(int level, int act)
 void SwapCurrentLandTable() {
 	LandTable *land = info->getlandtable();
 	for (Int j = 0; j < land->COLCount; ++j) {
-		land->TexList = CurrentLevelTexlist;
 		if (land->Col[j].Flags == 0x80000000) {
 			for (Int k = 0; k < land->Col[j].Model->basicdxmodel->nbMat; ++k) {
 				landmtl[0] = &land->Col[j].Model->basicdxmodel->mats[k];
@@ -75,10 +75,10 @@ void SwapCurrentLandTable() {
 			}
 		}
 	}
-
 	chunkswapped = true;
-	WriteData((LandTable**)CurrentLandAddress, land);
 	land->TexList = CurrentLevelTexlist;
+	land->AnimCount = 0;
+	WriteData((LandTable**)CurrentLandAddress, land);
 }
 
 void LoadLevelFile(const char *shortname, int chunknb) {
@@ -155,6 +155,7 @@ void Levels_Init(const char *path, const HelperFunctions &helperFunctions)
 	EnableCasinoPark = config->getBool("Levels", "EnableCasinoPark", true);
 	EnableBingoHighway = config->getBool("Levels", "EnableBingoHighway", true);
 	EnableHangCastle = config->getBool("Levels", "EnableHangCastle", true);
+	EnableMysticMansion = config->getBool("Levels", "EnableHangCastle", true);
 	NoPinball = config->getBool("General", "NoPinball", false);
 	delete config;
 
@@ -177,6 +178,7 @@ void Levels_Init(const char *path, const HelperFunctions &helperFunctions)
 	if (EnableCasinoPark) CasinoPark_Init(path, helperFunctions);
 	if (EnableBingoHighway) BingoHighway_Init(path, helperFunctions);
 	if (EnableHangCastle) HangCastle_Init(path, helperFunctions);
+	if (EnableMysticMansion) MysticMansion_Init(path, helperFunctions);
 
 	Objects_Init(path, helperFunctions);
 }

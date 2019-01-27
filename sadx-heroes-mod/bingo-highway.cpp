@@ -83,6 +83,8 @@ void BingoHighway_Init(const char *path, const HelperFunctions &helperFunctions)
 	helperFunctions.RegisterPathList(BingoHighwayPaths);
 	helperFunctions.RegisterTrialLevel(Characters_Tails, { 4, 0 });
 	helperFunctions.RegisterTrialLevel(Characters_Knuckles, { 4, 0 });
+	SaveFile.LevelClear[(Characters_Tails * 43) + LevelIDs_SpeedHighway] = 1;
+	SaveFile.LevelClear[(Characters_Knuckles * 43) + LevelIDs_SpeedHighway] = 1;
 
 	for (uint8_t i = 0; i < 3; i++) {
 		DrawDist_SpeedHighway1[i].Maximum = -999999.0f;

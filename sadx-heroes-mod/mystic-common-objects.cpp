@@ -4,6 +4,10 @@
 
 #include "mystic-common-objects.h"
 
+ModelInfo * MM_MOVPLAT;
+ModelInfo * MM_MYSDOOR;
+ModelInfo * MM_MYSWALL;
+
 #pragma region Warps
 float hclight = 0;
 
@@ -56,7 +60,8 @@ void HCWARP_Main(ObjectMaster *a1) {
 		if (a1->Data1->Action == 1) {
 			auto entity = EntityData1Ptrs[0];
 			entity->Position = od2->vector_a;
-			od2->vector_a.y -= 0.05f;
+			if (a1->Data1->Rotation.z = 2) od2->vector_a.y += 0.05f;
+			else od2->vector_a.y -= 0.05f;
 
 			entity->Status = 0;
 			CharObj2 * co2 = GetCharObj2(0);
@@ -79,7 +84,16 @@ void HCWARP_Main(ObjectMaster *a1) {
 			}
 			else {
 				if (a1->Data1->Scale.x != 0) {
-					entity->Position = a1->Data1->Scale;
+
+					if (a1->Data1->Rotation.z == 2) {
+						entity->Position.x += a1->Data1->Scale.x;
+						entity->Position.y += a1->Data1->Scale.y;
+						entity->Position.z += a1->Data1->Scale.z;
+					}
+					else {
+						entity->Position = a1->Data1->Scale;
+					}
+
 					if (EnableSounds) PlaySound(42, 0, 0, 0);
 					if (a1->Data1->Rotation.z == 1) Camera_Data1->Position = entity->Position;
 				}
@@ -93,7 +107,8 @@ void HCWARP_Main(ObjectMaster *a1) {
 				set_specular_blend_factor(hclight);
 			}
 			else {
-				a1->Data1->Action = 3;
+				if (a1->Data1->Rotation.z == 2) a1->Data1->Action = 0;
+				else a1->Data1->Action = 3;
 				set_blend(-1, -1);
 			}
 		}
@@ -108,6 +123,17 @@ void HCWARP_Main(ObjectMaster *a1) {
 
 void __cdecl HCWARP(ObjectMaster *a1)
 {
+	if (CurrentLevel == 10) {
+		matlist_8D6060A4B230E713870[0].attr_texId = 154;
+		matlist_8D6060A9096106CE9BF[0].attr_texId = 154;
+		matlist_8D606C86190A15FDB23[0].attr_texId = 155;
+	}
+	else {
+		matlist_8D6060A4B230E713870[0].attr_texId = 98;
+		matlist_8D6060A9096106CE9BF[0].attr_texId = 98;
+		matlist_8D606C86190A15FDB23[0].attr_texId = 99;
+	}
+
 	Collision_Init(a1, Warps_col, 2, 2u);
 	if (a1->Data1->Rotation.y == 1) a1->Data1->Action = 2;
 	AllocateObjectData2(a1, a1->Data1);
@@ -130,29 +156,39 @@ void HCDOOR_Display(ObjectMaster *a1) {
 		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
 
-		njTranslate(0, -30, 0, 0);
-		if (a1->Data1->Action == 0) njDrawModel_SADX(&HC_DOOR_LEFT);
+		njTranslate(0, -40, 0, 0);
+		if (a1->Data1->Action == 0) {
+			if (CurrentLevel == 10) njDrawModel_SADX(MM_MYSDOOR->getmodel()->basicdxmodel);
+			else njDrawModel_SADX(&HC_DOOR_LEFT);
+		}
 		else if (a1->Data1->Action == 1) {
 			njRotateY(0, (a1->Data1->NextAction * 130));
-			njDrawModel_SADX(&HC_DOOR_LEFT);
+			if (CurrentLevel == 10) njDrawModel_SADX(MM_MYSDOOR->getmodel()->basicdxmodel);
+			else njDrawModel_SADX(&HC_DOOR_LEFT);
 			njRotateY(0, -(a1->Data1->NextAction * 130));
 		}
 		else if (a1->Data1->Action == 2) {
 			njRotateY(0, 13000);
-			njDrawModel_SADX(&HC_DOOR_LEFT);
+			if (CurrentLevel == 10) njDrawModel_SADX(MM_MYSDOOR->getmodel()->basicdxmodel);
+			else njDrawModel_SADX(&HC_DOOR_LEFT);
 			njRotateY(0, -13000);
 		}
 
-		njTranslate(0, 60, 0, 0);
-		if (a1->Data1->Action == 0) njDrawModel_SADX(&HC_DOOR_RIGHT);
+		njTranslate(0, 80, 0, 0);
+		if (a1->Data1->Action == 0) {
+			if (CurrentLevel == 10) njDrawModel_SADX(MM_MYSDOOR->getmodel()->child->basicdxmodel);
+			else njDrawModel_SADX(&HC_DOOR_RIGHT);
+		}
 		else if (a1->Data1->Action == 1) {
 			njRotateY(0, -(a1->Data1->NextAction * 130));
-			njDrawModel_SADX(&HC_DOOR_RIGHT);
+			if (CurrentLevel == 10) njDrawModel_SADX(MM_MYSDOOR->getmodel()->child->basicdxmodel);
+			else njDrawModel_SADX(&HC_DOOR_RIGHT);
 			njRotateY(0, (a1->Data1->NextAction * 130));
 		}
 		else if (a1->Data1->Action == 2) {
 			njRotateY(0, -13000);
-			njDrawModel_SADX(&HC_DOOR_RIGHT);
+			if (CurrentLevel == 10) njDrawModel_SADX(MM_MYSDOOR->getmodel()->child->basicdxmodel);
+			else njDrawModel_SADX(&HC_DOOR_RIGHT);
 			njRotateY(0, 13000);
 		}
 
@@ -164,7 +200,7 @@ void HCDOOR_Display(ObjectMaster *a1) {
 void HCDOOR_Main(ObjectMaster *a1) {
 	if (IsPlayerInsideSphere(&a1->Data1->Position, 3500.0f)) {
 		if (a1->Data1->Action == 0) {
-			if (a1->Data1->Scale.x < 50) {
+			if (a1->Data1->Scale.y == 0) {
 				if (IsSwitchPressed(a1->Data1->Scale.x)) {
 					a1->Data1->Action = 1;
 					a1->Data1->Object->pos[1] = 0;
@@ -222,13 +258,24 @@ void HCWALL_Display(ObjectMaster *a1)
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
 		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
+
 		if (a1->Data1->Action == 0) {
-			if (a1->Data1->Scale.x == 1) njDrawModel_SADX(&HC_WALL_CLOSE2);
-			else njDrawModel_SADX(&HC_WALL_CLOSE);
+			if (CurrentLevel == 10) {
+				njDrawModel_SADX(MM_MYSWALL->getmodel()->basicdxmodel);
+			}
+			else {
+				if (a1->Data1->Scale.x == 1) njDrawModel_SADX(&HC_WALL_CLOSE2);
+				else njDrawModel_SADX(&HC_WALL_CLOSE);
+			}
 		}
 		else if (a1->Data1->Action == 1) {
-			if (a1->Data1->Scale.x == 1) njDrawModel_SADX(&HC_WALL_OPEN2);
-			else njDrawModel_SADX(&HC_WALL_OPEN);
+			if (CurrentLevel == 10) {
+				njDrawModel_SADX(MM_MYSWALL->getmodel()->child->basicdxmodel);
+			}
+			else {
+				if (a1->Data1->Scale.x == 1) njDrawModel_SADX(&HC_WALL_OPEN2);
+				else njDrawModel_SADX(&HC_WALL_OPEN);
+			}
 			njTranslate(0, 0, -(a1->Data1->Scale.y / 3), 0);
 
 			njTranslate(nullptr, 0, 0, 12 + a1->Data1->Scale.y / 90);
@@ -250,8 +297,13 @@ void HCWALL_Display(ObjectMaster *a1)
 			else njDrawModel_SADX(&HC_WALL_PIECE);
 		}
 		else if (a1->Data1->Action == 2) {
-			if (a1->Data1->Scale.x == 1) njDrawModel_SADX(&HC_WALL_OPEN2);
-			else njDrawModel_SADX(&HC_WALL_OPEN);
+			if (CurrentLevel == 10) {
+				njDrawModel_SADX(MM_MYSWALL->getmodel()->child->basicdxmodel);
+			}
+			else {
+				if (a1->Data1->Scale.x == 1) njDrawModel_SADX(&HC_WALL_OPEN2);
+				else njDrawModel_SADX(&HC_WALL_OPEN);
+			}
 		}
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
@@ -317,7 +369,7 @@ void HCPLATFORM_Display(ObjectMaster *a1) {
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
 		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
-		if (a1->Data1->Position.x < 8000) njRotateX(0, 0x8000);
+		if (CurrentLevel == 7 && a1->Data1->Position.x < 8000) njRotateX(0, 0x8000);
 		njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
@@ -384,6 +436,7 @@ void HCPLATFORM_Main(ObjectMaster *a1) {
 
 				//inacurate check to get if the character is on the platform
 				auto entity = EntityData1Ptrs[0];
+
 				if (entity->Position.x > a1->Data1->Position.x - 30
 					&& entity->Position.x < a1->Data1->Position.x + 30
 					&& entity->Position.z > a1->Data1->Position.z - 30
@@ -414,6 +467,24 @@ void HCPLATFORM_Main(ObjectMaster *a1) {
 void __cdecl HCPLATFORM(ObjectMaster *a1)
 {
 	a1->Data1->Object = &HC_PLATFORM;
+	if (a1->Data1->Rotation.y == 1) a1->Data1->Object = MM_MOVPLAT->getmodel();
+
+	if (CurrentLevel == 10) {
+		matlist_8D606F400D46546E108[0].attr_texId = 24;
+		matlist_8D606F400D46546E108[2].attr_texId = 101;
+		matlist_8D606F400D46546E108[3].attr_texId = 32; //11
+		matlist_8D606F400D46546E108[4].attr_texId = 24; //25
+		matlist_8D606F400D46546E108[5].attr_texId = 24;
+		matlist_8D606F400D46546E108[6].attr_texId = 101;
+	}
+	else {
+		matlist_8D606F400D46546E108[0].attr_texId = 9;
+		matlist_8D606F400D46546E108[2].attr_texId = 10;
+		matlist_8D606F400D46546E108[3].attr_texId = 11;
+		matlist_8D606F400D46546E108[4].attr_texId = 25;
+		matlist_8D606F400D46546E108[5].attr_texId = 25;
+		matlist_8D606F400D46546E108[6].attr_texId = 32;
+	}
 
 	if (a1->Data1->Scale.y == 0) a1->Data1->Action = 0;
 	else if (a1->Data1->Scale.x == 0) a1->Data1->Action = 1;

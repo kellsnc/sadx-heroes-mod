@@ -106,6 +106,8 @@ void HangCastle_Init(const char *path, const HelperFunctions &helperFunctions) {
 	helperFunctions.RegisterPathList(HangCastlePaths);
 	helperFunctions.RegisterTrialLevel(Characters_Tails, { 7, 0 });
 	helperFunctions.RegisterTrialLevel(Characters_Knuckles, { 7, 0 });
+	SaveFile.LevelClear[(Characters_Tails * 43) + LevelIDs_LostWorld] = 1;
+	SaveFile.LevelClear[(Characters_Knuckles * 43) + LevelIDs_LostWorld] = 1;
 
 	for (uint8_t i = 0; i < 3; i++) {
 		DrawDist_LostWorld1[i].Maximum = -999999.0f;

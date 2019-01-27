@@ -1,7 +1,5 @@
 #pragma once
 
-extern NJS_MATERIAL matlist_col[1];
-extern NJS_MATERIAL matlist_waterfall[1];
 extern uint8_t killcount;
 
 void AddToCollision(ObjectMaster *a1, uint8_t col);
@@ -25,3 +23,6 @@ void __cdecl ObjCannon(ObjectMaster *a1);
 void __cdecl ObjBob(ObjectMaster *a1);
 void __cdecl ObjBoxW(ObjectMaster *a1);
 void __cdecl OBJCASE(ObjectMaster *a1);
+
+extern NJS_MATERIAL matlist_col[1];
+extern NJS_MATERIAL matlist_waterfall[1];

@@ -94,6 +94,8 @@ void PowerPlant_Init(const char *path, const HelperFunctions &helperFunctions) {
 	helperFunctions.RegisterPathList(PowerPlantPaths);
 	helperFunctions.RegisterTrialLevel(Characters_Tails, { 9, 0 });
 	helperFunctions.RegisterTrialLevel(Characters_Knuckles, { 9, 0 });
+	SaveFile.LevelClear[(Characters_Tails * 43) + LevelIDs_IceCap] = 1;
+	SaveFile.LevelClear[(Characters_Knuckles * 43) + LevelIDs_IceCap] = 1;
 
 	for (uint8_t i = 0; i < 3; i++) {
 		DrawDist_Icecap1[i].Maximum = -999999.0f;

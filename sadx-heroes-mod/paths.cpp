@@ -15,7 +15,10 @@ float fPositionToRotation(CharObj2 * co2, NJS_VECTOR orig, NJS_VECTOR point) {
 	co2->SoManyVectors[8].z = orig.z - point.z;
 	float len = co2->SoManyVectors[8].z * co2->SoManyVectors[8].z + co2->SoManyVectors[8].y * co2->SoManyVectors[8].y;
 	float temp = 0xBFFF;
-	if (CurrentLevel == 7) temp = 0x4000;
+	if (CurrentLevel == 7) {
+		temp = 0x4000;
+		if (EntityData1Ptrs[0]->Position.z < -17000) temp += 0x8000;
+	}
 	return (atan2(co2->SoManyVectors[8].x, squareroot(len)) * 65536.0 * 0.1591549762031479) + temp;
 }
 
@@ -241,7 +244,7 @@ void RailPath(ObjectMaster * a1) {
 								else tempobj->Data1->CharIndex = 1; //backward
 							}
 
-							tempobj->Data1->CharIndex = 0;
+							//tempobj->Data1->CharIndex = 0;
 
 							break;
 						}

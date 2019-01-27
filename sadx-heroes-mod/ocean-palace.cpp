@@ -268,6 +268,9 @@ void RoadRock_Init(const char *path, const HelperFunctions &helperFunctions) {
 	helperFunctions.RegisterTrialLevel(Characters_Amy, { 2, 1 });
 	helperFunctions.RegisterTrialLevel(Characters_Gamma, { 2, 1 });
 	helperFunctions.RegisterTrialLevel(Characters_Big, { 2, 1 });
+	SaveFile.LevelClear[(Characters_Amy * 43) + LevelIDs_WindyValley] = 1;
+	SaveFile.LevelClear[(Characters_Gamma * 43) + LevelIDs_WindyValley] = 1;
+	SaveFile.LevelClear[(Characters_Big * 43) + LevelIDs_WindyValley] = 1;
 
 	for (uint8_t i = 0; i < 3; i++) {
 		DrawDist_WindyValley2[i].Maximum = -999999.0f;
@@ -292,6 +295,8 @@ void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions) 
 	helperFunctions.RegisterPathList(OceanPalacePaths);
 	helperFunctions.RegisterTrialLevel(Characters_Tails, { 2, 0 });
 	helperFunctions.RegisterTrialLevel(Characters_Knuckles, { 2, 0 });
+	SaveFile.LevelClear[(Characters_Tails * 43) + LevelIDs_WindyValley] = 1;
+	SaveFile.LevelClear[(Characters_Knuckles * 43) + LevelIDs_WindyValley] = 1;
 
 	for (uint8_t i = 0; i < 3; i++) {
 		DrawDist_WindyValley1[i].Maximum = -999999.0f;

@@ -16,6 +16,8 @@ extern bool ChunkSwapped;
 void Levels_Init(const char *path, const HelperFunctions &helperFunctions);
 void Objects_Init(const char *path, const HelperFunctions &helperFunctions);
 
+class ModelInfo;
+
 typedef struct {
 	NJS_VECTOR		pathpos;
 	Angle			pathrot[3];		//manual value for the angle the object should have, the value is absolute, if unset it will calculate it relatively

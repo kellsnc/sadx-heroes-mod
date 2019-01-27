@@ -82,6 +82,8 @@ void CasinoPark_Init(const char *path, const HelperFunctions &helperFunctions) {
 	helperFunctions.RegisterPathList(CasinoParkPaths);
 	helperFunctions.RegisterTrialLevel(Characters_Tails, { 3, 0 });
 	helperFunctions.RegisterTrialLevel(Characters_Knuckles, { 3, 0 });
+	SaveFile.LevelClear[(Characters_Tails * 43) + LevelIDs_TwinklePark] = 1;
+	SaveFile.LevelClear[(Characters_Knuckles * 43) + LevelIDs_TwinklePark] = 1;
 
 	for (uint8_t i = 0; i < 3; i++) {
 		DrawDist_TwinklePark1[i].Maximum = -999999.0f;

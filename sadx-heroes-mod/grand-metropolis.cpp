@@ -78,6 +78,8 @@ void GrandMetropolis_Init(const char *path, const HelperFunctions &helperFunctio
 	helperFunctions.RegisterPathList(GrandMetropolisPaths);
 	helperFunctions.RegisterTrialLevel(Characters_Tails, { 9, 0 });
 	helperFunctions.RegisterTrialLevel(Characters_Knuckles, { 9, 0 });
+	SaveFile.LevelClear[(Characters_Tails * 43) + LevelIDs_Casinopolis] = 1;
+	SaveFile.LevelClear[(Characters_Knuckles * 43) + LevelIDs_Casinopolis] = 1;
 
 	WriteData((DeathZone**)0x1D7E374, GrandMetropolisDeathZones);
 

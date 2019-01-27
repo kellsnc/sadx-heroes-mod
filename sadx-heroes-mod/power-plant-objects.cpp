@@ -332,6 +332,7 @@ PVMEntry PowerPlantObjectTextures[] = {
 	{ "same", &SAME_TEXLIST },
 	{ "GOMA", &GOMA_TEXLIST },
 	{ "GORI", &GORI_TEXLIST },
+	{ "sea_bass", &sea_bass_TEXLIST },
 	{ "hammer", &HAMMER_TEXLIST },
 	{ "TOGEBALL_TOGEBALL", &TOGEBALL_TOGEBALL_TEXLIST },
 	{ "E_BOMB", &E_BOMB_TEXLIST },

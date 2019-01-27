@@ -1,6 +1,25 @@
 #include "stdafx.h"
 #include "mod.h"
 
+extern std::string modpath;
+
+//Load Object File
+ModelInfo* LoadMDL(const char *name) {
+	PrintDebug("Loading model "); PrintDebug(name); PrintDebug("... ");
+	std::string fullPath = modpath + "\\system\\objects\\" + name + ".sa1mdl";
+	const char *foo = fullPath.c_str();
+
+	ModelInfo * temp = new ModelInfo(foo);
+
+	PrintDebug("OK.\n");
+	return temp;
+}
+
+//Free Object File
+void FreeMDL(ModelInfo * pointer) {
+	if (pointer) delete(pointer);
+}
+
 //Basic drawing call
 void DrawObjModel(ObjectMaster *a1, NJS_MODEL_SADX *m, bool scalable) {
 	if (!MissedFrames) {
