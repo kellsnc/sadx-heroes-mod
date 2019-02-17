@@ -8,7 +8,7 @@
 
 NJS_TEXNAME SHTexNames[40];
 NJS_TEXLIST SHCommonTextures = { arrayptrandlength(SHTexNames) };
-PVMEntry shobjpvm = { "heroescommon", &SHCommonTextures };
+PVMEntry shobjpvm = { "heroes-common", &SHCommonTextures };
 
 bool Animate = false;
 
@@ -925,7 +925,6 @@ void __cdecl ObjBoxW(ObjectMaster *a1)
 #pragma endregion
 
 void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions) {
-	helperFunctions.ReplaceFile("system\\heroescommon.PVM", "system\\heroescommon.pvmx");
 	helperFunctions.RegisterCommonObjectPVM(shobjpvm);
 
 	const IniFile *config = new IniFile(std::string(path) + "\\config.ini");

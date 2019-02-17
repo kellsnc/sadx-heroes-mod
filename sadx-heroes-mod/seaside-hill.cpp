@@ -141,11 +141,11 @@ void SeaGate_Init(const char *path, const HelperFunctions &helperFunctions) {
 	helperFunctions.RegisterStartPosition(Characters_Sonic, SeasideHill_StartPositions[1]);
 	helperFunctions.RegisterStartPosition(Characters_Amy, SeasideHill_StartPositions[1]);
 	helperFunctions.RegisterStartPosition(Characters_Gamma, SeasideHill_StartPositions[1]);
+	helperFunctions.RegisterPathList(SeaGatePaths);
 	helperFunctions.RegisterTrialLevel(Characters_Amy, { 1, 1 });
 	helperFunctions.RegisterTrialLevel(Characters_Gamma, { 1, 1 });
 	SaveFile.LevelClear[(Characters_Amy * 43) + LevelIDs_EmeraldCoast] = 1;
 	SaveFile.LevelClear[(Characters_Gamma * 43) + LevelIDs_EmeraldCoast] = 1;
-	helperFunctions.RegisterPathList(SeaGatePaths);
 
 	for (uint8_t i = 0; i < 3; i++) {
 		DrawDist_EmeraldCoast2[i].Maximum = -999999.0f;
@@ -198,8 +198,6 @@ void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions) 
 
 	//Load the level handler
 	WriteData((ObjectFuncPtr*)0x90BF3C, SeasideHillHandler);
-
-	//WriteJump((void *)0x90BF3C, &SeasideHillHandler);
 
 	SeaGate_Init(path, helperFunctions);
 	SeasideHillObjects_Init(path);

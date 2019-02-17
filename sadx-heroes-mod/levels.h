@@ -1,6 +1,6 @@
 #pragma once
 
-#define ReplacePVM(a, b) helperFunctions.ReplaceFile("system\\" a ".PVM", "system\\" b ".pvmx")
+#define ReplacePVM(a, b) helperFunctions.ReplaceFile("system\\" a ".PVM", "system\\" b ".pvm")
 #define ReplaceBIN(a, b) helperFunctions.ReplaceFile("system\\" a ".BIN", "system\\" b ".bin")
 #define ReplaceDAT(a, b) helperFunctions.ReplaceFile("system\\sounddata\\se\\" a ".DAT", "system\\" b ".dat")
 #define ReplaceADX(a, b) helperFunctions.ReplaceFile("system\\sounddata\\bgm\\wma\\" a ".wma", "system\\" b ".adx")
