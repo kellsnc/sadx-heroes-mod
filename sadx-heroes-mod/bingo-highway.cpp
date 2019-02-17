@@ -4,8 +4,6 @@
 #include "bingo-highway-paths.h"
 #include "bingo-highway.h"
 
-ObjectFunc(SpeedHighway_SkyBox_Load, 0x610A70);
-
 void BingoHighwayObjects_Init(const char *path);
 void BingoHighwayObjects_OnFrame(EntityData1 * entity);
 void CasinoCommon_OnFrame();
@@ -18,42 +16,27 @@ void BingoHighwayHandler(ObjectMaster * a1) {
 	CharObj2 * co2 = GetCharObj2(0);
 
 	if (a1->Data1->Action == 0) {
-		if (CurrentAct != 0) {
-			//load back speed highway
-			LoadObject(LoadObj_Data1, 1, SpeedHighway_SkyBox_Load);
-			CurrentLevelObject = LoadObject(LoadObj_Data1, 0, Obj_SpeedHighway);
+		MovePlayerToStartPoint(entity);
+		camerahax_b();
 
-			LevelObjTexlists[0] = &OBJ_HIGHWAY_TEXLIST;
-			LoadPVM("OBJ_HIGHWAY", &OBJ_HIGHWAY_TEXLIST);
-			LoadPVM("OBJ_HIGHWAY2", &OBJ_HIGHWAY2_TEXLIST);
-			LoadPVM("MILESRACE", &MILESRACE_TEXLIST);
-			LoadPVM("NISEPAT", &NISEPAT_TEXLIST);
+		InitializeSoundManager();
+		PlayMusic(MusicIDs_SpeedHighwaySpeedHighway);
+		SoundManager_Delete2();
 
-			DeleteObjectMaster(a1);
-		}
-		else {
-			MovePlayerToStartPoint(entity);
-			camerahax_b();
+		LevelDrawDistance.Maximum = -999999.0f;
+		Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
 
-			InitializeSoundManager();
-			PlayMusic(MusicIDs_SpeedHighwaySpeedHighway);
-			SoundManager_Delete2();
+		a1->Data1->Action = 1;
+		a1->DeleteSub = CasinoCommon_Delete;
 
-			LevelDrawDistance.Maximum = -999999.0f;
-			Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
+		if (CurrentAct == 0) {
+			CurrentLevelTexlist = &HIGHWAY01_TEXLIST;
+			CurrentLandAddress = (LandTable**)0x97DA88;
 
-			a1->Data1->Action = 1;
-			a1->DeleteSub = CasinoCommon_Delete;
+			ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
+			modelhandler->Data1->LoopData = (Loop*)&bingo_highway_objects;
 
-			if (CurrentAct == 0) {
-				CurrentLevelTexlist = &HIGHWAY01_TEXLIST;
-				CurrentLandAddress = (LandTable**)0x97DA88;
-
-				ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
-				modelhandler->Data1->LoopData = (Loop*)&bingo_highway_objects;
-
-				if (entity->Position.z > -3440 && entity->Position.y > 370) LoadLevelFile("BH", 01);
-			}
+			if (entity->Position.z > -3440 && entity->Position.y > 370) LoadLevelFile("BH", 01);
 		}
 	}
 	else {
@@ -91,11 +74,11 @@ void BingoHighway_Init(const char *path, const HelperFunctions &helperFunctions)
 		FogData_SpeedHighway1[i].Toggle = false;
 	}
 
+	//Remove skybox
 	WriteData<4>((void*)0x0090C200, 0x00u);
 
 	WriteData((DeathZone**)0x26A5A94, BingoHighwayDeathZones);
 
-	//Load the level handler
 	WriteData((ObjectFuncPtr*)0x90BF48, &BingoHighwayHandler);
 
 	BingoHighwayObjects_Init(path);

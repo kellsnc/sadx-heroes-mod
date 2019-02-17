@@ -83,7 +83,6 @@ void GrandMetropolis_Init(const char *path, const HelperFunctions &helperFunctio
 
 	WriteData((DeathZone**)0x1D7E374, GrandMetropolisDeathZones);
 
-	//Load the level handler
 	WriteJump((void *)0x5C0F40, &GrandMetropolisHandler);
 
 	GrandMetropolisObjects_Init(path);

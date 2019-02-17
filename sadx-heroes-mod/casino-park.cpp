@@ -19,41 +19,27 @@ void CasinoParkHandler(ObjectMaster * a1) {
 	CharObj2 * co2 = GetCharObj2(0);
 
 	if (a1->Data1->Action == 0) {
-		if (CurrentAct != 0) {
-			//load back twinkle park
-			LoadObject(LoadObj_Data1, 1, TwinklePark_SkyBox_Load);
-			CurrentLevelObject = LoadObject(LoadObj_Data1, 0, Obj_TwinklePark);
+		MovePlayerToStartPoint(entity);
+		camerahax_b();
 
-			LevelObjTexlists[0] = &OBJ_TWINKLE_TEXLIST;
-			LoadPVM("OBJ_TWINKLE", &OBJ_TWINKLE_TEXLIST);
-			LoadPVM("E_BUYON", &E_BUYON_TEXLIST);
-			LoadPVM("BG_SHAREOBJ", &BG_SHAREOBJ_TEXLIST);
+		LevelDrawDistance.Maximum = -999999.0f;
+		Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
 
-			DeleteObjectMaster(a1);
-		}
-		else {
-			MovePlayerToStartPoint(entity);
-			camerahax_b();
+		InitializeSoundManager();
+		PlayMusic(MusicIDs_TwinkleParkTwinklePark);
+		SoundManager_Delete2();
 
-			LevelDrawDistance.Maximum = -999999.0f;
-			Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
+		a1->Data1->Action = 1;
+		a1->DeleteSub = CasinoCommon_Delete;
 
-			InitializeSoundManager();
-			PlayMusic(MusicIDs_TwinkleParkTwinklePark);
-			SoundManager_Delete2();
+		if (CurrentAct == 0) {
+			CurrentLevelTexlist = &TWINKLE01_TEXLIST;
+			CurrentLandAddress = (LandTable**)0x97DA68;
 
-			a1->Data1->Action = 1;
-			a1->DeleteSub = CasinoCommon_Delete;
+			ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
+			modelhandler->Data1->LoopData = (Loop*)&casino_park_objects;
 
-			if (CurrentAct == 0) {
-				CurrentLevelTexlist = &TWINKLE01_TEXLIST;
-				CurrentLandAddress = (LandTable**)0x97DA68;
-
-				ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
-				modelhandler->Data1->LoopData = (Loop*)&casino_park_objects;
-
-				if (entity->Position.z > -1697 && entity->Position.x > -8696) LoadLevelFile("CP", 01);
-			}
+			if (entity->Position.z > -1697 && entity->Position.x > -8696) LoadLevelFile("CP", 01);
 		}
 	}
 	else {
@@ -94,7 +80,6 @@ void CasinoPark_Init(const char *path, const HelperFunctions &helperFunctions) {
 
 	WriteData((DeathZone**)0x26B3C58, CasinoParkDeathZones);
 
-	//Load the level handler
 	WriteData((ObjectFuncPtr*)0x90BF44, &CasinoParkHandler);
 
 	CasinoParkObjects_Init(path);

@@ -5,8 +5,7 @@
 #include "mystic-mansion-deathzones.h"
 #include "mystic-mansion.h"
 
-ObjectFunc(FinalEgg_SkyBox_Load, 0x5ADFE0);
-
+#pragma region Objects Data
 void MysticMansionObjects_Init();
 
 SH_UVSHIFT MysticMansion_UVShift[]{
@@ -25,6 +24,7 @@ extern ModelInfo * MM_MYSDOOR;
 extern ModelInfo * MM_MYSWALL;
 
 extern SOI_LISTS hang_castle_objects[];
+#pragma endregion
 
 void MysticMansion_Delete(ObjectMaster * a1) {
 	FreeMDL(MM_SPHERE1);
@@ -45,53 +45,42 @@ void MysticMansionHandler(ObjectMaster * a1) {
 	CharObj2 * co2 = GetCharObj2(0);
 
 	if (a1->Data1->Action == 0) {
-		if (CurrentAct != 0) {
-			CurrentLevelObject = LoadObject(LoadObj_Data1, 0, Obj_FinalEgg);
-			LoadObject(LoadObj_Data1, 1, FinalEgg_SkyBox_Load);
+		MovePlayerToStartPoint(entity);
+		camerahax_b();
 
-			LevelObjTexlists[0] = &OBJ_FINALEGG_TEXLIST;
-			LoadPVM("OBJ_FINALEGG", &OBJ_FINALEGG_TEXLIST);
+		InitializeSoundManager();
+		PlayMusic(MusicIDs_finaleg1);
+		SoundManager_Delete2();
 
-			DeleteObjectMaster(a1);
-		}
-		else {
-			MovePlayerToStartPoint(entity);
-			camerahax_b();
+		LevelDrawDistance.Maximum = -999999.0f;
+		Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
 
-			InitializeSoundManager();
-			PlayMusic(MusicIDs_finaleg1);
-			SoundManager_Delete2();
+		a1->Data1->Action = 1;
+		a1->DeleteSub = MysticMansion_Delete;
 
-			LevelDrawDistance.Maximum = -999999.0f;
-			Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
-
-			a1->Data1->Action = 1;
-			a1->DeleteSub = MysticMansion_Delete;
-
-			if (CurrentAct == 0) {
-				CurrentLevelTexlist = (TexList*)0x1B98518;
-				CurrentLandAddress = (LandTable**)0x97DB48;
+		if (CurrentAct == 0) {
+			CurrentLevelTexlist = (TexList*)0x1B98518;
+			CurrentLandAddress = (LandTable**)0x97DB48;
 				
-				MM_SKELFAN = LoadMDL("MM_SKELFAN");
-				MM_SPHERE1 = LoadMDL("MM_SPHERE1");
-				MM_SPHERE2 = LoadMDL("MM_SPHERE2");
-				MM_MYSTCAR = LoadMDL("MM_MYSTCAR");
-				MM_MOVPLAT = LoadMDL("MM_MOVPLAT");
-				MM_MYSDOOR = LoadMDL("MM_MYSDOOR");
-				MM_MYSWALL = LoadMDL("MM_MYSWALL");
+			MM_SKELFAN = LoadMDL("MM_SKELFAN");
+			MM_SPHERE1 = LoadMDL("MM_SPHERE1");
+			MM_SPHERE2 = LoadMDL("MM_SPHERE2");
+			MM_MYSTCAR = LoadMDL("MM_MYSTCAR");
+			MM_MOVPLAT = LoadMDL("MM_MOVPLAT");
+			MM_MYSDOOR = LoadMDL("MM_MYSDOOR");
+			MM_MYSWALL = LoadMDL("MM_MYSWALL");
 
-				MMMODELLIST[0] = MM_SPHERE1->getmodel()->basicdxmodel;
-				MMMODELLIST[1] = MM_SPHERE1->getmodel()->basicdxmodel;
-				MysticMansion_UVShift[0].uvlist = MM_SPHERE1->getmodel()->basicdxmodel->meshsets[0].vertuv;
-				MysticMansion_UVShift[1].uvlist = MM_SPHERE2->getmodel()->basicdxmodel->meshsets[0].vertuv;
-				MysticMansion_UVShift[0].uvsize = MM_SPHERE1->getmodel()->basicdxmodel->meshsets[0].nbMesh * 3;
-				MysticMansion_UVShift[1].uvsize = MM_SPHERE2->getmodel()->basicdxmodel->meshsets[0].nbMesh * 3;
+			MMMODELLIST[0] = MM_SPHERE1->getmodel()->basicdxmodel;
+			MMMODELLIST[1] = MM_SPHERE1->getmodel()->basicdxmodel;
+			MysticMansion_UVShift[0].uvlist = MM_SPHERE1->getmodel()->basicdxmodel->meshsets[0].vertuv;
+			MysticMansion_UVShift[1].uvlist = MM_SPHERE2->getmodel()->basicdxmodel->meshsets[0].vertuv;
+			MysticMansion_UVShift[0].uvsize = MM_SPHERE1->getmodel()->basicdxmodel->meshsets[0].nbMesh * 3;
+			MysticMansion_UVShift[1].uvsize = MM_SPHERE2->getmodel()->basicdxmodel->meshsets[0].nbMesh * 3;
 
-				set_shader_flags(ShaderFlags_Blend, true);
+			set_shader_flags(ShaderFlags_Blend, true);
 
-				ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
-				modelhandler->Data1->LoopData = (Loop*)&hang_castle_objects;
-			}
+			ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
+			modelhandler->Data1->LoopData = (Loop*)&hang_castle_objects;
 		}
 	}
 	else {
@@ -136,7 +125,6 @@ void MysticMansion_Init(const char *path, const HelperFunctions &helperFunctions
 
 	WriteData((DeathZone**)0x1A49218, MysticMansionDeathZones);
 
-	//Load the level handler
 	WriteData((ObjectFuncPtr*)0x90BF60, &MysticMansionHandler);
 
 	MysticMansionObjects_Init();

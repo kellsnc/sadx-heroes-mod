@@ -5,8 +5,6 @@
 #include "hang-castle-deathzones.h"
 #include "hang-castle.h"
 
-ObjectFunc(LostWorld_SkyBox_Load, 0x5E1FC0);
-
 void HangCastleObjects_Init(const char *path);
 void HangCastleObjects_OnFrame(EntityData1 * entity);
 void HCFlags_Reset();
@@ -25,43 +23,30 @@ void HangCastleHandler(ObjectMaster * a1) {
 	CharObj2 * co2 = GetCharObj2(0);
 
 	if (a1->Data1->Action == 0) {
-		if (CurrentAct != 0) {
-			CurrentLevelObject = LoadObject(LoadObj_Data1, 0, Obj_LostWorld);
-			LoadObject(LoadObj_Data1, 1, LostWorld_SkyBox_Load);
+		MovePlayerToStartPoint(entity);
+		camerahax_b();
 
-			LevelObjTexlists[0] = &OBJ_RUIN_TEXLIST;
-			LoadPVM("OBJ_RUIN", &OBJ_RUIN_TEXLIST);
-			LoadPVM("OBJ_RUIN2", &OBJ_RUIN2_TEXLIST);
-			LoadPVM("E_SNAKE", &E_SNAKE_TEXLIST);
+		InitializeSoundManager();
+		PlayMusic(MusicIDs_lstwrld1);
+		SoundManager_Delete2();
 
-			DeleteObjectMaster(a1);
-		}
-		else {
-			MovePlayerToStartPoint(entity);
-			camerahax_b();
+		LevelDrawDistance.Maximum = -999999.0f;
+		Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
 
-			InitializeSoundManager();
-			PlayMusic(MusicIDs_lstwrld1);
-			SoundManager_Delete2();
+		a1->Data1->Action = 1;
+		a1->DeleteSub = HangCastle_Delete;
 
-			LevelDrawDistance.Maximum = -999999.0f;
-			Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
+		if (CurrentAct == 0) {
+			CurrentLevelTexlist = &RUIN01_TEXLIST;
+			CurrentLandAddress = (LandTable**)0x97DAE8;
+			HCFlags_Reset();
 
-			a1->Data1->Action = 1;
-			a1->DeleteSub = HangCastle_Delete;
+			set_shader_flags(ShaderFlags_Blend, true);
 
-			if (CurrentAct == 0) {
-				CurrentLevelTexlist = &RUIN01_TEXLIST;
-				CurrentLandAddress = (LandTable**)0x97DAE8;
-				HCFlags_Reset();
+			ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
+			modelhandler->Data1->LoopData = (Loop*)&hang_castle_objects;
 
-				set_shader_flags(ShaderFlags_Blend, true);
-
-				ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
-				modelhandler->Data1->LoopData = (Loop*)&hang_castle_objects;
-
-				if (entity->Position.z > -3111 && entity->Position.x < 8000) LoadLevelFile("HC", 01);
-			}
+			if (entity->Position.z > -3111 && entity->Position.x < 8000) LoadLevelFile("HC", 01);
 		}
 	}
 	else {
@@ -119,7 +104,6 @@ void HangCastle_Init(const char *path, const HelperFunctions &helperFunctions) {
 
 	WriteData((DeathZone**)0x2032108, HangCastleDeathZones);
 
-	//Load the level handler
 	WriteData((ObjectFuncPtr*)0x90BF54, &HangCastleHandler);
 
 	HangCastleObjects_Init(path);

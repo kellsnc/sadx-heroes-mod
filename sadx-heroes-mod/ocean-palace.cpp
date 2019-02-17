@@ -5,8 +5,6 @@
 #include "road-rock-deathzones.h"
 #include "ocean-palace.h"
 
-ObjectFunc(WindyValley_SkyBox_Load, 0x4DDBF0);
-
 void OceanPalaceObjects_Init(const char *path);
 void OceanPalaceObjects_OnFrame(EntityData1 * entity);
 void SHSuns_Init(ObjectMaster * a1);
@@ -25,7 +23,7 @@ static float rocktimer2 = 0;
 static uint8_t rockstate3 = 0;
 static float rocktimer3 = 0;
 
-//Sometimes sonic skip the running animation
+//Sometimes sonic skips the running animation
 void OP_AnimFix() {
 	auto entity = EntityData1Ptrs[0];
 	CharObj2 *co2 = GetCharObj2(0);
@@ -40,6 +38,7 @@ void OP_AnimFix() {
 }
 
 //A huge mess that was supposed to be temporary but then got lazy to rewrite
+//Seriously though it's horrible
 void GiantRockHandler() {
 	if (IsPlayerInsideSphere(&OceanPalaceTriggers[1], 45.0f) == 1) OP_AnimFix();
 
@@ -175,63 +174,45 @@ void OceanPalaceHandler(ObjectMaster * a1) {
 	CharObj2 * co2 = GetCharObj2(0);
 
 	if (a1->Data1->Action == 0) {
-		if (CurrentAct == 2) {
-			//If act 2, load windy valley back
-			LoadObject(LoadObj_Data1, 1, WindyValley_SkyBox_Load);
-			CurrentLevelObject = LoadObject(LoadObj_Data1, 0, Obj_WindyValley);
+		MovePlayerToStartPoint(entity);
+		camerahax_b();
 
-			LevelObjTexlists[0] = &OBJ_WINDY_TEXLIST;
-			LoadPVM("OBJ_WINDY", &OBJ_WINDY_TEXLIST);
-			LoadPVM("E_LEON", &E_LEON_TEXLIST);
-			LoadPVM("Milesrace", &MILESRACE_TEXLIST);
-			LoadPVM("E_SNAKE", &E_SNAKE_TEXLIST);
-			LoadPVM("Kaos_eme", &KAOS_EME_TEXLIST);
+		a1->Data1->Action = 1;
+		a1->DeleteSub = OceanPalace_delete;
 
-			DeleteObjectMaster(a1);
+		if (CurrentAct == 0) {
+			//Ocean Palace
+			PlaySound(44, 0, 0, 0);
+			InitializeSoundManager();
+			PlayMusic(MusicIDs_WindyValleyWindyHill);
+			SoundManager_Delete2();
+
+			LevelDrawDistance.Maximum = -999999.0f;
+			Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
+
+			CurrentLevelTexlist = &WINDY01_TEXLIST;
+			CurrentLandAddress = (LandTable**)0x97DA48;
+			matlist_waterfall[0].attr_texId = 66;
+
+			ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
+			modelhandler->Data1->LoopData = (Loop*)&ocean_palace_objects;
+			LoadObject(LoadObj_Data1, 3, SHSuns_Init); //load the sun
+
+			if (entity->Position.z > -10637) LoadLevelFile("OP", 01);
 		}
 		else {
-			MovePlayerToStartPoint(entity);
-			camerahax_b();
+			//Road Rock
+			InitializeSoundManager();
+			PlayMusic(MusicIDs_WindyValleyTornado);
+			SoundManager_Delete2();
 
-			a1->Data1->Action = 1;
-			a1->DeleteSub = OceanPalace_delete;
+			CurrentLevelTexlist = &WINDY02_TEXLIST;
+			CurrentLandAddress = (LandTable**)0x97DA4C;
+			matlist_waterfall[0].attr_texId = 45;
 
-			if (CurrentAct == 0) {
-				//Ocean Palace
-
-				PlaySound(44, 0, 0, 0);
-				InitializeSoundManager();
-				PlayMusic(MusicIDs_WindyValleyWindyHill);
-				SoundManager_Delete2();
-
-				LevelDrawDistance.Maximum = -999999.0f;
-				Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
-
-				CurrentLevelTexlist = &WINDY01_TEXLIST;
-				CurrentLandAddress = (LandTable**)0x97DA48;
-				matlist_waterfall[0].attr_texId = 66;
-
-				ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
-				modelhandler->Data1->LoopData = (Loop*)&ocean_palace_objects;
-				LoadObject(LoadObj_Data1, 3, SHSuns_Init); //load the sun
-
-				if (entity->Position.z > -10637) LoadLevelFile("OP", 01);
-			}
-			else {
-				//Road Rock
-
-				InitializeSoundManager();
-				PlayMusic(MusicIDs_WindyValleyTornado);
-				SoundManager_Delete2();
-
-				CurrentLevelTexlist = &WINDY02_TEXLIST;
-				CurrentLandAddress = (LandTable**)0x97DA4C;
-				matlist_waterfall[0].attr_texId = 45;
-
-				ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
-				modelhandler->Data1->LoopData = (Loop*)&road_rock_objects;
-				LoadLevelFile("RR", 01);
-			}
+			ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
+			modelhandler->Data1->LoopData = (Loop*)&road_rock_objects;
+			LoadLevelFile("RR", 01);
 		}
 	}
 	else {
@@ -308,7 +289,6 @@ void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions) 
 	//Do not draw skybox
 	WriteData<4>((void*)0x0090C1F8, 0x00u);
 
-	//Load the level handler
 	WriteData((ObjectFuncPtr*)0x90BF40, OceanPalaceHandler);
 
 	RoadRock_Init(path, helperFunctions);

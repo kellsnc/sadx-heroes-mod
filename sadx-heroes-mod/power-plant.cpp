@@ -23,49 +23,29 @@ void PowerPlantHandler(ObjectMaster * a1) {
 	CharObj2 * co2 = GetCharObj2(0);
 
 	if (a1->Data1->Action == 0) {
-		if (CurrentAct != 0) {
-			//if act > 0, load back ice cap
-			CurrentLevelObject = LoadObject(LoadObj_Data1, 0, Obj_Icecap);
+		MovePlayerToStartPoint(entity);
+		camerahax_b();
 
-			LevelObjTexlists[0] = &OBJ_ICECAP_TEXLIST;
-			LoadPVM("OBJ_ICECAP", &OBJ_ICECAP_TEXLIST);
-			LoadPVM("OBJ_ICECAP2", &OBJ_ICECAP2_TEXLIST);
-			LoadPVM("E102TIME", &E102TIME_TEXLIST);
-			LoadPVM("E_SNOWMAN", &E_SNOWMAN_TEXLIST);
-			LoadPVM("MILESRACE", &MILESRACE_TEXLIST);
-			LoadPVM("E_SNAKE", &E_SNAKE_TEXLIST);
-			LoadPVM("KAOS_EME", &KAOS_EME_TEXLIST);
-			LoadPVM("PIRANIA", &PIRANIA_TEXLIST);
-			LoadPVM("NEW_BB", &NEW_BB_TEXLIST);
-			LoadPVM("BOARD_SCORE", &BOARD_SCORE_TEXLIST);
+		LevelDrawDistance.Maximum = -999999.0f;
+		Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
 
-			DeleteObjectMaster(a1);
-		}
-		else {
-			MovePlayerToStartPoint(entity);
-			camerahax_b();
+		InitializeSoundManager();
+		PlayMusic(MusicIDs_icecap1);
+		SoundManager_Delete2();
 
-			LevelDrawDistance.Maximum = -999999.0f;
-			Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
+		a1->Data1->Action = 1;
+		a1->DeleteSub = PowerPlant_Delete;
 
-			InitializeSoundManager();
-			PlayMusic(MusicIDs_icecap1);
-			SoundManager_Delete2();
+		set_shader_flags(ShaderFlags_Blend, true);
 
-			a1->Data1->Action = 1;
-			a1->DeleteSub = PowerPlant_Delete;
+		if (CurrentAct == 0) {
+			CurrentLevelTexlist = &ICECAP01_TEXLIST;
+			CurrentLandAddress = (LandTable**)0x97DB08;
 
-			set_shader_flags(ShaderFlags_Blend, true);
+			ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
+			modelhandler->Data1->LoopData = (Loop*)&power_plant_objects;
 
-			if (CurrentAct == 0) {
-				CurrentLevelTexlist = &ICECAP01_TEXLIST;
-				CurrentLandAddress = (LandTable**)0x97DB08;
-
-				ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
-				modelhandler->Data1->LoopData = (Loop*)&power_plant_objects;
-
-				if (entity->Position.z > -2081) LoadLevelFile("PP", 01);
-			}
+			if (entity->Position.z > -2081) LoadLevelFile("PP", 01);
 		}
 	}
 	else {
@@ -106,7 +86,6 @@ void PowerPlant_Init(const char *path, const HelperFunctions &helperFunctions) {
 
 	WriteData((DeathZone**)0xE2FE4C, PowerPlantDeathZones);
 
-	//Load the level handler
 	WriteData((ObjectFuncPtr*)0x90BF58, &PowerPlantHandler);
 
 	PowerPlantObjects_Init(path);
