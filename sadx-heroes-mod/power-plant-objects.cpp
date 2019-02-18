@@ -45,15 +45,19 @@ void PathsFunctions(float a) {
 					else if (CurrentChunk == 11 && IsPlayerInBox(entity->Position, { 22186.03f, 8432.125f, -12439.87f }, { 22232.81f, 8689.5f, -12340.5f })) elevate = true;
 
 					if (elevate) {
-						set_blend_ptr(2, 4);
-						set_diffuse_blend_factor_ptr(0.6f);
-						set_specular_blend_factor_ptr(0.4f);
+						if (IsLantern) {
+							set_blend_ptr(2, 4);
+							set_diffuse_blend_factor_ptr(0.6f);
+							set_specular_blend_factor_ptr(0.4f);
+						}
 						ElevatePlayer(slot);
 					}
 					else {
 						if (anim % 60 == true) {
-							set_diffuse_blend_factor_ptr(0);
-							set_specular_blend_factor_ptr(0);
+							if (IsLantern) {
+								set_diffuse_blend_factor_ptr(0);
+								set_specular_blend_factor_ptr(0);
+							}
 							elevate = false;
 						}
 					}
@@ -498,8 +502,10 @@ void PPPathsHandler() {
 			if (co2) {
 				if (co2->SurfaceFlags == 0x8A1 || co2->SurfaceFlags == 0xA81) {
 					
-					set_diffuse_blend_ptr(2, 4);
-					set_diffuse_blend_factor_ptr(0.3f);
+					if (IsLantern) {
+						set_diffuse_blend_ptr(2, 4);
+						set_diffuse_blend_factor_ptr(0.3f);
+					}
 					
 					if (entity->Position.x < 2404 && entity->Position.z > -1274) entity->Position.z -= 2;
 					else if (entity->Position.x < 3494 && entity->Position.x > 3132) entity->Position.x += 2;
@@ -514,7 +520,7 @@ void PPPathsHandler() {
 					else if (entity->Position.x > 19094) entity->Position.x += 2;
 				}
 				else {
-					if (anim % 4 == true) set_diffuse_blend_factor_ptr(0);
+					if (anim % 4 == true && IsLantern) set_diffuse_blend_factor_ptr(0);
 				}
 			}
 
@@ -529,15 +535,19 @@ void PPPathsHandler() {
 			}
 
 			if (elevate) {
-				set_blend_ptr(2, 4);
-				set_diffuse_blend_factor_ptr(0.6f);
-				set_specular_blend_factor_ptr(0.4f);
+				if (IsLantern) {
+					set_blend_ptr(2, 4);
+					set_diffuse_blend_factor_ptr(0.6f);
+					set_specular_blend_factor_ptr(0.4f);
+				}
 				ElevatePlayer(slot);
 			}
 			else {
 				if (anim % 60 == true) {
-					set_diffuse_blend_factor_ptr(0);
-					set_specular_blend_factor_ptr(0);
+					if (IsLantern) {
+						set_diffuse_blend_factor_ptr(0);
+						set_specular_blend_factor_ptr(0);
+					}
 					elevate = false;
 				}
 			}

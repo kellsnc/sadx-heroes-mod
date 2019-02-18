@@ -67,7 +67,7 @@ void SwapCurrentLandTable() {
 		if (land->Col[j].Flags == 0x80000000) {
 			for (Int k = 0; k < land->Col[j].Model->basicdxmodel->nbMat; ++k) {
 				landmtl[0] = &land->Col[j].Model->basicdxmodel->mats[k];
-				material_register_ptr(landmtl, LengthOfArray(landmtl), &ForceWhiteDiffuse);
+				if (IsLantern) material_register_ptr(landmtl, LengthOfArray(landmtl), &ForceWhiteDiffuse);
 			}
 		}
 	}

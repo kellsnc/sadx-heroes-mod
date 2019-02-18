@@ -383,8 +383,10 @@ void AutoPathsMovs() {
 			CharObj2 *co2 = GetCharObj2(slot);
 			if (co2) {
 				if (co2->SurfaceFlags == 0x8a1 || co2->SurfaceFlags == 0xA81) {
-					set_diffuse_blend_ptr(2, 4);
-					set_diffuse_blend_factor_ptr(0.3f);
+					if (IsLantern) {
+						set_diffuse_blend_ptr(2, 4);
+						set_diffuse_blend_factor_ptr(0.3f);
+					}
 
 					auto entity = EntityData1Ptrs[slot];
 					if (entity->Position.z > 472) entity->Position.z -= 2;

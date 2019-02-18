@@ -1,11 +1,10 @@
 #pragma once
 
+extern float IsLantern;
 extern set_shader_flags* set_shader_flags_ptr;
 extern material_register* material_register_ptr;
-extern material_unregister* material_unregister_ptr;
 extern set_diffuse* set_diffuse_ptr;
 extern set_specular* set_specular_ptr;
-extern set_alpha_reject* set_alpha_reject_ptr;
 extern set_blend_factor* set_blend_factor_ptr;
 extern set_diffuse_blend* set_diffuse_blend_ptr;
 extern set_specular_blend* set_specular_blend_ptr;

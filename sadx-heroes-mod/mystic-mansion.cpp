@@ -35,8 +35,11 @@ void MysticMansion_Delete(ObjectMaster * a1) {
 	FreeMDL(MM_MYSDOOR);
 	FreeMDL(MM_MYSWALL);
 
-	set_shader_flags_ptr(ShaderFlags_Blend, false);
-	set_blend_ptr(-1, -1);
+	if (IsLantern) {
+		set_shader_flags_ptr(ShaderFlags_Blend, false);
+		set_blend_ptr(-1, -1);
+	}
+
 	LevelHandler_Delete(a1);
 }
 
@@ -77,7 +80,7 @@ void MysticMansionHandler(ObjectMaster * a1) {
 			MysticMansion_UVShift[0].uvsize = MM_SPHERE1->getmodel()->basicdxmodel->meshsets[0].nbMesh * 3;
 			MysticMansion_UVShift[1].uvsize = MM_SPHERE2->getmodel()->basicdxmodel->meshsets[0].nbMesh * 3;
 
-			set_shader_flags_ptr(ShaderFlags_Blend, true);
+			if (IsLantern) set_shader_flags_ptr(ShaderFlags_Blend, true);
 
 			ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
 			modelhandler->Data1->LoopData = (Loop*)&hang_castle_objects;
