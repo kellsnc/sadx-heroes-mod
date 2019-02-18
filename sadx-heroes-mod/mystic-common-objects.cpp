@@ -73,14 +73,14 @@ void HCWARP_Main(ObjectMaster *a1) {
 			}
 			if (a1->Data1->NextAction < 100) { 
 				a1->Data1->NextAction += 1; 
-				set_specular_blend(0, 4);
-				set_specular_blend(1, 4);
-				set_specular_blend(2, 4);
-				set_specular_blend(3, 4);
-				set_specular_blend(7, 4);
+				set_specular_blend_ptr(0, 4);
+				set_specular_blend_ptr(1, 4);
+				set_specular_blend_ptr(2, 4);
+				set_specular_blend_ptr(3, 4);
+				set_specular_blend_ptr(7, 4);
 				hclight = a1->Data1->NextAction;
 				hclight /= 100;
-				set_specular_blend_factor(hclight);
+				set_specular_blend_factor_ptr(hclight);
 			}
 			else {
 				if (a1->Data1->Scale.x != 0) {
@@ -104,12 +104,12 @@ void HCWARP_Main(ObjectMaster *a1) {
 		if (a1->Data1->Action == 2) {
 			if (hclight > 0) {
 				hclight -= 0.05f;
-				set_specular_blend_factor(hclight);
+				set_specular_blend_factor_ptr(hclight);
 			}
 			else {
 				if (a1->Data1->Rotation.z == 2) a1->Data1->Action = 0;
 				else a1->Data1->Action = 3;
-				set_blend(-1, -1);
+				set_blend_ptr(-1, -1);
 			}
 		}
 

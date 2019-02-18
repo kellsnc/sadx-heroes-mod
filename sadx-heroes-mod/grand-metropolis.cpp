@@ -14,8 +14,8 @@ extern SOI_LISTS grand_metropolis_objects[];
 
 void GrandMetropolis_Delete(ObjectMaster * a1) {
 	GrandMetropolisObjects_Reset();
-	set_shader_flags(ShaderFlags_Blend, false);
-	set_blend(-1, -1);
+	set_shader_flags_ptr(ShaderFlags_Blend, false);
+	set_blend_ptr(-1, -1);
 	LevelHandler_Delete(a1);
 }
 
@@ -34,7 +34,7 @@ void GrandMetropolisHandler(ObjectMaster * a1) {
 		LevelDrawDistance.Maximum = -999999.0f;
 		Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
 
-		set_shader_flags(ShaderFlags_Blend, true);
+		set_shader_flags_ptr(ShaderFlags_Blend, true);
 
 		LoadObject(LoadObj_Data1, 3, SHSuns_Init); //load the sun
 

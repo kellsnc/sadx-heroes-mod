@@ -8,7 +8,9 @@
 #include <SADXModLoader.h>
 #include "lanternapi.h"
 #include "Trampoline.h"
+#include "IniFile.hpp"
 
+#include "LandTableInfo.h"
 #include "ModelInfo.h"
 
 #include <stdlib.h>

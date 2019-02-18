@@ -13,8 +13,8 @@ extern SOI_LISTS power_plant_objects[];
 
 void PowerPlant_Delete(ObjectMaster * a1) {
 	PowerPlantObjects_Reset();
-	set_shader_flags(ShaderFlags_Blend, false);
-	set_blend(-1, -1);
+	set_shader_flags_ptr(ShaderFlags_Blend, false);
+	set_blend_ptr(-1, -1);
 	LevelHandler_Delete(a1);
 }
 
@@ -36,7 +36,7 @@ void PowerPlantHandler(ObjectMaster * a1) {
 		a1->Data1->Action = 1;
 		a1->DeleteSub = PowerPlant_Delete;
 
-		set_shader_flags(ShaderFlags_Blend, true);
+		set_shader_flags_ptr(ShaderFlags_Blend, true);
 
 		if (CurrentAct == 0) {
 			CurrentLevelTexlist = &ICECAP01_TEXLIST;

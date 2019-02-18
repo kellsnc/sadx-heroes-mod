@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "mod.h"
-#include "IniFile.hpp"
-#include "LandTableInfo.h"
 
 #include "levels.h"
 
@@ -29,14 +27,12 @@ NJS_MATERIAL* landmtl[] = { nullptr };
 
 bool ForceWhiteDiffuse(NJS_MATERIAL* material, Uint32 flags)
 {
-	set_diffuse(1, false);
-	set_specular(7, false);
-	use_default_diffuse(true);
+	set_diffuse_ptr(1, false);
+	set_specular_ptr(7, false);
 	return true;
 }
 
-#pragma region Chunks
-void __cdecl FreeCurrentChunk(int level, int act)
+void FreeCurrentChunk(int level, int act)
 {
 	LandTable *CurrentLand; // esi
 	int COL_Length; // ebp
@@ -71,10 +67,11 @@ void SwapCurrentLandTable() {
 		if (land->Col[j].Flags == 0x80000000) {
 			for (Int k = 0; k < land->Col[j].Model->basicdxmodel->nbMat; ++k) {
 				landmtl[0] = &land->Col[j].Model->basicdxmodel->mats[k];
-				material_register(landmtl, LengthOfArray(landmtl), &ForceWhiteDiffuse);
+				material_register_ptr(landmtl, LengthOfArray(landmtl), &ForceWhiteDiffuse);
 			}
 		}
 	}
+
 	chunkswapped = true;
 	land->TexList = CurrentLevelTexlist;
 	land->AnimCount = 0;
@@ -140,7 +137,6 @@ void LevelHandler_Delete(ObjectMaster * a1) {
 	oldinfo = nullptr;
 	anim = 0;
 }
-#pragma endregion
 
 void Levels_Init(const char *path, const HelperFunctions &helperFunctions)
 {
