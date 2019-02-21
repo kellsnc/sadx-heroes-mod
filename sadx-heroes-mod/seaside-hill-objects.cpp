@@ -4,6 +4,11 @@
 
 #include "seaside-hill-objects.h"
 
+ModelInfo * SH_MRUIN01;
+ModelInfo * SH_MRUIN02;
+ModelInfo * SH_MRUIN03;
+ModelInfo * SH_POLFLAG;
+
 #pragma region Sun
 NJS_VECTOR sunpos = { 74, 11106, 425 };
 
@@ -33,9 +38,7 @@ void SH_MOVINGPLATFORMS_Display(ObjectMaster *a1) {
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
 		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
-		if (a1->Data1->Action == 0) njDrawModel_SADX(SH_MovingRuin1obj.basicdxmodel);
-		if (a1->Data1->Action == 1) njDrawModel_SADX(SH_MovingRuin2obj.basicdxmodel);
-		if (a1->Data1->Action == 2) njDrawModel_SADX(SH_MovingRuin3obj.basicdxmodel);
+		njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 	}
@@ -78,9 +81,9 @@ void SH_MOVINGPLATFORMS_Main(ObjectMaster *a1) {
 
 void __cdecl SH_MOVINGPLATFORMS(ObjectMaster *a1)
 {
-	if (a1->Data1->Scale.x == 0) a1->Data1->Object = &SH_MovingRuin1obj;
-	if (a1->Data1->Scale.x == 1) a1->Data1->Object = &SH_MovingRuin2obj;
-	if (a1->Data1->Scale.x == 2) a1->Data1->Object = &SH_MovingRuin3obj;
+	if (a1->Data1->Scale.x == 0) a1->Data1->Object = SH_MRUIN01->getmodel();
+	if (a1->Data1->Scale.x == 1) a1->Data1->Object = SH_MRUIN02->getmodel();
+	if (a1->Data1->Scale.x == 2) a1->Data1->Object = SH_MRUIN03->getmodel();
 	a1->Data1->Action = (char)a1->Data1->Scale.x;
 	a1->Data1->Scale.x = a1->Data1->Position.y;
 
@@ -235,7 +238,7 @@ void __cdecl SHSPIKES_Main(ObjectMaster *a1)
 
 void __cdecl SHSPIKES(ObjectMaster *a1)
 {
-	a1->Data1->Object = &SH_Spike1;
+	a1->Data1->Object = SH_POLFLAG->getmodel();
 	AddToCollision(a1, 0);
 	a1->Data1->Scale.y = 0;
 

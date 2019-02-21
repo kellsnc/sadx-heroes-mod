@@ -9,9 +9,16 @@ void SeasideHillObjects_Init(const char *path);
 void SeasideHillObjects_OnFrame(EntityData1 * entity);
 void SHSuns_Init(ObjectMaster * a1);
 
+#pragma region Objects Data
 extern SOI_LISTS seaside_hill_objects[];
 extern SOI_LISTS sea_gate_objects[];
 extern float ruin;
+
+extern ModelInfo * SH_MRUIN01;
+extern ModelInfo * SH_MRUIN02;
+extern ModelInfo * SH_MRUIN03;
+extern ModelInfo * SH_POLFLAG;
+#pragma endregion
 
 static int slowtimer = 0;
 static uint8_t sh_trigger = 1;
@@ -47,6 +54,15 @@ void SeasideHill_OnFrame(EntityData1 * entity, CharObj2 * co2) {
 	}
 }
 
+void SeasideHill_Delete(ObjectMaster * a1) {
+	FreeMDL(SH_MRUIN01);
+	FreeMDL(SH_MRUIN02);
+	FreeMDL(SH_MRUIN03);
+	FreeMDL(SH_POLFLAG);
+
+	LevelHandler_Delete(a1);
+}
+
 void SeasideHillHandler(ObjectMaster * a1) {
 	auto entity = EntityData1Ptrs[0];
 	CharObj2 * co2 = GetCharObj2(0);
@@ -58,6 +74,11 @@ void SeasideHillHandler(ObjectMaster * a1) {
 		LevelDrawDistance.Maximum = -999999.0f;
 		Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
 
+		SH_MRUIN01 = LoadMDL("SH_MRUIN01");
+		SH_MRUIN02 = LoadMDL("SH_MRUIN02");
+		SH_MRUIN03 = LoadMDL("SH_MRUIN03");
+		SH_POLFLAG = LoadMDL("SH_POLFLAG");
+
 		PlaySound(44, 0, 0, 0);
 		InitializeSoundManager();
 		PlayMusic(MusicIDs_EmeraldCoastAzureBlueWorld);
@@ -66,7 +87,7 @@ void SeasideHillHandler(ObjectMaster * a1) {
 		LoadObject(LoadObj_Data1, 3, SHSuns_Init); //load the sun
 
 		a1->Data1->Action = 1;
-		a1->DeleteSub = LevelHandler_Delete;
+		a1->DeleteSub = SeasideHill_Delete;
 
 		if (CurrentAct == 0) {
 			//Seaside Hill

@@ -85,9 +85,7 @@ void LoadLevelFile(const char *shortname, int chunknb) {
 	fullPath += numtos + ".sa1lvl";
 	const char *foo = fullPath.c_str();
 
-	PrintDebug("[SHM] Swapping for ");
-	PrintDebug(foo);
-	PrintDebug("\n");
+	PrintDebug("[SHM] Swapping for ", foo, "\n");
 
 	FreeCurrentChunk(CurrentLevel, CurrentAct);
 
