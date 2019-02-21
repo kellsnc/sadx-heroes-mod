@@ -22,6 +22,8 @@ unsigned int anim = 0;
 uint8_t CurrentChunk = 0;
 NJS_TEXLIST * CurrentLevelTexlist;
 
+void Levels_Init(const char *path, const HelperFunctions &helperFunctions);
+void Objects_Init(const char *path, const HelperFunctions &helperFunctions);
 void CommonObjects_OnFrame();
 
 extern "C"
@@ -36,6 +38,7 @@ extern "C"
 
 		//Set up function pointers for Lantern API (borrowed from PkR)
 		HMODULE LanternDLL = GetModuleHandle(L"sadx-dc-lighting");
+
 		if (LanternDLL) {
 			IsLantern = true;
 			set_shader_flags_ptr = (void(*)(uint32_t, bool))GetProcAddress(LanternDLL, "set_shader_flags");

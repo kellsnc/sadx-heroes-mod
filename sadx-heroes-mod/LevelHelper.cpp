@@ -36,10 +36,6 @@ void ModelHandler_Display(ObjectMaster * a1) {
 	}
 }
 
-void ModelHandler_Main(ObjectMaster * a1) {
-	ModelHandler_Display(a1);
-}
-
 void ModelHandler_Init(ObjectMaster * a1) {
 	a1->Data1->Index = GetCharacterID(0) + 1;
 
@@ -55,7 +51,7 @@ void ModelHandler_Init(ObjectMaster * a1) {
 	a1->Data1->Scale.x = 0;
 	
 	a1->DisplaySub = ModelHandler_Display;
-	a1->MainSub = ModelHandler_Main;
+	a1->MainSub = ModelHandler_Display;
 }
 
 //Animate textures of the current landtable in a similar way to Sonic Heroes

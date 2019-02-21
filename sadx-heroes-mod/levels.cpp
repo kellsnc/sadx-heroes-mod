@@ -85,7 +85,9 @@ void LoadLevelFile(const char *shortname, int chunknb) {
 	fullPath += numtos + ".sa1lvl";
 	const char *foo = fullPath.c_str();
 
-	PrintDebug("[SHM] Swapping for ", foo, "\n");
+	PrintDebug("[SHM] Swapping for ");
+	PrintDebug(foo);
+	PrintDebug("\n");
 
 	FreeCurrentChunk(CurrentLevel, CurrentAct);
 
@@ -173,6 +175,4 @@ void Levels_Init(const char *path, const HelperFunctions &helperFunctions)
 	if (EnableBingoHighway) BingoHighway_Init(path, helperFunctions);
 	if (EnableHangCastle) HangCastle_Init(path, helperFunctions);
 	if (EnableMysticMansion) MysticMansion_Init(path, helperFunctions);
-
-	Objects_Init(path, helperFunctions);
 }

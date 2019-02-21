@@ -25,9 +25,6 @@ extern bool EnableSounds;
 extern bool IsLoaded;
 extern bool ChunkSwapped;
 
-void Levels_Init(const char *path, const HelperFunctions &helperFunctions);
-void Objects_Init(const char *path, const HelperFunctions &helperFunctions);
-
 class ModelInfo;
 
 typedef struct {
