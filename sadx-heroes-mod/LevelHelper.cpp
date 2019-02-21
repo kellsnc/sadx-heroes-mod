@@ -1,16 +1,8 @@
 #include "stdafx.h"
 #include "mod.h"
 
-//Load an object that simply draw models every frame
-void ModelHandler_Draw(NJS_MODEL_SADX * model) {
-	if (model->meshsets[0].vertcolor) {
-		LastRenderFlags = (RenderFlags)(RenderFlags_10);
-		njDrawModel_SADX(model);
-		ResetRenderFlags();
-	}
-	njDrawModel_SADX(model);
-}
-
+//Render a set of models in only one object
+//I should remove this some day
 void ModelHandler_Display(ObjectMaster * a1) {
 	SOI_LISTS * List = (SOI_LISTS*)a1->Data1->LoopData;
 	if (!DroppedFrames) {
@@ -27,11 +19,11 @@ void ModelHandler_Display(ObjectMaster * a1) {
 							njScale(nullptr, List[i].soientry[j].soiscl.x, List[i].soientry[j].soiscl.y, List[i].soientry[j].soiscl.z); //Scale of object
 							DrawQueueDepthBias = List[i].soientry[j].soibias;
 							if (List[i].soientry[j].soidrawdist == 0.0f) {
-								ModelHandler_Draw(List[i].soientry[j].soiobject);
+								njDrawModel_SADX(List[i].soientry[j].soiobject);
 							}
 							else {
 								if (IsPlayerInsideSphere(&List[i].soientry[j].soipos, List[i].soientry[j].soidrawdist) == true)
-									ModelHandler_Draw(List[i].soientry[j].soiobject);
+									njDrawModel_SADX(List[i].soientry[j].soiobject);
 							}
 							DrawQueueDepthBias = 0;
 							njPopMatrix(1u);

@@ -78,8 +78,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\sadx-mod-loader\libmodutils\LandTableInfo.cpp" />
-    <ClCompile Include="..\sadx-mod-loader\libmodutils\ModelInfo.cpp" />
     <ClCompile Include="bingo-highway-objects.cpp" />
     <ClCompile Include="bingo-highway.cpp" />
     <ClCompile Include="casino-common-objects.cpp" />
