@@ -1,10 +1,5 @@
 #pragma once
 
-StartPosition SeasideHill_StartPositions[]{
-	{ 1, 0,{ 0, 6.800581f, 5.217285f }, 0xBFFF },
-	{ 1, 1,{ 6090, 30, 1000 }, 0xBFFF }
-};
-
 CHUNK_LIST SeasideHillChunks[]{
 	{ 16,{ 0, 0, 0 },{ 0, 0, -6264 } },
 	{ 1,{ 0, 0, -6309 },{ -253, 0, -12098 } },

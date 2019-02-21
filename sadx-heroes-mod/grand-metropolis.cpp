@@ -28,15 +28,9 @@ void GrandMetropolisHandler(ObjectMaster * a1) {
 	CharObj2 * co2 = GetCharObj2(0);
 
 	if (a1->Data1->Action == 0) {
-		MovePlayerToStartPoint(entity);
-		camerahax_b();
-
 		InitializeSoundManager();
 		PlayMusic(MusicIDs_casino1);
 		SoundManager_Delete2();
-
-		LevelDrawDistance.Maximum = -999999.0f;
-		Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
 
 		if (IsLantern) set_shader_flags_ptr(ShaderFlags_Blend, true);
 
@@ -76,14 +70,7 @@ void GrandMetropolis_Init(const char *path, const HelperFunctions &helperFunctio
 	ReplaceADX("casino1", "grand-metropolis");
 	ReplaceBIN("PL_90B", "grand-metropolis-shaders");
 
-	helperFunctions.RegisterStartPosition(Characters_Sonic, GrandMetropolis_StartPositions[0]);
-	helperFunctions.RegisterStartPosition(Characters_Tails, GrandMetropolis_StartPositions[0]);
-	helperFunctions.RegisterStartPosition(Characters_Knuckles, GrandMetropolis_StartPositions[0]);
 	helperFunctions.RegisterPathList(GrandMetropolisPaths);
-	helperFunctions.RegisterTrialLevel(Characters_Tails, { 9, 0 });
-	helperFunctions.RegisterTrialLevel(Characters_Knuckles, { 9, 0 });
-	SaveFile.LevelClear[(Characters_Tails * 43) + LevelIDs_Casinopolis] = 1;
-	SaveFile.LevelClear[(Characters_Knuckles * 43) + LevelIDs_Casinopolis] = 1;
 
 	WriteData((DeathZone**)0x1D7E374, GrandMetropolisDeathZones);
 

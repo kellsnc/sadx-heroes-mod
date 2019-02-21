@@ -16,6 +16,7 @@ static bool EnableMysticMansion = true;
 
 bool NoPinball = false;
 bool chunkswapped = false;
+bool IsHeroesLevel = false;
 
 LandTable** CurrentLandAddress;
 
@@ -25,6 +26,20 @@ LandTableInfo *oldinfo = nullptr;
 
 NJS_MATERIAL* landmtl[] = { nullptr };
 
+StartPosition Heroes_StartPositions[]{
+	{ HeroesLevelID_SeasideHill, 0,{ 0, 6.800581f, 5.217285f }, 0xBFFF },
+	{ HeroesLevelID_SeasideHill, 1,{ 6090, 30, 1000 }, 0xBFFF },			//Sea Gate
+	{ HeroesLevelID_OceanPalace, 0,{ -8771, 1303, -2819.688f }, 0xBFFF },
+	{ HeroesLevelID_OceanPalace, 1,{ 0, 3020, 4462 }, 0xBFFF },				//Road Rock
+	{ HeroesLevelID_GrandMetropolis, 0,{ 0.5f, 70, 4125.8f }, 0xBFFF },
+	{ HeroesLevelID_PowerPlant, 0,{ 2000, 1564, 63 }, 0xBFFF },
+	{ HeroesLevelID_CasinoPark, 0,{ -8000, 2188, 0 }, 0xBFFF },
+	{ HeroesLevelID_BingoHighway, 0,{ 7999, 2277, 472 }, 0xBFFF },
+	{ HeroesLevelID_HangCastle, 0,{ 3999, 4000, 109 }, 0xBFFF },
+	{ HeroesLevelID_MysticMansion, 0,{ 0, 23, 777 }, 0xBFFF }
+};
+
+//Chunk system
 bool ForceWhiteDiffuse(NJS_MATERIAL* material, Uint32 flags)
 {
 	set_diffuse_ptr(1, false);
@@ -138,6 +153,99 @@ void LevelHandler_Delete(ObjectMaster * a1) {
 	anim = 0;
 }
 
+//Set start positions and trial menu entries for every character
+void SetStartLevelData(const HelperFunctions &helperFunctions, uint8_t character, int pos, int level, int act) {
+	helperFunctions.RegisterStartPosition(character, Heroes_StartPositions[pos]);
+	//helperFunctions.RegisterTrialLevel(character, { level, act });
+	//SaveFile.LevelClear[(character * 43) + level] = 1;
+}
+
+void SetCharactersLevelData(const HelperFunctions &helperFunctions) {
+	for (uint8_t character = 0; character < 8; ++character) {
+		if (EnableSeasideHill) {
+			SetStartLevelData(helperFunctions, character, 0, HeroesLevelID_SeasideHill, 0);
+			SetStartLevelData(helperFunctions, character, 1, HeroesLevelID_SeasideHill, 1);
+		}
+		if (EnableOceanPalace) {
+			SetStartLevelData(helperFunctions, character, 2, HeroesLevelID_OceanPalace, 0);
+			SetStartLevelData(helperFunctions, character, 3, HeroesLevelID_OceanPalace, 1);
+		}
+		if (EnableGrandMetropolis) 
+			SetStartLevelData(helperFunctions, character, 4, HeroesLevelID_GrandMetropolis, 0);
+		if (EnablePowerPlant)
+			SetStartLevelData(helperFunctions, character, 4, HeroesLevelID_PowerPlant, 0);
+		if (EnableCasinoPark)
+			SetStartLevelData(helperFunctions, character, 4, HeroesLevelID_CasinoPark, 0);
+		if (EnableBingoHighway)
+			SetStartLevelData(helperFunctions, character, 4, HeroesLevelID_BingoHighway, 0);
+		if (EnableHangCastle)
+			SetStartLevelData(helperFunctions, character, 4, HeroesLevelID_HangCastle, 0);
+		if (EnableMysticMansion)
+			SetStartLevelData(helperFunctions, character, 4, HeroesLevelID_MysticMansion, 0);
+		
+	}
+}
+
+//We prevent the skybox objects from loading in heroes levels
+void __cdecl LoadSkyboxObject_r();
+Trampoline LoadSkyboxObject_t(0x414420, 0x414469, LoadSkyboxObject_r);
+void __cdecl LoadSkyboxObject_r()
+{
+	SetGlobalPoint2Col_Colors(LevelGlobalColors[CurrentLevel].x, LevelGlobalColors[CurrentLevel].y, LevelGlobalColors[CurrentLevel].z);
+	
+	if (IsHeroesLevel) {
+		LevelDrawDistance.Maximum = -999999.0f;
+		Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
+	}
+	else {
+		if (SkyboxObjects[CurrentLevel])
+		{
+			LoadObject(LoadObj_Data1, 1, SkyboxObjects[CurrentLevel]);
+		}
+	}
+}
+
+//We force acts here
+void __cdecl njReleaseTextureAll__r();
+Trampoline njReleaseTextureAll__t(0x406F00, 0x406F63, njReleaseTextureAll__r);
+void __cdecl njReleaseTextureAll__r()
+{
+	njReleaseTextureAll();
+	QueueDrawingState = 2;
+	sub_40D3B0();
+
+	if (CurrentLevel) {
+		if ((CurrentLevel == HeroesLevelID_SeasideHill && EnableSeasideHill) ||
+			(CurrentLevel == HeroesLevelID_OceanPalace && EnableOceanPalace) ||
+			(CurrentLevel == HeroesLevelID_GrandMetropolis && EnableGrandMetropolis) ||
+			(CurrentLevel == HeroesLevelID_PowerPlant && EnablePowerPlant) ||
+			(CurrentLevel == HeroesLevelID_CasinoPark && EnableCasinoPark) ||
+			(CurrentLevel == HeroesLevelID_BingoHighway && EnableBingoHighway) ||
+			(CurrentLevel == HeroesLevelID_HangCastle && EnableHangCastle) ||
+			(CurrentLevel == HeroesLevelID_MysticMansion && EnableMysticMansion)) {
+
+			IsHeroesLevel = true;
+
+			uint8_t CurrentAct_dupe = 0;
+			if (CurrentLevel == HeroesLevelID_SeasideHill && (CurrentCharacter == Characters_Amy || CurrentCharacter == Characters_Gamma)) {
+				CurrentAct_dupe = 1;
+			}
+
+			if (CurrentAct != CurrentAct_dupe) {
+				UnloadLevelTextures(GetLevelAndAct());
+				CurrentAct = CurrentAct_dupe;
+				LoadLevelTextures(GetLevelAndAct());
+			}
+		}
+		else {
+			IsHeroesLevel = false;
+		}
+	}
+	else {
+		IsHeroesLevel = false;
+	}
+}
+
 void Levels_Init(const char *path, const HelperFunctions &helperFunctions)
 {
 	modpath = std::string(path);
@@ -175,4 +283,6 @@ void Levels_Init(const char *path, const HelperFunctions &helperFunctions)
 	if (EnableBingoHighway) BingoHighway_Init(path, helperFunctions);
 	if (EnableHangCastle) HangCastle_Init(path, helperFunctions);
 	if (EnableMysticMansion) MysticMansion_Init(path, helperFunctions);
+
+	SetCharactersLevelData(helperFunctions);
 }

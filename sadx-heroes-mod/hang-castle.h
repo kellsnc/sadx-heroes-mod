@@ -1,9 +1,5 @@
 #pragma once
 
-StartPosition HangCastle_StartPositions[]{
-	{ 7, 0,{ 3999, 4000, 109 }, 0xBFFF },
-};
-
 CHUNK_LIST HangCastleChunks[]{
 	{ 1,{ 8000, 0, 0 },{ 0, 0, -3111 } },
 	{ 2,{ 0, 0, 0 },{ 8000, 0, -7700 } },

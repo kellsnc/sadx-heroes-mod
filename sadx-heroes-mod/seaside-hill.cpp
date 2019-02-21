@@ -68,21 +68,12 @@ void SeasideHillHandler(ObjectMaster * a1) {
 	CharObj2 * co2 = GetCharObj2(0);
 
 	if (a1->Data1->Action == 0) {
-		MovePlayerToStartPoint(entity);
-		camerahax_b();
-
-		LevelDrawDistance.Maximum = -999999.0f;
-		Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
-
 		SH_MRUIN01 = LoadMDL("SH_MRUIN01");
 		SH_MRUIN02 = LoadMDL("SH_MRUIN02");
 		SH_MRUIN03 = LoadMDL("SH_MRUIN03");
 		SH_POLFLAG = LoadMDL("SH_POLFLAG");
 
 		PlaySound(44, 0, 0, 0);
-		InitializeSoundManager();
-		PlayMusic(MusicIDs_EmeraldCoastAzureBlueWorld);
-		SoundManager_Delete2();
 
 		LoadObject(LoadObj_Data1, 3, SHSuns_Init); //load the sun
 
@@ -91,6 +82,10 @@ void SeasideHillHandler(ObjectMaster * a1) {
 
 		if (CurrentAct == 0) {
 			//Seaside Hill
+			InitializeSoundManager();
+			PlayMusic(MusicIDs_EmeraldCoastAzureBlueWorld);
+			SoundManager_Delete2();
+
 			CurrentLevelTexlist = &BEACH01_TEXLIST;
 			CurrentLandAddress = (LandTable**)0x97DA28;
 			matlist_waterfall[0].attr_texId = 87;
@@ -102,6 +97,10 @@ void SeasideHillHandler(ObjectMaster * a1) {
 		}
 		else {
 			//Sea Gate
+			InitializeSoundManager();
+			PlayMusic(MusicIDs_EmeraldCoastWindyAndRipply);
+			SoundManager_Delete2();
+			
 			CurrentLevelTexlist = &BEACH02_TEXLIST;
 			CurrentLandAddress = (LandTable**)0x97DA2C;
 			matlist_waterfall[0].attr_texId = 83;
@@ -138,24 +137,13 @@ void SeaGate_Init(const char *path, const HelperFunctions &helperFunctions) {
 	ReplaceADX("ecoast2", "sea-gate");
 	ReplaceBIN("PL_11B", "sea-gate-shaders");
 
-	helperFunctions.RegisterStartPosition(Characters_Sonic, SeasideHill_StartPositions[1]);
-	helperFunctions.RegisterStartPosition(Characters_Amy, SeasideHill_StartPositions[1]);
-	helperFunctions.RegisterStartPosition(Characters_Gamma, SeasideHill_StartPositions[1]);
 	helperFunctions.RegisterPathList(SeaGatePaths);
-	helperFunctions.RegisterTrialLevel(Characters_Amy, { 1, 1 });
-	helperFunctions.RegisterTrialLevel(Characters_Gamma, { 1, 1 });
-	SaveFile.LevelClear[(Characters_Amy * 43) + LevelIDs_EmeraldCoast] = 1;
-	SaveFile.LevelClear[(Characters_Gamma * 43) + LevelIDs_EmeraldCoast] = 1;
-
+	
 	for (uint8_t i = 0; i < 3; i++) {
-		DrawDist_EmeraldCoast2[i].Maximum = -999999.0f;
 		FogData_EmeraldCoast2[i].Toggle = false;
 	}
 
 	WriteData((DeathZone**)0x102F8EC, SeaGateDeathZones);
-
-	//Do not draw ocean
-	WriteData<5>((void*)0x004F7A46, 0x09);
 }
 
 void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions) {
@@ -168,29 +156,14 @@ void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions) 
 	ReplaceADX("ecoast1", "seaside-hill");
 	ReplaceBIN("PL_10B", "seaside-hill-shaders");
 
-	//HelperFunctions allows our mod to not override other mods' data that also use HelperFunctions
-	helperFunctions.RegisterStartPosition(Characters_Sonic, SeasideHill_StartPositions[0]); //startpos
-	helperFunctions.RegisterStartPosition(Characters_Tails, SeasideHill_StartPositions[0]);
-	helperFunctions.RegisterStartPosition(Characters_Knuckles, SeasideHill_StartPositions[0]);
 	helperFunctions.RegisterPathList(SeasideHillPaths); //splines
-	helperFunctions.RegisterTrialLevel(Characters_Tails, { 1, 0 });
-	helperFunctions.RegisterTrialLevel(Characters_Knuckles, { 1, 0 });
-	SaveFile.LevelClear[(Characters_Tails * 43) + LevelIDs_EmeraldCoast] = 1;
-	SaveFile.LevelClear[(Characters_Knuckles * 43) + LevelIDs_EmeraldCoast] = 1;
-
+	
 	//Static stuff
 	for (uint8_t i = 0; i < 3; i++) {
-		DrawDist_EmeraldCoast1[i].Maximum = -999999.0f;
 		FogData_EmeraldCoast1[i].Toggle = false;
 	}
 
 	WriteData((DeathZone**)0x102F8E8, SeasideHillDeathZones);
-
-	//Do not draw ocean
-	WriteData<5>((void*)0x004F6A1A, 0x90u);
-
-	//Do not draw skybox
-	WriteData<4>((void*)0x0090C1F4, 0x00u);
 
 	//Do not draw suns
 	WriteData<5>((void*)0x004F6EC7, 0x90u);

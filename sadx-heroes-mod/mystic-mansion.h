@@ -1,10 +1,5 @@
 #pragma once
 
-StartPosition MysticMansion_StartPositions[]{
-	{ 10, 0,{ 0, 23, 777 }, 0xBFFF },
-	{ 10, 0,{ 2001.5f, 302, -3710.068f }, 0xBFFF }
-};
-
 CHUNK_LIST MysticMansionChunks[]{
 	{ 1,{ 320, 0, 1000 },{ 0, 0, -1400 } },
 	{ 2,{ 1300, 0, -750 },{ 680, 0, -2690 } },

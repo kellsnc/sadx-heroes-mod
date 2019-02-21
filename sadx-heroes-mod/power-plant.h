@@ -1,9 +1,5 @@
 #pragma once
 
-StartPosition PowerPlant_StartPositions[]{
-	{ 8, 0,{ 2000, 1564, 63 }, 0xBFFF },
-};
-
 CHUNK_LIST PowerPlantChunks[]{
 	{ 1,{ 0, 0, 0 },{ 0, 0, -2081 } },
 	{ 2,{ 0, 0, -2081 },{ 0, 0, -3449 } },

@@ -1,9 +1,5 @@
 #pragma once
 
-StartPosition CasinoPark_StartPositions[]{
-	{ 3, 0,{ -8000, 2188, 0 }, 0xBFFF },
-};
-
 CHUNK_LIST CasinoParkChunks[]{
 	{ 1,{ 0, 0, 0 },{ -8696, 0, -1697 } },
 	{ 2,{ 0, 0, -1697 },{ -8696, 0, -2697 } },

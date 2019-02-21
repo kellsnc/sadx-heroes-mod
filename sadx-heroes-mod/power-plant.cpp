@@ -27,12 +27,6 @@ void PowerPlantHandler(ObjectMaster * a1) {
 	CharObj2 * co2 = GetCharObj2(0);
 
 	if (a1->Data1->Action == 0) {
-		MovePlayerToStartPoint(entity);
-		camerahax_b();
-
-		LevelDrawDistance.Maximum = -999999.0f;
-		Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
-
 		InitializeSoundManager();
 		PlayMusic(MusicIDs_icecap1);
 		SoundManager_Delete2();
@@ -72,21 +66,11 @@ void PowerPlant_Init(const char *path, const HelperFunctions &helperFunctions) {
 	ReplaceADX("icecap1", "power-plant");
 	ReplaceBIN("PL_80B", "power-plant-shaders");
 
-	helperFunctions.RegisterStartPosition(Characters_Sonic, PowerPlant_StartPositions[0]);
-	helperFunctions.RegisterStartPosition(Characters_Tails, PowerPlant_StartPositions[0]);
-	helperFunctions.RegisterStartPosition(Characters_Knuckles, PowerPlant_StartPositions[0]);
 	helperFunctions.RegisterPathList(PowerPlantPaths);
-	helperFunctions.RegisterTrialLevel(Characters_Tails, { 9, 0 });
-	helperFunctions.RegisterTrialLevel(Characters_Knuckles, { 9, 0 });
-	SaveFile.LevelClear[(Characters_Tails * 43) + LevelIDs_IceCap] = 1;
-	SaveFile.LevelClear[(Characters_Knuckles * 43) + LevelIDs_IceCap] = 1;
 
 	for (uint8_t i = 0; i < 3; i++) {
-		DrawDist_Icecap1[i].Maximum = -999999.0f;
 		FogData_Icecap1[i].Toggle = false;
 	}
-	
-	WriteData<4>((void*)0x0090C210, 0x00u);
 
 	WriteData((DeathZone**)0xE2FE4C, PowerPlantDeathZones);
 

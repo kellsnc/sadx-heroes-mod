@@ -1,10 +1,5 @@
 #pragma once
 
-StartPosition OceanPalace_StartPositions[]{
-	{ 2, 0,{ -8771, 1303, -2819.688f }, 0xBFFF },
-	{ 2, 1,{ 0, 3020, 4462 }, 0xBFFF },
-};
-
 NJS_VECTOR OceanPalaceTriggers[]{
 	{ -8200, 1401, -40045 },
 	{ -8350, 1301, -43101 }

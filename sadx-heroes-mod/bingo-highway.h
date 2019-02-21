@@ -1,9 +1,5 @@
 #pragma once
 
-StartPosition BingoHighway_StartPositions[]{
-	{ 4, 0,{ 7999, 2277, 472 }, 0xBFFF },
-};
-
 CHUNK_LIST BingoHighwayChunks[]{
 	{ 1,{ 0, 0, 0 },{ 0, 370, -3440 } },
 	{ 2,{ 0, 370, -2500 },{ 0, 0, -4900 } },

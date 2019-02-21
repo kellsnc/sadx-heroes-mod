@@ -27,15 +27,9 @@ void HangCastleHandler(ObjectMaster * a1) {
 	CharObj2 * co2 = GetCharObj2(0);
 
 	if (a1->Data1->Action == 0) {
-		MovePlayerToStartPoint(entity);
-		camerahax_b();
-
 		InitializeSoundManager();
 		PlayMusic(MusicIDs_lstwrld1);
 		SoundManager_Delete2();
-
-		LevelDrawDistance.Maximum = -999999.0f;
-		Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
 
 		a1->Data1->Action = 1;
 		a1->DeleteSub = HangCastle_Delete;
@@ -89,22 +83,11 @@ void HangCastle_Init(const char *path, const HelperFunctions &helperFunctions) {
 	ReplaceADX("lstwrld2", "hang-castle-alt");
 	ReplaceBIN("PL_70B", "hang-castle-shaders");
 
-	helperFunctions.RegisterStartPosition(Characters_Sonic, HangCastle_StartPositions[0]);
-	helperFunctions.RegisterStartPosition(Characters_Tails, HangCastle_StartPositions[0]);
-	helperFunctions.RegisterStartPosition(Characters_Knuckles, HangCastle_StartPositions[0]);
 	helperFunctions.RegisterPathList(HangCastlePaths);
-	helperFunctions.RegisterTrialLevel(Characters_Tails, { 7, 0 });
-	helperFunctions.RegisterTrialLevel(Characters_Knuckles, { 7, 0 });
-	SaveFile.LevelClear[(Characters_Tails * 43) + LevelIDs_LostWorld] = 1;
-	SaveFile.LevelClear[(Characters_Knuckles * 43) + LevelIDs_LostWorld] = 1;
 
 	for (uint8_t i = 0; i < 3; i++) {
-		DrawDist_LostWorld1[i].Maximum = -999999.0f;
 		FogData_LostWorld1[i].Toggle = false;
 	}
-
-	//Prevent skybox from loading
-	WriteData<4>((void*)0x0090C20C, 0x00u);
 
 	WriteData((DeathZone**)0x2032108, HangCastleDeathZones);
 

@@ -36,3 +36,14 @@ void CasinoPark_Init(const char *path, const HelperFunctions &helperFunctions);
 void BingoHighway_Init(const char *path, const HelperFunctions &helperFunctions);
 void HangCastle_Init(const char *path, const HelperFunctions &helperFunctions);
 void MysticMansion_Init(const char *path, const HelperFunctions &helperFunctions);
+
+enum HeroesLevelIDs {
+	HeroesLevelID_SeasideHill = 1,
+	HeroesLevelID_OceanPalace,
+	HeroesLevelID_CasinoPark,
+	HeroesLevelID_BingoHighway,
+	HeroesLevelID_HangCastle = 7,
+	HeroesLevelID_PowerPlant,
+	HeroesLevelID_GrandMetropolis,
+	HeroesLevelID_MysticMansion
+};

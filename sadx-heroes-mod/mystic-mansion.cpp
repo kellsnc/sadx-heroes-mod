@@ -48,15 +48,9 @@ void MysticMansionHandler(ObjectMaster * a1) {
 	CharObj2 * co2 = GetCharObj2(0);
 
 	if (a1->Data1->Action == 0) {
-		MovePlayerToStartPoint(entity);
-		camerahax_b();
-
 		InitializeSoundManager();
 		PlayMusic(MusicIDs_finaleg1);
 		SoundManager_Delete2();
-
-		LevelDrawDistance.Maximum = -999999.0f;
-		Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
 
 		a1->Data1->Action = 1;
 		a1->DeleteSub = MysticMansion_Delete;
@@ -109,22 +103,11 @@ void MysticMansion_Init(const char *path, const HelperFunctions &helperFunctions
 	ReplaceADX("finaleg1", "mystic-mansion");
 	ReplaceBIN("PL_A0B", "mystic-mansion-shaders");
 
-	helperFunctions.RegisterStartPosition(Characters_Sonic, MysticMansion_StartPositions[0]);
-	helperFunctions.RegisterStartPosition(Characters_Tails, MysticMansion_StartPositions[0]);
-	helperFunctions.RegisterStartPosition(Characters_Knuckles, MysticMansion_StartPositions[0]);
 	helperFunctions.RegisterPathList(MysticMansionPaths);
-	helperFunctions.RegisterTrialLevel(Characters_Tails, { 10, 0 });
-	helperFunctions.RegisterTrialLevel(Characters_Knuckles, { 10, 0 });
-	SaveFile.LevelClear[(Characters_Tails * 43) + LevelIDs_FinalEgg] = 1;
-	SaveFile.LevelClear[(Characters_Knuckles * 43) + LevelIDs_FinalEgg] = 1;
 
 	for (uint8_t i = 0; i < 3; i++) {
-		DrawDist_FinalEgg1[i].Maximum = -999999.0f;
 		FogData_FinalEgg1[i].Toggle = false;
 	}
-	
-	//Prevent skybox from loading
-	WriteData<4>((void*)0x0090C218, 0x00u);
 
 	WriteData((DeathZone**)0x1A49218, MysticMansionDeathZones);
 

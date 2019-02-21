@@ -1,9 +1,5 @@
 #pragma once
 
-StartPosition GrandMetropolis_StartPositions[]{
-	{ 9, 0,{ 0.5f, 70, 4125.8f }, 0xBFFF },
-};
-
 CHUNK_LIST GrandMetropolisChunks[]{
 	{ 1,{ 0, 0, 0 },{ 0, 0, -2119 } },
 	{ 2,{ -640, 0, -2119 },{ 0, 0, -5862 } },

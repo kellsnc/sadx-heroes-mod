@@ -12,9 +12,12 @@ extern set_diffuse_blend_factor* set_diffuse_blend_factor_ptr;
 extern set_specular_blend_factor* set_specular_blend_factor_ptr;
 extern set_blend* set_blend_ptr;
 
+VoidFunc(sub_40D3B0, 0x40D3B0);
 DataPointer(int, DroppedFrames, 0x03B1117C);
 DataPointer(int, FramerateSetting, 0x0389D7DC);
 DataArray(int, HeldButtons2, 0x3B0E3A8, 8);
+DataArray(Rotation3, LevelGlobalColors, 0x90BFE8, 42);
+DataArray(ObjectFuncPtr, SkyboxObjects, 0x90C1F0, 42);
 
 extern unsigned int anim;
 extern NJS_TEXLIST * CurrentLevelTexlist;

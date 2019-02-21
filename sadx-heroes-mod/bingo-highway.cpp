@@ -16,15 +16,9 @@ void BingoHighwayHandler(ObjectMaster * a1) {
 	CharObj2 * co2 = GetCharObj2(0);
 
 	if (a1->Data1->Action == 0) {
-		MovePlayerToStartPoint(entity);
-		camerahax_b();
-
 		InitializeSoundManager();
 		PlayMusic(MusicIDs_SpeedHighwaySpeedHighway);
 		SoundManager_Delete2();
-
-		LevelDrawDistance.Maximum = -999999.0f;
-		Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
 
 		a1->Data1->Action = 1;
 		a1->DeleteSub = CasinoCommon_Delete;
@@ -60,22 +54,11 @@ void BingoHighway_Init(const char *path, const HelperFunctions &helperFunctions)
 	ReplaceADX("highway1", "bingo-highway");
 	ReplaceBIN("PL_40B", "bingo-highway-shaders");
 
-	helperFunctions.RegisterStartPosition(Characters_Sonic, BingoHighway_StartPositions[0]);
-	helperFunctions.RegisterStartPosition(Characters_Tails, BingoHighway_StartPositions[0]);
-	helperFunctions.RegisterStartPosition(Characters_Knuckles, BingoHighway_StartPositions[0]);
 	helperFunctions.RegisterPathList(BingoHighwayPaths);
-	helperFunctions.RegisterTrialLevel(Characters_Tails, { 4, 0 });
-	helperFunctions.RegisterTrialLevel(Characters_Knuckles, { 4, 0 });
-	SaveFile.LevelClear[(Characters_Tails * 43) + LevelIDs_SpeedHighway] = 1;
-	SaveFile.LevelClear[(Characters_Knuckles * 43) + LevelIDs_SpeedHighway] = 1;
 
 	for (uint8_t i = 0; i < 3; i++) {
-		DrawDist_SpeedHighway1[i].Maximum = -999999.0f;
 		FogData_SpeedHighway1[i].Toggle = false;
 	}
-
-	//Remove skybox
-	WriteData<4>((void*)0x0090C200, 0x00u);
 
 	WriteData((DeathZone**)0x26A5A94, BingoHighwayDeathZones);
 

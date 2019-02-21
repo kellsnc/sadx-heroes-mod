@@ -19,12 +19,6 @@ void CasinoParkHandler(ObjectMaster * a1) {
 	CharObj2 * co2 = GetCharObj2(0);
 
 	if (a1->Data1->Action == 0) {
-		MovePlayerToStartPoint(entity);
-		camerahax_b();
-
-		LevelDrawDistance.Maximum = -999999.0f;
-		Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
-
 		InitializeSoundManager();
 		PlayMusic(MusicIDs_TwinkleParkTwinklePark);
 		SoundManager_Delete2();
@@ -62,21 +56,11 @@ void CasinoPark_Init(const char *path, const HelperFunctions &helperFunctions) {
 	ReplaceADX("twnklpk1", "casino-park");
 	ReplaceBIN("PL_30B", "casino-park-shaders");
 
-	helperFunctions.RegisterStartPosition(Characters_Sonic, CasinoPark_StartPositions[0]);
-	helperFunctions.RegisterStartPosition(Characters_Tails, CasinoPark_StartPositions[0]);
-	helperFunctions.RegisterStartPosition(Characters_Knuckles, CasinoPark_StartPositions[0]);
 	helperFunctions.RegisterPathList(CasinoParkPaths);
-	helperFunctions.RegisterTrialLevel(Characters_Tails, { 3, 0 });
-	helperFunctions.RegisterTrialLevel(Characters_Knuckles, { 3, 0 });
-	SaveFile.LevelClear[(Characters_Tails * 43) + LevelIDs_TwinklePark] = 1;
-	SaveFile.LevelClear[(Characters_Knuckles * 43) + LevelIDs_TwinklePark] = 1;
 
 	for (uint8_t i = 0; i < 3; i++) {
-		DrawDist_TwinklePark1[i].Maximum = -999999.0f;
 		FogData_TwinklePark1[i].Toggle = false;
 	}
-
-	WriteData<4>((void*)0x0090C1FC, 0x00u);
 
 	WriteData((DeathZone**)0x26B3C58, CasinoParkDeathZones);
 

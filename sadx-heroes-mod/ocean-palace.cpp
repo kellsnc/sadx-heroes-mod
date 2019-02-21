@@ -174,9 +174,6 @@ void OceanPalaceHandler(ObjectMaster * a1) {
 	CharObj2 * co2 = GetCharObj2(0);
 
 	if (a1->Data1->Action == 0) {
-		MovePlayerToStartPoint(entity);
-		camerahax_b();
-
 		a1->Data1->Action = 1;
 		a1->DeleteSub = OceanPalace_delete;
 
@@ -186,9 +183,6 @@ void OceanPalaceHandler(ObjectMaster * a1) {
 			InitializeSoundManager();
 			PlayMusic(MusicIDs_WindyValleyWindyHill);
 			SoundManager_Delete2();
-
-			LevelDrawDistance.Maximum = -999999.0f;
-			Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
 
 			CurrentLevelTexlist = &WINDY01_TEXLIST;
 			CurrentLandAddress = (LandTable**)0x97DA48;
@@ -242,19 +236,7 @@ void RoadRock_Init(const char *path, const HelperFunctions &helperFunctions) {
 	ReplaceADX("wndyvly2", "road-rock");
 	ReplaceBIN("PL_21B", "road-rock-shaders");
 
-	helperFunctions.RegisterStartPosition(Characters_Sonic, OceanPalace_StartPositions[1]);
-	helperFunctions.RegisterStartPosition(Characters_Amy, OceanPalace_StartPositions[1]);
-	helperFunctions.RegisterStartPosition(Characters_Gamma, OceanPalace_StartPositions[1]);
-	helperFunctions.RegisterStartPosition(Characters_Big, OceanPalace_StartPositions[1]);
-	helperFunctions.RegisterTrialLevel(Characters_Amy, { 2, 1 });
-	helperFunctions.RegisterTrialLevel(Characters_Gamma, { 2, 1 });
-	helperFunctions.RegisterTrialLevel(Characters_Big, { 2, 1 });
-	SaveFile.LevelClear[(Characters_Amy * 43) + LevelIDs_WindyValley] = 1;
-	SaveFile.LevelClear[(Characters_Gamma * 43) + LevelIDs_WindyValley] = 1;
-	SaveFile.LevelClear[(Characters_Big * 43) + LevelIDs_WindyValley] = 1;
-
 	for (uint8_t i = 0; i < 3; i++) {
-		DrawDist_WindyValley2[i].Maximum = -999999.0f;
 		FogData_WindyValley2[i].Toggle = false;
 	}
 
@@ -270,24 +252,13 @@ void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions) 
 	ReplaceADX("wndyvly1", "ocean-palace");
 	ReplaceBIN("PL_20B", "ocean-palace-shaders");
 
-	helperFunctions.RegisterStartPosition(Characters_Sonic, OceanPalace_StartPositions[0]);
-	helperFunctions.RegisterStartPosition(Characters_Tails, OceanPalace_StartPositions[0]);
-	helperFunctions.RegisterStartPosition(Characters_Knuckles, OceanPalace_StartPositions[0]);
 	helperFunctions.RegisterPathList(OceanPalacePaths);
-	helperFunctions.RegisterTrialLevel(Characters_Tails, { 2, 0 });
-	helperFunctions.RegisterTrialLevel(Characters_Knuckles, { 2, 0 });
-	SaveFile.LevelClear[(Characters_Tails * 43) + LevelIDs_WindyValley] = 1;
-	SaveFile.LevelClear[(Characters_Knuckles * 43) + LevelIDs_WindyValley] = 1;
-
+	
 	for (uint8_t i = 0; i < 3; i++) {
-		DrawDist_WindyValley1[i].Maximum = -999999.0f;
 		FogData_WindyValley1[i].Toggle = false;
 	}
 
 	WriteData((DeathZone**)0xBFD820, SeasideHillDeathZones);
-
-	//Do not draw skybox
-	WriteData<4>((void*)0x0090C1F8, 0x00u);
 
 	WriteData((ObjectFuncPtr*)0x90BF40, OceanPalaceHandler);
 
