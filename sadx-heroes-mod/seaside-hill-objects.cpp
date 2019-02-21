@@ -4,26 +4,94 @@
 
 #include "seaside-hill-objects.h"
 
-ModelInfo * SH_MRUIN01;
-ModelInfo * SH_MRUIN02;
-ModelInfo * SH_MRUIN03;
+ModelInfo * SH_PLATFOR;
+ModelInfo * SH_MORUINS;
 ModelInfo * SH_POLFLAG;
+ModelInfo * SH_WATERFS;
+ModelInfo * SH_FLOWERS;
 
 #pragma region Sun
-NJS_VECTOR sunpos = { 74, 11106, 425 };
-
 void SHSuns_Display(ObjectMaster * a1) {
 	if (!MissedFrames)
-		DrawLensFlare(&sunpos); //since we removed emerald coast suns, let's put one
-}
-
-void SHSuns_Main(ObjectMaster * a1) {
-	SHSuns_Display(a1);
+		DrawLensFlare(&a1->Data1->Position);
 }
 
 void SHSuns_Init(ObjectMaster * a1) {
 	a1->DisplaySub = SHSuns_Display;
-	a1->MainSub = SHSuns_Main;
+	a1->MainSub = SHSuns_Display;
+}
+#pragma endregion
+
+#pragma region Flowers
+void SHFlowers_Display(ObjectMaster *a1) {
+	if (!DroppedFrames) {
+		for (int i = 0; i < LengthOfArray(SeasideHill_Flowers); ++i) {
+			if (CheckModelDisplay(SeasideHill_Flowers[i])) {
+				SOI_LIST2 item = SeasideHill_Flowers[i];
+
+				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+				njPushMatrix(0);
+				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
+				njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);
+				njScale(nullptr, item.Scale.x, item.Scale.y, item.Scale.z);
+				DrawQueueDepthBias = item.Bias;
+
+				switch (item.Model) {
+				case 0: njDrawModel_SADX(SH_FLOWERS->getmodel()->basicdxmodel); break;
+				case 1: njDrawModel_SADX(SH_FLOWERS->getmodel()->child->basicdxmodel); break;
+				case 2: njDrawModel_SADX(SH_FLOWERS->getmodel()->child->child->basicdxmodel); break;
+				case 3: njDrawModel_SADX(SH_FLOWERS->getmodel()->child->child->child->basicdxmodel); break;
+				case 4: njDrawModel_SADX(SH_FLOWERS->getmodel()->child->child->child->child->basicdxmodel); break;
+				case 5: njDrawModel_SADX(SH_FLOWERS->getmodel()->child->child->child->child->child->basicdxmodel); break;
+				case 6: njDrawModel_SADX(SH_FLOWERS->getmodel()->child->child->child->child->child->child->basicdxmodel); break;
+				case 7: njDrawModel_SADX(SH_FLOWERS->getmodel()->child->child->child->child->child->child->child->basicdxmodel); break;
+				case 8: njDrawModel_SADX(SH_FLOWERS->getmodel()->child->child->child->child->child->child->child->child->basicdxmodel); break;
+				}
+
+				DrawQueueDepthBias = 0;
+				njPopMatrix(1u);
+			}
+		}
+	}
+}
+
+void SHFlowers(ObjectMaster *a1) {
+	a1->DisplaySub = SHFlowers_Display;
+	a1->MainSub = SHFlowers_Display;
+}
+#pragma endregion
+
+#pragma region Waterfalls
+void SHWaterfalls_Display(ObjectMaster *a1) {
+	if (!DroppedFrames) {
+		for (int i = 0; i < LengthOfArray(SeasideHill_Waterfalls); ++i) {
+			if (CheckModelDisplay(SeasideHill_Waterfalls[i])) {
+				SOI_LIST2 item = SeasideHill_Waterfalls[i];
+
+				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+				njPushMatrix(0);
+				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
+				njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);
+				njScale(nullptr, item.Scale.x, item.Scale.y, item.Scale.z);
+				DrawQueueDepthBias = item.Bias;
+
+				switch (item.Model) {
+				case 0: njDrawModel_SADX(SH_WATERFS->getmodel()->basicdxmodel); break;
+				case 1: njDrawModel_SADX(SH_WATERFS->getmodel()->child->basicdxmodel); break;
+				case 2: njDrawModel_SADX(SH_WATERFS->getmodel()->child->child->basicdxmodel); break;
+				case 3: njDrawModel_SADX(SH_WATERFS->getmodel()->child->child->child->basicdxmodel); break;
+				}
+
+				DrawQueueDepthBias = 0;
+				njPopMatrix(1u);
+			}
+		}
+	}
+}
+
+void SHWaterfalls(ObjectMaster *a1) {
+	a1->DisplaySub = SHWaterfalls_Display;
+	a1->MainSub = SHWaterfalls_Display;
 }
 #pragma endregion
 
@@ -81,9 +149,9 @@ void SH_MOVINGPLATFORMS_Main(ObjectMaster *a1) {
 
 void __cdecl SH_MOVINGPLATFORMS(ObjectMaster *a1)
 {
-	if (a1->Data1->Scale.x == 0) a1->Data1->Object = SH_MRUIN01->getmodel();
-	if (a1->Data1->Scale.x == 1) a1->Data1->Object = SH_MRUIN02->getmodel();
-	if (a1->Data1->Scale.x == 2) a1->Data1->Object = SH_MRUIN03->getmodel();
+	if (a1->Data1->Scale.x == 0) a1->Data1->Object = SH_MORUINS->getmodel();
+	if (a1->Data1->Scale.x == 1) a1->Data1->Object = SH_MORUINS->getmodel()->child;
+	if (a1->Data1->Scale.x == 2) a1->Data1->Object = SH_MORUINS->getmodel()->child->child;
 	a1->Data1->Action = (char)a1->Data1->Scale.x;
 	a1->Data1->Scale.x = a1->Data1->Position.y;
 
@@ -141,7 +209,7 @@ void __cdecl SHPlatforms_Main(ObjectMaster *a1)
 
 void __cdecl SHPlatforms(ObjectMaster *a1)
 {
-	a1->Data1->Object = &SH_ConcretePlatformobj;
+	a1->Data1->Object = SH_PLATFOR->getmodel();
 	AddToCollision(a1, 2);
 
 	a1->MainSub = &SHPlatforms_Main;
@@ -380,10 +448,6 @@ void SeasideHillObjects_Init(const char *path) {
 }
 
 void SeasideHillObjects_OnFrame(EntityData1 * entity) {
-	AnimateUV(SeasideHill_UVShift, LengthOfArray(SeasideHill_UVShift));
 	Flags_Animate();
-
-	if (!IsLoaded) {
-		Flags_Reset();
-	}
+	if (!IsLoaded) Flags_Reset();
 }

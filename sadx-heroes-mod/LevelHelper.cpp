@@ -7,23 +7,23 @@ void ModelHandler_Display(ObjectMaster * a1) {
 	SOI_LISTS * List = (SOI_LISTS*)a1->Data1->LoopData;
 	if (!DroppedFrames) {
 		for (int i = 0; i < a1->Data1->Action; ++i) {
-			if (List[i].soicharid == 0 || a1->Data1->Index == List[i].soicharid) {
-				for (int j = 0; j < List[i].soicount; ++j) {
-					if (List[i].soientry[j].soidisplay != 1) {
+			if (List[i].CharacterID == 0 || a1->Data1->Index == List[i].CharacterID) {
+				for (int j = 0; j < List[i].Count; ++j) {
+					if (List[i].Entry[j].DisplayParameter != 1) {
 
-						if (List[i].soientry[j].soichunk == CurrentChunk || List[i].soientry[j].soichunk == 0) {
+						if (List[i].Entry[j].Chunk == CurrentChunk || List[i].Entry[j].Chunk == 0) {
 							njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
 							njPushMatrix(0);
-							njTranslate(nullptr, List[i].soientry[j].soipos.x, List[i].soientry[j].soipos.y, List[i].soientry[j].soipos.z); //Position of object
-							njRotateXYZ(nullptr, List[i].soientry[j].soirot[0], List[i].soientry[j].soirot[1], List[i].soientry[j].soirot[2]); //Rotation of object
-							njScale(nullptr, List[i].soientry[j].soiscl.x, List[i].soientry[j].soiscl.y, List[i].soientry[j].soiscl.z); //Scale of object
-							DrawQueueDepthBias = List[i].soientry[j].soibias;
-							if (List[i].soientry[j].soidrawdist == 0.0f) {
-								njDrawModel_SADX(List[i].soientry[j].soiobject);
+							njTranslate(nullptr, List[i].Entry[j].Position.x, List[i].Entry[j].Position.y, List[i].Entry[j].Position.z); //Position of object
+							njRotateXYZ(nullptr, List[i].Entry[j].Rotation[0], List[i].Entry[j].Rotation[1], List[i].Entry[j].Rotation[2]); //Rotation of object
+							njScale(nullptr, List[i].Entry[j].Scale.x, List[i].Entry[j].Scale.y, List[i].Entry[j].Scale.z); //Scale of object
+							DrawQueueDepthBias = List[i].Entry[j].Bias;
+							if (List[i].Entry[j].DrawDistance == 0.0f) {
+								njDrawModel_SADX(List[i].Entry[j].Model);
 							}
 							else {
-								if (IsPlayerInsideSphere(&List[i].soientry[j].soipos, List[i].soientry[j].soidrawdist) == true)
-									njDrawModel_SADX(List[i].soientry[j].soiobject);
+								if (IsPlayerInsideSphere(&List[i].Entry[j].Position, List[i].Entry[j].DrawDistance) == true)
+									njDrawModel_SADX(List[i].Entry[j].Model);
 							}
 							DrawQueueDepthBias = 0;
 							njPopMatrix(1u);
@@ -43,7 +43,7 @@ void ModelHandler_Init(ObjectMaster * a1) {
 	while (a1->Data1->NextAction == 0) {
 		a1->Data1->Action += 1;
 
-		if (List[a1->Data1->Action].soicount == NULL) {
+		if (List[a1->Data1->Action].Count == NULL) {
 			a1->Data1->NextAction = 1;
 		}
 	}

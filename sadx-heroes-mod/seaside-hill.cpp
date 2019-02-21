@@ -8,16 +8,26 @@
 void SeasideHillObjects_Init(const char *path);
 void SeasideHillObjects_OnFrame(EntityData1 * entity);
 void SHSuns_Init(ObjectMaster * a1);
+void SHFlowers(ObjectMaster *a1);
+void SHWaterfalls(ObjectMaster *a1);
 
 #pragma region Objects Data
 extern SOI_LISTS seaside_hill_objects[];
 extern SOI_LISTS sea_gate_objects[];
 extern float ruin;
 
-extern ModelInfo * SH_MRUIN01;
-extern ModelInfo * SH_MRUIN02;
-extern ModelInfo * SH_MRUIN03;
+extern ModelInfo * SH_WATERFS;
+extern ModelInfo * SH_FLOWERS;
+extern ModelInfo * SH_PLATFOR;
+extern ModelInfo * SH_MORUINS;
 extern ModelInfo * SH_POLFLAG;
+
+SH_UVSHIFT SeasideHill_UVShift[]{
+	{ nullptr,0,{ 0, -10 } },
+	{ nullptr,0,{ 0, -10 } },
+	{ nullptr,0,{ 0, -10 } },
+	{ nullptr,0,{ 0, -10 } },
+};
 #pragma endregion
 
 static int slowtimer = 0;
@@ -54,11 +64,29 @@ void SeasideHill_OnFrame(EntityData1 * entity, CharObj2 * co2) {
 	}
 }
 
+void SeasideHill_InitObjects() {
+	SH_FLOWERS = LoadMDL("SH_FLOWERS");
+	SH_PLATFOR = LoadMDL("SH_PLATFOR");
+	SH_WATERFS = LoadMDL("SH_WATERFS");
+	SH_MORUINS = LoadMDL("SH_MORUINS");
+	SH_POLFLAG = LoadMDL("SH_POLFLAG");
+
+	SeasideHill_UVShift[0].List = SH_WATERFS->getmodel()->basicdxmodel->meshsets[0].vertuv;
+	SeasideHill_UVShift[1].List = SH_WATERFS->getmodel()->child->basicdxmodel->meshsets[0].vertuv;
+	SeasideHill_UVShift[2].List = SH_WATERFS->getmodel()->child->child->basicdxmodel->meshsets[0].vertuv;
+	SeasideHill_UVShift[3].List = SH_WATERFS->getmodel()->child->child->child->basicdxmodel->meshsets[0].vertuv;
+	SeasideHill_UVShift[0].Size = SH_WATERFS->getmodel()->basicdxmodel->meshsets[0].nbMesh * 3;
+	SeasideHill_UVShift[1].Size = SH_WATERFS->getmodel()->child->basicdxmodel->meshsets[0].nbMesh * 3;
+	SeasideHill_UVShift[2].Size = SH_WATERFS->getmodel()->child->child->basicdxmodel->meshsets[0].nbMesh * 3;
+	SeasideHill_UVShift[3].Size = SH_WATERFS->getmodel()->child->child->child->basicdxmodel->meshsets[0].nbMesh * 3;
+}
+
 void SeasideHill_Delete(ObjectMaster * a1) {
-	FreeMDL(SH_MRUIN01);
-	FreeMDL(SH_MRUIN02);
-	FreeMDL(SH_MRUIN03);
+	FreeMDL(SH_MORUINS);
 	FreeMDL(SH_POLFLAG);
+	FreeMDL(SH_FLOWERS);
+	FreeMDL(SH_PLATFOR);
+	FreeMDL(SH_WATERFS);
 
 	LevelHandler_Delete(a1);
 }
@@ -68,17 +96,15 @@ void SeasideHillHandler(ObjectMaster * a1) {
 	CharObj2 * co2 = GetCharObj2(0);
 
 	if (a1->Data1->Action == 0) {
-		SH_MRUIN01 = LoadMDL("SH_MRUIN01");
-		SH_MRUIN02 = LoadMDL("SH_MRUIN02");
-		SH_MRUIN03 = LoadMDL("SH_MRUIN03");
-		SH_POLFLAG = LoadMDL("SH_POLFLAG");
+		a1->Data1->Action = 1;
+		a1->DeleteSub = SeasideHill_Delete;
 
 		PlaySound(44, 0, 0, 0);
 
-		LoadObject(LoadObj_Data1, 3, SHSuns_Init); //load the sun
-
-		a1->Data1->Action = 1;
-		a1->DeleteSub = SeasideHill_Delete;
+		SeasideHill_InitObjects();
+		LoadObject(LoadObj_Data1, 3, SHSuns_Init)->Data1->Position = { 74, 11106, 425 }; //load the sun
+		LoadObject(LoadObj_Data1, 3, SHFlowers);
+		LoadObject(LoadObj_Data1, 3, SHWaterfalls);
 
 		if (CurrentAct == 0) {
 			//Seaside Hill
@@ -89,9 +115,6 @@ void SeasideHillHandler(ObjectMaster * a1) {
 			CurrentLevelTexlist = &BEACH01_TEXLIST;
 			CurrentLandAddress = (LandTable**)0x97DA28;
 			matlist_waterfall[0].attr_texId = 87;
-
-			ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
-			modelhandler->Data1->LoopData = (Loop*)&seaside_hill_objects;
 
 			if (entity->Position.z > -6264) LoadLevelFile("SH", 16);
 		}
@@ -105,13 +128,12 @@ void SeasideHillHandler(ObjectMaster * a1) {
 			CurrentLandAddress = (LandTable**)0x97DA2C;
 			matlist_waterfall[0].attr_texId = 83;
 
-			ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
-			modelhandler->Data1->LoopData = (Loop*)&sea_gate_objects;
-
 			if (entity->Position.z > -6264) LoadLevelFile("SG", 01);
 		}
 	}
 	else {
+		AnimateUV(SeasideHill_UVShift, LengthOfArray(SeasideHill_UVShift));
+
 		switch (CurrentAct) {
 		case 0:
 			ChunkHandler("SH", SeasideHillChunks, LengthOfArray(SeasideHillChunks), entity->Position);

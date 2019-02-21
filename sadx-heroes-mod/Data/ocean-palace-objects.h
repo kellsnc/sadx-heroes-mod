@@ -13790,7 +13790,7 @@ SOI_LISTS ocean_palace_objects[]{
 	NULL
 };
 
-SH_UVSHIFT OceanPalace_UVShift[]{
+SH_UVSHIFT OceanPalace_UVSHIFT[]{
 	{ uv_8D5B7B67B27902C0D38,LengthOfArray(uv_8D5B7B67B27902C0D38),{ 0, -10 } },
 	{ uv_8D5B7B6AF8D132A6426,LengthOfArray(uv_8D5B7B6AF8D132A6426),{ 0, -10 } },
 	{ uv_8D5B7B6CCCB62DCC789,LengthOfArray(uv_8D5B7B6CCCB62DCC789),{ 0, -10 } },

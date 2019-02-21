@@ -104,20 +104,20 @@ void AddToCollision(ObjectMaster *a1, uint8_t col) {
 }
 
 //Shift uv of models, requires a SH_UVSHIFT struct
-void AnimateUV(SH_UVSHIFT *uvshift, int size) {
+void AnimateUV(SH_UVSHIFT *UVSHIFT, int size) {
 	if (GameState != 16) {
 		for (int j = 0; j < size; ++j) {
-			if (!uvshift[j].uvtime || anim % uvshift[j].uvtime == 0)
-				for (int i = 0; i < uvshift[j].uvsize; ++i) {
-					if (uvshift[j].uvshift[0] != 0) {
-						if (uvshift[j].uvlist[i].u > 20000) uvshift[j].uvlist[i].u - 32000;
-						if (uvshift[j].uvlist[i].u < -20000) uvshift[j].uvlist[i].u + 32000;
-						uvshift[j].uvlist[i].u += uvshift[j].uvshift[0];
+			if (!UVSHIFT[j].uvtime || anim % UVSHIFT[j].uvtime == 0)
+				for (int i = 0; i < UVSHIFT[j].Size; ++i) {
+					if (UVSHIFT[j].uvshift[0] != 0) {
+						if (UVSHIFT[j].List[i].u > 20000) UVSHIFT[j].List[i].u - 32000;
+						if (UVSHIFT[j].List[i].u < -20000) UVSHIFT[j].List[i].u + 32000;
+						UVSHIFT[j].List[i].u += UVSHIFT[j].uvshift[0];
 					}
-					if (uvshift[j].uvshift[1] != 0) {
-						if (uvshift[j].uvlist[i].v > 20000) uvshift[j].uvlist[i].v - 32000;
-						if (uvshift[j].uvlist[i].v < -20000) uvshift[j].uvlist[i].v + 32000;
-						uvshift[j].uvlist[i].v += uvshift[j].uvshift[1];
+					if (UVSHIFT[j].uvshift[1] != 0) {
+						if (UVSHIFT[j].List[i].v > 20000) UVSHIFT[j].List[i].v - 32000;
+						if (UVSHIFT[j].List[i].v < -20000) UVSHIFT[j].List[i].v + 32000;
+						UVSHIFT[j].List[i].v += UVSHIFT[j].uvshift[1];
 					}
 				}
 		}
@@ -156,4 +156,18 @@ bool IsPlayerInBox(NJS_VECTOR playerpos, NJS_VECTOR pos1, NJS_VECTOR pos2) {
 		&& (playerpos.z > pos1.z) && (playerpos.z < pos2.z)
 		) return true;
 	else return false;
+}
+
+//check if we can display a SOI_LIST2 model
+bool CheckModelDisplay(SOI_LIST2 item) {
+	if (item.Chunk == CurrentChunk || item.Chunk == 0) {
+		if (item.DrawDistance == 0.0f) {
+			return true;
+		}
+		else {
+			if (IsPlayerInsideSphere(&item.Position, item.DrawDistance) == true)
+				return true;
+		}
+	}
+	return false;
 }

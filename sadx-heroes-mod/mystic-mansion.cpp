@@ -69,10 +69,10 @@ void MysticMansionHandler(ObjectMaster * a1) {
 
 			MMMODELLIST[0] = MM_SPHERE1->getmodel()->basicdxmodel;
 			MMMODELLIST[1] = MM_SPHERE1->getmodel()->basicdxmodel;
-			MysticMansion_UVShift[0].uvlist = MM_SPHERE1->getmodel()->basicdxmodel->meshsets[0].vertuv;
-			MysticMansion_UVShift[1].uvlist = MM_SPHERE2->getmodel()->basicdxmodel->meshsets[0].vertuv;
-			MysticMansion_UVShift[0].uvsize = MM_SPHERE1->getmodel()->basicdxmodel->meshsets[0].nbMesh * 3;
-			MysticMansion_UVShift[1].uvsize = MM_SPHERE2->getmodel()->basicdxmodel->meshsets[0].nbMesh * 3;
+			MysticMansion_UVShift[0].List = MM_SPHERE1->getmodel()->basicdxmodel->meshsets[0].vertuv;
+			MysticMansion_UVShift[1].List = MM_SPHERE2->getmodel()->basicdxmodel->meshsets[0].vertuv;
+			MysticMansion_UVShift[0].Size = MM_SPHERE1->getmodel()->basicdxmodel->meshsets[0].nbMesh * 3;
+			MysticMansion_UVShift[1].Size = MM_SPHERE2->getmodel()->basicdxmodel->meshsets[0].nbMesh * 3;
 
 			if (IsLantern) set_shader_flags_ptr(ShaderFlags_Blend, true);
 

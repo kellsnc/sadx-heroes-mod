@@ -48,47 +48,47 @@ void GiantRockHandler() {
 		FreeCam = 0;
 	}
 
-	if (ocean_palace_objects_common[2].soipos.z < -44954) rocktrigger = 2;
-	if (ocean_palace_objects_common[2].soipos.z < -46553) rocktrigger = 3;
+	if (ocean_palace_objects_common[2].Position.z < -44954) rocktrigger = 2;
+	if (ocean_palace_objects_common[2].Position.z < -46553) rocktrigger = 3;
 
 	if (rocktrigger > 0) {
-		if (IsPlayerInsideSphere(&ocean_palace_objects_common[2].soipos, 120.0f) == 1 || IsPlayerInsideSphere(&ocean_palace_objects_common[3].soipos, 120.0f) == 1 || IsPlayerInsideSphere(&ocean_palace_objects_common[4].soipos, 120.0f) == 1) GameState = 7;
+		if (IsPlayerInsideSphere(&ocean_palace_objects_common[2].Position, 120.0f) == 1 || IsPlayerInsideSphere(&ocean_palace_objects_common[3].Position, 120.0f) == 1 || IsPlayerInsideSphere(&ocean_palace_objects_common[4].Position, 120.0f) == 1) GameState = 7;
 
-		ocean_palace_objects_common[2].soirot[0] = ocean_palace_objects_common[2].soirot[0] + 1500;
+		ocean_palace_objects_common[2].Rotation[0] = ocean_palace_objects_common[2].Rotation[0] + 1500;
 		if (rocktimer > 1) { rocktimer = 0; rockstate++; }
 
 		if (rockstate < LengthOfArray(OP_ROCK1) - 1) {
-			rocktimer = rocktimer + (OP_ROCKS[0].totaldist / OP_ROCK1[rockstate].pathdist) / OP_ROCKS[0].totaldist * 8;
-			if (OP_ROCK1[rockstate].pathrot[1] != 0) {
-				ocean_palace_objects_common[2].soirot[1] = OP_ROCK1[rockstate].pathrot[1];
+			rocktimer = rocktimer + (OP_ROCKS[0].totaldist / OP_ROCK1[rockstate].Distance) / OP_ROCKS[0].totaldist * 8;
+			if (OP_ROCK1[rockstate].Rotation[1] != 0) {
+				ocean_palace_objects_common[2].Rotation[1] = OP_ROCK1[rockstate].Rotation[1];
 			}
-			ocean_palace_objects_common[2].soipos.x = (OP_ROCK1[rockstate + 1].pathpos.x - OP_ROCK1[rockstate].pathpos.x) * rocktimer + OP_ROCK1[rockstate].pathpos.x;
-			ocean_palace_objects_common[2].soipos.y = (OP_ROCK1[rockstate + 1].pathpos.y - OP_ROCK1[rockstate].pathpos.y) * rocktimer + OP_ROCK1[rockstate].pathpos.y;
-			ocean_palace_objects_common[2].soipos.z = (OP_ROCK1[rockstate + 1].pathpos.z - OP_ROCK1[rockstate].pathpos.z) * rocktimer + OP_ROCK1[rockstate].pathpos.z;
+			ocean_palace_objects_common[2].Position.x = (OP_ROCK1[rockstate + 1].Position.x - OP_ROCK1[rockstate].Position.x) * rocktimer + OP_ROCK1[rockstate].Position.x;
+			ocean_palace_objects_common[2].Position.y = (OP_ROCK1[rockstate + 1].Position.y - OP_ROCK1[rockstate].Position.y) * rocktimer + OP_ROCK1[rockstate].Position.y;
+			ocean_palace_objects_common[2].Position.z = (OP_ROCK1[rockstate + 1].Position.z - OP_ROCK1[rockstate].Position.z) * rocktimer + OP_ROCK1[rockstate].Position.z;
 		}
 		if (rocktrigger > 1) {
-			ocean_palace_objects_common[3].soirot[0] = ocean_palace_objects_common[3].soirot[0] + 1500;
+			ocean_palace_objects_common[3].Rotation[0] = ocean_palace_objects_common[3].Rotation[0] + 1500;
 			if (rocktimer2 > 1) { rocktimer2 = 0; rockstate2++; }
 			if (rockstate2 < LengthOfArray(OP_ROCK2) - 1) {
-				rocktimer2 = rocktimer2 + (OP_ROCKS[0].totaldist / OP_ROCK2[rockstate2].pathdist) / OP_ROCKS[0].totaldist * 8;
-				if (OP_ROCK2[rockstate2].pathrot[1] != 0) {
-					ocean_palace_objects_common[3].soirot[1] = OP_ROCK2[rockstate2].pathrot[1];
+				rocktimer2 = rocktimer2 + (OP_ROCKS[0].totaldist / OP_ROCK2[rockstate2].Distance) / OP_ROCKS[0].totaldist * 8;
+				if (OP_ROCK2[rockstate2].Rotation[1] != 0) {
+					ocean_palace_objects_common[3].Rotation[1] = OP_ROCK2[rockstate2].Rotation[1];
 				}
-				ocean_palace_objects_common[3].soipos.x = (OP_ROCK2[rockstate2 + 1].pathpos.x - OP_ROCK2[rockstate2].pathpos.x) * rocktimer2 + OP_ROCK2[rockstate2].pathpos.x;
-				ocean_palace_objects_common[3].soipos.y = (OP_ROCK2[rockstate2 + 1].pathpos.y - OP_ROCK2[rockstate2].pathpos.y) * rocktimer2 + OP_ROCK2[rockstate2].pathpos.y;
-				ocean_palace_objects_common[3].soipos.z = (OP_ROCK2[rockstate2 + 1].pathpos.z - OP_ROCK2[rockstate2].pathpos.z) * rocktimer2 + OP_ROCK2[rockstate2].pathpos.z;
+				ocean_palace_objects_common[3].Position.x = (OP_ROCK2[rockstate2 + 1].Position.x - OP_ROCK2[rockstate2].Position.x) * rocktimer2 + OP_ROCK2[rockstate2].Position.x;
+				ocean_palace_objects_common[3].Position.y = (OP_ROCK2[rockstate2 + 1].Position.y - OP_ROCK2[rockstate2].Position.y) * rocktimer2 + OP_ROCK2[rockstate2].Position.y;
+				ocean_palace_objects_common[3].Position.z = (OP_ROCK2[rockstate2 + 1].Position.z - OP_ROCK2[rockstate2].Position.z) * rocktimer2 + OP_ROCK2[rockstate2].Position.z;
 			}
 			if (rocktrigger > 2) {
-				ocean_palace_objects_common[4].soirot[0] = ocean_palace_objects_common[4].soirot[0] + 1500;
+				ocean_palace_objects_common[4].Rotation[0] = ocean_palace_objects_common[4].Rotation[0] + 1500;
 				if (rocktimer3 > 1) { rocktimer3 = 0; rockstate3++; }
 				if (rockstate3 < LengthOfArray(OP_ROCK3) - 1) {
-					rocktimer3 = rocktimer3 + (OP_ROCKS[0].totaldist / OP_ROCK3[rockstate3].pathdist) / OP_ROCKS[0].totaldist * 8;
-					if (OP_ROCK3[rockstate3].pathrot[1] != 0) {
-						ocean_palace_objects_common[4].soirot[1] = OP_ROCK3[rockstate3].pathrot[1];
+					rocktimer3 = rocktimer3 + (OP_ROCKS[0].totaldist / OP_ROCK3[rockstate3].Distance) / OP_ROCKS[0].totaldist * 8;
+					if (OP_ROCK3[rockstate3].Rotation[1] != 0) {
+						ocean_palace_objects_common[4].Rotation[1] = OP_ROCK3[rockstate3].Rotation[1];
 					}
-					ocean_palace_objects_common[4].soipos.x = (OP_ROCK3[rockstate3 + 1].pathpos.x - OP_ROCK3[rockstate3].pathpos.x) * rocktimer3 + OP_ROCK3[rockstate3].pathpos.x;
-					ocean_palace_objects_common[4].soipos.y = (OP_ROCK3[rockstate3 + 1].pathpos.y - OP_ROCK3[rockstate3].pathpos.y) * rocktimer3 + OP_ROCK3[rockstate3].pathpos.y;
-					ocean_palace_objects_common[4].soipos.z = (OP_ROCK3[rockstate3 + 1].pathpos.z - OP_ROCK3[rockstate3].pathpos.z) * rocktimer3 + OP_ROCK3[rockstate3].pathpos.z;
+					ocean_palace_objects_common[4].Position.x = (OP_ROCK3[rockstate3 + 1].Position.x - OP_ROCK3[rockstate3].Position.x) * rocktimer3 + OP_ROCK3[rockstate3].Position.x;
+					ocean_palace_objects_common[4].Position.y = (OP_ROCK3[rockstate3 + 1].Position.y - OP_ROCK3[rockstate3].Position.y) * rocktimer3 + OP_ROCK3[rockstate3].Position.y;
+					ocean_palace_objects_common[4].Position.z = (OP_ROCK3[rockstate3 + 1].Position.z - OP_ROCK3[rockstate3].Position.z) * rocktimer3 + OP_ROCK3[rockstate3].Position.z;
 				}
 			}
 		}
@@ -102,26 +102,26 @@ void FinsHandler() {
 		if (finsstate > 300) finsstate = 0;
 		for (Int i = 9; i < 41; ++i) {
 			if (finsstate <= 100) {
-				ocean_palace_objects_common[i].soirot[1] -= 100;
+				ocean_palace_objects_common[i].Rotation[1] -= 100;
 			}
 			if (finsstate > 100) {
-				ocean_palace_objects_common[i].soirot[1] += 50.5f;
+				ocean_palace_objects_common[i].Rotation[1] += 50.5f;
 			}
 		}
 		for (Int i = 41; i < 73; ++i) {
 			if (finsstate <= 100) {
-				ocean_palace_objects_common[i].soirot[1] += 100;
+				ocean_palace_objects_common[i].Rotation[1] += 100;
 			}
 			if (finsstate > 100) {
-				ocean_palace_objects_common[i].soirot[1] -= 50.5f;
+				ocean_palace_objects_common[i].Rotation[1] -= 50.5f;
 			}
 		}
 		for (Int i = 9; i < 73; ++i) {
 			if (finsstate <= 100) {
-				ocean_palace_objects_common[i].soirot[0] += 10;
+				ocean_palace_objects_common[i].Rotation[0] += 10;
 			}
 			if (finsstate > 100) {
-				ocean_palace_objects_common[i].soirot[0] -= 5;
+				ocean_palace_objects_common[i].Rotation[0] -= 5;
 			}
 		}
 	}
@@ -158,13 +158,13 @@ void OceanPalace_delete(ObjectMaster * a1) {
 	rockstate3 = 0;
 	rocktimer3 = 0;
 
-	ocean_palace_objects_common[2].soipos = { -8200.3408f, 2030, -39259.3f };
-	ocean_palace_objects_common[3].soipos = { -8274.9741f, 1363, -44980.36f };
-	ocean_palace_objects_common[4].soipos = { -6785.288f, 963, -46514.48f };
+	ocean_palace_objects_common[2].Position = { -8200.3408f, 2030, -39259.3f };
+	ocean_palace_objects_common[3].Position = { -8274.9741f, 1363, -44980.36f };
+	ocean_palace_objects_common[4].Position = { -6785.288f, 963, -46514.48f };
 
-	ocean_palace_objects_common[2].soirot[1] = 32768;
-	ocean_palace_objects_common[3].soirot[1] = 24735;
-	ocean_palace_objects_common[4].soirot[1] = 32768;
+	ocean_palace_objects_common[2].Rotation[1] = 32768;
+	ocean_palace_objects_common[3].Rotation[1] = 24735;
+	ocean_palace_objects_common[4].Rotation[1] = 32768;
 
 	LevelHandler_Delete(a1);
 }

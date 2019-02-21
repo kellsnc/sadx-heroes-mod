@@ -156,6 +156,6 @@
   <Target Name="AfterBuild">
     <Copy SourceFiles="..\bin\sadx-heroes-mod.dll" DestinationFolder="D:\Kell\SADX\mods\sadx-heroes-mod-dev" />
     <Copy SourceFiles="D:\Kell\SADX Modding\SA TOOLS\SADXPC\system\SET0302S.bin; D:\Kell\SADX Modding\SA TOOLS\SADXPC\system\SET0302M.bin" DestinationFiles="D:\Kell\SADX\mods\sadx-heroes-mod-dev\system\power-plant-set.bin; D:\Kell\SADX\mods\sadx-heroes-mod-dev\system\power-plant-set-tails.bin" />
-    <Copy SourceFiles="D:\Kell\SADX Modding\SA TOOLS\SADXPC\system\SET0101S.bin; D:\Kell\SADX Modding\SA TOOLS\SADXPC\system\SET0101M.bin; D:\Kell\SADX Modding\SA TOOLS\SADXPC\system\CAM0101S.bin" DestinationFiles="D:\Kell\SADX\mods\sadx-heroes-mod-dev\system\mystic-mansion-set.bin; D:\Kell\SADX\mods\sadx-heroes-mod-dev\system\mystic-mansion-set-tails.bin; D:\Kell\SADX\mods\sadx-heroes-mod-dev\system\mystic-mansion-cam.bin" />
+    <Copy SourceFiles="D:\Kell\SADX Modding\SA TOOLS\SADXPC\system\SET0101S.bin; D:\Kell\SADX Modding\SA TOOLS\SADXPC\system\SET0101M.bin; D:\Kell\SADX Modding\SA TOOLS\SADXPC\system\SET0101K.bin; D:\Kell\SADX Modding\SA TOOLS\SADXPC\system\CAM0101S.bin" DestinationFiles="D:\Kell\SADX\mods\sadx-heroes-mod-dev\system\mystic-mansion-set.bin; D:\Kell\SADX\mods\sadx-heroes-mod-dev\system\mystic-mansion-set-tails.bin; D:\Kell\SADX\mods\sadx-heroes-mod-dev\system\mystic-mansion-set-knux.bin; D:\Kell\SADX\mods\sadx-heroes-mod-dev\system\mystic-mansion-cam.bin" />
   </Target>
 </Project>

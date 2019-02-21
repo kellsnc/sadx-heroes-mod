@@ -318,43 +318,43 @@ void GrandMetropolisObjects_Init(const char *path) {
 }
 
 void ResetCars() {
-	grand_metropolis_flying_objects[1].soipos = { 5300.872f, -1894.9f, -14251.39f };
-	grand_metropolis_flying_objects[2].soipos = { -3397.503f, -899.9f, -248.553f };
-	grand_metropolis_flying_objects[3].soipos = { 1919.699f, -536.9f, -3675.037f };
-	grand_metropolis_flying_objects[4].soipos = { 1948.472f, -692.9f, 2532.573f };
-	grand_metropolis_flying_objects[5].soipos = { -3058.688f, -845.9f, 4444.6678f };
-	grand_metropolis_flying_objects[6].soipos = { 6643.312f, -1630.9f, -15809.23f };
-	grand_metropolis_flying_objects[7].soipos = { -3345.827f, -832.9f, -15608.49f };
-	grand_metropolis_flying_objects[8].soipos = { 5645.713f, -1516.9f, -15597.63f };
-	grand_metropolis_flying_objects[9].soipos = { 5615.578f, -1333.9f, -14291.76f };
-	grand_metropolis_flying_objects[10].soipos = { -4707.142f, -1586.9f, -13933.31f };
-	grand_metropolis_flying_objects[11].soipos = { 3939.971f, -1955.9f, -13785.85f };
-	grand_metropolis_flying_objects[12].soipos = { 4825.928f, -2603.9f, -41714.32f };
-	grand_metropolis_flying_objects[13].soipos = { -1538.811f, -4059.9f, -44607.31f };
-	grand_metropolis_flying_objects[14].soipos = { 280.5001f, -2643.9f, -44618.79f };
-	grand_metropolis_flying_objects[15].soipos = { 5462.191f, -2319.9f, -35606.65f };
-	grand_metropolis_flying_objects[16].soipos = { -7574.771f, -2369.9f, -35812.54f };
-	grand_metropolis_flying_objects[17].soipos = { 5667.807f, -3975.9f, -43996.86f };
+	grand_metropolis_flying_objects[1].Position = { 5300.872f, -1894.9f, -14251.39f };
+	grand_metropolis_flying_objects[2].Position = { -3397.503f, -899.9f, -248.553f };
+	grand_metropolis_flying_objects[3].Position = { 1919.699f, -536.9f, -3675.037f };
+	grand_metropolis_flying_objects[4].Position = { 1948.472f, -692.9f, 2532.573f };
+	grand_metropolis_flying_objects[5].Position = { -3058.688f, -845.9f, 4444.6678f };
+	grand_metropolis_flying_objects[6].Position = { 6643.312f, -1630.9f, -15809.23f };
+	grand_metropolis_flying_objects[7].Position = { -3345.827f, -832.9f, -15608.49f };
+	grand_metropolis_flying_objects[8].Position = { 5645.713f, -1516.9f, -15597.63f };
+	grand_metropolis_flying_objects[9].Position = { 5615.578f, -1333.9f, -14291.76f };
+	grand_metropolis_flying_objects[10].Position = { -4707.142f, -1586.9f, -13933.31f };
+	grand_metropolis_flying_objects[11].Position = { 3939.971f, -1955.9f, -13785.85f };
+	grand_metropolis_flying_objects[12].Position = { 4825.928f, -2603.9f, -41714.32f };
+	grand_metropolis_flying_objects[13].Position = { -1538.811f, -4059.9f, -44607.31f };
+	grand_metropolis_flying_objects[14].Position = { 280.5001f, -2643.9f, -44618.79f };
+	grand_metropolis_flying_objects[15].Position = { 5462.191f, -2319.9f, -35606.65f };
+	grand_metropolis_flying_objects[16].Position = { -7574.771f, -2369.9f, -35812.54f };
+	grand_metropolis_flying_objects[17].Position = { 5667.807f, -3975.9f, -43996.86f };
 }
 
 void PistonsHandler() {
 	++gmtimer;
 	if (pistonstate == 0) {
-		for (int i = 0; i < grand_metropolis_objects[2].soicount; ++i) {
-			if (i % 2 != 0) grand_metropolis_pistons[i].soipos.y += 24;
+		for (int i = 0; i < grand_metropolis_objects[2].Count; ++i) {
+			if (i % 2 != 0) grand_metropolis_pistons[i].Position.y += 24;
 		}
 	}
 	if (gmtimer == 400) gmtimer = 0;
 	if (gmtimer < 200) pistonstate = 1;
 	if (gmtimer > 199) pistonstate = 2;
-	for (int i = 0; i < grand_metropolis_objects[2].soicount; ++i) {
+	for (int i = 0; i < grand_metropolis_objects[2].Count; ++i) {
 		if (pistonstate == 1) {
-			if (i % 2 == 0) grand_metropolis_pistons[i].soipos.y += 0.12f;
-			if (i % 2 != 0) grand_metropolis_pistons[i].soipos.y -= 0.12f;
+			if (i % 2 == 0) grand_metropolis_pistons[i].Position.y += 0.12f;
+			if (i % 2 != 0) grand_metropolis_pistons[i].Position.y -= 0.12f;
 		}
 		if (pistonstate == 2) {
-			if (i % 2 == 0) grand_metropolis_pistons[i].soipos.y -= 0.12f;
-			if (i % 2 != 0) grand_metropolis_pistons[i].soipos.y += 0.12f;
+			if (i % 2 == 0) grand_metropolis_pistons[i].Position.y -= 0.12f;
+			if (i % 2 != 0) grand_metropolis_pistons[i].Position.y += 0.12f;
 		}
 	}
 }
@@ -363,17 +363,17 @@ void CarsHandler() {
 	if (anim % 1800 == 0) {
 		ResetCars();
 	}
-	grand_metropolis_flying_objects[0].soipos.x -= 0.5f;
-	grand_metropolis_flying_objects[0].soipos.z -= 1;
-	grand_metropolis_flying_objects[2].soipos.x += 10;
-	grand_metropolis_flying_objects[2].soipos.z -= 1;
-	grand_metropolis_flying_objects[3].soipos.x -= 10;
-	grand_metropolis_flying_objects[3].soipos.z += 10;
-	grand_metropolis_flying_objects[4].soipos.x -= 10;
-	grand_metropolis_flying_objects[7].soipos.x += 10;
-	grand_metropolis_flying_objects[10].soipos.x += 10;
-	grand_metropolis_flying_objects[11].soipos.x -= 10;
-	grand_metropolis_flying_objects[11].soipos.z += 7;
+	grand_metropolis_flying_objects[0].Position.x -= 0.5f;
+	grand_metropolis_flying_objects[0].Position.z -= 1;
+	grand_metropolis_flying_objects[2].Position.x += 10;
+	grand_metropolis_flying_objects[2].Position.z -= 1;
+	grand_metropolis_flying_objects[3].Position.x -= 10;
+	grand_metropolis_flying_objects[3].Position.z += 10;
+	grand_metropolis_flying_objects[4].Position.x -= 10;
+	grand_metropolis_flying_objects[7].Position.x += 10;
+	grand_metropolis_flying_objects[10].Position.x += 10;
+	grand_metropolis_flying_objects[11].Position.x -= 10;
+	grand_metropolis_flying_objects[11].Position.z += 7;
 }
 
 void AutoPathsMovs() {
@@ -426,22 +426,22 @@ void AutoPathsMovs() {
 void GrandMetropolisObjects_Reset() {
 	gmtimer = 0;
 	pistonstate = 0;
-	grand_metropolis_pistons[0].soipos.y = -1634;
-	grand_metropolis_pistons[1].soipos.y = -1614;
-	grand_metropolis_pistons[2].soipos.y = -1634;
-	grand_metropolis_pistons[3].soipos.y = -1614;
-	grand_metropolis_pistons[4].soipos.y = -1634;
-	grand_metropolis_pistons[5].soipos.y = -1614;
-	grand_metropolis_pistons[6].soipos.y = -1634;
+	grand_metropolis_pistons[0].Position.y = -1634;
+	grand_metropolis_pistons[1].Position.y = -1614;
+	grand_metropolis_pistons[2].Position.y = -1634;
+	grand_metropolis_pistons[3].Position.y = -1614;
+	grand_metropolis_pistons[4].Position.y = -1634;
+	grand_metropolis_pistons[5].Position.y = -1614;
+	grand_metropolis_pistons[6].Position.y = -1634;
 	for (int i = 7; i < 18; ++i) {
-		grand_metropolis_pistons[i].soipos.y = -3309.911f;
+		grand_metropolis_pistons[i].Position.y = -3309.911f;
 	}
-	grand_metropolis_flying_objects[0].soipos = { 1729, -234.9f, -6126 };
+	grand_metropolis_flying_objects[0].Position = { 1729, -234.9f, -6126 };
 	ResetCars();
 }
 
 void GrandMetropolisObjects_OnFrame(EntityData1 * entity) {
-	AnimateUV(GrandMetropolis_UVShift, LengthOfArray(GrandMetropolis_UVShift));
+	AnimateUV(GrandMetropolis_UVSHIFT, LengthOfArray(GrandMetropolis_UVSHIFT));
 
 	CarsHandler();
 	PistonsHandler();
@@ -462,10 +462,10 @@ void GrandMetropolisObjects_OnFrame(EntityData1 * entity) {
 				entity->Action = 2;
 			}
 
-			grand_metropolis_objects_common[0].soipos.x = entity->Position.x;
-			grand_metropolis_objects_common[0].soipos.z = entity->Position.z;
-			grand_metropolis_objects_common[1].soipos.x = entity->Position.x;
-			grand_metropolis_objects_common[1].soipos.z = entity->Position.z;
+			grand_metropolis_objects_common[0].Position.x = entity->Position.x;
+			grand_metropolis_objects_common[0].Position.z = entity->Position.z;
+			grand_metropolis_objects_common[1].Position.x = entity->Position.x;
+			grand_metropolis_objects_common[1].Position.z = entity->Position.z;
 		}
 	}
 }

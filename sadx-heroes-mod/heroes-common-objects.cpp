@@ -945,6 +945,6 @@ void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions
 
 void CommonObjects_OnFrame() {
 	AnimateObjectsTextures(COMMONOBJLIST, LengthOfArray(COMMONOBJLIST), CommonAnimTexs, LengthOfArray(CommonAnimTexs));
-	AnimateUV(Objects_UVShift, LengthOfArray(Objects_UVShift));
+	AnimateUV(Objects_UVSHIFT, LengthOfArray(Objects_UVSHIFT));
 	Animate = false;
 }

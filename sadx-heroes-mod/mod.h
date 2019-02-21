@@ -31,9 +31,9 @@ extern bool ChunkSwapped;
 class ModelInfo;
 
 typedef struct {
-	NJS_VECTOR		pathpos;
-	Angle			pathrot[3];		//manual value for the angle the object should have, the value is absolute, if unset it will calculate it relatively
-	float			pathdist;		//manual value for the speed to the next point, if unset it will calculate it itself on frame
+	NJS_VECTOR		Position;
+	Angle			Rotation[3];		//manual value for the angle the object should have, the value is absolute, if unset it will calculate it relatively
+	float			Distance;			//manual value for the speed to the next point, if unset it will calculate it itself on frame
 	uint8_t			parameter;
 } SH_PATH;
 
@@ -48,29 +48,38 @@ typedef struct {
 } SH_PATHS;
 
 typedef struct {
-	NJS_MODEL_SADX	*soiobject;
-	NJS_VECTOR		soipos;
-	Angle			soirot[3];
-	NJS_VECTOR		soiscl;
-	Float			soibias;
-	uint8_t			soichunk;
-	Float			soidrawdist;
-	uint8_t			soidisplay; /* Where 0 is visible, 1 is skip (invisible), 2 is below directx 11 only, 3 is directx 11 only */
+	NJS_MODEL_SADX	*Model;
+	NJS_VECTOR		Position;
+	Angle			Rotation[3];
+	NJS_VECTOR		Scale;
+	Float			Bias;
+	uint8_t			Chunk;
+	Float			DrawDistance;
+	uint8_t			DisplayParameter; /* Where 0 is visible, 1 is skip (invisible), 2 is below directx 11 only, 3 is directx 11 only */
 	uint8_t			parameter1;
 	uint8_t			parameter2;
 } SOI_LIST;
 
 typedef struct {
-	uint8_t			soicharid;
-	uint16_t		soicount;
-	SOI_LIST		*soientry;
+	uint8_t			Model;
+	NJS_VECTOR		Position;
+	Angle			Rotation[3];
+	NJS_VECTOR		Scale;
+	Float			Bias;
+	uint8_t			Chunk;
+	Float			DrawDistance;
+} SOI_LIST2;
+
+typedef struct {
+	uint8_t			CharacterID;
+	uint16_t		Count;
+	SOI_LIST		*Entry;
 } SOI_LISTS;
 
 typedef struct {
-	uint8_t			chunkid;
-	NJS_VECTOR		chunkpos1;
-	NJS_VECTOR		chunkpos2;
-	uint8_t			chunkdisplay; /* Where 0 is visible, 1 is below directx 11 only, 2 is directx 11 only */
+	uint8_t			Chunk;
+	NJS_VECTOR		Position1;
+	NJS_VECTOR		Position2;
 } CHUNK_LIST;
 
 typedef struct {
@@ -80,8 +89,8 @@ typedef struct {
 } SH_ANIMTEXS;
 
 typedef struct {
-	NJS_TEX*		uvlist;
-	int				uvsize;
+	NJS_TEX*		List;
+	int				Size;
 	int8_t			uvshift[2];
 	uint8_t			uvtime;
 } SH_UVSHIFT;

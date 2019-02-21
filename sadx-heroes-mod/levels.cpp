@@ -125,17 +125,17 @@ void LoadLevelFile(const char *shortname, int chunknb) {
 void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size, NJS_VECTOR pos) {
 	if (!DroppedFrames && anim % 4 == 0) {
 		for (Int i = 0; i < size; ++i) {
-			if (chunklist[i].chunkid != CurrentChunk) {
+			if (chunklist[i].Chunk != CurrentChunk) {
 				auto entity = EntityData1Ptrs[0];
 				if (entity != nullptr) {
-					if (((chunklist[i].chunkpos1.x == 0 || pos.x < chunklist[i].chunkpos1.x)) &&
-						((chunklist[i].chunkpos1.y == 0 || pos.y < chunklist[i].chunkpos1.y)) &&
-						((chunklist[i].chunkpos1.z == 0 || pos.z < chunklist[i].chunkpos1.z)) &&
-						((chunklist[i].chunkpos2.x == 0 || pos.x > chunklist[i].chunkpos2.x)) &&
-						((chunklist[i].chunkpos2.y == 0 || pos.y > chunklist[i].chunkpos2.y)) &&
-						((chunklist[i].chunkpos2.z == 0 || pos.z > chunklist[i].chunkpos2.z))) {
+					if (((chunklist[i].Position1.x == 0 || pos.x < chunklist[i].Position1.x)) &&
+						((chunklist[i].Position1.y == 0 || pos.y < chunklist[i].Position1.y)) &&
+						((chunklist[i].Position1.z == 0 || pos.z < chunklist[i].Position1.z)) &&
+						((chunklist[i].Position2.x == 0 || pos.x > chunklist[i].Position2.x)) &&
+						((chunklist[i].Position2.y == 0 || pos.y > chunklist[i].Position2.y)) &&
+						((chunklist[i].Position2.z == 0 || pos.z > chunklist[i].Position2.z))) {
 
-						LoadLevelFile(level, chunklist[i].chunkid);
+						LoadLevelFile(level, chunklist[i].Chunk);
 						
 						ChunkSwapped = true;
 						break;
@@ -182,8 +182,10 @@ void SetCharactersLevelData(const HelperFunctions &helperFunctions) {
 			SetStartLevelData(helperFunctions, character, 4, HeroesLevelID_HangCastle, 0);
 		if (EnableMysticMansion)
 			SetStartLevelData(helperFunctions, character, 4, HeroesLevelID_MysticMansion, 0);
-		
 	}
+
+	helperFunctions.RegisterTrialLevel(Characters_Amy, { 1, 0 });
+	helperFunctions.RegisterTrialLevel(Characters_Amy, { 2, 0 });
 }
 
 //We prevent the skybox objects from loading in heroes levels
@@ -227,9 +229,8 @@ void __cdecl njReleaseTextureAll__r()
 			IsHeroesLevel = true;
 
 			uint8_t CurrentAct_dupe = 0;
-			if (CurrentLevel == HeroesLevelID_SeasideHill && (CurrentCharacter == Characters_Amy || CurrentCharacter == Characters_Gamma)) {
-				CurrentAct_dupe = 1;
-			}
+			if (EnableSeaGate && CurrentLevel == HeroesLevelID_SeasideHill && (CurrentCharacter == Characters_Amy || CurrentCharacter == Characters_Gamma)) CurrentAct_dupe = 1;
+			if (EnableRoadRock && CurrentLevel == HeroesLevelID_OceanPalace && (CurrentCharacter == Characters_Amy || CurrentCharacter == Characters_Gamma)) CurrentAct_dupe = 1;
 
 			if (CurrentAct != CurrentAct_dupe) {
 				UnloadLevelTextures(GetLevelAndAct());

@@ -165,5 +165,5 @@ void OceanPalaceObjects_Init(const char *path) {
 }
 
 void OceanPalaceObjects_OnFrame(EntityData1 * entity) {
-	AnimateUV(OceanPalace_UVShift, LengthOfArray(OceanPalace_UVShift));
+	AnimateUV(OceanPalace_UVSHIFT, LengthOfArray(OceanPalace_UVSHIFT));
 }
