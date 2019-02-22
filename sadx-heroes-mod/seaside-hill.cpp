@@ -95,6 +95,8 @@ void SeasideHillHandler(ObjectMaster * a1) {
 	auto entity = EntityData1Ptrs[0];
 	CharObj2 * co2 = GetCharObj2(0);
 
+	SetFog(&SeasideHill_Fog);
+
 	if (a1->Data1->Action == 0) {
 		a1->Data1->Action = 1;
 		a1->DeleteSub = SeasideHill_Delete;
@@ -160,10 +162,6 @@ void SeaGate_Init(const char *path, const HelperFunctions &helperFunctions) {
 	ReplaceBIN("PL_11B", "sea-gate-shaders");
 
 	helperFunctions.RegisterPathList(SeaGatePaths);
-	
-	for (uint8_t i = 0; i < 3; i++) {
-		FogData_EmeraldCoast2[i].Toggle = false;
-	}
 
 	WriteData((DeathZone**)0x102F8EC, SeaGateDeathZones);
 }
@@ -179,11 +177,6 @@ void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions) 
 	ReplaceBIN("PL_10B", "seaside-hill-shaders");
 
 	helperFunctions.RegisterPathList(SeasideHillPaths); //splines
-	
-	//Static stuff
-	for (uint8_t i = 0; i < 3; i++) {
-		FogData_EmeraldCoast1[i].Toggle = false;
-	}
 
 	WriteData((DeathZone**)0x102F8E8, SeasideHillDeathZones);
 

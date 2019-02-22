@@ -185,9 +185,6 @@
     <ClInclude Include="Data\casino-common-objects.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="Data\casino-park-objects.h">
-      <Filter>Header Files\Objects</Filter>
-    </ClInclude>
     <ClInclude Include="casino-park.h">
       <Filter>Header Files\Levels</Filter>
     </ClInclude>

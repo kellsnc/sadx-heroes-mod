@@ -15,6 +15,7 @@ static bool EnableHangCastle = true;
 static bool EnableMysticMansion = true;
 
 bool NoPinball = false;
+bool EnableFog = true;
 bool chunkswapped = false;
 bool IsHeroesLevel = false;
 
@@ -42,6 +43,7 @@ StartPosition Heroes_StartPositions[]{
 //Chunk system
 bool ForceWhiteDiffuse(NJS_MATERIAL* material, Uint32 flags)
 {
+	if (IsHeroesLevel && CurrentLevel == 1 && material->attr_texId == 41) set_shader_flags_ptr(ShaderFlags_Fog, false);
 	set_diffuse_ptr(1, false);
 	set_specular_ptr(7, false);
 	return true;
@@ -173,15 +175,15 @@ void SetCharactersLevelData(const HelperFunctions &helperFunctions) {
 		if (EnableGrandMetropolis) 
 			SetStartLevelData(helperFunctions, character, 4, HeroesLevelID_GrandMetropolis, 0);
 		if (EnablePowerPlant)
-			SetStartLevelData(helperFunctions, character, 4, HeroesLevelID_PowerPlant, 0);
+			SetStartLevelData(helperFunctions, character, 5, HeroesLevelID_PowerPlant, 0);
 		if (EnableCasinoPark)
-			SetStartLevelData(helperFunctions, character, 4, HeroesLevelID_CasinoPark, 0);
+			SetStartLevelData(helperFunctions, character, 6, HeroesLevelID_CasinoPark, 0);
 		if (EnableBingoHighway)
-			SetStartLevelData(helperFunctions, character, 4, HeroesLevelID_BingoHighway, 0);
+			SetStartLevelData(helperFunctions, character, 7, HeroesLevelID_BingoHighway, 0);
 		if (EnableHangCastle)
-			SetStartLevelData(helperFunctions, character, 4, HeroesLevelID_HangCastle, 0);
+			SetStartLevelData(helperFunctions, character, 8, HeroesLevelID_HangCastle, 0);
 		if (EnableMysticMansion)
-			SetStartLevelData(helperFunctions, character, 4, HeroesLevelID_MysticMansion, 0);
+			SetStartLevelData(helperFunctions, character, 9, HeroesLevelID_MysticMansion, 0);
 	}
 
 	helperFunctions.RegisterTrialLevel(Characters_Amy, { 1, 0 });
@@ -247,6 +249,38 @@ void __cdecl njReleaseTextureAll__r()
 	}
 }
 
+//Fog
+void SetFog(FogData * fog) {
+	if (EnableFog) {
+		LevelFogData.Layer = fog->Layer;
+		LevelFogData.Distance = fog->Distance;
+		LevelFogData.Color = fog->Color;
+		LevelFogData.Toggle = fog->Toggle;
+		ToggleStageFog();
+	}
+}
+
+void __cdecl DrawLandTableObject_SimpleModel_r(NJS_MODEL_SADX *a1);
+Trampoline DrawLandTableObject_SimpleModel_t(0x40A140, 0x40A16E, DrawLandTableObject_SimpleModel_r);
+void __cdecl DrawLandTableObject_SimpleModel_r(NJS_MODEL_SADX *a1)
+{
+	if (a1->r < 900.0)
+	{
+		DrawModelBlend_IsVisible(a1, (QueuedModelFlagsB)0, 1.0);
+	}
+	else
+	{
+		if (IsHeroesLevel && a1->mats[0].attrflags & NJD_FLAG_IGNORE_LIGHT) {
+			DisableFog();
+			DrawSimpleModel_IsVisible(a1, 1.0);
+			ToggleStageFog();
+		}
+		else {
+			DrawSimpleModel_IsVisible(a1, 1.0);
+		}
+	}
+}
+
 void Levels_Init(const char *path, const HelperFunctions &helperFunctions)
 {
 	modpath = std::string(path);
@@ -262,6 +296,7 @@ void Levels_Init(const char *path, const HelperFunctions &helperFunctions)
 	EnableHangCastle = config->getBool("Levels", "EnableHangCastle", true);
 	EnableMysticMansion = config->getBool("Levels", "EnableHangCastle", true);
 	NoPinball = config->getBool("General", "NoPinball", false);
+	EnableFog = config->getBool("General", "EnableFog", true);
 	delete config;
 
 	//Init sound effects

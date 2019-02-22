@@ -444,7 +444,6 @@ void SeasideHillObjects_Init(const char *path) {
 	WriteData((PVMEntry**)0x90EB6C, SeasideHillObjectTextures);
 	WriteData((ObjectList**)0x974B18, &SeasideHillObjectList); //Act 1
 	WriteData((ObjectList**)0x974B1C, &SeasideHillObjectList); //Act 2
-	WriteData((ObjectList**)0x974B20, &SeasideHillObjectList); //Act 3
 }
 
 void SeasideHillObjects_OnFrame(EntityData1 * entity) {

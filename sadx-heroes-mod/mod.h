@@ -13,6 +13,8 @@ extern set_specular_blend_factor* set_specular_blend_factor_ptr;
 extern set_blend* set_blend_ptr;
 
 VoidFunc(sub_40D3B0, 0x40D3B0);
+FunctionPointer(void, DrawModelBlend_IsVisible, (NJS_MODEL_SADX *model, QueuedModelFlagsB blend, float radius_scale), 0x4094D0);
+FunctionPointer(void, DrawSimpleModel_IsVisible, (NJS_MODEL_SADX *model, float scale), 0x407A00);
 DataPointer(int, DroppedFrames, 0x03B1117C);
 DataPointer(int, FramerateSetting, 0x0389D7DC);
 DataArray(int, HeldButtons2, 0x3B0E3A8, 8);
@@ -29,6 +31,17 @@ extern bool IsLoaded;
 extern bool ChunkSwapped;
 
 class ModelInfo;
+
+enum HeroesLevelIDs {
+	HeroesLevelID_SeasideHill = 1,
+	HeroesLevelID_OceanPalace,
+	HeroesLevelID_CasinoPark,
+	HeroesLevelID_BingoHighway,
+	HeroesLevelID_HangCastle = 7,
+	HeroesLevelID_PowerPlant,
+	HeroesLevelID_GrandMetropolis,
+	HeroesLevelID_MysticMansion
+};
 
 typedef struct {
 	NJS_VECTOR		Position;

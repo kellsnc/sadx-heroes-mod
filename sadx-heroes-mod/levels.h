@@ -27,6 +27,7 @@ void LevelHandler_Delete(ObjectMaster * a1);
 void AnimateTextures(SH_ANIMTEXS *list, Int listcount);
 void LoadLevelFile(const char *shortname, int chunknb);
 void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size, NJS_VECTOR pos);
+void SetFog(FogData * fog);
 
 void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions);
 void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions);
@@ -36,14 +37,3 @@ void CasinoPark_Init(const char *path, const HelperFunctions &helperFunctions);
 void BingoHighway_Init(const char *path, const HelperFunctions &helperFunctions);
 void HangCastle_Init(const char *path, const HelperFunctions &helperFunctions);
 void MysticMansion_Init(const char *path, const HelperFunctions &helperFunctions);
-
-enum HeroesLevelIDs {
-	HeroesLevelID_SeasideHill = 1,
-	HeroesLevelID_OceanPalace,
-	HeroesLevelID_CasinoPark,
-	HeroesLevelID_BingoHighway,
-	HeroesLevelID_HangCastle = 7,
-	HeroesLevelID_PowerPlant,
-	HeroesLevelID_GrandMetropolis,
-	HeroesLevelID_MysticMansion
-};

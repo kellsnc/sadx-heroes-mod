@@ -166,7 +166,6 @@ void OceanPalaceHandler(ObjectMaster * a1) {
 }
 
 void RoadRock_Init(const char *path, const HelperFunctions &helperFunctions) {
-	//Initiliazing files
 	ReplacePVM("WINDY02", "road-rock");
 	ReplaceBIN("SET0201B", "road-rock-set-big");
 	ReplaceBIN("SET0201A", "road-rock-set-amy");
@@ -175,10 +174,6 @@ void RoadRock_Init(const char *path, const HelperFunctions &helperFunctions) {
 	ReplaceDAT("WINDY_VALLEY_BANK01", "HEROES_BANK");
 	ReplaceADX("wndyvly2", "road-rock");
 	ReplaceBIN("PL_21B", "road-rock-shaders");
-
-	for (uint8_t i = 0; i < 3; i++) {
-		FogData_WindyValley2[i].Toggle = false;
-	}
 
 	WriteData((DeathZone**)0xBFD824, RoadRockDeathZones);
 }
@@ -193,10 +188,6 @@ void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions) 
 	ReplaceBIN("PL_20B", "ocean-palace-shaders");
 
 	helperFunctions.RegisterPathList(OceanPalacePaths);
-	
-	for (uint8_t i = 0; i < 3; i++) {
-		FogData_WindyValley1[i].Toggle = false;
-	}
 
 	WriteData((DeathZone**)0xBFD820, SeasideHillDeathZones);
 

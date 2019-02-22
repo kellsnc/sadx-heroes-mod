@@ -116,7 +116,6 @@
     <ClInclude Include="Data\bingo-highway-paths.h" />
     <ClInclude Include="Data\casino-common-objects.h" />
     <ClInclude Include="Data\casino-park-deathzones.h" />
-    <ClInclude Include="Data\casino-park-objects.h" />
     <ClInclude Include="Data\casino-park-paths.h" />
     <ClInclude Include="Data\grand-metropolis-deathzones.h" />
     <ClInclude Include="Data\grand-metropolis-objects.h" />

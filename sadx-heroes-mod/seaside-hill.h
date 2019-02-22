@@ -1,5 +1,7 @@
 #pragma once
 
+FogData SeasideHill_Fog = { -2.0, -80000, 0x00FFFFFF, 1 };
+
 CHUNK_LIST SeasideHillChunks[]{
 	{ 16,{ 0, 0, 0 },{ 0, 0, -6264 } },
 	{ 1,{ 0, 0, -6309 },{ -253, 0, -12098 } },

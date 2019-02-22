@@ -5,33 +5,80 @@
 #include "casino-park-deathzones.h"
 #include "casino-park.h"
 
-ObjectFunc(TwinklePark_SkyBox_Load, 0x61D570);
-
 void CasinoParkObjects_Init(const char *path);
-void CasinoParkObjects_OnFrame(EntityData1 * entity);
 void CasinoCommon_OnFrame();
 void CasinoCommon_Delete(ObjectMaster * a1);
+void CPGlass(ObjectMaster *a1);
 
-extern SOI_LISTS casino_park_objects[];
+#pragma region Object data
+extern ModelInfo * CP_BIGDICE;
+extern ModelInfo * CP_CSNOBOB;
+extern ModelInfo * CP_DIRSIGN;
+extern ModelInfo * CP_FLIPPER;
+extern ModelInfo * CP_MOVDICE;
+extern ModelInfo * CP_RURETTO;
+extern ModelInfo * CP_SLDDOOR;
+extern ModelInfo * CP_SLOTMCS;
+
+NJS_MODEL_SADX * CASINOOBJLIST[12];
+#pragma endregion
+
+void CasinoPark_InitObjects() {
+	CP_BIGDICE = LoadMDL("CP_BIGDICE");
+	CP_CSNOBOB = LoadMDL("CP_CSNOBOB");
+	CP_DIRSIGN = LoadMDL("CP_DIRSIGN");
+	CP_FLIPPER = LoadMDL("CP_FLIPPER");
+	CP_MOVDICE = LoadMDL("CP_MOVDICE");
+	CP_RURETTO = LoadMDL("CP_RURETTO");
+	CP_SLDDOOR = LoadMDL("CP_SLDDOOR");
+	CP_SLOTMCS = LoadMDL("CP_SLOTMCS");
+
+	CASINOOBJLIST[0] = CP_FLIPPER->getmodel()->basicdxmodel;
+	CASINOOBJLIST[1] = CP_FLIPPER->getmodel()->child->basicdxmodel;
+	CASINOOBJLIST[2] = CP_CSNOBOB->getmodel()->basicdxmodel;
+	CASINOOBJLIST[3] = CP_CSNOBOB->getmodel()->child->basicdxmodel;
+	CASINOOBJLIST[4] = CP_SLOTMCS->getmodel()->basicdxmodel;
+	CASINOOBJLIST[5] = CP_SLOTMCS->getmodel()->child->basicdxmodel;
+	CASINOOBJLIST[6] = CP_SLDDOOR->getmodel()->basicdxmodel;
+	CASINOOBJLIST[7] = CP_SLDDOOR->getmodel()->child->basicdxmodel;
+	CASINOOBJLIST[8] = CP_SLDDOOR->getmodel()->child->child->basicdxmodel;
+	CASINOOBJLIST[9] = CP_SLDDOOR->getmodel()->child->child->child->basicdxmodel;
+	CASINOOBJLIST[10] = CP_DIRSIGN->getmodel()->basicdxmodel;
+	CASINOOBJLIST[11] = CP_DIRSIGN->getmodel()->child->basicdxmodel;
+}
+
+void CasinoPark_Delete(ObjectMaster * a1) {
+	FreeMDL(CP_BIGDICE);
+	FreeMDL(CP_CSNOBOB);
+	FreeMDL(CP_DIRSIGN);
+	FreeMDL(CP_FLIPPER);
+	FreeMDL(CP_MOVDICE);
+	FreeMDL(CP_RURETTO);
+	FreeMDL(CP_SLDDOOR);
+	FreeMDL(CP_SLOTMCS);
+
+	CasinoCommon_Delete(a1);
+}
 
 void CasinoParkHandler(ObjectMaster * a1) {
 	auto entity = EntityData1Ptrs[0];
 	CharObj2 * co2 = GetCharObj2(0);
 
 	if (a1->Data1->Action == 0) {
+		CasinoPark_InitObjects();
+
 		InitializeSoundManager();
 		PlayMusic(MusicIDs_TwinkleParkTwinklePark);
 		SoundManager_Delete2();
 
+		LoadObject(LoadObj_Data1, 3, CPGlass);
+
 		a1->Data1->Action = 1;
-		a1->DeleteSub = CasinoCommon_Delete;
+		a1->DeleteSub = CasinoPark_Delete;
 
 		if (CurrentAct == 0) {
 			CurrentLevelTexlist = &TWINKLE01_TEXLIST;
 			CurrentLandAddress = (LandTable**)0x97DA68;
-
-			ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
-			modelhandler->Data1->LoopData = (Loop*)&casino_park_objects;
 
 			if (entity->Position.z > -1697 && entity->Position.x > -8696) LoadLevelFile("CP", 01);
 		}
@@ -41,8 +88,14 @@ void CasinoParkHandler(ObjectMaster * a1) {
 		case 0:
 			ChunkHandler("CP", CasinoParkChunks, LengthOfArray(CasinoParkChunks), entity->Position);
 			AnimateTextures(CasinoParkAnimTexs, LengthOfArray(CasinoParkAnimTexs));
-			CasinoParkObjects_OnFrame(entity);
+			AnimateObjectsTextures(CASINOOBJLIST, LengthOfArray(CASINOOBJLIST), CasinoParkAnimTexs, LengthOfArray(CasinoParkAnimTexs));
 			CasinoCommon_OnFrame();
+
+			if (anim % 4 == 0) {
+				CurrentLandTable->Col[0].Model->pos[0] = entity->Position.x;
+				CurrentLandTable->Col[0].Model->pos[2] = entity->Position.z;
+			}
+
 			break;
 		}
 	}
@@ -57,10 +110,6 @@ void CasinoPark_Init(const char *path, const HelperFunctions &helperFunctions) {
 	ReplaceBIN("PL_30B", "casino-park-shaders");
 
 	helperFunctions.RegisterPathList(CasinoParkPaths);
-
-	for (uint8_t i = 0; i < 3; i++) {
-		FogData_TwinklePark1[i].Toggle = false;
-	}
 
 	WriteData((DeathZone**)0x26B3C58, CasinoParkDeathZones);
 

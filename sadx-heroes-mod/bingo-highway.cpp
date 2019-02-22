@@ -8,6 +8,7 @@ void BingoHighwayObjects_Init(const char *path);
 void BingoHighwayObjects_OnFrame(EntityData1 * entity);
 void CasinoCommon_OnFrame();
 void CasinoCommon_Delete(ObjectMaster * a1);
+void CPGlass(ObjectMaster *a1);
 
 extern SOI_LISTS bingo_highway_objects[];
 
@@ -19,6 +20,8 @@ void BingoHighwayHandler(ObjectMaster * a1) {
 		InitializeSoundManager();
 		PlayMusic(MusicIDs_SpeedHighwaySpeedHighway);
 		SoundManager_Delete2();
+
+		LoadObject(LoadObj_Data1, 3, CPGlass);
 
 		a1->Data1->Action = 1;
 		a1->DeleteSub = CasinoCommon_Delete;
@@ -55,10 +58,6 @@ void BingoHighway_Init(const char *path, const HelperFunctions &helperFunctions)
 	ReplaceBIN("PL_40B", "bingo-highway-shaders");
 
 	helperFunctions.RegisterPathList(BingoHighwayPaths);
-
-	for (uint8_t i = 0; i < 3; i++) {
-		FogData_SpeedHighway1[i].Toggle = false;
-	}
 
 	WriteData((DeathZone**)0x26A5A94, BingoHighwayDeathZones);
 

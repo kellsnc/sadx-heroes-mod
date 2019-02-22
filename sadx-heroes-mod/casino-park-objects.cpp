@@ -2,11 +2,6 @@
 #include "mod.h"
 #include "objects.h"
 
-#include "casino-park-objects.h"
-
-extern NJS_MODEL_SADX * CASINOOBJLIST[9];
-extern SH_ANIMTEXS CasinoParkAnimTexs[39];
-
 void _cdecl FLIPPERS(ObjectMaster *a1);
 void _cdecl CPDICE(ObjectMaster *a1);
 void _cdecl CPBOBINAIR(ObjectMaster *a1);
@@ -14,30 +9,21 @@ void _cdecl CPSLOTS(ObjectMaster *a1);
 void _cdecl CPSLOTL(ObjectMaster *a1);
 void _cdecl CPDOOR(ObjectMaster *a1);
 
+ModelInfo * CP_RURETTO;
+ModelInfo * CP_BIGDICE;
+ModelInfo * CP_DIRSIGN;
+extern ModelInfo * CP_SLOTMCS;
+
 #pragma region Arrows
-void CPARROWS_Display(ObjectMaster *a1) {
-	if (a1->Data1->Scale.x == 1) DrawObjModel(a1, CP_ArrowRight.basicdxmodel, false);
-	else DrawObjModel(a1, CP_ArrowLeft.basicdxmodel, false);
-}
-
-void CPARROWS_Main(ObjectMaster *a1) {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 2000.0f)) {
-		CPARROWS_Display(a1);
-	}
-	else {
-		deleteSub_Global(a1);
-	}
-}
-
 void __cdecl CPARROWS(ObjectMaster *a1)
 {
-	if (a1->Data1->Scale.x == 1) a1->Data1->Object = &CP_ArrowRight;
-	else a1->Data1->Object = &CP_ArrowLeft;
+	if (a1->Data1->Scale.x == 1) a1->Data1->Object = CP_DIRSIGN->getmodel()->child;
+	else a1->Data1->Object = CP_DIRSIGN->getmodel();
 	AddToCollision(a1, 0);
 
-	a1->MainSub = &CPARROWS_Main;
-	a1->DisplaySub = &CPARROWS_Display;
-	a1->DeleteSub = &deleteSub_Global;
+	a1->MainSub = mainSub_Global;
+	a1->DisplaySub = displaySub_Global;
+	a1->DeleteSub = deleteSub_Global;
 }
 #pragma endregion
 
@@ -66,8 +52,8 @@ void CPSLOT_Display(ObjectMaster *a1) {
 	auto entity = EntityData1Ptrs[0];
 	if (entity->Position.z > 1050) return;
 
-	if (type == 0 || type == 2) DrawObjModel(a1, &CP_SLOT, false);
-	else DrawObjModel(a1, &CP_SLOT2, false);
+	if (type == 0 || type == 2) DrawObjModel(a1, CP_SLOTMCS->getmodel()->child->child->basicdxmodel, false);
+	else DrawObjModel(a1, CP_SLOTMCS->getmodel()->child->child->child->basicdxmodel, false);
 }
 
 void CPSLOT_Main(ObjectMaster *a1) {
@@ -111,8 +97,8 @@ void __cdecl CPSLOT(ObjectMaster *a1)
 #pragma region Giant Dice
 void CPGiantDice_Display(ObjectMaster *a1) {
 	if (a1->Data1->Scale.y != 0) if (CurrentChunk != a1->Data1->Scale.y) return;
-	if (a1->Data1->Scale.x == 1) DrawObjModel(a1, &CP_GIANTDICE2, false);
-	else DrawObjModel(a1, &CP_GIANTDICE1, false);
+	if (a1->Data1->Scale.x == 1) DrawObjModel(a1, CP_BIGDICE->getmodel()->child->basicdxmodel, false);
+	else DrawObjModel(a1, CP_BIGDICE->getmodel()->basicdxmodel, false);
 
 	if (!MissedFrames) {
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
@@ -127,7 +113,7 @@ void CPGiantDice_Display(ObjectMaster *a1) {
 
 		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
-		njDrawModel_SADX(&CP_DICEREF);
+		njDrawModel_SADX(CP_BIGDICE->getmodel()->child->child->basicdxmodel);
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 	}
@@ -154,7 +140,7 @@ void __cdecl CPGiantDice(ObjectMaster *a1)
 
 #pragma region Roulette
 void CPRoulette_Display(ObjectMaster *a1) {
-	DrawObjModel(a1, &CP_ROURETTE, false);
+	DrawObjModel(a1, CP_RURETTO->getmodel()->basicdxmodel, false);
 }
 
 void CPRoulette_Main(ObjectMaster *a1) {
@@ -276,14 +262,4 @@ ObjectList CasinoParkObjectList = { arraylengthandptrT(CasinoParkObjectList_list
 void CasinoParkObjects_Init(const char *path) {
 	WriteData((PVMEntry**)0x90EB74, CasinoParkObjectTextures);
 	WriteData((ObjectList**)0x974B58, &CasinoParkObjectList); //974B5C 974B60
-}
-
-void CasinoParkObjects_OnFrame(EntityData1 * entity) {
-	AnimateObjectsTextures(CPOBJLIST, LengthOfArray(CPOBJLIST), CasinoParkAnimTexs, LengthOfArray(CasinoParkAnimTexs));
-	AnimateObjectsTextures(CASINOOBJLIST, LengthOfArray(CASINOOBJLIST), CasinoParkAnimTexs, LengthOfArray(CasinoParkAnimTexs));
-
-	if (anim % 4 == 0) {
-		CurrentLandTable->Col[0].Model->pos[0] = entity->Position.x;
-		CurrentLandTable->Col[0].Model->pos[2] = entity->Position.z;
-	}
 }

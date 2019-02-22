@@ -3865,10 +3865,7 @@ NJS_VECTOR normal_8D6017882CC456889D9[] = {
 };
 NJS_MODEL_SADX BH_SIGNX = { vertex_8D6017882CC45687509, normal_8D6017882CC456889D9, LengthOfArray<Sint32>(vertex_8D6017882CC45687509), meshlist_8D6017882CC4568DE7D, matlist_8D6017882CC45689350, LengthOfArray<Uint16>(meshlist_8D6017882CC4568DE7D), LengthOfArray<Uint16>(matlist_8D6017882CC45689350),{ 0.9666569f, 18.13972f, 0 }, 67.40096f, NULL };
 
-extern NJS_MODEL_SADX BH_Glass;
-
 SOI_LIST bingo_highway_objects_common[] = {
-	{ &BH_Glass,{ 11050.07f, -4464.9f, -14880 },{ 0, -16384, 0 },{ 1, 1, 1 }, -6000.0f, 0, 3000.0f },
 	{ &BH_SIGNO,{ 8760.0611f, -3421.914f, -12177.89f },{ 0, 0, 0 },{ 1, 1, 1 }, -6000.0f, 0, 1600.0f },
 	{ &BH_SIGNO,{ 8600.0611f, -3421.914f, -12177.89f },{ 0, 0, 0 },{ 1, 1, 1 }, -6000.0f, 0, 1600.0f },
 	{ &BH_SIGNO,{ 8600.0537f, -3713.744f, -11886.06f },{ 0, 0, 0 },{ 1, 1, 1 }, -6000.0f, 0, 1600.0f },
