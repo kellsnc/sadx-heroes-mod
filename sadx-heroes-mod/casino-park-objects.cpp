@@ -8,10 +8,11 @@ void _cdecl CPBOBINAIR(ObjectMaster *a1);
 void _cdecl CPSLOTS(ObjectMaster *a1);
 void _cdecl CPSLOTL(ObjectMaster *a1);
 void _cdecl CPDOOR(ObjectMaster *a1);
+void __cdecl CPRoulette(ObjectMaster *a1);
 
-ModelInfo * CP_RURETTO;
 ModelInfo * CP_BIGDICE;
 ModelInfo * CP_DIRSIGN;
+
 extern ModelInfo * CP_SLOTMCS;
 
 #pragma region Arrows
@@ -134,29 +135,6 @@ void __cdecl CPGiantDice(ObjectMaster *a1)
 {
 	a1->MainSub = &CPGiantDice_Main;
 	a1->DisplaySub = &CPGiantDice_Display;
-	a1->DeleteSub = &deleteSub_Global;
-}
-#pragma endregion
-
-#pragma region Roulette
-void CPRoulette_Display(ObjectMaster *a1) {
-	DrawObjModel(a1, CP_RURETTO->getmodel()->basicdxmodel, false);
-}
-
-void CPRoulette_Main(ObjectMaster *a1) {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 2000.0f)) {
-		if (CurrentChunk == 5) a1->Data1->Rotation.y += 60;
-		CPRoulette_Display(a1);
-	}
-	else {
-		deleteSub_Global(a1);
-	}
-}
-
-void __cdecl CPRoulette(ObjectMaster *a1)
-{
-	a1->MainSub = &CPRoulette_Main;
-	a1->DisplaySub = &CPRoulette_Display;
 	a1->DeleteSub = &deleteSub_Global;
 }
 #pragma endregion

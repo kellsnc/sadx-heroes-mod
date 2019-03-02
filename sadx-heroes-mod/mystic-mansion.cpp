@@ -5,15 +5,15 @@
 #include "mystic-mansion-deathzones.h"
 #include "mystic-mansion.h"
 
-#pragma region Objects Data
 void MysticMansionObjects_Init();
 
+#pragma region Objects Data
 SH_UVSHIFT MysticMansion_UVShift[]{
 	{ nullptr, 0,{ 5, -5 } },
 	{ nullptr, 0,{ -5, 5 } }
 };
 
-NJS_MODEL_SADX * MMMODELLIST[2];
+NJS_MODEL_SADX * MMMODELLIST[4];
 
 extern ModelInfo * MM_SPHERE1;
 extern ModelInfo * MM_SPHERE2;
@@ -22,9 +22,30 @@ extern ModelInfo * MM_MYSTCAR;
 extern ModelInfo * MM_MOVPLAT;
 extern ModelInfo * MM_MYSDOOR;
 extern ModelInfo * MM_MYSWALL;
-
-extern SOI_LISTS hang_castle_objects[];
+extern ModelInfo * HC_SPKWARP;
+extern ModelInfo * HC_HFLAMES;
 #pragma endregion
+
+void MysticMansion_InitObjects() {
+	MM_SKELFAN = LoadMDL("MM_SKELFAN");
+	MM_SPHERE1 = LoadMDL("MM_SPHERE1");
+	MM_SPHERE2 = LoadMDL("MM_SPHERE2");
+	MM_MYSTCAR = LoadMDL("MM_MYSTCAR");
+	MM_MOVPLAT = LoadMDL("MM_MOVPLAT");
+	MM_MYSDOOR = LoadMDL("MM_MYSDOOR");
+	MM_MYSWALL = LoadMDL("MM_MYSWALL");
+	HC_SPKWARP = LoadMDL("HC_SPKWARP");
+	HC_HFLAMES = LoadMDL("HC_HFLAMES");
+
+	MMMODELLIST[0] = MM_SPHERE1->getmodel()->basicdxmodel;
+	MMMODELLIST[1] = MM_SPHERE1->getmodel()->basicdxmodel;
+	MMMODELLIST[2] = HC_HFLAMES->getmodel()->basicdxmodel;
+	MMMODELLIST[3] = HC_HFLAMES->getmodel()->child->basicdxmodel;
+	MysticMansion_UVShift[0].List = MM_SPHERE1->getmodel()->basicdxmodel->meshsets[0].vertuv;
+	MysticMansion_UVShift[1].List = MM_SPHERE2->getmodel()->basicdxmodel->meshsets[0].vertuv;
+	MysticMansion_UVShift[0].Size = MM_SPHERE1->getmodel()->basicdxmodel->meshsets[0].nbMesh * 3;
+	MysticMansion_UVShift[1].Size = MM_SPHERE2->getmodel()->basicdxmodel->meshsets[0].nbMesh * 3;
+}
 
 void MysticMansion_Delete(ObjectMaster * a1) {
 	FreeMDL(MM_SPHERE1);
@@ -34,6 +55,8 @@ void MysticMansion_Delete(ObjectMaster * a1) {
 	FreeMDL(MM_MOVPLAT);
 	FreeMDL(MM_MYSDOOR);
 	FreeMDL(MM_MYSWALL);
+	FreeMDL(HC_SPKWARP);
+	FreeMDL(HC_HFLAMES);
 
 	if (IsLantern) {
 		set_shader_flags_ptr(ShaderFlags_Blend, false);
@@ -59,25 +82,9 @@ void MysticMansionHandler(ObjectMaster * a1) {
 			CurrentLevelTexlist = (TexList*)0x1B98518;
 			CurrentLandAddress = (LandTable**)0x97DB48;
 				
-			MM_SKELFAN = LoadMDL("MM_SKELFAN");
-			MM_SPHERE1 = LoadMDL("MM_SPHERE1");
-			MM_SPHERE2 = LoadMDL("MM_SPHERE2");
-			MM_MYSTCAR = LoadMDL("MM_MYSTCAR");
-			MM_MOVPLAT = LoadMDL("MM_MOVPLAT");
-			MM_MYSDOOR = LoadMDL("MM_MYSDOOR");
-			MM_MYSWALL = LoadMDL("MM_MYSWALL");
-
-			MMMODELLIST[0] = MM_SPHERE1->getmodel()->basicdxmodel;
-			MMMODELLIST[1] = MM_SPHERE1->getmodel()->basicdxmodel;
-			MysticMansion_UVShift[0].List = MM_SPHERE1->getmodel()->basicdxmodel->meshsets[0].vertuv;
-			MysticMansion_UVShift[1].List = MM_SPHERE2->getmodel()->basicdxmodel->meshsets[0].vertuv;
-			MysticMansion_UVShift[0].Size = MM_SPHERE1->getmodel()->basicdxmodel->meshsets[0].nbMesh * 3;
-			MysticMansion_UVShift[1].Size = MM_SPHERE2->getmodel()->basicdxmodel->meshsets[0].nbMesh * 3;
+			MysticMansion_InitObjects();
 
 			if (IsLantern) set_shader_flags_ptr(ShaderFlags_Blend, true);
-
-			ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
-			modelhandler->Data1->LoopData = (Loop*)&hang_castle_objects;
 		}
 	}
 	else {
@@ -85,7 +92,7 @@ void MysticMansionHandler(ObjectMaster * a1) {
 		case 0:
 			ChunkHandler("MM", MysticMansionChunks, LengthOfArray(MysticMansionChunks), entity->Position);
 			AnimateTextures(MysticMansionAnimTexs, LengthOfArray(MysticMansionAnimTexs));
-			AnimateObjectsTextures(MMMODELLIST, 2, MysticMansionAnimTexs, LengthOfArray(MysticMansionAnimTexs));
+			AnimateObjectsTextures(MMMODELLIST, 4, MysticMansionAnimTexs, LengthOfArray(MysticMansionAnimTexs));
 			AnimateUV(MysticMansion_UVShift, LengthOfArray(MysticMansion_UVShift));
 
 			chunkswapped = false;

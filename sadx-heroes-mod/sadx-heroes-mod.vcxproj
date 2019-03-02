@@ -112,7 +112,6 @@
   <ItemGroup>
     <ClInclude Include="bingo-highway.h" />
     <ClInclude Include="casino-park.h" />
-    <ClInclude Include="Data\bingo-highway-objects.h" />
     <ClInclude Include="Data\bingo-highway-paths.h" />
     <ClInclude Include="Data\casino-common-objects.h" />
     <ClInclude Include="Data\casino-park-deathzones.h" />

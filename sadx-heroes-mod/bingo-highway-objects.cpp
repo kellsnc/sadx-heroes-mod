@@ -2,21 +2,55 @@
 #include "mod.h"
 #include "objects.h"
 
-#include "bingo-highway-objects.h"
-
-extern NJS_MODEL_SADX * CASINOOBJLIST[9];
-extern SH_ANIMTEXS BingoHighwayAnimTexs[37];
-
 void _cdecl FLIPPERS(ObjectMaster *a1);
 void _cdecl CPDICE(ObjectMaster *a1);
 void _cdecl CPBOBINAIR(ObjectMaster *a1);
 void _cdecl CPSLOTS(ObjectMaster *a1);
 void _cdecl CPSLOTL(ObjectMaster *a1);
 void _cdecl CPDOOR(ObjectMaster *a1);
+void __cdecl CPRoulette(ObjectMaster *a1);
+
+ModelInfo * BH_BIGCHIP;
+ModelInfo * BH_BNGCHIP;
+ModelInfo * BH_BNGCARD;
+ModelInfo * BH_TBLSIGN;
+NJS_MODEL_SADX * BINGONB[9];
 
 static char BingoState[9];
 static char BingoLines[8];
 ObjectMaster * BingoHandlerPointer;
+
+SOI_LIST2 Bingo_Signs[] = {
+	{ 0,{ 8760.0611f, -3421.914f, -12177.89f },{ 0, 0, 0 },{ 1, 1, 1 }, -6000.0f, 0, 1600.0f },
+	{ 0,{ 8600.0611f, -3421.914f, -12177.89f },{ 0, 0, 0 },{ 1, 1, 1 }, -6000.0f, 0, 1600.0f },
+	{ 0,{ 8600.0537f, -3713.744f, -11886.06f },{ 0, 0, 0 },{ 1, 1, 1 }, -6000.0f, 0, 1600.0f },
+	{ 0,{ 8760.0537f, -3713.744f, -11886.06f },{ 0, 0, 0 },{ 1, 1, 1 }, -6000.0f, 0, 1600.0f },
+	{ 0,{ 21018.04f, -22066.37f, -23062.92f },{ 0, 0, 0 },{ 1, 1, 1 }, -6000.0f, 0, 2000.0f },
+	{ 0,{ 21783.1f, -21077.97f, -22256.06f },{ 0, 16384, 10926 },{ 1, 1, 1 }, -6000.0f, 0, 1200.0f },
+	{ 0,{ 21018.06f, -22350.63f, -23581.51f },{ -1366, 0, 0 },{ 1, 1, 1 }, -6000.0f, 0, 2000.0f },
+	{ 0,{ 8510.0096f, -3550.143f, -13413.74f },{ 4096, 0, 0 },{ 1, 1, 1 }, -6000.0f, 0, 1600.0f },
+	{ 0,{ 20818.27f, -16831.88f, -21620.41f },{ 512, 8960, 3072 },{ 1, 1, 1 }, -6000.0f, 0, 3000.0f },
+	{ 0,{ 8500.0096f, -3520.143f, -13730.74f },{ 0, 0, 0 },{ 1, 1, 1 }, -6000.0f, 0, 1200.0f },
+	{ 1,{ 8679.9996f, -909.469f, -6255.414f },{ -8192, 0, 0 },{ 1, 1, 1 }, -6000.0f, 0, 3000.0f },
+	{ 1,{ 13560, -7104.891f, -14880 },{ 0, 49152, 0 },{ 1, 1, 1 }, -6000.0f, 0, 2000.0f },
+	{ 1,{ 14450.036f, -8498.55f, -16113.55f },{ -4096, 0, 0 },{ 1, 1, 1 }, -6000.0f, 0, 1600.0f },
+	{ 1,{ 14444.189f, -7849.194f, -15373.72f },{ 0, -768, 0 },{ 1, 1, 1 }, -6000.0f, 0, 2000.0f },
+	{ 1,{ 20600.01f, -18073.42f, -20805.03f },{ 0, -16384, -8192 },{ 1, 1, 1 }, -6000.0f, 0, 2000.0f },
+	{ 1,{ 20600.01f, -18073.42f, -20925.03f },{ 0, -16384, -8192 },{ 1, 1, 1 }, -6000.0f, 0, 2000.0f },
+	{ 1,{ 20362.45f, -16126.44f, -20794.18f },{ 0, -16384, -4096 },{ 1, 1, 1 }, -6000.0f, 0, 3000.0f },
+	{ 1,{ 20362.45f, -16126.44f, -20854.18f },{ 0, -16384, -4096 },{ 1, 1, 1 }, -6000.0f, 0, 3000.0f },
+	{ 1,{ 20027.23f, -17682.09f, -21072.92f },{ 2048, -26112, 0 },{ 1, 1, 1 }, -6000.0f, 0, 2000.0f },
+	{ 1,{ 21358.12f, -18818.02f, -20865.01f },{ 0, -16384, -4096 },{ 1, 1, 1 }, -6000.0f, 0, 3000.0f },
+	{ 1,{ 20970.98f, -16611.92f, -21253.52f },{ -4352, -1536, 0 },{ 1, 1, 1 }, -6000.0f, 0, 3000.0f },
+	{ 1,{ 20253.53f, -17264.95f, -21761.31f },{ 2304, 21248, 0 },{ 1, 1, 1 }, -6000.0f, 0, 3000.0f },
+	{ 1,{ 20023.71f, -17625.09f, -21179.22f },{ 2048, -26112, 0 },{ 1, 1, 1 }, -6000.0f, 0, 2000.0f },
+	{ 1,{ 18350, -14627.04f, -20824.03f },{ 0, 49152, 0 },{ 1, 1, 1 }, -6000.0f, 0, 2000.0f },
+	{ 1,{ 18550, -14747.04f, -20824.03f },{ 0, 49152, 0 },{ 1, 1, 1 }, -6000.0f, 0, 2000.0f },
+	{ 1,{ 18800, -14887.04f, -20824.03f },{ 0, 49152, 0 },{ 1, 1, 1 }, -6000.0f, 0, 2000.0f },
+	{ 1,{ 20857.82f, -16831.88f, -21669.85f },{ 512, 8960, 3072 },{ 1, 1, 1 }, -6000.0f, 0, 3000.0f },
+	{ 1,{ 8410.005f, -4110.629f, -12906.28f },{ 0, 0, 0 },{ 1, 1, 1 }, -6000.0f, 0, 1000.0f },
+	{ 1,{ 19090, -15025.04f, -20824.03f },{ 0, 49152, 0 },{ 1, 1, 1 }, -6000.0f, 0, 2000.0f },
+};
 
 #pragma region Bingo Card
 void BHBingoCard_Display(ObjectMaster *a1) {
@@ -28,79 +62,79 @@ void BHBingoCard_Display(ObjectMaster *a1) {
 		njTranslate(0, 0, 40, 0);
 		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
-		njDrawModel_SADX(&BH_BINGOCARD);
+		njDrawModel_SADX(BH_BNGCARD->getmodel()->basicdxmodel);
 
 		njTranslate(0, 0, 0, -10);
 
 		njTranslate(0, 45, 45, 0);
-		njDrawModel_SADX(&BH_BINGO1);
+		njDrawModel_SADX(BINGONB[0]);
 		njTranslate(0, -45, -45, 0);
 
 		njTranslate(0, 45, 0, 0);
-		njDrawModel_SADX(&BH_BINGO2);
+		njDrawModel_SADX(BINGONB[1]);
 		njTranslate(0, -45, 0, 0);
 
-		njDrawModel_SADX(&BH_BINGO3);
+		njDrawModel_SADX(BINGONB[2]);
 
 		njTranslate(0, 0, 45, 0);
-		njDrawModel_SADX(&BH_BINGO4);
+		njDrawModel_SADX(BINGONB[3]);
 		njTranslate(0, 0, -45, 0);
 
 		njTranslate(0, 45, -45, 0);
-		njDrawModel_SADX(&BH_BINGO5);
+		njDrawModel_SADX(BINGONB[4]);
 		njTranslate(0, -45, 45, 0);
 
 		njTranslate(0, -45, 45, 0);
-		njDrawModel_SADX(&BH_BINGO6);
+		njDrawModel_SADX(BINGONB[5]);
 		njTranslate(0, 45, -45, 0);
 
 		njTranslate(0, -45, 0, 0);
-		njDrawModel_SADX(&BH_BINGO7);
+		njDrawModel_SADX(BINGONB[6]);
 		njTranslate(0, 45, 0, 0);
 
 		njTranslate(0, 0, -45, 0);
-		njDrawModel_SADX(&BH_BINGO8);
+		njDrawModel_SADX(BINGONB[7]);
 		njTranslate(0, 0, 45, 0);
 
 		njTranslate(0, -45, -45, 0);
-		njDrawModel_SADX(&BH_BINGO9);
+		njDrawModel_SADX(BINGONB[8]);
 		njTranslate(0, 45, 45, 0);
 
 		njTranslate(0, 0, 0, 10);
 		njRotateZ(0, 0x4000);
 		if (BingoLines[0]) {
 			njTranslate(0, 45, 0, 0);
-			njDrawModel_SADX(&BH_BINGOBAR);
+			njDrawModel_SADX(BH_BNGCARD->getmodel()->child->basicdxmodel);
 			njTranslate(0, -45, 0, 0);
 		}
-		if (BingoLines[1]) njDrawModel_SADX(&BH_BINGOBAR);
+		if (BingoLines[1]) njDrawModel_SADX(BH_BNGCARD->getmodel()->child->basicdxmodel);
 		if (BingoLines[2]) {
 			njTranslate(0, -45, 0, 0);
-			njDrawModel_SADX(&BH_BINGOBAR);
+			njDrawModel_SADX(BH_BNGCARD->getmodel()->child->basicdxmodel);
 			njTranslate(0, 45, 0, 0);
 		}
 		njRotateZ(0, -0x4000);
 
 		if (BingoLines[3]) {
 			njTranslate(0, -45, 0, 0);
-			njDrawModel_SADX(&BH_BINGOBAR);
+			njDrawModel_SADX(BH_BNGCARD->getmodel()->child->basicdxmodel);
 			njTranslate(0, 45, 0, 0);
 		}
-		if (BingoLines[4]) njDrawModel_SADX(&BH_BINGOBAR);
+		if (BingoLines[4]) njDrawModel_SADX(BH_BNGCARD->getmodel()->child->basicdxmodel);
 		if (BingoLines[5]) {
 			njTranslate(0, 45, 0, 0);
-			njDrawModel_SADX(&BH_BINGOBAR);
+			njDrawModel_SADX(BH_BNGCARD->getmodel()->child->basicdxmodel);
 			njTranslate(0, -45, 0, 0);
 		}
 
 		if (BingoLines[6]) {
 			njRotateZ(0, 0x2000);
-			njDrawModel_SADX(&BH_BINGOBAR);
+			njDrawModel_SADX(BH_BNGCARD->getmodel()->child->basicdxmodel);
 			njRotateZ(0, -0x2000);
 		}
 		if (BingoLines[7]) {
 			njRotateZ(0, -0x2000);
-			njDrawModel_SADX(&BH_BINGOBAR);
+			njDrawModel_SADX(BH_BNGCARD->getmodel()->child->basicdxmodel);
 			njRotateZ(0, 0x2000);
 		}
 
@@ -112,15 +146,15 @@ void BHBingoCard_Display(ObjectMaster *a1) {
 void BHBingoCard_Main(ObjectMaster *a1) {
 	if (IsPlayerInsideSphere(&a1->Data1->Position, 2000.0f)) {
 
-		if (BingoState[0]) BH_BINGO1.mats[0].diffuse.color = 0xFF5B5B5B;
-		if (BingoState[1]) BH_BINGO2.mats[0].diffuse.color = 0xFF5B5B5B;
-		if (BingoState[2]) BH_BINGO3.mats[0].diffuse.color = 0xFF5B5B5B;
-		if (BingoState[3]) BH_BINGO4.mats[0].diffuse.color = 0xFF5B5B5B;
-		if (BingoState[4]) BH_BINGO5.mats[0].diffuse.color = 0xFF5B5B5B;
-		if (BingoState[5]) BH_BINGO6.mats[0].diffuse.color = 0xFF5B5B5B;
-		if (BingoState[6]) BH_BINGO7.mats[0].diffuse.color = 0xFF5B5B5B;
-		if (BingoState[7]) BH_BINGO8.mats[0].diffuse.color = 0xFF5B5B5B;
-		if (BingoState[8]) BH_BINGO9.mats[0].diffuse.color = 0xFF5B5B5B;
+		if (BingoState[0]) BINGONB[0]->mats[0].diffuse.color = 0xFF5B5B5B;
+		if (BingoState[1]) BINGONB[1]->mats[0].diffuse.color = 0xFF5B5B5B;
+		if (BingoState[2]) BINGONB[2]->mats[0].diffuse.color = 0xFF5B5B5B;
+		if (BingoState[3]) BINGONB[3]->mats[0].diffuse.color = 0xFF5B5B5B;
+		if (BingoState[4]) BINGONB[4]->mats[0].diffuse.color = 0xFF5B5B5B;
+		if (BingoState[5]) BINGONB[5]->mats[0].diffuse.color = 0xFF5B5B5B;
+		if (BingoState[6]) BINGONB[6]->mats[0].diffuse.color = 0xFF5B5B5B;
+		if (BingoState[7]) BINGONB[7]->mats[0].diffuse.color = 0xFF5B5B5B;
+		if (BingoState[8]) BINGONB[8]->mats[0].diffuse.color = 0xFF5B5B5B;
 
 		BHBingoCard_Display(a1);
 	}
@@ -201,15 +235,15 @@ void __cdecl BHBingoHandler(ObjectMaster *a1)
 		if (i != 8) BingoLines[i] = 0;
 	}
 
-	BH_BINGO1.mats[0].diffuse.color = 0xFFFFFFFF;
-	BH_BINGO2.mats[0].diffuse.color = 0xFFFFFFFF;
-	BH_BINGO3.mats[0].diffuse.color = 0xFFFFFFFF;
-	BH_BINGO4.mats[0].diffuse.color = 0xFFFFFFFF;
-	BH_BINGO5.mats[0].diffuse.color = 0xFFFFFFFF;
-	BH_BINGO6.mats[0].diffuse.color = 0xFFFFFFFF;
-	BH_BINGO7.mats[0].diffuse.color = 0xFFFFFFFF;
-	BH_BINGO8.mats[0].diffuse.color = 0xFFFFFFFF;
-	BH_BINGO9.mats[0].diffuse.color = 0xFFFFFFFF;
+	BINGONB[0]->mats[0].diffuse.color = 0xFFFFFFFF;
+	BINGONB[1]->mats[0].diffuse.color = 0xFFFFFFFF;
+	BINGONB[2]->mats[0].diffuse.color = 0xFFFFFFFF;
+	BINGONB[3]->mats[0].diffuse.color = 0xFFFFFFFF;
+	BINGONB[4]->mats[0].diffuse.color = 0xFFFFFFFF;
+	BINGONB[5]->mats[0].diffuse.color = 0xFFFFFFFF;
+	BINGONB[6]->mats[0].diffuse.color = 0xFFFFFFFF;
+	BINGONB[7]->mats[0].diffuse.color = 0xFFFFFFFF;
+	BINGONB[8]->mats[0].diffuse.color = 0xFFFFFFFF;
 
 	a1->MainSub = &BHBingoHandler_Main;
 	a1->DeleteSub = &deleteSub_Global;
@@ -227,15 +261,15 @@ void BHBingoNumber_Display(ObjectMaster *a1) {
 		DrawQueueDepthBias = -6000.0f;
 
 		uint8_t nb = a1->Data1->Scale.z;
-		if (nb == 1) njDrawModel_SADX(&BH_BINGO1);
-		else if (nb == 2) njDrawModel_SADX(&BH_BINGO2);
-		else if (nb == 3) njDrawModel_SADX(&BH_BINGO3);
-		else if (nb == 4) njDrawModel_SADX(&BH_BINGO4);
-		else if (nb == 5) njDrawModel_SADX(&BH_BINGO5);
-		else if (nb == 6) njDrawModel_SADX(&BH_BINGO6);
-		else if (nb == 7) njDrawModel_SADX(&BH_BINGO7);
-		else if (nb == 8) njDrawModel_SADX(&BH_BINGO8);
-		else if (nb == 9) njDrawModel_SADX(&BH_BINGO9);
+		if (nb == 1) njDrawModel_SADX(BINGONB[0]);
+		else if (nb == 2) njDrawModel_SADX(BINGONB[1]);
+		else if (nb == 3) njDrawModel_SADX(BINGONB[2]);
+		else if (nb == 4) njDrawModel_SADX(BINGONB[3]);
+		else if (nb == 5) njDrawModel_SADX(BINGONB[4]);
+		else if (nb == 6) njDrawModel_SADX(BINGONB[5]);
+		else if (nb == 7) njDrawModel_SADX(BINGONB[6]);
+		else if (nb == 8) njDrawModel_SADX(BINGONB[7]);
+		else if (nb == 9) njDrawModel_SADX(BINGONB[8]);
 
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
@@ -297,11 +331,9 @@ void __cdecl BHBingoNumber(ObjectMaster *a1)
 }
 #pragma endregion
 
-#pragma region Giant Dice
+#pragma region Giant Chips
 void BHGiantTokens_Display(ObjectMaster *a1) {
 	if (a1->Data1->Scale.y != 0) if (CurrentChunk != a1->Data1->Scale.y) return;
-
-
 
 	if (!MissedFrames) {
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
@@ -313,11 +345,11 @@ void BHGiantTokens_Display(ObjectMaster *a1) {
 		else njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
 
-		if (a1->Data1->Scale.x == 0) njDrawModel_SADX(&BH_GIANTCHIP1);
-		else if (a1->Data1->Scale.x == 1) njDrawModel_SADX(&BH_GIANTCHIP5);
-		else if (a1->Data1->Scale.x == 2) njDrawModel_SADX(&BH_GIANTCHIP4);
-		else if (a1->Data1->Scale.x == 3) njDrawModel_SADX(&BH_GIANTCHIP2);
-		else if (a1->Data1->Scale.x == 4) njDrawModel_SADX(&BH_GIANTCHIP3);
+		if (a1->Data1->Scale.x == 0) njDrawModel_SADX(BH_BIGCHIP->getmodel()->basicdxmodel);
+		else if (a1->Data1->Scale.x == 1) njDrawModel_SADX(BH_BIGCHIP->getmodel()->child->child->child->child->basicdxmodel);
+		else if (a1->Data1->Scale.x == 2) njDrawModel_SADX(BH_BIGCHIP->getmodel()->child->child->child->basicdxmodel);
+		else if (a1->Data1->Scale.x == 3) njDrawModel_SADX(BH_BIGCHIP->getmodel()->child->basicdxmodel);
+		else if (a1->Data1->Scale.x == 4) njDrawModel_SADX(BH_BIGCHIP->getmodel()->child->child->basicdxmodel);
 
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
@@ -365,40 +397,35 @@ void __cdecl BHGiantTokens(ObjectMaster *a1)
 }
 #pragma endregion
 
-#pragma region Roulette
-void BHRoulette_Display(ObjectMaster *a1) {
-	if (!MissedFrames) {
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
-		njPushMatrix(0);
-		njTranslateV(0, &a1->Data1->Position);
-		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
-		njRotateY(0, a1->Data1->Scale.z);
-		njScale(nullptr, 1, 1, 1);
-		DrawQueueDepthBias = -6000.0f;
-		njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
-		DrawQueueDepthBias = 0;
-		njPopMatrix(1u);
+#pragma region Signs
+void BHSigns_Display(ObjectMaster *a1) {
+	if (!DroppedFrames) {
+		for (int i = 0; i < LengthOfArray(Bingo_Signs); ++i) {
+			if (CheckModelDisplay(Bingo_Signs[i])) {
+				SOI_LIST2 item = Bingo_Signs[i];
+
+				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+				njPushMatrix(0);
+				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
+				njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);
+				njScale(nullptr, item.Scale.x, item.Scale.y, item.Scale.z);
+				DrawQueueDepthBias = item.Bias;
+
+				switch (item.Model) {
+				case 0: njDrawModel_SADX(BH_TBLSIGN->getmodel()->basicdxmodel); break;
+				case 1: njDrawModel_SADX(BH_TBLSIGN->getmodel()->child->basicdxmodel); break;
+				}
+
+				DrawQueueDepthBias = 0;
+				njPopMatrix(1u);
+			}
+		}
 	}
 }
 
-void BHRoulette_Main(ObjectMaster *a1) {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 2000.0f)) {
-		a1->Data1->Scale.z += 60;
-		BHRoulette_Display(a1);
-	}
-	else {
-		deleteSub_Global(a1);
-	}
-}
-
-void __cdecl BHRoulette(ObjectMaster *a1)
-{
-	a1->Data1->Object = &BH_ROURETTE;
-	AddToCollision(a1, 0);
-
-	a1->MainSub = &BHRoulette_Main;
-	a1->DisplaySub = &BHRoulette_Display;
-	a1->DeleteSub = &deleteSub_Global;
+void BHSigns(ObjectMaster *a1) {
+	a1->DisplaySub = BHSigns_Display;
+	a1->MainSub = BHSigns_Display;
 }
 #pragma endregion
 
@@ -497,7 +524,7 @@ ObjectListEntry BingoHighwayObjectList_list[] = {
 { 2, 3, 1, 360000, 0, (ObjectFuncPtr)&BHBingoHandler, "BINGHANDLE" } /* "Bingo initializer & handler" */,
 { 2, 3, 1, 1360000, 0, (ObjectFuncPtr)&BHBingoNumber, "BINGO NB" } /* "Bingo Number" */, //70
 { 2, 3, 1, 14360000, 0, (ObjectFuncPtr)&BHGiantTokens, "BHGIANTCHP" } /* "Giant Chips" */,
-{ 2, 3, 1, 1360000, 0, (ObjectFuncPtr)&BHRoulette, "BHRoulette" } /* "Turning roulette" */,
+{ 2, 3, 1, 1360000, 0, (ObjectFuncPtr)&CPRoulette, "CPRoulette" } /* "Turning roulette" */,
 { 2, 3, 1, 1060000, 0, &ObjFan, "OBJFAN" } /* "SH FANS" */,
 { 2, 3, 1, 1000000, 0, (ObjectFuncPtr)&ObjBoxW, "OBJ BOWX" } /* "Wooden Box" */,
 };
@@ -506,15 +533,4 @@ ObjectList BingoHighwayObjectList = { arraylengthandptrT(BingoHighwayObjectList_
 void BingoHighwayObjects_Init(const char *path) {
 	WriteData((PVMEntry**)0x90EB78, BingoHighwayObjectTextures);
 	WriteData((ObjectList**)0x974B78, &BingoHighwayObjectList); //974B7C 974B80
-}
-
-void BingoHighwayObjects_OnFrame(EntityData1 * entity) {
-	AnimateObjectsTextures(BHOBJLIST, LengthOfArray(BHOBJLIST), BingoHighwayAnimTexs, LengthOfArray(BingoHighwayAnimTexs));
-	AnimateObjectsTextures(CASINOOBJLIST, LengthOfArray(CASINOOBJLIST), BingoHighwayAnimTexs, LengthOfArray(BingoHighwayAnimTexs));
-
-	if (anim % 4 == 0) {
-		CurrentLandTable->Col[0].Model->pos[0] = entity->Position.x;
-		CurrentLandTable->Col[0].Model->pos[1] = entity->Position.y;
-		CurrentLandTable->Col[0].Model->pos[2] = entity->Position.z;
-	}
 }

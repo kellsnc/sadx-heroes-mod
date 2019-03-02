@@ -4,85 +4,25 @@
 
 #include "hang-castle-objects.h"
 
+static int hcflagtimer = 0;
+
 void _cdecl HCWARP(ObjectMaster *a1);
 void __cdecl HCDOOR(ObjectMaster *a1);
 void __cdecl HCWALL(ObjectMaster *a1);
 void __cdecl HCPLATFORM(ObjectMaster *a1);
+void HCTORCH(ObjectMaster *a1);
 
-extern SH_ANIMTEXS HangCastleAnimTexs[5];
-
-#pragma region Torch/fire
-void HCTORCH_Display(ObjectMaster *a1) {
-	if (a1->Data1->Action != 0 && a1->Data1->Action != 3 && a1->Data1->Action != 4) DrawObjModel(a1, a1->Data1->Object->basicdxmodel, false);
-
-	if (a1->Data1->Action < 5) {
-		if (a1->Data1->Action == 0 || a1->Data1->Action == 3) {
-			if (!IsPlayerInsideSphere(&a1->Data1->Position, 300)) return;
-		}
-
-		//replace will billboard sprite somehow
-		if (!MissedFrames) {
-			njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
-			njPushMatrix(0);
-			njTranslateV(0, &a1->Data1->Position);
-			njRotateXYZ(nullptr, a1->Data1->Rotation.x, Camera_Data1->Rotation.y, a1->Data1->Rotation.z);
-			njTranslate(0, 0, 33, 0);
-			njScale(nullptr, a1->Data1->Scale.z, a1->Data1->Scale.z, a1->Data1->Scale.z);
-			DrawQueueDepthBias = -9000.0f;
-			if (a1->Data1->Action == 2 || a1->Data1->Action == 3) njDrawModel_SADX(&HC_FLAME_BLUE);
-			else njDrawModel_SADX(&HC_FLAME);
-			DrawQueueDepthBias = 0;
-			njPopMatrix(1u);
-		}
-	}
-}
-
-void HCTORCH_Main(ObjectMaster *a1) {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 2000.0f)) {
-
-		if (a1->Data1->Action == 0 || a1->Data1->Action == 3) {
-			if (IsPlayerInsideSphere(&a1->Data1->Position, 150)) {
-				if (a1->Data1->Scale.z < 1) a1->Data1->Scale.z += 0.1f;
-			}
-			else {
-				if (a1->Data1->Scale.z > 0) a1->Data1->Scale.z -= 0.05f;
-			}
-		}
-
-		HCTORCH_Display(a1);
-	}
-	else {
-		deleteSub_Global(a1);
-	}
-}
-
-void __cdecl HCTORCH(ObjectMaster *a1)
-{
-	a1->Data1->Action = a1->Data1->Scale.x;
-	if (a1->Data1->Action == 0) a1->Data1->Position.y -= 20;
-	else if (a1->Data1->Action == 3) a1->Data1->Position.y -= 30;
-	else if (a1->Data1->Action == 4) {
-		a1->Data1->Scale.z = 6;
-		if (a1->Data1->Rotation.x != 0xFFFF8000) a1->Data1->Position.y -= 5;
-		else a1->Data1->Position.y += 10;
-	}
-	else {
-		a1->Data1->Object = &HC_TORCH;
-		AddToCollision(a1, 0);
-		a1->Data1->Scale.z = 2;
-	}
-
-	a1->MainSub = &HCTORCH_Main;
-	a1->DisplaySub = &HCTORCH_Display;
-	a1->DeleteSub = &deleteSub_Global;
-}
-
-#pragma endregion
+ModelInfo * HC_HCBLADE;
+ModelInfo * HC_HPLANTA;
+ModelInfo * HC_HPLANTB;
+ModelInfo * HC_POLFLAG;
+ModelInfo * HC_SPDSIGN;
+ModelInfo * HC_SPKTREE;
 
 #pragma region Flags
 void HCFLAG_Display(ObjectMaster *a1) {
-	if (a1->Data1->Scale.x == 1) DrawObjModel(a1, &HC_FLAGPOLEB, false);
-	else DrawObjModel(a1, &HC_FLAGPOLEA, false);
+	if (a1->Data1->Scale.x == 1) DrawObjModel(a1, HC_POLFLAG->getmodel()->child->basicdxmodel, false);
+	else DrawObjModel(a1, HC_POLFLAG->getmodel()->basicdxmodel, false);
 
 	if (!DroppedFrames) {
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
@@ -136,7 +76,7 @@ void HCBLADE_Display(ObjectMaster *a1) {
 		njRotateZ(0, a1->Data1->Scale.z);
 		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
-		njDrawModel_SADX(&HC_BLADE);
+		njDrawModel_SADX(HC_HCBLADE->getmodel()->basicdxmodel);
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 	}
@@ -184,7 +124,7 @@ void __cdecl HCBLADE(ObjectMaster *a1)
 
 #pragma region Spooky tree
 void HCTREE_Display(ObjectMaster *a1) {
-	DrawObjModel(a1, HC_TREE.basicdxmodel, false);
+	DrawObjModel(a1, a1->Data1->Object->basicdxmodel, false);
 
 	if (!MissedFrames) {
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
@@ -198,18 +138,18 @@ void HCTREE_Display(ObjectMaster *a1) {
 		float offset = a1->Data1->Scale.z;
 
 		njRotateZ(0, offset);
-		njDrawModel_SADX(&HC_LEAVES2);
+		njDrawModel_SADX(HC_SPKTREE->getmodel()->child->child->basicdxmodel);
 		njRotateZ(0, -offset);
 		njRotateX(0, offset);
-		njDrawModel_SADX(&HC_LEAVES1);
+		njDrawModel_SADX(HC_SPKTREE->getmodel()->child->basicdxmodel);
 		njRotateX(0, -offset);
 
 		njTranslate(0, 0, 15, 0);
 		njRotateX(0, (offset / 0.9));
-		njDrawModel_SADX(&HC_LEAVES3);
+		njDrawModel_SADX(HC_SPKTREE->getmodel()->child->child->child->basicdxmodel);
 		njRotateX(0, -(offset / 0.9));
 		njRotateZ(0, (offset / 0.9));
-		njDrawModel_SADX(&HC_LEAVES4);
+		njDrawModel_SADX(HC_SPKTREE->getmodel()->child->child->child->child->basicdxmodel);
 		njRotateZ(0, -(offset / 0.9));
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
@@ -237,7 +177,7 @@ void HCTREE_Main(ObjectMaster *a1) {
 
 void __cdecl HCTREE(ObjectMaster *a1)
 {
-	a1->Data1->Object = &HC_TREE;
+	a1->Data1->Object = HC_SPKTREE->getmodel();
 	AddToCollision(a1, 0);
 
 	a1->MainSub = &HCTREE_Main;
@@ -323,19 +263,19 @@ void HCPLANTB_Display(ObjectMaster *a1) {
 		float offset = a1->Data1->Scale.z;
 
 		njRotateX(0, -offset);
-		njDrawModel_SADX(&HC_PLANTB1);
+		njDrawModel_SADX(HC_HPLANTB->getmodel()->basicdxmodel);
 		njRotateX(0, offset);
 
 		njRotateZ(0, -offset);
-		njDrawModel_SADX(&HC_PLANTB2);
+		njDrawModel_SADX(HC_HPLANTB->getmodel()->child->basicdxmodel);
 		njRotateZ(0, offset);
 
 		njRotateX(0, (offset / 0.9));
-		njDrawModel_SADX(&HC_PLANTB3);
+		njDrawModel_SADX(HC_HPLANTB->getmodel()->child->child->basicdxmodel);
 		njRotateX(0, -(offset / 0.9));
 
 		njRotateZ(0, (offset / 0.9));
-		njDrawModel_SADX(&HC_PLANTB4);
+		njDrawModel_SADX(HC_HPLANTB->getmodel()->child->child->child->basicdxmodel);
 		njRotateZ(0, -(offset / 0.9));
 
 		DrawQueueDepthBias = 0;
@@ -367,6 +307,40 @@ void __cdecl HCPLANTB(ObjectMaster *a1)
 	a1->MainSub = &HCPLANTB_Main;
 	a1->DisplaySub = &HCPLANTB_Display;
 	a1->DeleteSub = &deleteSub_Global;
+}
+#pragma endregion
+
+#pragma region Spider Floor
+void HCSpiders_Display(ObjectMaster *a1) {
+	if (!DroppedFrames) {
+		for (int i = 0; i < LengthOfArray(HangCastle_Spiders); ++i) {
+			if (CheckModelDisplay(HangCastle_Spiders[i])) {
+				SOI_LIST2 item = HangCastle_Spiders[i];
+
+				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+				njPushMatrix(0);
+				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
+				njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);
+				njScale(nullptr, item.Scale.x, item.Scale.y, item.Scale.z);
+				DrawQueueDepthBias = item.Bias;
+
+				switch (item.Model) {
+				case 0: njDrawModel_SADX(HC_SPDSIGN->getmodel()->basicdxmodel); break;
+				case 1: njDrawModel_SADX(HC_SPDSIGN->getmodel()->child->basicdxmodel); break;
+				case 2: njDrawModel_SADX(HC_SPDSIGN->getmodel()->child->child->basicdxmodel); break;
+				case 3: njDrawModel_SADX(HC_SPDSIGN->getmodel()->child->child->child->basicdxmodel); break;
+				}
+
+				DrawQueueDepthBias = 0;
+				njPopMatrix(1u);
+			}
+		}
+	}
+}
+
+void HCSpiders(ObjectMaster *a1) {
+	a1->DisplaySub = HCSpiders_Display;
+	a1->MainSub = HCSpiders_Display;
 }
 #pragma endregion
 
@@ -450,8 +424,6 @@ ObjectListEntry HangCastleObjectList_list[] = {
 };
 ObjectList HangCastleObjectList = { arraylengthandptrT(HangCastleObjectList_list, int) };
 
-static int hcflagtimer = 0;
-
 void HCFlags_Reset() {
 	hcflagtimer = 0;
 	HC_FLAG.points[1].z = 0.05f * 25;
@@ -516,16 +488,4 @@ void HCFlags_Animate() {
 void HangCastleObjects_Init(const char *path) {
 	WriteData((PVMEntry**)0x90EB84, HangCastleObjectTextures);
 	WriteData((ObjectList**)0x974BD8, &HangCastleObjectList); //974BDC 974BE0
-}
-
-void HangCastleObjects_OnFrame(EntityData1 * entity) {
-	AnimateObjectsTextures(HCOBJLIST, LengthOfArray(HCOBJLIST), HangCastleAnimTexs, LengthOfArray(HangCastleAnimTexs));;
-
-	HCFlags_Animate();
-
-	if (CurrentChunk != 11) {
-		CurrentLandTable->Col[0].Model->pos[0] = entity->Position.x;
-		CurrentLandTable->Col[0].Model->pos[1] = entity->Position.y;
-		CurrentLandTable->Col[0].Model->pos[2] = entity->Position.z + 8500;
-	}
 }

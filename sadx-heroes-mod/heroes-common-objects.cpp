@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "mod.h"
 #include "objects.h"
-#include "IniFile.hpp"
 
 #include "heroes-common-objects.h"
 #include "bobsled-paths.h"

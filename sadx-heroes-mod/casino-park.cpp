@@ -19,6 +19,7 @@ extern ModelInfo * CP_MOVDICE;
 extern ModelInfo * CP_RURETTO;
 extern ModelInfo * CP_SLDDOOR;
 extern ModelInfo * CP_SLOTMCS;
+extern ModelInfo * CP_DSHPANL;
 
 NJS_MODEL_SADX * CASINOOBJLIST[12];
 #pragma endregion
@@ -32,6 +33,7 @@ void CasinoPark_InitObjects() {
 	CP_RURETTO = LoadMDL("CP_RURETTO");
 	CP_SLDDOOR = LoadMDL("CP_SLDDOOR");
 	CP_SLOTMCS = LoadMDL("CP_SLOTMCS");
+	CP_DSHPANL = LoadMDL("CP_DSHPANL");
 
 	CASINOOBJLIST[0] = CP_FLIPPER->getmodel()->basicdxmodel;
 	CASINOOBJLIST[1] = CP_FLIPPER->getmodel()->child->basicdxmodel;
@@ -45,6 +47,8 @@ void CasinoPark_InitObjects() {
 	CASINOOBJLIST[9] = CP_SLDDOOR->getmodel()->child->child->child->basicdxmodel;
 	CASINOOBJLIST[10] = CP_DIRSIGN->getmodel()->basicdxmodel;
 	CASINOOBJLIST[11] = CP_DIRSIGN->getmodel()->child->basicdxmodel;
+
+	LoadObject(LoadObj_Data1, 3, CPGlass);
 }
 
 void CasinoPark_Delete(ObjectMaster * a1) {
@@ -56,8 +60,10 @@ void CasinoPark_Delete(ObjectMaster * a1) {
 	FreeMDL(CP_RURETTO);
 	FreeMDL(CP_SLDDOOR);
 	FreeMDL(CP_SLOTMCS);
+	FreeMDL(CP_DSHPANL);
 
 	CasinoCommon_Delete(a1);
+	LevelHandler_Delete(a1);
 }
 
 void CasinoParkHandler(ObjectMaster * a1) {
@@ -70,8 +76,6 @@ void CasinoParkHandler(ObjectMaster * a1) {
 		InitializeSoundManager();
 		PlayMusic(MusicIDs_TwinkleParkTwinklePark);
 		SoundManager_Delete2();
-
-		LoadObject(LoadObj_Data1, 3, CPGlass);
 
 		a1->Data1->Action = 1;
 		a1->DeleteSub = CasinoPark_Delete;

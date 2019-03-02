@@ -18,6 +18,8 @@ ModelInfo * CP_MOVDICE;
 ModelInfo * CP_SLDDOOR;
 ModelInfo * CP_SLOTMCS;
 ModelInfo * CP_CSNOBOB;
+ModelInfo * CP_DSHPANL;
+ModelInfo * CP_RURETTO;
 
 #pragma region FlipperL
 ObjectFunc(FlipperL_Main, 0x5DC890);
@@ -286,8 +288,8 @@ void __cdecl CPDICE(ObjectMaster *a1)
 void CPGlass_Display(ObjectMaster *a1) {
 	if (!DroppedFrames) {
 		for (int i = 0; i < LengthOfArray(Casino_Glass); ++i) {
-			if (CurrentLevel == HeroesLevelID_CasinoPark && Casino_Glass[i].Model != 0) return;
-			if (CurrentLevel == HeroesLevelID_BingoHighway && Casino_Glass[i].Model != 1) return;
+			if (CurrentLevel == HeroesLevelID_CasinoPark && Casino_Glass[i].Model != 0) continue;
+			if (CurrentLevel == HeroesLevelID_BingoHighway && Casino_Glass[i].Model != 1) continue;
 
 			if (CheckModelDisplay(Casino_Glass[i])) {
 				SOI_LIST2 item = Casino_Glass[i];
@@ -382,8 +384,9 @@ void __cdecl CPBOBINAIR(ObjectMaster *a1)
 #pragma region Alt Dashpanel
 void CPDashPanel(ObjectMaster *a1) {
 	if (!MissedFrames) {
-		if (CurrentLevel == 3) matlist_8D5FB297B8FAC6D4AD9[0].attr_texId = 144;
-		else matlist_8D5FB297B8FAC6D4AD9[0].attr_texId = 107;
+		NJS_MATERIAL * mat = CP_DSHPANL->getmodel()->basicdxmodel->mats;
+		if (CurrentLevel == 3) mat[0].attr_texId = 144;
+		else mat[0].attr_texId = 107;
 
 		njSetTexture(CurrentLevelTexlist);
 		njPushMatrix(0);
@@ -408,7 +411,7 @@ void CPDashPanel(ObjectMaster *a1) {
 
 		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
-		njDrawModel_SADX(&CP_DASHPANEL);
+		njDrawModel_SADX(CP_DSHPANL->getmodel()->basicdxmodel);
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 	}
@@ -972,6 +975,46 @@ void __cdecl CPDOOR(ObjectMaster *a1)
 
 	a1->MainSub = &CPDOOR_Main;
 	a1->DisplaySub = &CPDOOR_Display;
+	a1->DeleteSub = &deleteSub_Global;
+}
+#pragma endregion
+
+#pragma region Roulette
+void CPRoulette_Display(ObjectMaster *a1) {
+	if (!MissedFrames) {
+		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		njPushMatrix(0);
+		njTranslateV(0, &a1->Data1->Position);
+		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
+		njScale(nullptr, 1, 1, 1);
+		DrawQueueDepthBias = -6000.0f;
+		if (CurrentLevel == HeroesLevelID_BingoHighway) njRotateY(0, a1->Data1->Scale.z);
+		njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
+		DrawQueueDepthBias = 0;
+		njPopMatrix(1u);
+	}
+}
+
+void CPRoulette_Main(ObjectMaster *a1) {
+	if (IsPlayerInsideSphere(&a1->Data1->Position, 2000.0f)) {
+		if (CurrentLevel == HeroesLevelID_CasinoPark) a1->Data1->Rotation.y += 60;
+		if (CurrentLevel == HeroesLevelID_BingoHighway) a1->Data1->Scale.z += 60;
+		CPRoulette_Display(a1);
+	}
+	else {
+		deleteSub_Global(a1);
+	}
+}
+
+void __cdecl CPRoulette(ObjectMaster *a1)
+{
+	if (CurrentLevel == HeroesLevelID_CasinoPark) a1->Data1->Object = CP_RURETTO->getmodel();
+	else a1->Data1->Object = &BH_ROURETTE;
+	
+	AddToCollision(a1, 0);
+
+	a1->MainSub = &CPRoulette_Main;
+	a1->DisplaySub = &CPRoulette_Display;
 	a1->DeleteSub = &deleteSub_Global;
 }
 #pragma endregion

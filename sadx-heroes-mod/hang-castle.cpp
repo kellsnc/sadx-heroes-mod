@@ -6,13 +6,53 @@
 #include "hang-castle.h"
 
 void HangCastleObjects_Init(const char *path);
-void HangCastleObjects_OnFrame(EntityData1 * entity);
+void HCSpiders(ObjectMaster *a1);
 void HCFlags_Reset();
+void HCFlags_Animate();
 
-extern SOI_LISTS hang_castle_objects[];
+#pragma region Objects Data
+extern ModelInfo * HC_HCBLADE;
+extern ModelInfo * HC_HFLAMES;
+extern ModelInfo * HC_HPLANTA;
+extern ModelInfo * HC_HPLANTB;
+extern ModelInfo * HC_POLFLAG;
+extern ModelInfo * HC_SPDSIGN;
+extern ModelInfo * HC_SPKDOOR;
+extern ModelInfo * HC_SPKTREE;
+extern ModelInfo * HC_SPKWARP;
+
+NJS_MODEL_SADX * HCMODELLIST[2];
+#pragma endregion
+
+void HangCastle_InitObjects() {
+	HC_SPKWARP = LoadMDL("HC_SPKWARP");
+	HC_HFLAMES = LoadMDL("HC_HFLAMES");
+	HC_HCBLADE = LoadMDL("HC_HCBLADE");
+	HC_HPLANTA = LoadMDL("HC_HPLANTA");
+	HC_HPLANTB = LoadMDL("HC_HPLANTB");
+	HC_POLFLAG = LoadMDL("HC_POLFLAG");
+	HC_SPDSIGN = LoadMDL("HC_SPDSIGN");
+	HC_SPKDOOR = LoadMDL("HC_SPKDOOR");
+	HC_SPKTREE = LoadMDL("HC_SPKTREE");
+
+	HCMODELLIST[0] = HC_HFLAMES->getmodel()->basicdxmodel;
+	HCMODELLIST[1] = HC_HFLAMES->getmodel()->child->basicdxmodel;
+
+	LoadObject(LoadObj_Data1, 3, HCSpiders);
+}
 
 void HangCastle_Delete(ObjectMaster * a1) {
 	HCFlags_Reset();
+
+	FreeMDL(HC_HCBLADE);
+	FreeMDL(HC_HFLAMES);
+	FreeMDL(HC_HPLANTA);
+	FreeMDL(HC_HPLANTB);
+	FreeMDL(HC_POLFLAG);
+	FreeMDL(HC_SPDSIGN);
+	FreeMDL(HC_SPKDOOR);
+	FreeMDL(HC_SPKTREE);
+	FreeMDL(HC_SPKWARP);
 
 	if (IsLantern) {
 		set_shader_flags_ptr(ShaderFlags_Blend, false);
@@ -37,12 +77,11 @@ void HangCastleHandler(ObjectMaster * a1) {
 		if (CurrentAct == 0) {
 			CurrentLevelTexlist = &RUIN01_TEXLIST;
 			CurrentLandAddress = (LandTable**)0x97DAE8;
+
+			HangCastle_InitObjects();
 			HCFlags_Reset();
 
 			if (IsLantern) set_shader_flags_ptr(ShaderFlags_Blend, true);
-
-			ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
-			modelhandler->Data1->LoopData = (Loop*)&hang_castle_objects;
 
 			if (entity->Position.z > -3111 && entity->Position.x < 8000) LoadLevelFile("HC", 01);
 		}
@@ -52,7 +91,7 @@ void HangCastleHandler(ObjectMaster * a1) {
 		case 0:
 			ChunkHandler("HC", HangCastleChunks, LengthOfArray(HangCastleChunks), entity->Position);
 			AnimateTextures(HangCastleAnimTexs, LengthOfArray(HangCastleAnimTexs));
-			HangCastleObjects_OnFrame(entity);
+			AnimateObjectsTextures(HCMODELLIST, 2, HangCastleAnimTexs, LengthOfArray(HangCastleAnimTexs));
 
 			if (chunkswapped) {
 				if (CurrentChunk == 2 || CurrentChunk == 6 || CurrentChunk == 8 || CurrentChunk == 10 || CurrentChunk == 11) {
@@ -66,6 +105,14 @@ void HangCastleHandler(ObjectMaster * a1) {
 					LastSong = MusicIDs_lstwrld1;
 				}
 			}
+
+			if (CurrentChunk != 11) {
+				CurrentLandTable->Col[0].Model->pos[0] = entity->Position.x;
+				CurrentLandTable->Col[0].Model->pos[1] = entity->Position.y;
+				CurrentLandTable->Col[0].Model->pos[2] = entity->Position.z + 8500;
+			}
+
+			HCFlags_Animate();
 
 			chunkswapped = false;
 

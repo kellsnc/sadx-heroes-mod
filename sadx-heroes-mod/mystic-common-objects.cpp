@@ -7,6 +7,9 @@
 ModelInfo * MM_MOVPLAT;
 ModelInfo * MM_MYSDOOR;
 ModelInfo * MM_MYSWALL;
+ModelInfo * HC_HFLAMES;
+ModelInfo * HC_SPKWARP;
+ModelInfo * HC_SPKDOOR;
 
 #pragma region Warps
 float hclight = 0;
@@ -24,16 +27,16 @@ void HCWARP_Display(ObjectMaster *a1) {
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, 0, 1);
 		njScale(nullptr, 1.5f, 1.5f, 1.5f);
 		DrawQueueDepthBias = -6000.0f;
-		njDrawModel_SADX(&HC_SWITCH);
+		njDrawModel_SADX(HC_SPKWARP->getmodel()->basicdxmodel);
 		if (a1->Data1->Action < 2) {
 			njTranslate(0, 0, 8, 0);
 			njRotateY(0, a1->Data1->Rotation.y);
-			njDrawModel_SADX(&HC_SWITCH_BALL);
-			njDrawModel_SADX(&HC_SWITCH_EFFECT);
+			njDrawModel_SADX(HC_SPKWARP->getmodel()->child->basicdxmodel);
+			njDrawModel_SADX(HC_SPKWARP->getmodel()->child->child->basicdxmodel);
 		}
 		else {
 			njTranslate(0, 0, 5, 0);
-			njDrawModel_SADX(&HC_SWITCH_BALL);
+			njDrawModel_SADX(HC_SPKWARP->getmodel()->child->basicdxmodel);
 		}
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
@@ -89,7 +92,7 @@ void HCWARP_Main(ObjectMaster *a1) {
 			else {
 				if (a1->Data1->Scale.x != 0) {
 
-					if (a1->Data1->Rotation.z == 2) {
+					if (CurrentLevel == HeroesLevelID_MysticMansion && a1->Data1->Rotation.z == 2) {
 						entity->Position.x += a1->Data1->Scale.x;
 						entity->Position.y += a1->Data1->Scale.y;
 						entity->Position.z += a1->Data1->Scale.z;
@@ -128,14 +131,14 @@ void HCWARP_Main(ObjectMaster *a1) {
 void __cdecl HCWARP(ObjectMaster *a1)
 {
 	if (CurrentLevel == 10) {
-		matlist_8D6060A4B230E713870[0].attr_texId = 154;
-		matlist_8D6060A9096106CE9BF[0].attr_texId = 154;
-		matlist_8D606C86190A15FDB23[0].attr_texId = 155;
+		HC_SPKWARP->getmodel()->basicdxmodel->mats[0].attr_texId = 154;
+		HC_SPKWARP->getmodel()->child->basicdxmodel->mats[0].attr_texId = 154;
+		HC_SPKWARP->getmodel()->child->child->basicdxmodel->mats[0].attr_texId = 155;
 	}
 	else {
-		matlist_8D6060A4B230E713870[0].attr_texId = 98;
-		matlist_8D6060A9096106CE9BF[0].attr_texId = 98;
-		matlist_8D606C86190A15FDB23[0].attr_texId = 99;
+		HC_SPKWARP->getmodel()->basicdxmodel->mats[0].attr_texId = 98;
+		HC_SPKWARP->getmodel()->child->basicdxmodel->mats[0].attr_texId = 98;
+		HC_SPKWARP->getmodel()->child->child->basicdxmodel->mats[0].attr_texId = 99;
 	}
 
 	Collision_Init(a1, Warps_col, 2, 2u);
@@ -159,40 +162,43 @@ void HCDOOR_Display(ObjectMaster *a1) {
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
 		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
-
 		njTranslate(0, -40, 0, 0);
+
+		NJS_OBJECT * object;
+		if (CurrentLevel == HeroesLevelID_HangCastle) {
+			object = HC_SPKDOOR->getmodel();
+			njTranslate(0, 10.2f, 0, 0);
+		} 
+		else object = MM_MYSDOOR->getmodel();
+
 		if (a1->Data1->Action == 0) {
-			if (CurrentLevel == 10) njDrawModel_SADX(MM_MYSDOOR->getmodel()->basicdxmodel);
-			else njDrawModel_SADX(&HC_DOOR_LEFT);
+			njDrawModel_SADX(object->basicdxmodel);
 		}
 		else if (a1->Data1->Action == 1) {
 			njRotateY(0, (a1->Data1->NextAction * 130));
-			if (CurrentLevel == 10) njDrawModel_SADX(MM_MYSDOOR->getmodel()->basicdxmodel);
-			else njDrawModel_SADX(&HC_DOOR_LEFT);
+			njDrawModel_SADX(object->basicdxmodel);
 			njRotateY(0, -(a1->Data1->NextAction * 130));
 		}
 		else if (a1->Data1->Action == 2) {
 			njRotateY(0, 13000);
-			if (CurrentLevel == 10) njDrawModel_SADX(MM_MYSDOOR->getmodel()->basicdxmodel);
-			else njDrawModel_SADX(&HC_DOOR_LEFT);
+			njDrawModel_SADX(object->basicdxmodel);
 			njRotateY(0, -13000);
 		}
 
 		njTranslate(0, 80, 0, 0);
+		if (CurrentLevel == HeroesLevelID_HangCastle) njTranslate(0, -20.4f, 0, 0);
+
 		if (a1->Data1->Action == 0) {
-			if (CurrentLevel == 10) njDrawModel_SADX(MM_MYSDOOR->getmodel()->child->basicdxmodel);
-			else njDrawModel_SADX(&HC_DOOR_RIGHT);
+			njDrawModel_SADX(object->child->basicdxmodel);
 		}
 		else if (a1->Data1->Action == 1) {
 			njRotateY(0, -(a1->Data1->NextAction * 130));
-			if (CurrentLevel == 10) njDrawModel_SADX(MM_MYSDOOR->getmodel()->child->basicdxmodel);
-			else njDrawModel_SADX(&HC_DOOR_RIGHT);
+			njDrawModel_SADX(object->child->basicdxmodel);
 			njRotateY(0, (a1->Data1->NextAction * 130));
 		}
 		else if (a1->Data1->Action == 2) {
 			njRotateY(0, -13000);
-			if (CurrentLevel == 10) njDrawModel_SADX(MM_MYSDOOR->getmodel()->child->basicdxmodel);
-			else njDrawModel_SADX(&HC_DOOR_RIGHT);
+			njDrawModel_SADX(object->child->basicdxmodel);
 			njRotateY(0, 13000);
 		}
 
@@ -246,6 +252,74 @@ void __cdecl HCDOOR(ObjectMaster *a1)
 	a1->DisplaySub = &HCDOOR_Display;
 	a1->DeleteSub = &deleteSub_Global;
 }
+#pragma endregion
+
+#pragma region Torch/fire
+void HCTORCH_Display(ObjectMaster *a1) {
+	if (a1->Data1->Action != 0 && a1->Data1->Action != 3 && a1->Data1->Action != 4) DrawObjModel(a1, a1->Data1->Object->basicdxmodel, false);
+
+	if (a1->Data1->Action < 5) {
+		if (a1->Data1->Action == 0 || a1->Data1->Action == 3) {
+			if (!IsPlayerInsideSphere(&a1->Data1->Position, 300)) return;
+		}
+
+		//replace will billboard sprite somehow
+		if (!MissedFrames) {
+			njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+			njPushMatrix(0);
+			njTranslateV(0, &a1->Data1->Position);
+			njRotateXYZ(nullptr, a1->Data1->Rotation.x, Camera_Data1->Rotation.y, a1->Data1->Rotation.z);
+			njTranslate(0, 0, 33, 0);
+			njScale(nullptr, a1->Data1->Scale.z, a1->Data1->Scale.z, a1->Data1->Scale.z);
+			DrawQueueDepthBias = -9000.0f;
+			if (a1->Data1->Action == 2 || a1->Data1->Action == 3) njDrawModel_SADX(HC_HFLAMES->getmodel()->child->basicdxmodel);
+			else njDrawModel_SADX(HC_HFLAMES->getmodel()->basicdxmodel);
+			DrawQueueDepthBias = 0;
+			njPopMatrix(1u);
+		}
+	}
+}
+
+void HCTORCH_Main(ObjectMaster *a1) {
+	if (IsPlayerInsideSphere(&a1->Data1->Position, 2000.0f)) {
+
+		if (a1->Data1->Action == 0 || a1->Data1->Action == 3) {
+			if (IsPlayerInsideSphere(&a1->Data1->Position, 150)) {
+				if (a1->Data1->Scale.z < 1) a1->Data1->Scale.z += 0.1f;
+			}
+			else {
+				if (a1->Data1->Scale.z > 0) a1->Data1->Scale.z -= 0.05f;
+			}
+		}
+
+		HCTORCH_Display(a1);
+	}
+	else {
+		deleteSub_Global(a1);
+	}
+}
+
+void __cdecl HCTORCH(ObjectMaster *a1)
+{
+	a1->Data1->Action = a1->Data1->Scale.x;
+	if (a1->Data1->Action == 0) a1->Data1->Position.y -= 20;
+	else if (a1->Data1->Action == 3) a1->Data1->Position.y -= 30;
+	else if (a1->Data1->Action == 4) {
+		a1->Data1->Scale.z = 6;
+		if (a1->Data1->Rotation.x != 0xFFFF8000) a1->Data1->Position.y -= 5;
+		else a1->Data1->Position.y += 10;
+	}
+	else {
+		a1->Data1->Object = &HC_TORCH;
+		AddToCollision(a1, 0);
+		a1->Data1->Scale.z = 2;
+	}
+
+	a1->MainSub = &HCTORCH_Main;
+	a1->DisplaySub = &HCTORCH_Display;
+	a1->DeleteSub = &deleteSub_Global;
+}
+
 #pragma endregion
 
 #pragma region Walls
