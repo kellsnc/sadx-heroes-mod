@@ -21,6 +21,9 @@ DataArray(int, HeldButtons2, 0x3B0E3A8, 8);
 DataArray(Rotation3, LevelGlobalColors, 0x90BFE8, 42);
 DataArray(ObjectFuncPtr, SkyboxObjects, 0x90C1F0, 42);
 
+ModelInfo* LoadMDL(const char *shortname);
+void FreeMDL(ModelInfo * pointer);
+
 extern unsigned int anim;
 extern NJS_TEXLIST * CurrentLevelTexlist;
 extern uint8_t DayTimeModifier;

@@ -107,6 +107,8 @@ void AddToCollision(ObjectMaster *a1, uint8_t col) {
 void AnimateUV(SH_UVSHIFT *UVSHIFT, int size) {
 	if (GameState != 16) {
 		for (int j = 0; j < size; ++j) {
+			if (UVSHIFT[j].List == nullptr) continue;
+
 			if (!UVSHIFT[j].uvtime || anim % UVSHIFT[j].uvtime == 0)
 				for (int i = 0; i < UVSHIFT[j].Size; ++i) {
 					if (UVSHIFT[j].uvshift[0] != 0) {
@@ -127,6 +129,8 @@ void AnimateUV(SH_UVSHIFT *UVSHIFT, int size) {
 //Animate textures of models, requires a SH_ANIMTEXS struct
 void AnimateObjectsTextures(NJS_MODEL_SADX * *objlist, int size, SH_ANIMTEXS *list, Int listcount) {
 	for (Int j = 0; j < size; ++j) {
+		if (objlist[j] == nullptr) continue;
+
 		for (Int k = 0; k < objlist[j]->nbMat; ++k) {
 			for (int l = 0; l < listcount; ++l) {
 				Int last = list[l].texid + list[l].count;

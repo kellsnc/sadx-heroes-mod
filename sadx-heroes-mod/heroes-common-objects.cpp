@@ -9,6 +9,29 @@ NJS_TEXNAME SHTexNames[40];
 NJS_TEXLIST SHCommonTextures = { arrayptrandlength(SHTexNames) };
 PVMEntry shobjpvm = { "heroes-common", &SHCommonTextures };
 
+SH_ANIMTEXS CommonAnimTexs[]{
+	{ 38, 2,{ 25, 25, 10 } }
+};
+
+NJS_MODEL_SADX * COMMONOBJLIST[2];
+
+SH_UVSHIFT Objects_UVSHIFT[]{
+	{ nullptr,0,{ 0, 20 } },
+	{ nullptr,0,{ 0, 20 } },
+	{ nullptr,0,{ 0, 30 } },
+};
+
+ModelInfo * CO_BALLOON;
+ModelInfo * CO_CMNREEL;
+ModelInfo * CO_COMNFAN;
+ModelInfo * CO_DSHHOOP;
+ModelInfo * CO_DSHPANL;
+ModelInfo * CO_GOALRNG;
+ModelInfo * CO_LCHRAMP;
+ModelInfo * CO_LCKCASE;
+ModelInfo * CO_OCANNON;
+ModelInfo * CO_WOODBOX;
+
 bool Animate = false;
 
 #pragma region CameraModeSwitch
@@ -45,7 +68,7 @@ void ObjFan_Display(ObjectMaster *a1)
 		DrawQueueDepthBias = -6000.0f;
 		njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
 		njRotateXYZ(nullptr, 0, a1->Data1->Scale.z, 0);
-		njDrawModel_SADX(&SH_FanBlades);
+		njDrawModel_SADX(CO_COMNFAN->getmodel()->basicdxmodel);
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 	}
@@ -90,7 +113,7 @@ void ObjFan_Main(ObjectMaster *a1)
 
 void __cdecl ObjFan(ObjectMaster *a1)
 {
-	a1->Data1->Object = &SH_ObjFan;
+	a1->Data1->Object = CO_COMNFAN->getmodel();
 	AddToCollision(a1, 0);
 
 	a1->MainSub = &ObjFan_Main;
@@ -113,15 +136,15 @@ void ObjReel_Display(ObjectMaster *a1)
 	njTranslate(0, a1->Data1->Position.x, a1->Data1->Scale.x, a1->Data1->Position.z);
 	njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
 	njScale(nullptr, 1, 1, 1);
-	njDrawModel_SADX(&PP_REEL_TOP);
+	njDrawModel_SADX(CO_COMNFAN->getmodel()->basicdxmodel);
 
 	njTranslate(0, 0, a1->Data1->Position.y - a1->Data1->Scale.x + 15, 0);
 	njScale(nullptr, 1, 1, 1);
-	njDrawModel_SADX(&PP_REEL_RING);
+	njDrawModel_SADX(CO_COMNFAN->getmodel()->child->child->basicdxmodel);
 
 	njTranslate(0, 0, a1->Data1->Scale.x - a1->Data1->Position.y - 15, 0);
 	njScale(nullptr, 1, (a1->Data1->Scale.x - a1->Data1->Position.y) / 10.15f, 1);
-	njDrawModel_SADX(&PP_REEL);
+	njDrawModel_SADX(CO_COMNFAN->getmodel()->child->basicdxmodel);
 
 	DrawQueueDepthBias = 0;
 	njPopMatrix(1u);
@@ -220,7 +243,7 @@ void ObjReel_Main(ObjectMaster *a1)
 
 void __cdecl ObjReel(ObjectMaster *a1)
 {
-	a1->Data1->Object = &PP_REEL_TOP_COL;
+	a1->Data1->Object = CO_COMNFAN->getmodel();
 
 	EntityData1 * v1 = a1->Data1;
 	NJS_OBJECT * v3 = v1->Object;
@@ -262,7 +285,7 @@ void ObjBalloon_Display(ObjectMaster *a1)
 			SetMaterialAndSpriteColor_Float(a, 1.0f, 1.0f, 1.0f);
 		}
 		DrawQueueDepthBias = -6000.0f;
-		njDrawModel_SADX(&SH_BALLOON);
+		njDrawModel_SADX(CO_BALLOON->getmodel()->basicdxmodel);
 		DrawQueueDepthBias = 0;
 		SetMaterialAndSpriteColor_Float(1.0f, 1.0f, 1.0f, 1.0f);
 		njPopMatrix(1u);
@@ -348,7 +371,7 @@ void __cdecl SHDashPanel(ObjectMaster *a1)
 			}
 			njScale(nullptr, 1, 1, 1);
 			DrawQueueDepthBias = -6000.0f;
-			njDrawModel_SADX(&SH_DASHPANEL);
+			njDrawModel_SADX(CO_DSHPANL->getmodel()->basicdxmodel);
 			DrawQueueDepthBias = 0;
 			njPopMatrix(1u);
 		}
@@ -385,8 +408,8 @@ void __cdecl SHDashHoop(ObjectMaster *a1)
 		{
 			njRotateZ(0, v4);
 		}
-		if (CurrentLevel != 3 && CurrentLevel != 4) njDrawModel_SADX(&SH_DASHHOOP);
-		else njDrawModel_SADX(&SH_DASHRING);
+		if (CurrentLevel != 3 && CurrentLevel != 4) njDrawModel_SADX(CO_DSHHOOP->getmodel()->basicdxmodel);
+		else njDrawModel_SADX(CO_DSHHOOP->getmodel()->child->basicdxmodel);
 		njPopMatrix(1u);
 	}
 }
@@ -420,11 +443,11 @@ void ObjCannon_Display(ObjectMaster *a1)
 		njRotateXYZ(nullptr, 0, a1->Data1->Rotation.y, 0);
 		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
-		njDrawModel_SADX(&SH_CANNONBASE);
+		njDrawModel_SADX(CO_DSHHOOP->getmodel()->basicdxmodel);
 
 		njTranslate(0, 0, 5, 0);
 		njRotateXYZ(0, a1->Data1->Rotation.x, 0, 0);
-		njDrawModel_SADX(&SH_CANNON);
+		njDrawModel_SADX(CO_DSHHOOP->getmodel()->child->basicdxmodel);
 
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
@@ -591,7 +614,7 @@ void __cdecl SHLaunchRamp(ObjectMaster *a1)
 		njRotateX(0, a1->Data1->Rotation.x * 2);*/
 		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
-		njDrawModel_SADX(&SH_LAUNCHRAMP);
+		njDrawModel_SADX(CO_LCHRAMP->getmodel()->basicdxmodel);
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 	}
@@ -614,19 +637,19 @@ void OBJCASE_Display(ObjectMaster *a1) {
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
 		njScale(nullptr, 1.5f, 1.5f, 1.5f);
 		DrawQueueDepthBias = -6000.0f;
-		njDrawModel_SADX(&OBJ_CASEBOTTOM);
+		njDrawModel_SADX(CO_LCKCASE->getmodel()->basicdxmodel);
 
 		if (a1->Data1->Action == 0) {
 			njTranslate(0, 0, 9.5f, 0);
-			njDrawModel_SADX(&OBJ_CASEMIDDLE);
+			njDrawModel_SADX(CO_LCKCASE->getmodel()->child->basicdxmodel);
 			njTranslate(0, 0, 7, 0);
-			njDrawModel_SADX(&OBJ_CASETOP);
+			njDrawModel_SADX(CO_LCKCASE->getmodel()->child->child->basicdxmodel);
 		}
 		else if (a1->Data1->Action == 1) {
 			njTranslate(0, 0, a1->Data1->Scale.z, 0);
-			njDrawModel_SADX(&OBJ_CASEMIDDLE);
+			njDrawModel_SADX(CO_LCKCASE->getmodel()->child->basicdxmodel);
 		}
-		else if (a1->Data1->Action == 2) njDrawModel_SADX(&OBJ_CASEMIDDLE);
+		else if (a1->Data1->Action == 2) njDrawModel_SADX(CO_LCKCASE->getmodel()->child->basicdxmodel);
 
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
@@ -694,13 +717,13 @@ void Capsule_Display_r(ObjectMaster *a1) {
 		njRotateY(nullptr, -(v1->Rotation.y * 2));
 
 		DrawQueueDepthBias = -6000.0f;
-		njDrawModel_SADX(&SH_GOALRING_THING);
+		njDrawModel_SADX(CO_GOALRNG->getmodel()->child->child->basicdxmodel);
 
 		njRotateY(nullptr, -v1->Rotation.y);
-		njDrawModel_SADX(&SH_GOALRING_STAR);
+		njDrawModel_SADX(CO_GOALRNG->getmodel()->child->basicdxmodel);
 
 		njScale(nullptr, v1->Scale.x * 1.2f, v1->Scale.y *1.2f, v1->Scale.z *1.2f);
-		njDrawModel_SADX(&SH_GOALRING_RING);
+		njDrawModel_SADX(CO_GOALRNG->getmodel()->basicdxmodel);
 
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
@@ -859,22 +882,22 @@ void ObjBoxW_Display(ObjectMaster *a1)
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
 		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
-		if (a1->Data1->Action == 0) njDrawModel_SADX(SH_BOXW.basicdxmodel);
+		if (a1->Data1->Action == 0) njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
 		else if (a1->Data1->Action == 1) {
 			njTranslate(0, 0, -(a1->Data1->Scale.y / 3), 0);
 
 			njTranslate(0, 0, 0, 12 + a1->Data1->Scale.y / 90);
-			njDrawModel_SADX(&SH_BOXW_A); //bar
+			njDrawModel_SADX(CO_WOODBOX->getmodel()->child->basicdxmodel); //bar
 			njTranslate(0, 0, 20, 0);
 
 			njTranslate(0, 0, -(a1->Data1->Scale.y), (a1->Data1->Scale.y / 3));
 			njRotateY(0, 0x5000 + a1->Data1->Scale.y * 5);
-			njDrawModel_SADX(&SH_BOXW_B); //big one
+			njDrawModel_SADX(CO_WOODBOX->getmodel()->child->child->basicdxmodel); //big one
 			njRotateY(0, -(0x5000 + a1->Data1->Scale.y * 5));
 
 			njTranslate(0, 0, -(a1->Data1->Scale.y * 2), -(a1->Data1->Scale.y / 5));
 			njRotateY(0, -0x3000);
-			njDrawModel_SADX(&SH_BOXW_C); //right
+			njDrawModel_SADX(CO_WOODBOX->getmodel()->child->child->child->basicdxmodel); //right
 		}
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
@@ -911,7 +934,7 @@ void ObjBoxW_Main(ObjectMaster *a1)
 
 void __cdecl ObjBoxW(ObjectMaster *a1)
 {
-	a1->Data1->Object = &SH_BOXW;
+	a1->Data1->Object = CO_WOODBOX->getmodel();
 	AllocateObjectData2(a1, a1->Data1);
 	Collision_Init(a1, &ObjBoxW_col, 1, 2u);
 	if (a1->SETData.SETData->SETEntry->Properties.z != 1) AddToCollision(a1, 0);
@@ -926,19 +949,44 @@ void __cdecl ObjBoxW(ObjectMaster *a1)
 void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions) {
 	helperFunctions.RegisterCommonObjectPVM(shobjpvm);
 
+	CO_BALLOON = LoadMDL("CO_BALLOON");
+	CO_CMNREEL = LoadMDL("CO_CMNREEL");
+	CO_COMNFAN = LoadMDL("CO_COMNFAN");
+	CO_LCKCASE = LoadMDL("CO_LCKCASE");
+	CO_OCANNON = LoadMDL("CO_OCANNON");
+	CO_WOODBOX = LoadMDL("CO_WOODBOX");
+
+	COMMONOBJLIST[0] = CO_CMNREEL->getmodel()->child->child->basicdxmodel;
+
 	const IniFile *config = new IniFile(std::string(path) + "\\config.ini");
-	bool temp = false;
-	temp = config->getBool("Objects", "GoalRing", true);
-	if (temp) WriteJump((void*)0x46B170, Capsule_Load_r);
 
-	temp = config->getBool("Objects", "DashPanel", true);
-	if (temp) WriteJump((void*)0x7A4360, SHDashPanel);
+	if (config->getBool("Objects", "GoalRing", true)) {
+		WriteJump((void*)0x46B170, Capsule_Load_r);
+		CO_GOALRNG = LoadMDL("CO_GOALRNG");
+	}
 
-	temp = config->getBool("Objects", "DashHoop", true);
-	if (temp)WriteJump((void*)0x7A2470, SHDashHoop);
+	if (config->getBool("Objects", "DashPanel", true)) {
+		WriteJump((void*)0x7A4360, SHDashPanel);
+		CO_DSHPANL = LoadMDL("CO_DSHPANL");
+		Objects_UVSHIFT[0].List = CO_DSHPANL->getmodel()->basicdxmodel->meshsets[0].vertuv;
+		Objects_UVSHIFT[0].Size = CO_DSHPANL->getmodel()->basicdxmodel->meshsets[0].nbMesh * 3;
+	}
 
-	temp = config->getBool("Objects", "LaunchRamp", true);
-	if (temp) WriteJump((void*)0x500020, SHLaunchRamp);
+	if (config->getBool("Objects", "DashHoop", true)) {
+		WriteJump((void*)0x7A2470, SHDashHoop);
+		CO_DSHHOOP = LoadMDL("CO_DSHHOOP");
+		COMMONOBJLIST[0] = CO_DSHHOOP->getmodel()->basicdxmodel;
+		Objects_UVSHIFT[1].List = CO_DSHHOOP->getmodel()->basicdxmodel->meshsets[2].vertuv;
+		Objects_UVSHIFT[1].Size = CO_DSHHOOP->getmodel()->basicdxmodel->meshsets[2].nbMesh * 3;
+	}
+
+	if (config->getBool("Objects", "LaunchRamp", true)) {
+		WriteJump((void*)0x500020, SHLaunchRamp);
+		CO_LCHRAMP = LoadMDL("CO_LCHRAMP");
+		Objects_UVSHIFT[2].List = CO_LCHRAMP->getmodel()->basicdxmodel->meshsets[15].vertuv;
+		Objects_UVSHIFT[2].Size = CO_LCHRAMP->getmodel()->basicdxmodel->meshsets[15].nbMesh * 3;
+	}
+
 	delete config;
 }
 
