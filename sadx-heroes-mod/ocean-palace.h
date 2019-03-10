@@ -26,3 +26,36 @@ DeathZone RoadRockDeathZones[] = {
 	{ CharacterFlags_Big, &S69_DZ_BIG },
 	{ 0 }
 };
+
+void OceanPalaceObjects_Init(const char *path);
+void SHSuns_Init(ObjectMaster * a1);
+
+void OPFins(ObjectMaster *a1);
+void OPFlowers(ObjectMaster *a1);
+void OPWaterfalls(ObjectMaster *a1);
+void OPBoulders(ObjectMaster *a1);
+
+extern DeathZone SeasideHillDeathZones[];
+
+SH_UVSHIFT OceanPalace_UVShift[]{
+	{ nullptr,0,{ 0, -10 } },
+	{ nullptr,0,{ 0, -10 } },
+	{ nullptr,0,{ 0, -10 } },
+	{ nullptr,0,{ 0, -10 } },
+	{ nullptr,0,{ 0, -10 } },
+	{ nullptr,0,{ 0, -10 } },
+	{ nullptr,0,{ 0, -10 } },
+	{ nullptr,0,{ 0, -10 } },
+	{ nullptr,0,{ 0, -10 } },
+	{ nullptr,0,{ 0, -10 } },
+	{ nullptr,0,{ 0, -10 } },
+	{ nullptr,0,{ 0, -10 } },
+	{ nullptr,0,{ 0, -10 } },
+	{ nullptr,0,{ 0, -10 } },
+};
+
+extern ModelInfo * OP_WATERFS;
+extern ModelInfo * OP_FLOWERS;
+extern ModelInfo * OP_TURFINS;
+extern ModelInfo * OP_BOULDER;
+extern ModelInfo * OP_POLFLAG;

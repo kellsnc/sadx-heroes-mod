@@ -64,3 +64,20 @@ DeathZone CasinoParkDeathZones[] = {
 	{ CharacterFlags_Sonic | CharacterFlags_Tails | CharacterFlags_Knuckles | CharacterFlags_Amy | CharacterFlags_Gamma | CharacterFlags_Big, &CP_DZ6 },
 	{ 0 }
 };
+
+void CasinoParkObjects_Init(const char *path);
+void CasinoCommon_OnFrame();
+void CasinoCommon_Delete(ObjectMaster * a1);
+void CPGlass(ObjectMaster *a1);
+
+extern ModelInfo * CP_BIGDICE;
+extern ModelInfo * CP_CSNOBOB;
+extern ModelInfo * CP_DIRSIGN;
+extern ModelInfo * CP_FLIPPER;
+extern ModelInfo * CP_MOVDICE;
+extern ModelInfo * CP_RURETTO;
+extern ModelInfo * CP_SLDDOOR;
+extern ModelInfo * CP_SLOTMCS;
+extern ModelInfo * CP_DSHPANL;
+
+NJS_MODEL_SADX * CASINOOBJLIST[12];

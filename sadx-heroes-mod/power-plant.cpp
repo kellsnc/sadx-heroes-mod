@@ -5,10 +5,6 @@
 #include "power-plant-deathzones.h"
 #include "power-plant.h"
 
-void PowerPlantObjects_Init(const char *path);
-void PowerPlantObjects_OnFrame(EntityData1 * entity);
-void PowerPlantObjects_Reset();
-
 void PowerPlant_Delete(ObjectMaster * a1) {
 	PowerPlantObjects_Reset();
 

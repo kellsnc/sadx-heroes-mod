@@ -5,27 +5,6 @@
 #include "mystic-mansion-deathzones.h"
 #include "mystic-mansion.h"
 
-void MysticMansionObjects_Init();
-
-#pragma region Objects Data
-SH_UVSHIFT MysticMansion_UVShift[]{
-	{ nullptr, 0,{ 5, -5 } },
-	{ nullptr, 0,{ -5, 5 } }
-};
-
-NJS_MODEL_SADX * MMMODELLIST[4];
-
-extern ModelInfo * MM_SPHERE1;
-extern ModelInfo * MM_SPHERE2;
-extern ModelInfo * MM_SKELFAN;
-extern ModelInfo * MM_MYSTCAR;
-extern ModelInfo * MM_MOVPLAT;
-extern ModelInfo * MM_MYSDOOR;
-extern ModelInfo * MM_MYSWALL;
-extern ModelInfo * HC_SPKWARP;
-extern ModelInfo * HC_HFLAMES;
-#pragma endregion
-
 void MysticMansion_InitObjects() {
 	MM_SKELFAN = LoadMDL("MM_SKELFAN");
 	MM_SPHERE1 = LoadMDL("MM_SPHERE1");

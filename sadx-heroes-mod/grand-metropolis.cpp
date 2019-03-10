@@ -5,32 +5,6 @@
 #include "grand-metropolis-deathzones.h"
 #include "grand-metropolis.h"
 
-void GrandMetropolisObjects_Init(const char *path);
-void AutoPathsMovs();
-void SHSuns_Init(ObjectMaster * a1);
-void GMPistons(ObjectMaster *a1);
-void GMCars(ObjectMaster *a1);
-void GMAds(ObjectMaster *a1);
-void GMSky(ObjectMaster *a1);
-
-#pragma region Object data
-extern ModelInfo * GM_ADVERTS;
-extern ModelInfo * GM_FLYCARS;
-extern ModelInfo * GM_GPISTON;
-extern ModelInfo * GM_GRFLUID;
-extern ModelInfo * GM_GRPLANE;
-extern ModelInfo * GM_MCLOUDS;
-extern ModelInfo * GM_ZEPPLIN;
-
-SH_UVSHIFT GrandMetropolis_UVSHIFT[]{
-	{ nullptr,0,{ -2, -2 }, 3 },
-	{ nullptr,0,{ 1, 1 }, 3 },
-};
-
-NJS_MODEL_SADX * GMOBJLIST[3];
-extern NJS_MODEL_SADX s03_door_energy;
-#pragma endregion
-
 void GrandMetropolis_InitObjects() {
 	GM_ADVERTS = LoadMDL("GM_ADVERTS");
 	GM_FLYCARS = LoadMDL("GM_FLYCARS");

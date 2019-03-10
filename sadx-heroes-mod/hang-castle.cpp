@@ -5,25 +5,6 @@
 #include "hang-castle-deathzones.h"
 #include "hang-castle.h"
 
-void HangCastleObjects_Init(const char *path);
-void HCSpiders(ObjectMaster *a1);
-void HCFlags_Reset();
-void HCFlags_Animate();
-
-#pragma region Objects Data
-extern ModelInfo * HC_HCBLADE;
-extern ModelInfo * HC_HFLAMES;
-extern ModelInfo * HC_HPLANTA;
-extern ModelInfo * HC_HPLANTB;
-extern ModelInfo * HC_POLFLAG;
-extern ModelInfo * HC_SPDSIGN;
-extern ModelInfo * HC_SPKDOOR;
-extern ModelInfo * HC_SPKTREE;
-extern ModelInfo * HC_SPKWARP;
-
-NJS_MODEL_SADX * HCMODELLIST[2];
-#pragma endregion
-
 void HangCastle_InitObjects() {
 	HC_SPKWARP = LoadMDL("HC_SPKWARP");
 	HC_HFLAMES = LoadMDL("HC_HFLAMES");

@@ -5,29 +5,6 @@
 #include "seaside-hill-deathzones.h"
 #include "seaside-hill.h"
 
-void SeasideHillObjects_Init(const char *path);
-void SeasideHillObjects_OnFrame(EntityData1 * entity);
-void SHSuns_Init(ObjectMaster * a1);
-void SHFlowers(ObjectMaster *a1);
-void SHWaterfalls(ObjectMaster *a1);
-
-#pragma region Objects Data
-extern float ruin;
-
-extern ModelInfo * SH_WATERFS;
-extern ModelInfo * SH_FLOWERS;
-extern ModelInfo * SH_PLATFOR;
-extern ModelInfo * SH_MORUINS;
-extern ModelInfo * SH_POLFLAG;
-
-SH_UVSHIFT SeasideHill_UVShift[]{
-	{ nullptr,0,{ 0, -10 } },
-	{ nullptr,0,{ 0, -10 } },
-	{ nullptr,0,{ 0, -10 } },
-	{ nullptr,0,{ 0, -10 } },
-};
-#pragma endregion
-
 static int slowtimer = 0;
 static uint8_t sh_trigger = 1;
 

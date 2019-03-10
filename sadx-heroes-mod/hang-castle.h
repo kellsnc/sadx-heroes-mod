@@ -35,3 +35,20 @@ DeathZone HangCastleDeathZones[] = {
 	{ CharacterFlags_Sonic | CharacterFlags_Tails | CharacterFlags_Knuckles | CharacterFlags_Amy | CharacterFlags_Gamma | CharacterFlags_Big, &DZ_HC9 },
 { 0 }
 };
+
+void HangCastleObjects_Init(const char *path);
+void HCSpiders(ObjectMaster *a1);
+void HCFlags_Reset();
+void HCFlags_Animate();
+
+extern ModelInfo * HC_HCBLADE;
+extern ModelInfo * HC_HFLAMES;
+extern ModelInfo * HC_HPLANTA;
+extern ModelInfo * HC_HPLANTB;
+extern ModelInfo * HC_POLFLAG;
+extern ModelInfo * HC_SPDSIGN;
+extern ModelInfo * HC_SPKDOOR;
+extern ModelInfo * HC_SPKTREE;
+extern ModelInfo * HC_SPKWARP;
+
+NJS_MODEL_SADX * HCMODELLIST[2];

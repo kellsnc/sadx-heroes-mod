@@ -31,3 +31,22 @@ SH_ANIMTEXS MysticMansionAnimTexs[]{
 DeathZone MysticMansionDeathZones[] = {
 	{ 0 }
 };
+
+void MysticMansionObjects_Init();
+
+SH_UVSHIFT MysticMansion_UVShift[]{
+	{ nullptr, 0,{ 5, -5 } },
+	{ nullptr, 0,{ -5, 5 } }
+};
+
+NJS_MODEL_SADX * MMMODELLIST[4];
+
+extern ModelInfo * MM_SPHERE1;
+extern ModelInfo * MM_SPHERE2;
+extern ModelInfo * MM_SKELFAN;
+extern ModelInfo * MM_MYSTCAR;
+extern ModelInfo * MM_MOVPLAT;
+extern ModelInfo * MM_MYSDOOR;
+extern ModelInfo * MM_MYSWALL;
+extern ModelInfo * HC_SPKWARP;
+extern ModelInfo * HC_HFLAMES;

@@ -31,3 +31,7 @@ DeathZone PowerPlantDeathZones[] = {
 	{ CharacterFlags_Sonic | CharacterFlags_Tails | CharacterFlags_Knuckles | CharacterFlags_Amy | CharacterFlags_Gamma | CharacterFlags_Big, &PP_DZ8 },
 	{ 0 }
 };
+
+void PowerPlantObjects_Init(const char *path);
+void PowerPlantObjects_OnFrame(EntityData1 * entity);
+void PowerPlantObjects_Reset();

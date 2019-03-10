@@ -5,25 +5,6 @@
 #include "casino-park-deathzones.h"
 #include "casino-park.h"
 
-void CasinoParkObjects_Init(const char *path);
-void CasinoCommon_OnFrame();
-void CasinoCommon_Delete(ObjectMaster * a1);
-void CPGlass(ObjectMaster *a1);
-
-#pragma region Object data
-extern ModelInfo * CP_BIGDICE;
-extern ModelInfo * CP_CSNOBOB;
-extern ModelInfo * CP_DIRSIGN;
-extern ModelInfo * CP_FLIPPER;
-extern ModelInfo * CP_MOVDICE;
-extern ModelInfo * CP_RURETTO;
-extern ModelInfo * CP_SLDDOOR;
-extern ModelInfo * CP_SLOTMCS;
-extern ModelInfo * CP_DSHPANL;
-
-NJS_MODEL_SADX * CASINOOBJLIST[12];
-#pragma endregion
-
 void CasinoPark_InitObjects() {
 	CP_BIGDICE = LoadMDL("CP_BIGDICE");
 	CP_CSNOBOB = LoadMDL("CP_CSNOBOB");

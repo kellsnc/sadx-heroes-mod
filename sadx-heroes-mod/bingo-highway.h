@@ -62,3 +62,24 @@ SH_ANIMTEXS BingoHighwayAnimTexs[]{
 DeathZone BingoHighwayDeathZones[] = {
 	{ 0 }
 };
+
+void BingoHighwayObjects_Init(const char *path);
+void CasinoCommon_OnFrame();
+void CasinoCommon_Delete(ObjectMaster * a1);
+void CPGlass(ObjectMaster *a1);
+void BHSigns(ObjectMaster *a1);
+
+extern ModelInfo * CP_CSNOBOB;
+extern ModelInfo * CP_FLIPPER;
+extern ModelInfo * CP_MOVDICE;
+extern ModelInfo * CP_RURETTO;
+extern ModelInfo * CP_SLDDOOR;
+extern ModelInfo * CP_SLOTMCS;
+extern ModelInfo * CP_DSHPANL;
+extern ModelInfo * BH_BIGCHIP;
+extern ModelInfo * BH_BNGCHIP;
+extern ModelInfo * BH_BNGCARD;
+extern ModelInfo * BH_TBLSIGN;
+extern NJS_MODEL_SADX * BINGONB[9];
+
+NJS_MODEL_SADX * BINGOOBJLIST[11];
