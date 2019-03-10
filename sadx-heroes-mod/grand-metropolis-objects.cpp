@@ -321,8 +321,7 @@ void GM_ENERGYPATHS_Display(ObjectMaster *a1) {
 		njRotateXYZ(nullptr, 0, a1->Data1->Rotation.y, 0);
 		njScale(nullptr, a1->Data1->Scale.z, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
-		if (a1->Data1->Scale.x == 1) njDrawModel_SADX(GM_GRFLUID->getmodel()->child->basicdxmodel);
-		else njDrawModel_SADX(GM_GRFLUID->getmodel()->basicdxmodel);
+		njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 	}
@@ -330,15 +329,11 @@ void GM_ENERGYPATHS_Display(ObjectMaster *a1) {
 
 void GM_ENERGYPATHS_Main(ObjectMaster *a1) {
 	if (IsPlayerInsideSphere(&a1->Data1->Position, 2500.0f)) {
-		if (a1->Data1->Scale.z <= 1) if (IsSwitchPressed(a1->Data1->Scale.y)) a1->Data1->Scale.z += 0.1f;
-		if (a1->Data1->Scale.z == 0.1f) PlaySound(52, 0, 0, 0);
-
-		if (CurrentChunk == 1 && IsSwitchPressed(3)) CurrentLandTable->Col[6].Flags = 0x000008A1;
-		if (CurrentChunk == 2 && IsSwitchPressed(3)) CurrentLandTable->Col[17].Flags = 0x000008A1;
-		if (CurrentChunk == 2 && IsSwitchPressed(4)) CurrentLandTable->Col[20].Flags = 0x000008A1;
-		if (CurrentChunk == 2 && IsSwitchPressed(24)) CurrentLandTable->Col[16].Flags = 0x000008A1;
-		if (CurrentChunk == 3 && IsSwitchPressed(24)) CurrentLandTable->Col[5].Flags = 0x000008A1;
-		if (CurrentChunk == 10 && IsSwitchPressed(10)) CurrentLandTable->Col[11].Flags = 0x000008A1;
+		if (a1->Data1->Scale.z <= 1 && IsSwitchPressed(a1->Data1->Scale.y)) a1->Data1->Scale.z += 0.1f;
+		if (a1->Data1->Scale.z == 0.1f) {
+			PlaySound(52, 0, 0, 0);
+			a1->Data1->Object->pos[1] -= 10000;
+		}
 
 		GM_ENERGYPATHS_Display(a1);
 	}
@@ -349,6 +344,12 @@ void GM_ENERGYPATHS_Main(ObjectMaster *a1) {
 
 void __cdecl GM_ENERGYPATHS(ObjectMaster *a1)
 {
+	if (a1->Data1->Scale.x == 1)  a1->Data1->Object = GM_GRFLUID->getmodel()->child;
+	else a1->Data1->Object = GM_GRFLUID->getmodel();
+	
+	AddToCollision(a1, 4);
+	a1->Data1->Object->pos[1] += 10000;
+
 	a1->MainSub = &GM_ENERGYPATHS_Main;
 	a1->DisplaySub = &GM_ENERGYPATHS_Display;
 	a1->DeleteSub = &deleteSub_Global;
@@ -484,7 +485,8 @@ void AutoPathsMovs() {
 		if (players[slot]) {
 			CharObj2 *co2 = GetCharObj2(slot);
 			if (co2) {
-				if (co2->SurfaceFlags == 0x8a1 || co2->SurfaceFlags == 0xA81) {
+				if (co2->SurfaceFlags == 0x8a1 || co2->SurfaceFlags == 0xA81 || 
+					co2->SurfaceFlags == 0x18000001 || co2->SurfaceFlags == 0x08000001) {
 					if (IsLantern) {
 						set_diffuse_blend_ptr(2, 4);
 						set_diffuse_blend_factor_ptr(0.3f);

@@ -103,6 +103,7 @@ void AddToCollision(ObjectMaster *a1, uint8_t col) {
 
 	if (col == 0 || col == 2) DynamicCOL_Add((ColFlags)1, a1, colobject); //Solid
 	else if (col == 1 || col == 3) DynamicCOL_Add((ColFlags)0x8000000, a1, colobject); //Dynamic, solid
+	else if (col == 4) DynamicCOL_Add((ColFlags)0x8000001, a1, colobject);
 }
 
 //Shift uv of models, requires a SH_UVSHIFT struct
