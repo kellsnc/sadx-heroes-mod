@@ -19,7 +19,6 @@ void SlopePath(ObjectMaster * a1);
 void AnimateObjectsTextures(NJS_MODEL_SADX * *objlist, int size, SH_ANIMTEXS *list, Int listcount);
 void AnimateUV(SH_UVSHIFT *UVSHIFT, int size);
 
-void ModelHandler_Init(ObjectMaster * a1);
 void LevelHandler_Delete(ObjectMaster * a1);
 void AnimateTextures(SH_ANIMTEXS *list, Int listcount);
 void LoadLevelFile(const char *shortname, int chunknb);

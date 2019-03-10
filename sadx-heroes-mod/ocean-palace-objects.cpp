@@ -29,7 +29,7 @@ NJS_VECTOR OceanPalaceTriggers[]{
 void OPFins_Display(ObjectMaster *a1) {
 	if (!DroppedFrames) {
 		for (int i = 0; i < LengthOfArray(OceanPalace_EventObjects); ++i) {
-			if (OceanPalace_EventObjects[i].Model > 1 && CheckModelDisplay(OceanPalace_EventObjects[i])) {
+			if (OceanPalace_EventObjects[i].Model > 1 && CheckModelDisplay2(OceanPalace_EventObjects[i])) {
 				SOI_LIST2 item = OceanPalace_EventObjects[i];
 
 				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
@@ -96,7 +96,7 @@ void OPFins(ObjectMaster *a1) {
 void OPFlowers_Display(ObjectMaster *a1) {
 	if (!DroppedFrames) {
 		for (int i = 0; i < LengthOfArray(OceanPalace_Flowers); ++i) {
-			if (CheckModelDisplay(OceanPalace_Flowers[i])) {
+			if (CheckModelDisplay2(OceanPalace_Flowers[i])) {
 				SOI_LIST2 item = OceanPalace_Flowers[i];
 
 				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
@@ -131,7 +131,7 @@ void OPWaterfalls_Display(ObjectMaster *a1) {
 	if (!DroppedFrames) {
 		if (CurrentAct == 0) {
 			for (int i = 0; i < LengthOfArray(OceanPalace_Waterfalls); ++i) {
-				if (CheckModelDisplay(OceanPalace_Waterfalls[i])) {
+				if (CheckModelDisplay2(OceanPalace_Waterfalls[i])) {
 					SOI_LIST2 item = OceanPalace_Waterfalls[i];
 
 					njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);

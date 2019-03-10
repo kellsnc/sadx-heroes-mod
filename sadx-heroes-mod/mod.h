@@ -64,16 +64,10 @@ typedef struct {
 } SH_PATHS;
 
 typedef struct {
-	NJS_MODEL_SADX	*Model;
 	NJS_VECTOR		Position;
 	Angle			Rotation[3];
-	NJS_VECTOR		Scale;
-	Float			Bias;
 	uint8_t			Chunk;
 	Float			DrawDistance;
-	uint8_t			DisplayParameter; /* Where 0 is visible, 1 is skip (invisible), 2 is below directx 11 only, 3 is directx 11 only */
-	uint8_t			parameter1;
-	uint8_t			parameter2;
 } SOI_LIST;
 
 typedef struct {
@@ -85,12 +79,6 @@ typedef struct {
 	uint8_t			Chunk;
 	Float			DrawDistance;
 } SOI_LIST2;
-
-typedef struct {
-	uint8_t			CharacterID;
-	uint16_t		Count;
-	SOI_LIST		*Entry;
-} SOI_LISTS;
 
 typedef struct {
 	uint8_t			Chunk;

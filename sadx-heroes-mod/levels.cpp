@@ -155,6 +155,36 @@ void LevelHandler_Delete(ObjectMaster * a1) {
 	anim = 0;
 }
 
+//Animate textures of the current landtable in a similar way to Sonic Heroes
+void AnimateTextures(SH_ANIMTEXS *list, Int listcount) {
+	if (!DroppedFrames) {
+		for (Int j = 0; j < CurrentLandTable->COLCount; ++j) {
+			if (CurrentLandTable->Col[j].Flags == 0x80000000 || CurrentLandTable->Col[j].Flags == 0x80000001 || CurrentLandTable->Col[j].Flags == 0x80000002) {
+				for (Int k = 0; k < CurrentLandTable->Col[j].Model->basicdxmodel->nbMat; ++k) {
+
+					for (int l = 0; l < listcount; ++l) {
+						Int last = list[l].texid + list[l].count;
+
+						if (CurrentLandTable->Col[j].Model->basicdxmodel->mats[k].attr_texId >= list[l].texid &&
+							CurrentLandTable->Col[j].Model->basicdxmodel->mats[k].attr_texId <= last) {
+
+							Int Currenttex = CurrentLandTable->Col[j].Model->basicdxmodel->mats[k].attr_texId - list[l].texid;
+							if (anim % (list[l].duration[Currenttex]) == 0) {
+								if (Currenttex == last - list[l].texid) {
+									CurrentLandTable->Col[j].Model->basicdxmodel->mats[k].attr_texId = list[l].texid;
+								}
+								else {
+									CurrentLandTable->Col[j].Model->basicdxmodel->mats[k].attr_texId += 1;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
 //Set start positions and trial menu entries for every character
 void SetStartLevelData(const HelperFunctions &helperFunctions, uint8_t character, int pos, int level, int act) {
 	helperFunctions.RegisterStartPosition(character, Heroes_StartPositions[pos]);
@@ -281,6 +311,7 @@ void __cdecl DrawLandTableObject_SimpleModel_r(NJS_MODEL_SADX *a1)
 	}
 }
 
+//Initialize levels
 void Levels_Init(const char *path, const HelperFunctions &helperFunctions)
 {
 	modpath = std::string(path);

@@ -6,14 +6,64 @@
 #include "grand-metropolis.h"
 
 void GrandMetropolisObjects_Init(const char *path);
-void GrandMetropolisObjects_OnFrame(EntityData1 * entity);
-void GrandMetropolisObjects_Reset();
+void AutoPathsMovs();
 void SHSuns_Init(ObjectMaster * a1);
+void GMPistons(ObjectMaster *a1);
+void GMCars(ObjectMaster *a1);
+void GMAds(ObjectMaster *a1);
+void GMSky(ObjectMaster *a1);
 
-extern SOI_LISTS grand_metropolis_objects[];
+#pragma region Object data
+extern ModelInfo * GM_ADVERTS;
+extern ModelInfo * GM_FLYCARS;
+extern ModelInfo * GM_GPISTON;
+extern ModelInfo * GM_GRFLUID;
+extern ModelInfo * GM_GRPLANE;
+extern ModelInfo * GM_MCLOUDS;
+extern ModelInfo * GM_ZEPPLIN;
+
+SH_UVSHIFT GrandMetropolis_UVSHIFT[]{
+	{ nullptr,0,{ -2, -2 }, 3 },
+	{ nullptr,0,{ 1, 1 }, 3 },
+};
+
+NJS_MODEL_SADX * GMOBJLIST[3];
+extern NJS_MODEL_SADX s03_door_energy;
+#pragma endregion
+
+void GrandMetropolis_InitObjects() {
+	GM_ADVERTS = LoadMDL("GM_ADVERTS");
+	GM_FLYCARS = LoadMDL("GM_FLYCARS");
+	GM_GPISTON = LoadMDL("GM_GPISTON");
+	GM_GRFLUID = LoadMDL("GM_GRFLUID");
+	GM_GRPLANE = LoadMDL("GM_GRPLANE");
+	GM_MCLOUDS = LoadMDL("GM_MCLOUDS");
+	GM_ZEPPLIN = LoadMDL("GM_ZEPPLIN");
+
+	LoadObject(LoadObj_Data1, 3, SHSuns_Init)->Data1->Position = { 0, 12000, 5000 };;
+	LoadObject(LoadObj_Data1, 3, GMPistons);
+	LoadObject(LoadObj_Data1, 3, GMCars);
+	LoadObject(LoadObj_Data1, 3, GMSky);
+	LoadObject(LoadObj_Data1, 3, GMAds);
+
+	GrandMetropolis_UVSHIFT[0].List = GM_MCLOUDS->getmodel()->basicdxmodel->meshsets[0].vertuv;
+	GrandMetropolis_UVSHIFT[1].List = GM_MCLOUDS->getmodel()->child->basicdxmodel->meshsets[0].vertuv;
+	GrandMetropolis_UVSHIFT[0].Size = GM_MCLOUDS->getmodel()->basicdxmodel->meshsets[0].nbMesh * 3;
+	GrandMetropolis_UVSHIFT[1].Size = GM_MCLOUDS->getmodel()->child->basicdxmodel->meshsets[0].nbMesh * 3;
+
+	GMOBJLIST[0] = GM_GRFLUID->getmodel()->basicdxmodel;
+	GMOBJLIST[1] = GM_GRFLUID->getmodel()->child->basicdxmodel;
+	GMOBJLIST[2] = &s03_door_energy;
+}
 
 void GrandMetropolis_Delete(ObjectMaster * a1) {
-	GrandMetropolisObjects_Reset();
+	FreeMDL(GM_ADVERTS);
+	FreeMDL(GM_FLYCARS);
+	FreeMDL(GM_GPISTON);
+	FreeMDL(GM_GRFLUID);
+	FreeMDL(GM_GRPLANE);
+	FreeMDL(GM_MCLOUDS);
+	FreeMDL(GM_ZEPPLIN);
 
 	if (IsLantern) {
 		set_shader_flags_ptr(ShaderFlags_Blend, false);
@@ -34,8 +84,6 @@ void GrandMetropolisHandler(ObjectMaster * a1) {
 
 		if (IsLantern) set_shader_flags_ptr(ShaderFlags_Blend, true);
 
-		LoadObject(LoadObj_Data1, 3, SHSuns_Init); //load the sun
-
 		a1->Data1->Action = 1;
 		a1->DeleteSub = GrandMetropolis_Delete;
 
@@ -43,8 +91,7 @@ void GrandMetropolisHandler(ObjectMaster * a1) {
 			CurrentLevelTexlist = &CASINO01_TEXLIST;
 			CurrentLandAddress = (LandTable**)0x97DB28;
 
-			ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
-			modelhandler->Data1->LoopData = (Loop*)&grand_metropolis_objects;
+			GrandMetropolis_InitObjects();
 
 			if (entity->Position.z > 3675) LoadLevelFile("GM", 01);
 		}
@@ -54,7 +101,18 @@ void GrandMetropolisHandler(ObjectMaster * a1) {
 		case 0:
 			ChunkHandler("GM", GrandMetropolisChunks, LengthOfArray(GrandMetropolisChunks), entity->Position);
 			AnimateTextures(GrandMetropolisAnimTexs, LengthOfArray(GrandMetropolisAnimTexs));
-			GrandMetropolisObjects_OnFrame(entity);
+			AnimateObjectsTextures(GMOBJLIST, LengthOfArray(GMOBJLIST), GrandMetropolisAnimTexs, LengthOfArray(GrandMetropolisAnimTexs));
+			AnimateUV(GrandMetropolis_UVSHIFT, LengthOfArray(GrandMetropolis_UVSHIFT));
+			AutoPathsMovs();
+
+			if (anim % 4 == 0) {
+				if (entity->Position.z > 3675) {
+					CharObj2 * co2 = GetCharObj2(0);
+					co2->AnimationThing.Index = 13;
+					entity->Action = 2;
+				}
+			}
+
 			break;
 		}
 	}

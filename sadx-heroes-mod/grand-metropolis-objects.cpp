@@ -4,9 +4,170 @@
 
 #include "grand-metropolis-objects.h"
 
-uint8_t texstate = 0;
-int gmtimer;
-int pistonstate;
+ModelInfo * GM_ADVERTS;
+ModelInfo * GM_FLYCARS;
+ModelInfo * GM_GPISTON;
+ModelInfo * GM_GRFLUID;
+ModelInfo * GM_GRPLANE;
+ModelInfo * GM_MCLOUDS;
+ModelInfo * GM_ZEPPLIN;
+
+#pragma region Sky
+void GMSky_Display(ObjectMaster *a1) {
+	if (!DroppedFrames) {
+		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		njPushMatrix(0);
+		njTranslate(nullptr, 0, 300, 0);
+		njRotateXYZ(nullptr, 0, 0, 0);
+		njScale(nullptr, 1, 1, 1);
+		DrawQueueDepthBias = -7000;
+		njDrawModel_SADX(GM_MCLOUDS->getmodel()->child->basicdxmodel);
+
+		njTranslate(nullptr, 0, 300, 0);
+		DrawQueueDepthBias = -8000;
+		njDrawModel_SADX(GM_MCLOUDS->getmodel()->basicdxmodel);
+
+		DrawQueueDepthBias = 0;
+		njPopMatrix(1u);
+	}
+}
+
+void GMSky(ObjectMaster *a1) {
+	a1->DisplaySub = GMSky_Display;
+	a1->MainSub = GMSky_Display;
+}
+#pragma endregion
+
+#pragma region Pistons
+void GMPistons_Display(ObjectMaster *a1) {
+	if (!DroppedFrames) {
+		for (int i = 0; i < LengthOfArray(GM_Pistons); ++i) {
+			if (CheckModelDisplay(GM_Pistons[i])) {
+				SOI_LIST item = GM_Pistons[i];
+
+				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+				njPushMatrix(0);
+				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
+				njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);
+				njScale(nullptr, 1, 1, 1);
+				DrawQueueDepthBias = -6000;
+
+				njDrawModel_SADX(GM_GPISTON->getmodel()->basicdxmodel);
+				njDrawModel_SADX(GM_GPISTON->getmodel()->child->child->basicdxmodel);
+
+				if (i % 2 == 0) 
+					njTranslate(0, 0, a1->Data1->Scale.x, 0);
+				else {
+					njTranslate(0, 0, 24, 0);
+					njTranslate(0, 0, -a1->Data1->Scale.x, 0);
+				}
+				
+				njDrawModel_SADX(GM_GPISTON->getmodel()->child->basicdxmodel);
+
+				DrawQueueDepthBias = 0;
+				njPopMatrix(1u);
+			}
+		}
+	}
+}
+
+void GMPistons_Main(ObjectMaster *a1) {
+	++a1->Data1->InvulnerableTime;
+
+	if (a1->Data1->NextAction == 0) a1->Data1->Scale.x = 0;
+	if (a1->Data1->InvulnerableTime == 400) a1->Data1->InvulnerableTime = 0;
+	if (a1->Data1->InvulnerableTime < 200) a1->Data1->NextAction = 1;
+	if (a1->Data1->InvulnerableTime > 199) a1->Data1->NextAction = 2;
+	if (a1->Data1->NextAction == 1) a1->Data1->Scale.x += 0.12f;
+	if (a1->Data1->NextAction == 2) a1->Data1->Scale.x -= 0.12f;
+
+	GMPistons_Display(a1);
+}
+
+void GMPistons(ObjectMaster *a1) {
+	a1->DisplaySub = GMPistons_Display;
+	a1->MainSub = GMPistons_Main;
+}
+#pragma endregion
+
+#pragma region Ads
+void GMAds_Display(ObjectMaster *a1) {
+	if (!DroppedFrames) {
+		for (int i = 0; i < LengthOfArray(GM_Ads); ++i) {
+			if (CheckModelDisplay(GM_Ads[i])) {
+				SOI_LIST item = GM_Ads[i];
+
+				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+				njPushMatrix(0);
+				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
+				njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);
+				njScale(nullptr, 1, 1, 1);
+				DrawQueueDepthBias = -5000;
+				njDrawModel_SADX(GM_ADVERTS->getmodel()->basicdxmodel);
+				DrawQueueDepthBias = 0;
+				njPopMatrix(1u);
+			}
+		}
+	}
+}
+
+void GMAds(ObjectMaster *a1) {
+	a1->DisplaySub = GMAds_Display;
+	a1->MainSub = GMAds_Display;
+}
+#pragma endregion
+
+#pragma region Cars
+void GMCars_Display(ObjectMaster *a1) {
+	if (!DroppedFrames) {
+		for (int i = 0; i < LengthOfArray(GM_FlyingObjs); ++i) {
+			if (CheckModelDisplay2(GM_FlyingObjs[i])) {
+				SOI_LIST2 item = GM_FlyingObjs[i];
+
+				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+				njPushMatrix(0);
+				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
+				njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);
+				njScale(nullptr, 1, 1, 1);
+				DrawQueueDepthBias = -6000;
+
+				if (item.Model == 0) njTranslate(0, a1->Data1->Scale.x, 0, 0);
+				else if (item.Model < 3) njTranslate(0, a1->Data1->Scale.y, 0, 0);
+				else njTranslate(0, a1->Data1->Scale.z, 0, 0);
+
+				switch (item.Model) {
+				case 0: njDrawModel_SADX(GM_ZEPPLIN->getmodel()->basicdxmodel); break;
+				case 1: njDrawModel_SADX(GM_FLYCARS->getmodel()->basicdxmodel); break;
+				case 2: njDrawModel_SADX(GM_FLYCARS->getmodel()->child->basicdxmodel); break;
+				case 3: njDrawModel_SADX(GM_FLYCARS->getmodel()->child->child->basicdxmodel); break;
+				case 4: njDrawModel_SADX(GM_FLYCARS->getmodel()->child->child->child->basicdxmodel); break;
+				case 5: njDrawModel_SADX(GM_FLYCARS->getmodel()->child->child->child->child->basicdxmodel); break;
+				case 6: njRotateXYZ(0, 0, 0x4000, 0); njDrawModel_SADX(GM_GRPLANE->getmodel()->basicdxmodel); break;
+				}
+
+				DrawQueueDepthBias = 0;
+				njPopMatrix(1u);
+			}
+		}
+	}
+}
+
+void GMCars_Main(ObjectMaster *a1) {
+	if (anim % 1800 == 0) a1->Data1->Scale = { 0, 0, 0 };
+	else {
+		a1->Data1->Scale.x += 0.5f;
+		a1->Data1->Scale.y += 5.0f;
+		a1->Data1->Scale.z += 10.0f;
+	}
+
+	GMCars_Display(a1);
+}
+
+void GMCars(ObjectMaster *a1) {
+	a1->DisplaySub = GMCars_Display;
+	a1->MainSub = GMCars_Main;
+}
+#pragma endregion
 
 #pragma region Energy_H
 void __cdecl GMEnergyH_Display(ObjectMaster *a1)
@@ -153,15 +314,15 @@ void __cdecl GM_ENERGYDOORS(ObjectMaster *a1)
 
 #pragma region Energy Paths
 void GM_ENERGYPATHS_Display(ObjectMaster *a1) {
-	if (!MissedFrames && IsPlayerInsideSphere(&a1->Data1->Position, 2000.0f)) {
+	if (!MissedFrames) {
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, 0, a1->Data1->Rotation.y, 0);
 		njScale(nullptr, a1->Data1->Scale.z, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
-		if (a1->Data1->Scale.x == 1) njDrawModel_SADX(&s03_fluid_02);
-		else njDrawModel_SADX(&s03_fluid_01);
+		if (a1->Data1->Scale.x == 1) njDrawModel_SADX(GM_GRFLUID->getmodel()->child->basicdxmodel);
+		else njDrawModel_SADX(GM_GRFLUID->getmodel()->basicdxmodel);
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 	}
@@ -317,65 +478,6 @@ void GrandMetropolisObjects_Init(const char *path) {
 	WriteData((ObjectList**)0x974C1C, &GrandMetropolisObjectList);
 }
 
-void ResetCars() {
-	grand_metropolis_flying_objects[1].Position = { 5300.872f, -1894.9f, -14251.39f };
-	grand_metropolis_flying_objects[2].Position = { -3397.503f, -899.9f, -248.553f };
-	grand_metropolis_flying_objects[3].Position = { 1919.699f, -536.9f, -3675.037f };
-	grand_metropolis_flying_objects[4].Position = { 1948.472f, -692.9f, 2532.573f };
-	grand_metropolis_flying_objects[5].Position = { -3058.688f, -845.9f, 4444.6678f };
-	grand_metropolis_flying_objects[6].Position = { 6643.312f, -1630.9f, -15809.23f };
-	grand_metropolis_flying_objects[7].Position = { -3345.827f, -832.9f, -15608.49f };
-	grand_metropolis_flying_objects[8].Position = { 5645.713f, -1516.9f, -15597.63f };
-	grand_metropolis_flying_objects[9].Position = { 5615.578f, -1333.9f, -14291.76f };
-	grand_metropolis_flying_objects[10].Position = { -4707.142f, -1586.9f, -13933.31f };
-	grand_metropolis_flying_objects[11].Position = { 3939.971f, -1955.9f, -13785.85f };
-	grand_metropolis_flying_objects[12].Position = { 4825.928f, -2603.9f, -41714.32f };
-	grand_metropolis_flying_objects[13].Position = { -1538.811f, -4059.9f, -44607.31f };
-	grand_metropolis_flying_objects[14].Position = { 280.5001f, -2643.9f, -44618.79f };
-	grand_metropolis_flying_objects[15].Position = { 5462.191f, -2319.9f, -35606.65f };
-	grand_metropolis_flying_objects[16].Position = { -7574.771f, -2369.9f, -35812.54f };
-	grand_metropolis_flying_objects[17].Position = { 5667.807f, -3975.9f, -43996.86f };
-}
-
-void PistonsHandler() {
-	++gmtimer;
-	if (pistonstate == 0) {
-		for (int i = 0; i < grand_metropolis_objects[2].Count; ++i) {
-			if (i % 2 != 0) grand_metropolis_pistons[i].Position.y += 24;
-		}
-	}
-	if (gmtimer == 400) gmtimer = 0;
-	if (gmtimer < 200) pistonstate = 1;
-	if (gmtimer > 199) pistonstate = 2;
-	for (int i = 0; i < grand_metropolis_objects[2].Count; ++i) {
-		if (pistonstate == 1) {
-			if (i % 2 == 0) grand_metropolis_pistons[i].Position.y += 0.12f;
-			if (i % 2 != 0) grand_metropolis_pistons[i].Position.y -= 0.12f;
-		}
-		if (pistonstate == 2) {
-			if (i % 2 == 0) grand_metropolis_pistons[i].Position.y -= 0.12f;
-			if (i % 2 != 0) grand_metropolis_pistons[i].Position.y += 0.12f;
-		}
-	}
-}
-
-void CarsHandler() {
-	if (anim % 1800 == 0) {
-		ResetCars();
-	}
-	grand_metropolis_flying_objects[0].Position.x -= 0.5f;
-	grand_metropolis_flying_objects[0].Position.z -= 1;
-	grand_metropolis_flying_objects[2].Position.x += 10;
-	grand_metropolis_flying_objects[2].Position.z -= 1;
-	grand_metropolis_flying_objects[3].Position.x -= 10;
-	grand_metropolis_flying_objects[3].Position.z += 10;
-	grand_metropolis_flying_objects[4].Position.x -= 10;
-	grand_metropolis_flying_objects[7].Position.x += 10;
-	grand_metropolis_flying_objects[10].Position.x += 10;
-	grand_metropolis_flying_objects[11].Position.x -= 10;
-	grand_metropolis_flying_objects[11].Position.z += 7;
-}
-
 void AutoPathsMovs() {
 	EntityData1 ** players = EntityData1Ptrs; //suport for 8 players, let's get all the pointers
 	for (uint8_t slot = 0; slot < 8; ++slot) {
@@ -419,53 +521,6 @@ void AutoPathsMovs() {
 					if (anim % 4 == true) set_diffuse_blend_factor_ptr(0);
 				}
 			}
-		}
-	}
-}
-
-void GrandMetropolisObjects_Reset() {
-	gmtimer = 0;
-	pistonstate = 0;
-	grand_metropolis_pistons[0].Position.y = -1634;
-	grand_metropolis_pistons[1].Position.y = -1614;
-	grand_metropolis_pistons[2].Position.y = -1634;
-	grand_metropolis_pistons[3].Position.y = -1614;
-	grand_metropolis_pistons[4].Position.y = -1634;
-	grand_metropolis_pistons[5].Position.y = -1614;
-	grand_metropolis_pistons[6].Position.y = -1634;
-	for (int i = 7; i < 18; ++i) {
-		grand_metropolis_pistons[i].Position.y = -3309.911f;
-	}
-	grand_metropolis_flying_objects[0].Position = { 1729, -234.9f, -6126 };
-	ResetCars();
-}
-
-void GrandMetropolisObjects_OnFrame(EntityData1 * entity) {
-	AnimateUV(GrandMetropolis_UVSHIFT, LengthOfArray(GrandMetropolis_UVSHIFT));
-
-	CarsHandler();
-	PistonsHandler();
-	AutoPathsMovs();
-
-	if (anim % 3) texstate += 1;
-	if (texstate > 31) texstate = 0;
-	if (CurrentChunk == 1 || CurrentChunk == 2 || CurrentChunk == 3 || CurrentChunk == 9 || CurrentChunk == 10 || CurrentChunk == 11) {
-		matlist_fluid[0].attr_texId = 224 + texstate;
-	}
-	matlist_energy[0].attr_texId = 192 + texstate;
-
-	if (anim % 4 == 0) {
-		if (entity != nullptr) {
-			if (entity->Position.z > 3675) {
-				CharObj2 * co2 = GetCharObj2(0);
-				co2->AnimationThing.Index = 13;
-				entity->Action = 2;
-			}
-
-			grand_metropolis_objects_common[0].Position.x = entity->Position.x;
-			grand_metropolis_objects_common[0].Position.z = entity->Position.z;
-			grand_metropolis_objects_common[1].Position.x = entity->Position.x;
-			grand_metropolis_objects_common[1].Position.z = entity->Position.z;
 		}
 	}
 }

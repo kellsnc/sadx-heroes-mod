@@ -447,141 +447,141 @@ ObjectListEntry PowerPlantObjectList_list[] = {
 };
 ObjectList PowerPlantObjectList = { arraylengthandptrT(PowerPlantObjectList_list, int) };
 
-void ResetPPCars() {
-	power_plant_objects_cars[0].Position.x = 7052.102f;
-	power_plant_objects_cars[1].Position.z = -15254.92f;
-	power_plant_objects_cars[2].Position.z = -18254.92f;
-	power_plant_objects_cars[3].Position.z = -12546.45f;
-	power_plant_objects_cars[4].Position.z = -10546.45f;
-}
-
-void PPCarsHandler() {
-	if (anim % 1800 == 0) {
-		ResetPPCars();
-	}
-	power_plant_objects_cars[0].Position.x -= 4;
-	power_plant_objects_cars[1].Position.z += 3;
-	power_plant_objects_cars[2].Position.z += 4;
-	power_plant_objects_cars[3].Position.z -= 3;
-	power_plant_objects_cars[4].Position.z -= 4;
-}
-
-void EnergyTankHandler() {
-	if (CurrentChunk == 11) {
-		auto entity = EntityData1Ptrs[0];
-		if (entity->Position.x > 22754) {
-			if (CurrentLandTable->Col[20].Model->pos[1] < 10723) {
-				CurrentLandTable->Col[20].Model->pos[1] += 0.3f;
-				if (entity->Position.y > 9517) CurrentLandTable->Col[20].Model->pos[1] += 0.3f;
-				if (entity->Position.y > 10207) CurrentLandTable->Col[20].Model->pos[1] += 0.1f;
-			}
-			if (entity->Position.y < CurrentLandTable->Col[20].Model->pos[1]) GameState = 7;
-		}
-		else {
-			CurrentLandTable->Col[20].Model->pos[1] = 8621;
-		}
-	}
-
-	if (IsPlayerInsideSphere(&lavapos, 50)) {
-		if (power_plant_objects_common[32].Position.x != 22930) {
-			power_plant_objects_common[32].Position.x -= 1;
-		}
-		if (power_plant_objects_common[33].Position.x != 22930) {
-			power_plant_objects_common[33].Position.x += 1;
-		}
-	}
-}
-
-void PPPathsHandler() {
-	EntityData1 ** players = EntityData1Ptrs;
-	for (uint8_t slot = 0; slot < 8; ++slot) {
-		if (players[slot]) {
-			auto entity = EntityData1Ptrs[slot];
-			CharObj2 *co2 = GetCharObj2(slot);
-
-			if (co2) {
-				if (co2->SurfaceFlags == 0x8A1 || co2->SurfaceFlags == 0xA81) {
-					
-					if (IsLantern) {
-						set_diffuse_blend_ptr(2, 4);
-						set_diffuse_blend_factor_ptr(0.3f);
-					}
-					
-					if (entity->Position.x < 2404 && entity->Position.z > -1274) entity->Position.z -= 2;
-					else if (entity->Position.x < 3494 && entity->Position.x > 3132) entity->Position.x += 2;
-					else if (entity->Position.x < 4955 && entity->Position.z > -2014 && entity->Position.z < -1446 && entity->Position.x > 4788) entity->Position.z -= 2;
-					else if (entity->Position.x < 5828) entity->Position.x += 2;
-					else if (entity->Position.x < 9033 && entity->Position.x > 8466 && entity->Position.z > -4164) entity->Position.x += 2;
-					else if (entity->Position.x < 8794 && entity->Position.y > 3256 && entity->Position.z < -4077) { entity->Position.z += 2; entity->Position.x += 1; }
-					else if (entity->Position.x < 12681 && entity->Position.x > 12184 && entity->Position.z < -8861) entity->Position.z -= 2;
-					else if (entity->Position.x < 14922 && entity->Position.z > -10897 && entity->Position.z < -10343 && entity->Position.x > 14743) entity->Position.z -= 2;
-					else if (entity->Position.x < 14863 && entity->Position.z < -11313) entity->Position.z += 2;
-					else if (entity->Position.x > 14561 && entity->Position.x < 15522) entity->Position.z -= 2;
-					else if (entity->Position.x > 19094) entity->Position.x += 2;
-				}
-				else {
-					if (anim % 4 == true && IsLantern) set_diffuse_blend_factor_ptr(0);
-				}
-			}
-
-			bool elevate = false;
-
-			if (CurrentChunk == 3 && IsPlayerInBox(entity->Position, { 8515.642f, 2990, -5468.255f }, { 8549.026f, 3298.125f, -5421.717f })) elevate = true;
-			if (CurrentChunk == 7 && IsPlayerInBox(entity->Position, { 14766.78f, 4832.125f, -11680.85f }, { 14865.47f, 5138.778f, -11637.85f })) elevate = true;
-			if (CurrentChunk == 4) {
-				if (IsPlayerInBox(entity->Position, { 10179.34f, 3300, -6031.539f }, { 10209.77f, 3662.876f, -5980.835f })) elevate = true;
-				else if (IsPlayerInBox(entity->Position, { 10198.59f, 3300, -6003.414f }, { 10239, 3662.876f, -5952.71f })) elevate = true;
-				else if (IsPlayerInBox(entity->Position, { 10210.96f, 3300, -5975.289f }, { 10251.39f, 3662.876f, -5924.585f })) elevate = true;
-			}
-
-			if (elevate) {
-				if (IsLantern) {
-					set_blend_ptr(2, 4);
-					set_diffuse_blend_factor_ptr(0.6f);
-					set_specular_blend_factor_ptr(0.4f);
-				}
-				ElevatePlayer(slot);
-			}
-			else {
-				if (anim % 60 == true) {
-					if (IsLantern) {
-						set_diffuse_blend_factor_ptr(0);
-						set_specular_blend_factor_ptr(0);
-					}
-					elevate = false;
-				}
-			}
-		}
-	}
-}
-
-void MovePPObjects() {
-	//SATELITES
-	for (uint8_t i = 14; i < 27; ++i) power_plant_objects_common[i].Rotation[0] += 100;
-	if (texstate == 0) matlist_8D5EF354AB2318A9D21[0].attr_texId = TWINKLE03TexName_m4_a1;
-	if (texstate == 8) matlist_8D5EF354AB2318A9D21[0].attr_texId = TWINKLE03TexName_m4_a2;
-	if (texstate == 16) matlist_8D5EF354AB2318A9D21[0].attr_texId = TWINKLE03TexName_m4_a3;
-	if (texstate == 24) matlist_8D5EF354AB2318A9D21[0].attr_texId = TWINKLE03TexName_m4_a4;
-
-	//CRANE
-	for (uint8_t i = 27; i < 32; ++i) {
-		if (anim % 1000 == 0) cranestate = !cranestate;
-		if (cranestate) {
-			power_plant_objects_common[i].Rotation[1] -= 20;
-		}
-		else {
-			power_plant_objects_common[i].Rotation[1] += 20;
-		}
-	}
-
-	//WALL LIGHTS
-	for (uint8_t i = 61; i < 65; ++i) power_plant_objects_common[i].Rotation[2] += 100;
-}
-
+//void ResetPPCars() {
+//	power_plant_objects_cars[0].Position.x = 7052.102f;
+//	power_plant_objects_cars[1].Position.z = -15254.92f;
+//	power_plant_objects_cars[2].Position.z = -18254.92f;
+//	power_plant_objects_cars[3].Position.z = -12546.45f;
+//	power_plant_objects_cars[4].Position.z = -10546.45f;
+//}
+//
+//void PPCarsHandler() {
+//	if (anim % 1800 == 0) {
+//		ResetPPCars();
+//	}
+//	power_plant_objects_cars[0].Position.x -= 4;
+//	power_plant_objects_cars[1].Position.z += 3;
+//	power_plant_objects_cars[2].Position.z += 4;
+//	power_plant_objects_cars[3].Position.z -= 3;
+//	power_plant_objects_cars[4].Position.z -= 4;
+//}
+//
+//void EnergyTankHandler() {
+//	if (CurrentChunk == 11) {
+//		auto entity = EntityData1Ptrs[0];
+//		if (entity->Position.x > 22754) {
+//			if (CurrentLandTable->Col[20].Model->pos[1] < 10723) {
+//				CurrentLandTable->Col[20].Model->pos[1] += 0.3f;
+//				if (entity->Position.y > 9517) CurrentLandTable->Col[20].Model->pos[1] += 0.3f;
+//				if (entity->Position.y > 10207) CurrentLandTable->Col[20].Model->pos[1] += 0.1f;
+//			}
+//			if (entity->Position.y < CurrentLandTable->Col[20].Model->pos[1]) GameState = 7;
+//		}
+//		else {
+//			CurrentLandTable->Col[20].Model->pos[1] = 8621;
+//		}
+//	}
+//
+//	if (IsPlayerInsideSphere(&lavapos, 50)) {
+//		if (power_plant_objects_common[32].Position.x != 22930) {
+//			power_plant_objects_common[32].Position.x -= 1;
+//		}
+//		if (power_plant_objects_common[33].Position.x != 22930) {
+//			power_plant_objects_common[33].Position.x += 1;
+//		}
+//	}
+//}
+//
+//void PPPathsHandler() {
+//	EntityData1 ** players = EntityData1Ptrs;
+//	for (uint8_t slot = 0; slot < 8; ++slot) {
+//		if (players[slot]) {
+//			auto entity = EntityData1Ptrs[slot];
+//			CharObj2 *co2 = GetCharObj2(slot);
+//
+//			if (co2) {
+//				if (co2->SurfaceFlags == 0x8A1 || co2->SurfaceFlags == 0xA81) {
+//					
+//					if (IsLantern) {
+//						set_diffuse_blend_ptr(2, 4);
+//						set_diffuse_blend_factor_ptr(0.3f);
+//					}
+//					
+//					if (entity->Position.x < 2404 && entity->Position.z > -1274) entity->Position.z -= 2;
+//					else if (entity->Position.x < 3494 && entity->Position.x > 3132) entity->Position.x += 2;
+//					else if (entity->Position.x < 4955 && entity->Position.z > -2014 && entity->Position.z < -1446 && entity->Position.x > 4788) entity->Position.z -= 2;
+//					else if (entity->Position.x < 5828) entity->Position.x += 2;
+//					else if (entity->Position.x < 9033 && entity->Position.x > 8466 && entity->Position.z > -4164) entity->Position.x += 2;
+//					else if (entity->Position.x < 8794 && entity->Position.y > 3256 && entity->Position.z < -4077) { entity->Position.z += 2; entity->Position.x += 1; }
+//					else if (entity->Position.x < 12681 && entity->Position.x > 12184 && entity->Position.z < -8861) entity->Position.z -= 2;
+//					else if (entity->Position.x < 14922 && entity->Position.z > -10897 && entity->Position.z < -10343 && entity->Position.x > 14743) entity->Position.z -= 2;
+//					else if (entity->Position.x < 14863 && entity->Position.z < -11313) entity->Position.z += 2;
+//					else if (entity->Position.x > 14561 && entity->Position.x < 15522) entity->Position.z -= 2;
+//					else if (entity->Position.x > 19094) entity->Position.x += 2;
+//				}
+//				else {
+//					if (anim % 4 == true && IsLantern) set_diffuse_blend_factor_ptr(0);
+//				}
+//			}
+//
+//			bool elevate = false;
+//
+//			if (CurrentChunk == 3 && IsPlayerInBox(entity->Position, { 8515.642f, 2990, -5468.255f }, { 8549.026f, 3298.125f, -5421.717f })) elevate = true;
+//			if (CurrentChunk == 7 && IsPlayerInBox(entity->Position, { 14766.78f, 4832.125f, -11680.85f }, { 14865.47f, 5138.778f, -11637.85f })) elevate = true;
+//			if (CurrentChunk == 4) {
+//				if (IsPlayerInBox(entity->Position, { 10179.34f, 3300, -6031.539f }, { 10209.77f, 3662.876f, -5980.835f })) elevate = true;
+//				else if (IsPlayerInBox(entity->Position, { 10198.59f, 3300, -6003.414f }, { 10239, 3662.876f, -5952.71f })) elevate = true;
+//				else if (IsPlayerInBox(entity->Position, { 10210.96f, 3300, -5975.289f }, { 10251.39f, 3662.876f, -5924.585f })) elevate = true;
+//			}
+//
+//			if (elevate) {
+//				if (IsLantern) {
+//					set_blend_ptr(2, 4);
+//					set_diffuse_blend_factor_ptr(0.6f);
+//					set_specular_blend_factor_ptr(0.4f);
+//				}
+//				ElevatePlayer(slot);
+//			}
+//			else {
+//				if (anim % 60 == true) {
+//					if (IsLantern) {
+//						set_diffuse_blend_factor_ptr(0);
+//						set_specular_blend_factor_ptr(0);
+//					}
+//					elevate = false;
+//				}
+//			}
+//		}
+//	}
+//}
+//
+//void MovePPObjects() {
+//	//SATELITES
+//	for (uint8_t i = 14; i < 27; ++i) power_plant_objects_common[i].Rotation[0] += 100;
+//	if (texstate == 0) matlist_8D5EF354AB2318A9D21[0].attr_texId = TWINKLE03TexName_m4_a1;
+//	if (texstate == 8) matlist_8D5EF354AB2318A9D21[0].attr_texId = TWINKLE03TexName_m4_a2;
+//	if (texstate == 16) matlist_8D5EF354AB2318A9D21[0].attr_texId = TWINKLE03TexName_m4_a3;
+//	if (texstate == 24) matlist_8D5EF354AB2318A9D21[0].attr_texId = TWINKLE03TexName_m4_a4;
+//
+//	//CRANE
+//	for (uint8_t i = 27; i < 32; ++i) {
+//		if (anim % 1000 == 0) cranestate = !cranestate;
+//		if (cranestate) {
+//			power_plant_objects_common[i].Rotation[1] -= 20;
+//		}
+//		else {
+//			power_plant_objects_common[i].Rotation[1] += 20;
+//		}
+//	}
+//
+//	//WALL LIGHTS
+//	for (uint8_t i = 61; i < 65; ++i) power_plant_objects_common[i].Rotation[2] += 100;
+//}
+//
 void PowerPlantObjects_Reset() {
 	cranestate = false;
 
-	for (uint8_t i = 61; i < 65; ++i) power_plant_objects_common[i].Rotation[2] = 0;
+	/*for (uint8_t i = 61; i < 65; ++i) power_plant_objects_common[i].Rotation[2] = 0;
 	power_plant_objects_common[27].Rotation[1] = 0;
 	power_plant_objects_common[28].Rotation[1] = 20000;
 	power_plant_objects_common[29].Rotation[1] = 0;
@@ -591,8 +591,9 @@ void PowerPlantObjects_Reset() {
 	power_plant_objects_common[32].Position.x = 22979;
 	power_plant_objects_common[33].Position.x = 22879;
 
+	ResetPPCars();*/
+
 	lava = false;
-	ResetPPCars();
 }
 
 void PowerPlantObjects_Init(const char *path) {
@@ -610,15 +611,15 @@ void PowerPlantObjects_OnFrame(EntityData1 * entity) {
 	matlist_8D5F7537EA0F4602944[0].attr_texId = 128 + texstate;
 	matlist_fluid2[0].attr_texId = 160 + texstate;
 
-	PPCarsHandler();
+	/*PPCarsHandler();
 	EnergyTankHandler();
 	PPPathsHandler();
-	MovePPObjects();
+	MovePPObjects();*/
 
 	if (anim % 4 == 0) {
 		CurrentLandTable->Col[0].Model->pos[0] = entity->Position.x;
 		CurrentLandTable->Col[0].Model->pos[2] = entity->Position.z;
-		power_plant_objects_common[0].Position.x = entity->Position.x;
-		power_plant_objects_common[0].Position.z = entity->Position.z;
+		/*power_plant_objects_common[0].Position.x = entity->Position.x;
+		power_plant_objects_common[0].Position.z = entity->Position.z;*/
 	}
 }

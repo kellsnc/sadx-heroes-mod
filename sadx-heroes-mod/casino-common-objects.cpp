@@ -291,7 +291,7 @@ void CPGlass_Display(ObjectMaster *a1) {
 			if (CurrentLevel == HeroesLevelID_CasinoPark && Casino_Glass[i].Model != 0) continue;
 			if (CurrentLevel == HeroesLevelID_BingoHighway && Casino_Glass[i].Model != 1) continue;
 
-			if (CheckModelDisplay(Casino_Glass[i])) {
+			if (CheckModelDisplay2(Casino_Glass[i])) {
 				SOI_LIST2 item = Casino_Glass[i];
 
 				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);

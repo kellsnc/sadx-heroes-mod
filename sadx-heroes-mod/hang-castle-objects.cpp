@@ -314,7 +314,7 @@ void __cdecl HCPLANTB(ObjectMaster *a1)
 void HCSpiders_Display(ObjectMaster *a1) {
 	if (!DroppedFrames) {
 		for (int i = 0; i < LengthOfArray(HangCastle_Spiders); ++i) {
-			if (CheckModelDisplay(HangCastle_Spiders[i])) {
+			if (CheckModelDisplay2(HangCastle_Spiders[i])) {
 				SOI_LIST2 item = HangCastle_Spiders[i];
 
 				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);

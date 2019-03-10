@@ -401,7 +401,7 @@ void __cdecl BHGiantTokens(ObjectMaster *a1)
 void BHSigns_Display(ObjectMaster *a1) {
 	if (!DroppedFrames) {
 		for (int i = 0; i < LengthOfArray(Bingo_Signs); ++i) {
-			if (CheckModelDisplay(Bingo_Signs[i])) {
+			if (CheckModelDisplay2(Bingo_Signs[i])) {
 				SOI_LIST2 item = Bingo_Signs[i];
 
 				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);

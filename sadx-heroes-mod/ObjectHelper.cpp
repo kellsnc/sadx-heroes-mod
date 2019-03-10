@@ -11,7 +11,9 @@ ModelInfo* LoadMDL(const char *name) {
 
 	ModelInfo * temp = new ModelInfo(foo);
 
-	PrintDebug("OK.\n");
+	if (temp->getformat() == ModelFormat_Basic) PrintDebug("OK.\n");
+	else PrintDebug("ERROR.\n");
+
 	return temp;
 }
 
@@ -163,7 +165,20 @@ bool IsPlayerInBox(NJS_VECTOR playerpos, NJS_VECTOR pos1, NJS_VECTOR pos2) {
 }
 
 //check if we can display a SOI_LIST2 model
-bool CheckModelDisplay(SOI_LIST2 item) {
+bool CheckModelDisplay(SOI_LIST item) {
+	if (item.Chunk == CurrentChunk || item.Chunk == 0) {
+		if (item.DrawDistance == 0.0f) {
+			return true;
+		}
+		else {
+			if (IsPlayerInsideSphere(&item.Position, item.DrawDistance) == true)
+				return true;
+		}
+	}
+	return false;
+}
+
+bool CheckModelDisplay2(SOI_LIST2 item) {
 	if (item.Chunk == CurrentChunk || item.Chunk == 0) {
 		if (item.DrawDistance == 0.0f) {
 			return true;

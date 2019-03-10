@@ -26,7 +26,7 @@ void SHSuns_Init(ObjectMaster * a1) {
 void SHFlowers_Display(ObjectMaster *a1) {
 	if (!DroppedFrames) {
 		for (int i = 0; i < LengthOfArray(SeasideHill_Flowers); ++i) {
-			if (CheckModelDisplay(SeasideHill_Flowers[i])) {
+			if (CheckModelDisplay2(SeasideHill_Flowers[i])) {
 				SOI_LIST2 item = SeasideHill_Flowers[i];
 
 				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
@@ -65,7 +65,7 @@ void SHFlowers(ObjectMaster *a1) {
 void SHWaterfalls_Display(ObjectMaster *a1) {
 	if (!DroppedFrames) {
 		for (int i = 0; i < LengthOfArray(SeasideHill_Waterfalls); ++i) {
-			if (CheckModelDisplay(SeasideHill_Waterfalls[i])) {
+			if (CheckModelDisplay2(SeasideHill_Waterfalls[i])) {
 				SOI_LIST2 item = SeasideHill_Waterfalls[i];
 
 				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);

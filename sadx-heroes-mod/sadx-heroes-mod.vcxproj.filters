@@ -54,9 +54,6 @@
     <ClCompile Include="ObjectHelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LevelHelper.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ocean-palace.cpp">
       <Filter>Source Files\Levels</Filter>
     </ClCompile>

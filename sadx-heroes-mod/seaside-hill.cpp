@@ -12,8 +12,6 @@ void SHFlowers(ObjectMaster *a1);
 void SHWaterfalls(ObjectMaster *a1);
 
 #pragma region Objects Data
-extern SOI_LISTS seaside_hill_objects[];
-extern SOI_LISTS sea_gate_objects[];
 extern float ruin;
 
 extern ModelInfo * SH_WATERFS;
@@ -79,6 +77,10 @@ void SeasideHill_InitObjects() {
 	SeasideHill_UVShift[1].Size = SH_WATERFS->getmodel()->child->basicdxmodel->meshsets[0].nbMesh * 3;
 	SeasideHill_UVShift[2].Size = SH_WATERFS->getmodel()->child->child->basicdxmodel->meshsets[0].nbMesh * 3;
 	SeasideHill_UVShift[3].Size = SH_WATERFS->getmodel()->child->child->child->basicdxmodel->meshsets[0].nbMesh * 3;
+
+	LoadObject(LoadObj_Data1, 3, SHSuns_Init)->Data1->Position = { 74, 11106, 425 }; //load the sun
+	LoadObject(LoadObj_Data1, 3, SHFlowers);
+	LoadObject(LoadObj_Data1, 3, SHWaterfalls);
 }
 
 void SeasideHill_Delete(ObjectMaster * a1) {
@@ -104,9 +106,6 @@ void SeasideHillHandler(ObjectMaster * a1) {
 		PlaySound(44, 0, 0, 0);
 
 		SeasideHill_InitObjects();
-		LoadObject(LoadObj_Data1, 3, SHSuns_Init)->Data1->Position = { 74, 11106, 425 }; //load the sun
-		LoadObject(LoadObj_Data1, 3, SHFlowers);
-		LoadObject(LoadObj_Data1, 3, SHWaterfalls);
 
 		if (CurrentAct == 0) {
 			//Seaside Hill

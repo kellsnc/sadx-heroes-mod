@@ -93,7 +93,6 @@
     <ClCompile Include="mystic-mansion-objects.cpp" />
     <ClCompile Include="mystic-mansion.cpp" />
     <ClCompile Include="objects.cpp" />
-    <ClCompile Include="LevelHelper.cpp" />
     <ClCompile Include="levels.cpp" />
     <ClCompile Include="ObjectHelper.cpp" />
     <ClCompile Include="ocean-palace-objects.cpp" />

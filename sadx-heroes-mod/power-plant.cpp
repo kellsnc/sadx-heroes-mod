@@ -9,8 +9,6 @@ void PowerPlantObjects_Init(const char *path);
 void PowerPlantObjects_OnFrame(EntityData1 * entity);
 void PowerPlantObjects_Reset();
 
-extern SOI_LISTS power_plant_objects[];
-
 void PowerPlant_Delete(ObjectMaster * a1) {
 	PowerPlantObjects_Reset();
 
@@ -39,9 +37,6 @@ void PowerPlantHandler(ObjectMaster * a1) {
 		if (CurrentAct == 0) {
 			CurrentLevelTexlist = &ICECAP01_TEXLIST;
 			CurrentLandAddress = (LandTable**)0x97DB08;
-
-			ObjectMaster * modelhandler = LoadObject(LoadObj_Data1, 3, ModelHandler_Init);
-			modelhandler->Data1->LoopData = (Loop*)&power_plant_objects;
 
 			if (entity->Position.z > -2081) LoadLevelFile("PP", 01);
 		}
