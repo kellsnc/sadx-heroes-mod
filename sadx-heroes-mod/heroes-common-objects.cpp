@@ -136,15 +136,15 @@ void ObjReel_Display(ObjectMaster *a1)
 	njTranslate(0, a1->Data1->Position.x, a1->Data1->Scale.x, a1->Data1->Position.z);
 	njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
 	njScale(nullptr, 1, 1, 1);
-	njDrawModel_SADX(CO_COMNFAN->getmodel()->basicdxmodel);
+	njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
 
 	njTranslate(0, 0, a1->Data1->Position.y - a1->Data1->Scale.x + 15, 0);
 	njScale(nullptr, 1, 1, 1);
-	njDrawModel_SADX(CO_COMNFAN->getmodel()->child->child->basicdxmodel);
+	njDrawModel_SADX(a1->Data1->Object->child->child->basicdxmodel);
 
 	njTranslate(0, 0, a1->Data1->Scale.x - a1->Data1->Position.y - 15, 0);
 	njScale(nullptr, 1, (a1->Data1->Scale.x - a1->Data1->Position.y) / 10.15f, 1);
-	njDrawModel_SADX(CO_COMNFAN->getmodel()->child->basicdxmodel);
+	njDrawModel_SADX(a1->Data1->Object->child->basicdxmodel);
 
 	DrawQueueDepthBias = 0;
 	njPopMatrix(1u);
@@ -243,7 +243,7 @@ void ObjReel_Main(ObjectMaster *a1)
 
 void __cdecl ObjReel(ObjectMaster *a1)
 {
-	a1->Data1->Object = CO_COMNFAN->getmodel();
+	a1->Data1->Object = CO_CMNREEL->getmodel();
 
 	EntityData1 * v1 = a1->Data1;
 	NJS_OBJECT * v3 = v1->Object;

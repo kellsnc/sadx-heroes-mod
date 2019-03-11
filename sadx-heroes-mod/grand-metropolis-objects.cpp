@@ -17,7 +17,7 @@ void GMSky_Display(ObjectMaster *a1) {
 	if (!DroppedFrames) {
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
 		njPushMatrix(0);
-		njTranslate(nullptr, 0, 300, 0);
+		njTranslate(nullptr, EntityData1Ptrs[0]->Position.x, 300, EntityData1Ptrs[0]->Position.z);
 		njRotateXYZ(nullptr, 0, 0, 0);
 		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -7000;

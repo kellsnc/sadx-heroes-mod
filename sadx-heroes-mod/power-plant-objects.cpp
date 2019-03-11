@@ -4,15 +4,264 @@
 
 #include "power-plant-objects.h"
 
+ModelInfo * PP_ELEVATR;
+ModelInfo * PP_FLDPATH;
+ModelInfo * PP_LGTSIGN;
+ModelInfo * PP_MCLOUDS;
+ModelInfo * PP_MTRUCKS;
+ModelInfo * PP_PLTFRMS;
+ModelInfo * PP_PPCRANE;
+ModelInfo * PP_SOLARPN;
+ModelInfo * PP_TNKDOOR;
+ModelInfo * PP_TNKSTEP;
+
 static bool alternate;
-static bool cranestate = false;
-static bool lava = false;
-static uint8_t texstate = 0;
-static NJS_VECTOR lavapos = { 22930.4f, 11011.5f, -12387.49f };
+
+#pragma region Solar panels
+void PPSolarpnls_Display(ObjectMaster *a1) {
+	if (!DroppedFrames) {
+		for (int i = 0; i < LengthOfArray(PP_Panels); ++i) {
+			if (CheckModelDisplay(PP_Panels[i])) {
+				SOI_LIST item = PP_Panels[i];
+
+				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+				njPushMatrix(0);
+				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
+				if (GameState != 16) a1->Data1->Scale.x += 100;
+				njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);
+				njScale(nullptr, 1, 1, 1);
+				DrawQueueDepthBias = -6000;
+				njDrawModel_SADX(PP_SOLARPN->getmodel()->basicdxmodel);
+				njRotateX(0, a1->Data1->Scale.x);
+				njDrawModel_SADX(PP_SOLARPN->getmodel()->child->basicdxmodel);
+				DrawQueueDepthBias = 0;
+				njPopMatrix(1u);
+			}
+		}
+	}
+}
+
+void PPSolarpnls(ObjectMaster *a1) {
+	a1->DisplaySub = PPSolarpnls_Display;
+	a1->MainSub = PPSolarpnls_Display;
+}
+#pragma endregion
+
+#pragma region Cranes
+void PPCranes_Display(ObjectMaster *a1) {
+	if (!DroppedFrames) {
+		for (int i = 0; i < LengthOfArray(PP_Cranes); ++i) {
+			if (CheckModelDisplay(PP_Cranes[i])) {
+				SOI_LIST item = PP_Cranes[i];
+
+				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+				njPushMatrix(0);
+				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
+
+				if (GameState != 16) {
+					if (anim % 1000 == 0)
+						a1->Data1->Scale.y += 0.5f;
+
+					if ((int)a1->Data1->Scale.y % 2 == 0) {
+						a1->Data1->Scale.x += 20;
+					}
+					else {
+						a1->Data1->Scale.x -= 20;
+					}
+				}
+
+				njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1] + a1->Data1->Scale.x, item.Rotation[2]);
+				njScale(nullptr, 1, 1, 1);
+				DrawQueueDepthBias = -6000;
+				njDrawModel_SADX(PP_PPCRANE->getmodel()->basicdxmodel);
+				DrawQueueDepthBias = 0;
+				njPopMatrix(1u);
+			}
+		}
+	}
+}
+
+void PPCranes(ObjectMaster *a1) {
+	a1->DisplaySub = PPCranes_Display;
+	a1->MainSub = PPCranes_Display;
+}
+#pragma endregion
+
+#pragma region Light signs
+void PPLights_Display(ObjectMaster *a1) {
+	if (!DroppedFrames) {
+		for (int i = 0; i < LengthOfArray(PP_Lights); ++i) {
+			if (CheckModelDisplay(PP_Lights[i])) {
+				SOI_LIST item = PP_Lights[i];
+
+				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+				njPushMatrix(0);
+				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
+				if (GameState != 16) a1->Data1->Scale.x += 100;
+				njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);
+				njScale(nullptr, 1, 1, 1);
+				DrawQueueDepthBias = -6000;
+				njDrawModel_SADX(PP_LGTSIGN->getmodel()->basicdxmodel);
+				njRotateZ(0, a1->Data1->Scale.x);
+				njDrawModel_SADX(PP_LGTSIGN->getmodel()->child->basicdxmodel);
+				DrawQueueDepthBias = 0;
+				njPopMatrix(1u);
+			}
+		}
+	}
+}
+
+void PPLights(ObjectMaster *a1) {
+	a1->DisplaySub = PPLights_Display;
+	a1->MainSub = PPLights_Display;
+}
+#pragma endregion
+
+#pragma region Sky
+void PPSky_Display(ObjectMaster *a1) {
+	if (!DroppedFrames) {
+		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		njPushMatrix(0);
+		njTranslate(nullptr, EntityData1Ptrs[0]->Position.x, 0, EntityData1Ptrs[0]->Position.z);
+		DrawQueueDepthBias = -7000;
+		njDrawModel_SADX(PP_MCLOUDS->getmodel()->basicdxmodel);
+		DrawQueueDepthBias = 0;
+		njPopMatrix(1u);
+	}
+}
+
+void PPSky(ObjectMaster *a1) {
+	a1->DisplaySub = PPSky_Display;
+	a1->MainSub = PPSky_Display;
+}
+#pragma endregion
+
+#pragma region TankHandler
+void PPTankHandler_Display(ObjectMaster *a1) {
+	if (CurrentChunk == 11) {
+		if (!DroppedFrames) {
+			njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+			njPushMatrix(0);
+			njTranslate(nullptr, a1->Data1->Position.x, 10979.9f, -12388);
+
+			DrawQueueDepthBias = -6000;
+			njDrawModel_SADX(PP_TNKDOOR->getmodel()->basicdxmodel);
+
+			njPopMatrix(1u);
+			njPushMatrix(0);
+
+			njTranslate(nullptr, a1->Data1->Position.y, 10979.9f, -12388);
+			njDrawModel_SADX(PP_TNKDOOR->getmodel()->child->basicdxmodel);
+
+			njPopMatrix(1u);
+
+			for (int i = 0; i < LengthOfArray(PP_Steps); ++i) {
+				if (CheckModelDisplay2(PP_Steps[i])) {
+					SOI_LIST2 item = PP_Steps[i];
+
+					njPushMatrix(0);
+					njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
+					njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);
+					
+
+					switch (item.Model) {
+					case 0: njDrawModel_SADX(PP_TNKSTEP->getmodel()->basicdxmodel); break;
+					case 1: njDrawModel_SADX(PP_TNKSTEP->getmodel()->child->basicdxmodel); break;
+					}
+
+					njPopMatrix(1u);
+				}
+			}
+
+			DrawQueueDepthBias = 0;
+		}
+	}
+}
+
+void PPTankHandler_Main(ObjectMaster *a1) {
+	if (CurrentChunk == 11) {
+		auto entity = EntityData1Ptrs[0];
+		if (entity->Position.x > 22754) {
+			if (CurrentLandTable->Col[20].Model->pos[1] < 10723) {
+				CurrentLandTable->Col[20].Model->pos[1] += 0.3f;
+				if (entity->Position.y > 9517) CurrentLandTable->Col[20].Model->pos[1] += 0.3f;
+				if (entity->Position.y > 10207) CurrentLandTable->Col[20].Model->pos[1] += 0.1f;
+			}
+			if (entity->Position.y < CurrentLandTable->Col[20].Model->pos[1]) GameState = 7;
+		}
+		else {
+			CurrentLandTable->Col[20].Model->pos[1] = 8621;
+		}
+	
+		if (entity->Position.y > 10979) {
+			if (a1->Data1->Position.x != 22930) {
+				a1->Data1->Position.x -= 1;
+			}
+			if (a1->Data1->Position.y != 22930) {
+				a1->Data1->Position.y += 1;
+			}
+		}
+
+		PPTankHandler_Display(a1);
+	}
+}
+
+void PPTankHandler(ObjectMaster *a1) {
+	a1->Data1->Scale = { 22930.4f, 11011.5f, -12387.49f };
+	a1->Data1->Position = { 22979, 22879, 0 };
+
+	a1->DisplaySub = PPTankHandler_Display;
+	a1->MainSub = PPTankHandler_Main;
+}
+#pragma endregion
+
+#pragma region Cars
+void PPTrucks_Display(ObjectMaster *a1) {
+	if (!DroppedFrames) {
+		for (int i = 0; i < LengthOfArray(PP_Trucks); ++i) {
+			if (CheckModelDisplay2(PP_Trucks[i])) {
+				SOI_LIST2 item = PP_Trucks[i];
+
+				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+				njPushMatrix(0);
+				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
+				njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);
+				DrawQueueDepthBias = -6000;
+
+				if (i == 0 || i % 2 == 0) njTranslate(0, a1->Data1->Scale.x, 0, 0);
+				else njTranslate(0, a1->Data1->Scale.y, 0, 0);
+
+				switch (item.Model) {
+				case 0: njDrawModel_SADX(PP_MTRUCKS->getmodel()->basicdxmodel); break;
+				case 1: njDrawModel_SADX(PP_MTRUCKS->getmodel()->child->basicdxmodel); break;
+				}
+
+				DrawQueueDepthBias = 0;
+				njPopMatrix(1u);
+			}
+		}
+	}
+}
+
+void PPTrucks_Main(ObjectMaster *a1) {
+	if (anim % 1800 == 0) a1->Data1->Scale = { 0, 0, 0 };
+	else {
+		a1->Data1->Scale.x += 3;
+		a1->Data1->Scale.y += 4;
+	}
+
+	PPTrucks_Display(a1);
+}
+
+void PPTrucks(ObjectMaster *a1) {
+	a1->DisplaySub = PPTrucks_Display;
+	a1->MainSub = PPTrucks_Main;
+}
+#pragma endregion
 
 #pragma region Energy Paths
-void PathsFunctions(float a) {
-	if (a < 2) {
+void PathsFunction() {
+	if (anim % 5 == 0) {
 		if (CurrentChunk == 2 && (IsSwitchPressed(2) || GetCharacterID(0) == 2)) CurrentLandTable->Col[17].Flags = 0xA81;
 
 		if (IsSwitchPressed(6) || GetCharacterID(0) == 2) {
@@ -24,42 +273,39 @@ void PathsFunctions(float a) {
 			if (CurrentChunk == 9) CurrentLandTable->Col[13].Flags = 0xA81;
 			else if (CurrentChunk == 10) CurrentLandTable->Col[22].Flags = 0xA81;
 		}
-	}
-	else {
-		if (anim % 5 == 0) {
-			EntityData1 ** players = EntityData1Ptrs;
-			for (uint8_t slot = 0; slot < 8; ++slot) {
-				if (players[slot]) {
-					auto entity = EntityData1Ptrs[slot];
-					bool elevate = false;
-					if (CurrentChunk == 2) {
-						if (IsSwitchPressed(41) && IsPlayerInBox(entity->Position, { 4819.545f, 1334.25f, -2807.884f }, { 4920.795f, 1599.75f, -2750.509f })) elevate = true;
-						if (IsSwitchPressed(1) && IsPlayerInBox(entity->Position, { 4922.578f, 1746.016f, -3249.482f }, { 4969.469f, 1998.652f, -3149.415f })) elevate = true;
-						if ((IsSwitchPressed(2) || GetCharacterID(0) == 2) && IsPlayerInBox(entity->Position, { 5881.667f, 2366.625f, -3249.78f }, { 5914.292f, 2619.75f, -3150.78f })) elevate = true;
-						if (IsSwitchPressed(3) && IsPlayerInBox(entity->Position, { 7105.375f, 3070.897f, -3249.61f }, { 7149, 3319.522F, -3150.61F })) elevate = true;
-					}
-					else if (CurrentChunk == 8) {
-						if (IsSwitchPressed(42) && IsPlayerInBox(entity->Position, { 15416.52f, 5784.375f, -13523.97f }, { 15516.36f, 6038.875f, -13492.27f })) elevate = true;
-						if (IsSwitchPressed(12) && IsPlayerInBox(entity->Position, { 15518.6f, 6186.64f, -13974.12f }, { 15566.68f, 6438.71f, -13874.49f })) elevate = true;
-					}
-					else if (CurrentChunk == 11 && IsPlayerInBox(entity->Position, { 22186.03f, 8432.125f, -12439.87f }, { 22232.81f, 8689.5f, -12340.5f })) elevate = true;
 
-					if (elevate) {
-						if (IsLantern) {
-							set_blend_ptr(2, 4);
-							set_diffuse_blend_factor_ptr(0.6f);
-							set_specular_blend_factor_ptr(0.4f);
-						}
-						ElevatePlayer(slot);
+		EntityData1 ** players = EntityData1Ptrs;
+		for (uint8_t slot = 0; slot < 8; ++slot) {
+			if (players[slot]) {
+				auto entity = EntityData1Ptrs[slot];
+				bool elevate = false;
+				if (CurrentChunk == 2) {
+					if (IsSwitchPressed(41) && IsPlayerInBox(entity->Position, { 4819.545f, 1334.25f, -2807.884f }, { 4920.795f, 1599.75f, -2750.509f })) elevate = true;
+					if (IsSwitchPressed(1) && IsPlayerInBox(entity->Position, { 4922.578f, 1746.016f, -3249.482f }, { 4969.469f, 1998.652f, -3149.415f })) elevate = true;
+					if ((IsSwitchPressed(2) || GetCharacterID(0) == 2) && IsPlayerInBox(entity->Position, { 5881.667f, 2366.625f, -3249.78f }, { 5914.292f, 2619.75f, -3150.78f })) elevate = true;
+					if (IsSwitchPressed(3) && IsPlayerInBox(entity->Position, { 7105.375f, 3070.897f, -3249.61f }, { 7149, 3319.522F, -3150.61F })) elevate = true;
+				}
+				else if (CurrentChunk == 8) {
+					if (IsSwitchPressed(42) && IsPlayerInBox(entity->Position, { 15416.52f, 5784.375f, -13523.97f }, { 15516.36f, 6038.875f, -13492.27f })) elevate = true;
+					if (IsSwitchPressed(12) && IsPlayerInBox(entity->Position, { 15518.6f, 6186.64f, -13974.12f }, { 15566.68f, 6438.71f, -13874.49f })) elevate = true;
+				}
+				else if (CurrentChunk == 11 && IsPlayerInBox(entity->Position, { 22186.03f, 8432.125f, -12439.87f }, { 22232.81f, 8689.5f, -12340.5f })) elevate = true;
+
+				if (elevate) {
+					if (IsLantern) {
+						set_blend_ptr(2, 4);
+						set_diffuse_blend_factor_ptr(0.6f);
+						set_specular_blend_factor_ptr(0.4f);
 					}
-					else {
-						if (anim % 60 == true) {
-							if (IsLantern) {
-								set_diffuse_blend_factor_ptr(0);
-								set_specular_blend_factor_ptr(0);
-							}
-							elevate = false;
+					ElevatePlayer(slot);
+				}
+				else {
+					if (anim % 60 == true) {
+						if (IsLantern) {
+							set_diffuse_blend_factor_ptr(0);
+							set_specular_blend_factor_ptr(0);
 						}
+						elevate = false;
 					}
 				}
 			}
@@ -75,9 +321,7 @@ void PP_ENERGYPATHS_Display(ObjectMaster *a1) {
 		njRotateXYZ(nullptr, 0, a1->Data1->Rotation.y, 0);
 		njScale(nullptr, a1->Data1->Scale.z, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
-		if (a1->Data1->Scale.x == 0) njDrawModel_SADX(&PP_PATH_H1);
-		if (a1->Data1->Scale.x == 1) njDrawModel_SADX(&PP_PATH_H2);
-		if (a1->Data1->Scale.x == 2) njDrawModel_SADX(&PP_PATH_V);
+		njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 	}
@@ -88,9 +332,7 @@ void PP_ENERGYPATHS_Main(ObjectMaster *a1) {
 		if (a1->Data1->Scale.z < 1) if (IsSwitchPressed(a1->Data1->Scale.y)) a1->Data1->Scale.z += 0.1f;
 		if (a1->Data1->Scale.z == 0.1f) PlaySound(52, 0, 0, 0);
 
-		a1->Data1->CharID = a1->Data1->CharID;
-
-		PathsFunctions(a1->Data1->Scale.x);
+		PathsFunction();
 
 		PP_ENERGYPATHS_Display(a1);
 	}
@@ -101,6 +343,10 @@ void PP_ENERGYPATHS_Main(ObjectMaster *a1) {
 
 void __cdecl PP_ENERGYPATHS(ObjectMaster *a1)
 {
+	if (a1->Data1->Scale.x == 0)  a1->Data1->Object = PP_FLDPATH->getmodel();
+	else if (a1->Data1->Scale.x == 1) a1->Data1->Object = PP_FLDPATH->getmodel()->child;
+	else a1->Data1->Object = PP_FLDPATH->getmodel()->child->child;
+
 	a1->MainSub = &PP_ENERGYPATHS_Main;
 	a1->DisplaySub = &PP_ENERGYPATHS_Display;
 	a1->DeleteSub = &deleteSub_Global;
@@ -145,7 +391,7 @@ void __cdecl PPPlatformsV_Main(ObjectMaster *a1)
 
 void __cdecl PPPlatformsV(ObjectMaster *a1)
 {
-	a1->Data1->Object = &PP_ECYVobj;
+	a1->Data1->Object = PP_PLTFRMS->getmodel()->child;
 	if (a1->Data1->Scale.x == 0) AddToCollision(a1, 0);
 	else AddToCollision(a1, 1);
 
@@ -209,7 +455,7 @@ void __cdecl PPPlatformsH_Main(ObjectMaster *a1)
 
 void __cdecl PPPlatformsH(ObjectMaster *a1)
 {
-	a1->Data1->Object = &PP_PLATFORMobj;
+	a1->Data1->Object = PP_PLTFRMS->getmodel();
 	AddToCollision(a1, 1);
 
 	a1->Data1->Action = a1->Data1->Scale.x;
@@ -230,9 +476,9 @@ void __cdecl PPPlatformsH(ObjectMaster *a1)
 #pragma region Elevator
 void PPElevator_Display(ObjectMaster *a1)
 {
-	if (alternate) PPElevatorCOL.basicdxmodel->mats[7].diffuse.argb.a = 0x00;
-	if (!alternate)  PPElevatorCOL.basicdxmodel->mats[7].diffuse.argb.a = 0xFF;
-	DrawObjModel(a1, PPElevatorCOL.basicdxmodel, false);
+	if (alternate) a1->Data1->Object->basicdxmodel->mats[7].diffuse.argb.a = 0x00;
+	if (!alternate)  a1->Data1->Object->basicdxmodel->mats[7].diffuse.argb.a = 0xFF;
+	DrawObjModel(a1, a1->Data1->Object->basicdxmodel, false);
 }
 
 void PPElevator_Main(ObjectMaster *a1)
@@ -266,7 +512,7 @@ void PPElevator_Main(ObjectMaster *a1)
 
 void __cdecl PPElevator(ObjectMaster *a1)
 {
-	a1->Data1->Object = &PPElevatorCOL;
+	a1->Data1->Object = PP_ELEVATR->getmodel();
 	AddToCollision(a1, 1);
 
 	a1->MainSub = &PPElevator_Main;
@@ -278,10 +524,10 @@ void __cdecl PPElevator(ObjectMaster *a1)
 #pragma region Elevator Stopper
 void PPStopper_Display(ObjectMaster *a1)
 {
-	DrawObjModel(a1, PP_Stopperobj.basicdxmodel, false);
-	if (alternate) PP_StopperLight.mats[1].diffuse.argb.a = 0x00;
-	if (!alternate) PP_StopperLight.mats[1].diffuse.argb.a = 0xFF;
-	DrawObjModel(a1, &PP_StopperLight, false);
+	DrawObjModel(a1, a1->Data1->Object->basicdxmodel, false);
+	if (alternate) a1->Data1->Object->child->basicdxmodel->mats[1].diffuse.argb.a = 0x00;
+	if (!alternate) a1->Data1->Object->child->basicdxmodel->mats[1].diffuse.argb.a = 0xFF;
+	DrawObjModel(a1, a1->Data1->Object->child->basicdxmodel, false);
 }
 
 void PPStopper_Delete(ObjectMaster *a1)
@@ -315,6 +561,7 @@ void PPStopper_Main(ObjectMaster *a1)
 
 void __cdecl PPStopper(ObjectMaster *a1)
 {
+	a1->Data1->Object = PP_ELEVATR->getmodel()->child;
 	a1->Data1->Action = 0;
 
 	a1->MainSub = &PPStopper_Main;
@@ -447,179 +694,70 @@ ObjectListEntry PowerPlantObjectList_list[] = {
 };
 ObjectList PowerPlantObjectList = { arraylengthandptrT(PowerPlantObjectList_list, int) };
 
-//void ResetPPCars() {
-//	power_plant_objects_cars[0].Position.x = 7052.102f;
-//	power_plant_objects_cars[1].Position.z = -15254.92f;
-//	power_plant_objects_cars[2].Position.z = -18254.92f;
-//	power_plant_objects_cars[3].Position.z = -12546.45f;
-//	power_plant_objects_cars[4].Position.z = -10546.45f;
-//}
-//
-//void PPCarsHandler() {
-//	if (anim % 1800 == 0) {
-//		ResetPPCars();
-//	}
-//	power_plant_objects_cars[0].Position.x -= 4;
-//	power_plant_objects_cars[1].Position.z += 3;
-//	power_plant_objects_cars[2].Position.z += 4;
-//	power_plant_objects_cars[3].Position.z -= 3;
-//	power_plant_objects_cars[4].Position.z -= 4;
-//}
-//
-//void EnergyTankHandler() {
-//	if (CurrentChunk == 11) {
-//		auto entity = EntityData1Ptrs[0];
-//		if (entity->Position.x > 22754) {
-//			if (CurrentLandTable->Col[20].Model->pos[1] < 10723) {
-//				CurrentLandTable->Col[20].Model->pos[1] += 0.3f;
-//				if (entity->Position.y > 9517) CurrentLandTable->Col[20].Model->pos[1] += 0.3f;
-//				if (entity->Position.y > 10207) CurrentLandTable->Col[20].Model->pos[1] += 0.1f;
-//			}
-//			if (entity->Position.y < CurrentLandTable->Col[20].Model->pos[1]) GameState = 7;
-//		}
-//		else {
-//			CurrentLandTable->Col[20].Model->pos[1] = 8621;
-//		}
-//	}
-//
-//	if (IsPlayerInsideSphere(&lavapos, 50)) {
-//		if (power_plant_objects_common[32].Position.x != 22930) {
-//			power_plant_objects_common[32].Position.x -= 1;
-//		}
-//		if (power_plant_objects_common[33].Position.x != 22930) {
-//			power_plant_objects_common[33].Position.x += 1;
-//		}
-//	}
-//}
-//
-//void PPPathsHandler() {
-//	EntityData1 ** players = EntityData1Ptrs;
-//	for (uint8_t slot = 0; slot < 8; ++slot) {
-//		if (players[slot]) {
-//			auto entity = EntityData1Ptrs[slot];
-//			CharObj2 *co2 = GetCharObj2(slot);
-//
-//			if (co2) {
-//				if (co2->SurfaceFlags == 0x8A1 || co2->SurfaceFlags == 0xA81) {
-//					
-//					if (IsLantern) {
-//						set_diffuse_blend_ptr(2, 4);
-//						set_diffuse_blend_factor_ptr(0.3f);
-//					}
-//					
-//					if (entity->Position.x < 2404 && entity->Position.z > -1274) entity->Position.z -= 2;
-//					else if (entity->Position.x < 3494 && entity->Position.x > 3132) entity->Position.x += 2;
-//					else if (entity->Position.x < 4955 && entity->Position.z > -2014 && entity->Position.z < -1446 && entity->Position.x > 4788) entity->Position.z -= 2;
-//					else if (entity->Position.x < 5828) entity->Position.x += 2;
-//					else if (entity->Position.x < 9033 && entity->Position.x > 8466 && entity->Position.z > -4164) entity->Position.x += 2;
-//					else if (entity->Position.x < 8794 && entity->Position.y > 3256 && entity->Position.z < -4077) { entity->Position.z += 2; entity->Position.x += 1; }
-//					else if (entity->Position.x < 12681 && entity->Position.x > 12184 && entity->Position.z < -8861) entity->Position.z -= 2;
-//					else if (entity->Position.x < 14922 && entity->Position.z > -10897 && entity->Position.z < -10343 && entity->Position.x > 14743) entity->Position.z -= 2;
-//					else if (entity->Position.x < 14863 && entity->Position.z < -11313) entity->Position.z += 2;
-//					else if (entity->Position.x > 14561 && entity->Position.x < 15522) entity->Position.z -= 2;
-//					else if (entity->Position.x > 19094) entity->Position.x += 2;
-//				}
-//				else {
-//					if (anim % 4 == true && IsLantern) set_diffuse_blend_factor_ptr(0);
-//				}
-//			}
-//
-//			bool elevate = false;
-//
-//			if (CurrentChunk == 3 && IsPlayerInBox(entity->Position, { 8515.642f, 2990, -5468.255f }, { 8549.026f, 3298.125f, -5421.717f })) elevate = true;
-//			if (CurrentChunk == 7 && IsPlayerInBox(entity->Position, { 14766.78f, 4832.125f, -11680.85f }, { 14865.47f, 5138.778f, -11637.85f })) elevate = true;
-//			if (CurrentChunk == 4) {
-//				if (IsPlayerInBox(entity->Position, { 10179.34f, 3300, -6031.539f }, { 10209.77f, 3662.876f, -5980.835f })) elevate = true;
-//				else if (IsPlayerInBox(entity->Position, { 10198.59f, 3300, -6003.414f }, { 10239, 3662.876f, -5952.71f })) elevate = true;
-//				else if (IsPlayerInBox(entity->Position, { 10210.96f, 3300, -5975.289f }, { 10251.39f, 3662.876f, -5924.585f })) elevate = true;
-//			}
-//
-//			if (elevate) {
-//				if (IsLantern) {
-//					set_blend_ptr(2, 4);
-//					set_diffuse_blend_factor_ptr(0.6f);
-//					set_specular_blend_factor_ptr(0.4f);
-//				}
-//				ElevatePlayer(slot);
-//			}
-//			else {
-//				if (anim % 60 == true) {
-//					if (IsLantern) {
-//						set_diffuse_blend_factor_ptr(0);
-//						set_specular_blend_factor_ptr(0);
-//					}
-//					elevate = false;
-//				}
-//			}
-//		}
-//	}
-//}
-//
-//void MovePPObjects() {
-//	//SATELITES
-//	for (uint8_t i = 14; i < 27; ++i) power_plant_objects_common[i].Rotation[0] += 100;
-//	if (texstate == 0) matlist_8D5EF354AB2318A9D21[0].attr_texId = TWINKLE03TexName_m4_a1;
-//	if (texstate == 8) matlist_8D5EF354AB2318A9D21[0].attr_texId = TWINKLE03TexName_m4_a2;
-//	if (texstate == 16) matlist_8D5EF354AB2318A9D21[0].attr_texId = TWINKLE03TexName_m4_a3;
-//	if (texstate == 24) matlist_8D5EF354AB2318A9D21[0].attr_texId = TWINKLE03TexName_m4_a4;
-//
-//	//CRANE
-//	for (uint8_t i = 27; i < 32; ++i) {
-//		if (anim % 1000 == 0) cranestate = !cranestate;
-//		if (cranestate) {
-//			power_plant_objects_common[i].Rotation[1] -= 20;
-//		}
-//		else {
-//			power_plant_objects_common[i].Rotation[1] += 20;
-//		}
-//	}
-//
-//	//WALL LIGHTS
-//	for (uint8_t i = 61; i < 65; ++i) power_plant_objects_common[i].Rotation[2] += 100;
-//}
-//
-void PowerPlantObjects_Reset() {
-	cranestate = false;
-
-	/*for (uint8_t i = 61; i < 65; ++i) power_plant_objects_common[i].Rotation[2] = 0;
-	power_plant_objects_common[27].Rotation[1] = 0;
-	power_plant_objects_common[28].Rotation[1] = 20000;
-	power_plant_objects_common[29].Rotation[1] = 0;
-	power_plant_objects_common[30].Rotation[1] = 10000;
-	power_plant_objects_common[31].Rotation[1] = 0;
-	for (uint8_t i = 13; i < 26; ++i) power_plant_objects_common[i].Rotation[0] = 0;
-	power_plant_objects_common[32].Position.x = 22979;
-	power_plant_objects_common[33].Position.x = 22879;
-
-	ResetPPCars();*/
-
-	lava = false;
-}
-
 void PowerPlantObjects_Init(const char *path) {
 	WriteData((PVMEntry**)0x90EB88, PowerPlantObjectTextures);
-	WriteData((ObjectList**)0x974BF8, &PowerPlantObjectList); //974BFC 974C00 974C04
+	WriteData((ObjectList**)0x974BF8, &PowerPlantObjectList);
 }
 
-void PowerPlantObjects_OnFrame(EntityData1 * entity) {
-	AnimateUV(PowerPlant_UVSHIFT, LengthOfArray(PowerPlant_UVSHIFT));
+void PPPathsHandler() {
+	EntityData1 ** players = EntityData1Ptrs;
+	for (uint8_t slot = 0; slot < 8; ++slot) {
+		if (players[slot]) {
+			auto entity = EntityData1Ptrs[slot];
+			CharObj2 *co2 = GetCharObj2(slot);
 
-	if (anim % 3) texstate += 1;
-	if (texstate > 31) texstate = 0;
+			if (co2) {
+				if (co2->SurfaceFlags == 0x8A1 || co2->SurfaceFlags == 0xA81) {
 
-	matlist_8D5EFF497A29E9775DF[0].attr_texId = 128 + texstate;
-	matlist_8D5F7537EA0F4602944[0].attr_texId = 128 + texstate;
-	matlist_fluid2[0].attr_texId = 160 + texstate;
+					if (IsLantern) {
+						set_diffuse_blend_ptr(2, 4);
+						set_diffuse_blend_factor_ptr(0.3f);
+					}
 
-	/*PPCarsHandler();
-	EnergyTankHandler();
-	PPPathsHandler();
-	MovePPObjects();*/
+					if (entity->Position.x < 2404 && entity->Position.z > -1274) entity->Position.z -= 2;
+					else if (entity->Position.x < 3494 && entity->Position.x > 3132) entity->Position.x += 2;
+					else if (entity->Position.x < 4955 && entity->Position.z > -2014 && entity->Position.z < -1446 && entity->Position.x > 4788) entity->Position.z -= 2;
+					else if (entity->Position.x < 5828) entity->Position.x += 2;
+					else if (entity->Position.x < 9033 && entity->Position.x > 8466 && entity->Position.z > -4164) entity->Position.x += 2;
+					else if (entity->Position.x < 8794 && entity->Position.y > 3256 && entity->Position.z < -4077) { entity->Position.z += 2; entity->Position.x += 1; }
+					else if (entity->Position.x < 12681 && entity->Position.x > 12184 && entity->Position.z < -8861) entity->Position.z -= 2;
+					else if (entity->Position.x < 14922 && entity->Position.z > -10897 && entity->Position.z < -10343 && entity->Position.x > 14743) entity->Position.z -= 2;
+					else if (entity->Position.x < 14863 && entity->Position.z < -11313) entity->Position.z += 2;
+					else if (entity->Position.x > 14561 && entity->Position.x < 15522) entity->Position.z -= 2;
+					else if (entity->Position.x > 19094) entity->Position.x += 2;
+				}
+				else {
+					if (anim % 4 == true && IsLantern) set_diffuse_blend_factor_ptr(0);
+				}
+			}
 
-	if (anim % 4 == 0) {
-		CurrentLandTable->Col[0].Model->pos[0] = entity->Position.x;
-		CurrentLandTable->Col[0].Model->pos[2] = entity->Position.z;
-		/*power_plant_objects_common[0].Position.x = entity->Position.x;
-		power_plant_objects_common[0].Position.z = entity->Position.z;*/
+			bool elevate = false;
+
+			if (CurrentChunk == 3 && IsPlayerInBox(entity->Position, { 8515.642f, 2990, -5468.255f }, { 8549.026f, 3298.125f, -5421.717f })) elevate = true;
+			if (CurrentChunk == 7 && IsPlayerInBox(entity->Position, { 14766.78f, 4832.125f, -11680.85f }, { 14865.47f, 5138.778f, -11637.85f })) elevate = true;
+			if (CurrentChunk == 4) {
+				if (IsPlayerInBox(entity->Position, { 10179.34f, 3300, -6031.539f }, { 10209.77f, 3662.876f, -5980.835f })) elevate = true;
+				else if (IsPlayerInBox(entity->Position, { 10198.59f, 3300, -6003.414f }, { 10239, 3662.876f, -5952.71f })) elevate = true;
+				else if (IsPlayerInBox(entity->Position, { 10210.96f, 3300, -5975.289f }, { 10251.39f, 3662.876f, -5924.585f })) elevate = true;
+			}
+
+			if (elevate) {
+				if (IsLantern) {
+					set_blend_ptr(2, 4);
+					set_diffuse_blend_factor_ptr(0.6f);
+					set_specular_blend_factor_ptr(0.4f);
+				}
+				ElevatePlayer(slot);
+			}
+			else {
+				if (anim % 60 == true) {
+					if (IsLantern) {
+						set_diffuse_blend_factor_ptr(0);
+						set_specular_blend_factor_ptr(0);
+					}
+					elevate = false;
+				}
+			}
+		}
 	}
 }

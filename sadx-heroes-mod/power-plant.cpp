@@ -5,8 +5,49 @@
 #include "power-plant-deathzones.h"
 #include "power-plant.h"
 
+void PowerPlant_InitObjects() {
+	PP_ELEVATR = LoadMDL("PP_ELEVATR");
+	PP_FLDPATH = LoadMDL("PP_FLDPATH");
+	PP_LGTSIGN = LoadMDL("PP_LGTSIGN");
+	PP_MCLOUDS = LoadMDL("PP_MCLOUDS");
+	PP_MTRUCKS = LoadMDL("PP_MTRUCKS");
+	PP_PLTFRMS = LoadMDL("PP_PLTFRMS");
+	PP_PPCRANE = LoadMDL("PP_PPCRANE");
+	PP_SOLARPN = LoadMDL("PP_SOLARPN");
+	PP_TNKDOOR = LoadMDL("PP_TNKDOOR");
+	PP_TNKSTEP = LoadMDL("PP_TNKSTEP");
+
+	PowerPlant_UVSHIFT[0].List = PP_SOLARPN->getmodel()->child->basicdxmodel->meshsets[2].vertuv;
+	PowerPlant_UVSHIFT[1].List = PP_ELEVATR->getmodel()->basicdxmodel->meshsets[5].vertuv;
+	PowerPlant_UVSHIFT[0].Size = PP_SOLARPN->getmodel()->child->basicdxmodel->meshsets[2].nbMesh * 3;
+	PowerPlant_UVSHIFT[1].Size = PP_ELEVATR->getmodel()->basicdxmodel->meshsets[5].nbMesh * 3;
+
+	PPOBJLIST[0] = PP_FLDPATH->getmodel()->basicdxmodel;
+	PPOBJLIST[1] = PP_FLDPATH->getmodel()->child->basicdxmodel;
+	PPOBJLIST[2] = PP_FLDPATH->getmodel()->child->child->basicdxmodel;
+	PPOBJLIST[3] = PP_PLTFRMS->getmodel()->basicdxmodel;
+	PPOBJLIST[4] = PP_PLTFRMS->getmodel()->child->basicdxmodel;
+	PPOBJLIST[5] = PP_SOLARPN->getmodel()->basicdxmodel;
+
+	LoadObject(LoadObj_Data1, 3, PPSolarpnls);
+	LoadObject(LoadObj_Data1, 3, PPCranes);
+	LoadObject(LoadObj_Data1, 3, PPLights);
+	LoadObject(LoadObj_Data1, 3, PPSky);
+	LoadObject(LoadObj_Data1, 3, PPTankHandler);
+	LoadObject(LoadObj_Data1, 3, PPTrucks);
+}
+
 void PowerPlant_Delete(ObjectMaster * a1) {
-	PowerPlantObjects_Reset();
+	FreeMDL(PP_ELEVATR);
+	FreeMDL(PP_FLDPATH);
+	FreeMDL(PP_LGTSIGN);
+	FreeMDL(PP_MCLOUDS);
+	FreeMDL(PP_MTRUCKS);
+	FreeMDL(PP_PLTFRMS);
+	FreeMDL(PP_PPCRANE);
+	FreeMDL(PP_SOLARPN);
+	FreeMDL(PP_TNKDOOR);
+	FreeMDL(PP_TNKSTEP);
 
 	if (IsLantern) {
 		set_shader_flags_ptr(ShaderFlags_Blend, false);
@@ -28,6 +69,8 @@ void PowerPlantHandler(ObjectMaster * a1) {
 		a1->Data1->Action = 1;
 		a1->DeleteSub = PowerPlant_Delete;
 
+		PowerPlant_InitObjects();
+
 		if (IsLantern) set_shader_flags_ptr(ShaderFlags_Blend, true);
 
 		if (CurrentAct == 0) {
@@ -42,7 +85,13 @@ void PowerPlantHandler(ObjectMaster * a1) {
 		case 0:
 			ChunkHandler("PP", PowerPlantChunks, LengthOfArray(PowerPlantChunks), entity->Position);
 			AnimateTextures(PowerPlantAnimTexs, LengthOfArray(PowerPlantAnimTexs));
-			PowerPlantObjects_OnFrame(entity);
+			AnimateObjectsTextures(PPOBJLIST, LengthOfArray(PPOBJLIST), PowerPlantAnimTexs, LengthOfArray(PowerPlantAnimTexs));
+			AnimateUV(PowerPlant_UVSHIFT, LengthOfArray(PowerPlant_UVSHIFT));
+			PPPathsHandler();
+
+			CurrentLandTable->Col[0].Model->pos[0] = entity->Position.x;
+			CurrentLandTable->Col[0].Model->pos[2] = entity->Position.z;
+
 			break;
 		}
 	}
@@ -58,10 +107,6 @@ void PowerPlant_Init(const char *path, const HelperFunctions &helperFunctions) {
 	ReplaceBIN("PL_80B", "power-plant-shaders");
 
 	helperFunctions.RegisterPathList(PowerPlantPaths);
-
-	for (uint8_t i = 0; i < 3; i++) {
-		FogData_Icecap1[i].Toggle = false;
-	}
 
 	WriteData((DeathZone**)0xE2FE4C, PowerPlantDeathZones);
 

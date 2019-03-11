@@ -59,7 +59,7 @@ extern "C"
 
 	__declspec(dllexport) void __cdecl OnFrame()
 	{
-		++anim;
+		if (GameState != 16) ++anim;
 
 		if ((GameState == 15 || GameState == 4)) {
 			if (EnableModels) CommonObjects_OnFrame();

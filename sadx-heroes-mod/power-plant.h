@@ -16,8 +16,9 @@ CHUNK_LIST PowerPlantChunks[]{
 };
 
 SH_ANIMTEXS PowerPlantAnimTexs[]{
-	{ 128, 31,{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, } },
-	{ 160, 31,{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, } }
+	{ 128, 31,{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 } },
+	{ 160, 31,{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2 } },
+	{ 99, 3,{ 8, 8, 8, 8 } },
 };
 
 DeathZone PowerPlantDeathZones[] = {
@@ -33,5 +34,28 @@ DeathZone PowerPlantDeathZones[] = {
 };
 
 void PowerPlantObjects_Init(const char *path);
-void PowerPlantObjects_OnFrame(EntityData1 * entity);
-void PowerPlantObjects_Reset();
+void PPPathsHandler();
+void PPSolarpnls(ObjectMaster *a1);
+void PPCranes(ObjectMaster *a1);
+void PPLights(ObjectMaster *a1);
+void PPSky(ObjectMaster *a1);
+void PPTankHandler(ObjectMaster *a1);
+void PPTrucks(ObjectMaster *a1);
+
+extern ModelInfo * PP_ELEVATR;
+extern ModelInfo * PP_FLDPATH;
+extern ModelInfo * PP_LGTSIGN;
+extern ModelInfo * PP_MCLOUDS;
+extern ModelInfo * PP_MTRUCKS;
+extern ModelInfo * PP_PLTFRMS;
+extern ModelInfo * PP_PPCRANE;
+extern ModelInfo * PP_SOLARPN;
+extern ModelInfo * PP_TNKDOOR;
+extern ModelInfo * PP_TNKSTEP;
+
+SH_UVSHIFT PowerPlant_UVSHIFT[]{
+	{ nullptr,0,{ 0, -1 }, 4 }, //2
+	{ nullptr,0,{ 0, -12 } }, //5
+};
+
+NJS_MODEL_SADX * PPOBJLIST[6];
