@@ -104,7 +104,6 @@ void SH_MOVINGPLATFORMS_Display(ObjectMaster *a1) {
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
-		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
 		njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
 		DrawQueueDepthBias = 0;
@@ -277,7 +276,6 @@ void __cdecl SHSPIKES_Display(ObjectMaster *a1)
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
-		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
 		njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
 		njRotateY(0, -a1->Data1->Rotation.y + a1->Data1->Scale.z);

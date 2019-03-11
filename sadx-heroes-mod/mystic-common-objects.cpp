@@ -160,7 +160,6 @@ void HCDOOR_Display(ObjectMaster *a1) {
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
-		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
 		njTranslate(0, -40, 0, 0);
 
@@ -334,7 +333,6 @@ void HCWALL_Display(ObjectMaster *a1)
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
-		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
 
 		if (a1->Data1->Action == 0) {
@@ -445,7 +443,6 @@ void HCPLATFORM_Display(ObjectMaster *a1) {
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
-		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
 		if (CurrentLevel == 7 && a1->Data1->Position.x < 8000) njRotateX(0, 0x8000);
 		njDrawModel_SADX(a1->Data1->Object->basicdxmodel);

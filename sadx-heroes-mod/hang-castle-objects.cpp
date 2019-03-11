@@ -29,7 +29,6 @@ void HCFLAG_Display(ObjectMaster *a1) {
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
-		njScale(nullptr, 1, 1, 1);
 		njRotateX(0, -a1->Data1->Rotation.x - 2000 + a1->Data1->Scale.z);
 		DrawQueueDepthBias = -6000.0f;
 		njDrawModel_SADX(&HC_FLAG);
@@ -74,7 +73,6 @@ void HCBLADE_Display(ObjectMaster *a1) {
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
 		njRotateZ(0, a1->Data1->Scale.z);
-		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
 		njDrawModel_SADX(HC_HCBLADE->getmodel()->basicdxmodel);
 		DrawQueueDepthBias = 0;
@@ -131,7 +129,6 @@ void HCTREE_Display(ObjectMaster *a1) {
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
-		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
 		njTranslate(0, 0, 40, 0);
 
@@ -193,7 +190,6 @@ void HCPLANTA_Display(ObjectMaster *a1) {
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
-		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
 
 		float offset = a1->Data1->Scale.z;
@@ -257,7 +253,6 @@ void HCPLANTB_Display(ObjectMaster *a1) {
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
-		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
 
 		float offset = a1->Data1->Scale.z;

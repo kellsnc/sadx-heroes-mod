@@ -29,7 +29,6 @@ void PPSolarpnls_Display(ObjectMaster *a1) {
 				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
 				if (GameState != 16) a1->Data1->Scale.x += 100;
 				njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);
-				njScale(nullptr, 1, 1, 1);
 				DrawQueueDepthBias = -6000;
 				njDrawModel_SADX(PP_SOLARPN->getmodel()->basicdxmodel);
 				njRotateX(0, a1->Data1->Scale.x);
@@ -71,7 +70,6 @@ void PPCranes_Display(ObjectMaster *a1) {
 				}
 
 				njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1] + a1->Data1->Scale.x, item.Rotation[2]);
-				njScale(nullptr, 1, 1, 1);
 				DrawQueueDepthBias = -6000;
 				njDrawModel_SADX(PP_PPCRANE->getmodel()->basicdxmodel);
 				DrawQueueDepthBias = 0;
@@ -99,7 +97,6 @@ void PPLights_Display(ObjectMaster *a1) {
 				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
 				if (GameState != 16) a1->Data1->Scale.x += 100;
 				njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);
-				njScale(nullptr, 1, 1, 1);
 				DrawQueueDepthBias = -6000;
 				njDrawModel_SADX(PP_LGTSIGN->getmodel()->basicdxmodel);
 				njRotateZ(0, a1->Data1->Scale.x);
@@ -361,7 +358,6 @@ void __cdecl PPPlatformsV_Display(ObjectMaster *a1)
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, 0, a1->Data1->Rotation.y, 0);
-		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
 		njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
 		DrawQueueDepthBias = 0;
@@ -409,7 +405,6 @@ void __cdecl PPPlatformsH_Display(ObjectMaster *a1)
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, 0, a1->Data1->Rotation.y, 0);
-		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
 		njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
 		DrawQueueDepthBias = 0;

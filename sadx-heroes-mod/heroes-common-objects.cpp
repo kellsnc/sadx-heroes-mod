@@ -64,11 +64,10 @@ void ObjFan_Display(ObjectMaster *a1)
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, 0, a1->Data1->Rotation.y, 0);
-		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
 		njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
 		njRotateXYZ(nullptr, 0, a1->Data1->Scale.z, 0);
-		njDrawModel_SADX(CO_COMNFAN->getmodel()->basicdxmodel);
+		njDrawModel_SADX(CO_COMNFAN->getmodel()->child->basicdxmodel);
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 	}
@@ -135,11 +134,9 @@ void ObjReel_Display(ObjectMaster *a1)
 
 	njTranslate(0, a1->Data1->Position.x, a1->Data1->Scale.x, a1->Data1->Position.z);
 	njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
-	njScale(nullptr, 1, 1, 1);
 	njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
 
 	njTranslate(0, 0, a1->Data1->Position.y - a1->Data1->Scale.x + 15, 0);
-	njScale(nullptr, 1, 1, 1);
 	njDrawModel_SADX(a1->Data1->Object->child->child->basicdxmodel);
 
 	njTranslate(0, 0, a1->Data1->Scale.x - a1->Data1->Position.y - 15, 0);
@@ -369,7 +366,6 @@ void __cdecl SHDashPanel(ObjectMaster *a1)
 			{
 				njRotateY(0, (LOWORD(v1->Rotation.y) + -32768));
 			}
-			njScale(nullptr, 1, 1, 1);
 			DrawQueueDepthBias = -6000.0f;
 			njDrawModel_SADX(CO_DSHPANL->getmodel()->basicdxmodel);
 			DrawQueueDepthBias = 0;
@@ -441,7 +437,6 @@ void ObjCannon_Display(ObjectMaster *a1)
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, 0, a1->Data1->Rotation.y, 0);
-		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
 		njDrawModel_SADX(CO_DSHHOOP->getmodel()->basicdxmodel);
 
@@ -610,9 +605,6 @@ void __cdecl SHLaunchRamp(ObjectMaster *a1)
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
-		/*njRotateY(0, 0x8000);
-		njRotateX(0, a1->Data1->Rotation.x * 2);*/
-		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
 		njDrawModel_SADX(CO_LCHRAMP->getmodel()->basicdxmodel);
 		DrawQueueDepthBias = 0;
@@ -787,7 +779,6 @@ void ObjBob_Display(ObjectMaster *a1)
 		else njRotateX(0, 0);
 		njTranslate(0, 0, 0, -5);
 
-		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
 		njDrawModel_SADX(&SH_BOBSLED);
 
@@ -880,7 +871,6 @@ void ObjBoxW_Display(ObjectMaster *a1)
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
-		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
 		if (a1->Data1->Action == 0) njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
 		else if (a1->Data1->Action == 1) {

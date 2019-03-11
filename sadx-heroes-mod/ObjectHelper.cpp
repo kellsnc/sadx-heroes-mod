@@ -30,7 +30,6 @@ void DrawObjModel(ObjectMaster *a1, NJS_MODEL_SADX *m, bool scalable) {
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
 		if (scalable) njScale(nullptr, a1->Data1->Scale.x, a1->Data1->Scale.y, a1->Data1->Scale.z);
-		else njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
 		njDrawModel_SADX(m);
 		DrawQueueDepthBias = 0;

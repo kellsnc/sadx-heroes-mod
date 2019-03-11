@@ -61,7 +61,6 @@ void MysticFan_Display(ObjectMaster *a1)
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, 0, a1->Data1->Rotation.y, 0);
-		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
 		njDrawModel_SADX(MM_SKELFAN->getmodel()->basicdxmodel);
 		DrawQueueDepthBias = 0;
@@ -143,7 +142,6 @@ void CartDisplay(ObjectMaster * a1) {
 		njTranslateV(0, &a1->Data1->Position);
 		if (a1->Data1->Action == 3) njRotateXYZ(0, HIWORD(a1->Data1->Object), LOWORD(a1->Data1->Object), a1->Data1->Rotation.z);
 		else njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
-		njScale(nullptr, 1, 1, 1);
 		njTranslate(0, -1.5f, 0, 0);
 		DrawQueueDepthBias = -6000.0f;
 		njDrawModel_SADX(MM_MYSTCAR->getmodel()->basicdxmodel);

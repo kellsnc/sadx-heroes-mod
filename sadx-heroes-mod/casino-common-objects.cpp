@@ -48,7 +48,6 @@ void FLIPPERS_display(ObjectMaster *a1)
 		}
 	}
 
-	njScale(nullptr, 1, 1, 1);
 	DrawQueueDepthBias = 6000;
 	if (a1->SETData.SETData->SETEntry->ObjectType == 42)  njDrawModel_SADX(CP_FLIPPER->getmodel()->basicdxmodel);
 	else njDrawModel_SADX(CP_FLIPPER->getmodel()->child->basicdxmodel);
@@ -146,7 +145,6 @@ void __cdecl sub_5DBCD0_h(ObjectMaster *a2)
 			njTranslateV(0, &v1->Position);
 			if (v1->Rotation.x == 0) njRotateXYZ(nullptr, 8192, v1->Rotation.y, 0);
 			else njRotateXYZ(nullptr, v1->Rotation.x, v1->Rotation.y, 0);
-			njScale(nullptr, 1, 1, 1);
 			DrawQueueDepthBias = 6000;
 			njDrawModel_SADX(CP_CSNOBOB->getmodel()->child->basicdxmodel);
 			DrawQueueDepthBias = 0;
@@ -409,7 +407,6 @@ void CPDashPanel(ObjectMaster *a1) {
 			njRotateY(0, (LOWORD(v1->Rotation.y) + -32768));
 		}
 
-		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
 		njDrawModel_SADX(CP_DSHPANL->getmodel()->basicdxmodel);
 		DrawQueueDepthBias = 0;
@@ -446,7 +443,6 @@ void CPSLOTS_Display(ObjectMaster *a1) {
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, 8192, a1->Data1->Rotation.y, 0);
-		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
 		njDrawModel_SADX(CP_SLOTMCS->getmodel()->basicdxmodel);
 		DrawQueueDepthBias = 0;
@@ -591,7 +587,6 @@ void CPSLOTL_Display(ObjectMaster *a1) {
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, 8192, a1->Data1->Rotation.y, 0);
-		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
 		njDrawModel_SADX(CP_SLOTMCS->getmodel()->child->basicdxmodel);
 		DrawQueueDepthBias = 0;
@@ -868,7 +863,6 @@ void CPDOOR_Display(ObjectMaster *a1) {
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
-		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
 
 		if (a1->Data1->Scale.z != 0) {
@@ -986,7 +980,6 @@ void CPRoulette_Display(ObjectMaster *a1) {
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
-		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
 		if (CurrentLevel == HeroesLevelID_BingoHighway) njRotateY(0, a1->Data1->Scale.z);
 		njDrawModel_SADX(a1->Data1->Object->basicdxmodel);

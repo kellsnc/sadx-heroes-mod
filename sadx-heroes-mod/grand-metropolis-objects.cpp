@@ -18,8 +18,6 @@ void GMSky_Display(ObjectMaster *a1) {
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
 		njPushMatrix(0);
 		njTranslate(nullptr, EntityData1Ptrs[0]->Position.x, 300, EntityData1Ptrs[0]->Position.z);
-		njRotateXYZ(nullptr, 0, 0, 0);
-		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -7000;
 		njDrawModel_SADX(GM_MCLOUDS->getmodel()->child->basicdxmodel);
 
@@ -49,7 +47,6 @@ void GMPistons_Display(ObjectMaster *a1) {
 				njPushMatrix(0);
 				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
 				njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);
-				njScale(nullptr, 1, 1, 1);
 				DrawQueueDepthBias = -6000;
 
 				njDrawModel_SADX(GM_GPISTON->getmodel()->basicdxmodel);
@@ -101,7 +98,6 @@ void GMAds_Display(ObjectMaster *a1) {
 				njPushMatrix(0);
 				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
 				njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);
-				njScale(nullptr, 1, 1, 1);
 				DrawQueueDepthBias = -5000;
 				njDrawModel_SADX(GM_ADVERTS->getmodel()->basicdxmodel);
 				DrawQueueDepthBias = 0;
@@ -128,7 +124,6 @@ void GMCars_Display(ObjectMaster *a1) {
 				njPushMatrix(0);
 				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
 				njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);
-				njScale(nullptr, 1, 1, 1);
 				DrawQueueDepthBias = -6000;
 
 				if (item.Model == 0) njTranslate(0, a1->Data1->Scale.x, 0, 0);
@@ -216,7 +211,6 @@ void GM_ENERGYDOORS_Display(ObjectMaster *a1) {
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, 0, a1->Data1->Rotation.y, 0);
-		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
 		if (a1->Data1->Rotation.x == 1) njDrawModel_SADX(s03_door_2obj.basicdxmodel);
 		else njDrawModel_SADX(s03_door_1obj.basicdxmodel);

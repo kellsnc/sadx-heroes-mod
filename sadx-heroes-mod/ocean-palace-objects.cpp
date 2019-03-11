@@ -184,7 +184,6 @@ void OPPOLE_Display(ObjectMaster *a1) {
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
-		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
 		njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
 		if (a1->Data1->Scale.x == 1) njDrawModel_SADX(OP_WATERFS->getmodel()->child->child->child->child->child->child->child->child->child->child->child->basicdxmodel);
@@ -233,14 +232,12 @@ void OPBoulders_Display(ObjectMaster *a1) {
 	if (!DroppedFrames) {
 		for (int i = 2; i < 5; ++i) {
 			if (i > 2 && CurrentChunk != 7) break;
-
 			SOI_LIST2 item = OceanPalace_EventObjects[i];
 
 			njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
 			njPushMatrix(0);
 			njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
 			njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);
-			njScale(nullptr, item.Scale.x, item.Scale.y, item.Scale.z);
 			DrawQueueDepthBias = item.Bias;
 
 			njDrawModel_SADX(OP_BOULDER->getmodel()->basicdxmodel);

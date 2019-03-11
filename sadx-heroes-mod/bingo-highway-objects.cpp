@@ -60,7 +60,6 @@ void BHBingoCard_Display(ObjectMaster *a1) {
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(0, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
 		njTranslate(0, 0, 40, 0);
-		njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
 		njDrawModel_SADX(BH_BNGCARD->getmodel()->basicdxmodel);
 
@@ -342,7 +341,6 @@ void BHGiantTokens_Display(ObjectMaster *a1) {
 		njRotateY(nullptr, a1->Data1->Rotation.y);
 		if (a1->Data1->Scale.z == 2) njScale(nullptr, 0.5f, 0.5f, 0.5f);
 		else if (a1->Data1->Scale.z == 3 || a1->Data1->Scale.z == 4) njScale(nullptr, 0.7f, 0.7f, 0.7f);
-		else njScale(nullptr, 1, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
 
 		if (a1->Data1->Scale.x == 0) njDrawModel_SADX(BH_BIGCHIP->getmodel()->basicdxmodel);
