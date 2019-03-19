@@ -2,6 +2,8 @@
 #include "mod.h"
 #include <math.h>
 
+extern LoopHead *MysticMansionPathList[];
+
 void TransformPlayer(char player, NJS_VECTOR orig, NJS_VECTOR dest, float state) {
 	auto entity = EntityData1Ptrs[player];
 	entity->Position.x = (dest.x - orig.x) * state + orig.x;
@@ -36,7 +38,7 @@ void LookAt(char player, NJS_VECTOR orig, NJS_VECTOR point) {
 	entity->Rotation.y = fPositionToRotation(co2, orig, point);
 }
 
-#pragma region Rails
+//Rail Physics
 float RailValues[]{ 5, 8, 0.2f, 0.03f };
 
 enum EnumRailPhysics {
@@ -46,7 +48,6 @@ enum EnumRailPhysics {
 	RailPhysics_GravityInfluence,
 };
 
-//Physics mess
 void RailPhysics(ObjectMaster * a1, EntityData1 * player, CharObj2 * co2, LoopHead * loopdata) {
 	float railspeed = a1->Data1->Scale.y;
 	bool backward = a1->Data1->CharIndex;
@@ -106,8 +107,8 @@ void RailPhysics(ObjectMaster * a1, EntityData1 * player, CharObj2 * co2, LoopHe
 	}
 }
 
-//Player X is on a rail
-void RailMain(ObjectMaster * a1) {
+//Perform path functions
+void RailPath_Main(ObjectMaster * a1) {
 	LoopHead * loopdata = (LoopHead*)a1->Data1->LoopData; //current rail
 	EntityData1 * entity = a1->Data1; //we can store data in this
 
@@ -120,43 +121,79 @@ void RailMain(ObjectMaster * a1) {
 		}
 
 		CharObj2 * co2 = GetCharObj2(a1->Data1->NextAction);
+		
+		bool web = false;
+		if (loopdata->Unknown_0 != 0) web = true;
+
 		bool backward = a1->Data1->CharIndex;
+		if (web) backward = false;
 
 		//detach from rail if it's the last point / if the player press jump
 		if ((!backward && loopdata->LoopList[a1->Data1->InvulnerableTime].Dist == 0) //if no distance, we're at the end
-			|| (backward && a1->Data1->InvulnerableTime == 0 && a1->Data1->Scale.x <= 0.08f) //if first point and position close to 0, we're at the start
-			|| ControllerPointers[a1->Data1->NextAction]->PressedButtons & Buttons_A) { 
-			a1->Data1->Action = 1;
-			float railspeed = a1->Data1->Scale.y;
+			|| (backward && a1->Data1->InvulnerableTime == 0) //if position is 0, we're at the start
+			|| ControllerPointers[a1->Data1->NextAction]->PressedButtons & Buttons_A) {
 
-			//Animations
-			if (ControllerPointers[a1->Data1->NextAction]->PressedButtons & Buttons_A) {
-				player->Status = Status_Ball;
-				player->Action = 8;
-				co2->AnimationThing.Index = 14;
-				co2->Speed.y = 2;
+			if (web) {
+				if (ControllerPointers[a1->Data1->NextAction]->PressedButtons & Buttons_A ||
+					loopdata->Unknown_0 == 0xFF) {
+					a1->Data1->Action = 1;
+
+					if (ControllerPointers[a1->Data1->NextAction]->PressedButtons & Buttons_A) {
+						player->Status = Status_Ball;
+						co2->AnimationThing.Index = 14;
+						co2->Speed.y = 2;
+					}
+					else {
+						co2->Speed.x = 1;
+						co2->Speed.y = 0;
+						player->Action = 12;
+						co2->AnimationThing.Index = 18;
+					}
+				}
+				else {
+					a1->Data1->LoopData = (Loop*)MysticMansionPathList[loopdata->Unknown_0];
+					a1->Data1->InvulnerableTime = 0;
+					a1->Data1->Scale = { 0, 0, 0 };
+				}
 			}
 			else {
-				co2->Speed.y = 1;
-				co2->Speed.x = 1;
-				player->Action = 12;
-				co2->AnimationThing.Index = 18;
-			}
+				a1->Data1->Action = 1;
 
-			co2->Speed.x = 2;
+				//Animations
+				if (ControllerPointers[a1->Data1->NextAction]->PressedButtons & Buttons_A) {
+					player->Status = Status_Ball;
+					co2->AnimationThing.Index = 14;
+					co2->Speed.y = 2;
+				}
+				else {
+					co2->Speed.y = 1;
+					co2->Speed.x = 1;
+					player->Action = 12;
+					co2->AnimationThing.Index = 18;
+				}
+
+				co2->Speed.x = 2;
+			}
 
 			return;
 		}
 		else {
-			RailPhysics(a1, player, co2, loopdata);
-			float railspeed = a1->Data1->Scale.y;
+			float railspeed = 4;
 
+			if (!web) {
+				RailPhysics(a1, player, co2, loopdata);
+				railspeed = a1->Data1->Scale.y;
+			}
+			
 			//next position in spline
 			if (!backward) a1->Data1->Scale.x = a1->Data1->Scale.x + (loopdata->TotalDist / loopdata->LoopList[a1->Data1->InvulnerableTime].Dist) / loopdata->TotalDist * railspeed;
 			else a1->Data1->Scale.x = a1->Data1->Scale.x - (loopdata->TotalDist / loopdata->LoopList[a1->Data1->InvulnerableTime].Dist) / loopdata->TotalDist * railspeed;
 
 			//animations
 			player->Status = 0;
+
+			if (web) co2->AnimationThing.Index = 102;
+
 			if (GetCharacterID(a1->Data1->NextAction) == Characters_Tails) {
 				player->Action = 48;
 				co2->AnimationThing.Index = 0;
@@ -167,20 +204,18 @@ void RailMain(ObjectMaster * a1) {
 			player->Position.y += 5;
 			if (CurrentLevel == 7) player->Position.y += 5;
 			LookAt(a1->Data1->NextAction, loopdata->LoopList[a1->Data1->InvulnerableTime].Position, loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position);
-			
-			
-			if (backward) {
+			if (loopdata->LoopList[a1->Data1->InvulnerableTime].Ang_X != 0) player->Rotation.x = loopdata->LoopList[a1->Data1->InvulnerableTime].Ang_X;
+
+			if (backward || (web && player->Position.z > -40000)) {
 				player->Rotation.y += 0x8000;
 			}
 
 			//go to next point
-			if (!backward && a1->Data1->Scale.x > 1) { a1->Data1->Scale.x = 0; a1->Data1->InvulnerableTime++; } 
-			if (backward && a1->Data1->Scale.x < 0 ) { a1->Data1->Scale.x = 1; a1->Data1->InvulnerableTime--; }
+			if (!backward && a1->Data1->Scale.x > 1) { a1->Data1->Scale.x = 0; a1->Data1->InvulnerableTime++; }
+			if (backward && a1->Data1->Scale.x < 0) { a1->Data1->Scale.x = 1; a1->Data1->InvulnerableTime--; }
 		}
 	}
 
-	//hold before removing the rail object so that the character
-	//don't immediately go back on the rail
 	if (a1->Data1->Action == 1) {
 		if (a1->Data1->CharIndex < 20) a1->Data1->CharIndex += 1;
 		else {
@@ -191,82 +226,7 @@ void RailMain(ObjectMaster * a1) {
 	}
 }
 
-//Initialize rails
-void RailPath(ObjectMaster * a1) {
-	LoopHead * loopdata = (LoopHead*)a1->Data1->LoopData;
-	EntityData1 * entity = a1->Data1;
-	
-	if (!a1->Data1->Action) {
-		if (anim < 500) return; //fixes a very weird and rare bug
-
-		EntityData1 ** players = EntityData1Ptrs; //suport for 8 players, let's get all the pointers
-		for (uint8_t slot = 0; slot < 8; ++slot) {
-			if (players[slot]) {
-				//we check if the player gets on the rail
-				//to do that we get lots of points throughout the rail and check if the player is near one
-
-				if (players[slot]->NextAction == 1) return;
-
-				for (uint8_t point = 0; point < loopdata->Count; ++point) {
-					for (float l = 0; l <= 1; l += 0.01f) {
-						a1->Data1->Position.x = (loopdata->LoopList[point + 1].Position.x - loopdata->LoopList[point].Position.x) * l + loopdata->LoopList[point].Position.x;
-						a1->Data1->Position.y = (loopdata->LoopList[point + 1].Position.y - loopdata->LoopList[point].Position.y) * l + loopdata->LoopList[point].Position.y;
-						a1->Data1->Position.z = (loopdata->LoopList[point + 1].Position.z - loopdata->LoopList[point].Position.z) * l + loopdata->LoopList[point].Position.z;
-					
-						if ((a1->Data1->Position.x >(players[slot]->Position.x - 2.8f) && a1->Data1->Position.x < (players[slot]->Position.x + 2.8f))
-							&& (a1->Data1->Position.y >(players[slot]->Position.y - 2.8f) && a1->Data1->Position.y < (players[slot]->Position.y + 2.8f))
-							&& (a1->Data1->Position.z >(players[slot]->Position.z - 2.8f) && a1->Data1->Position.z < (players[slot]->Position.z + 2.8f))) {
-							
-							players[slot]->Position = a1->Data1->Position;
-							a1->Data1->Action = 1;
-
-							//we create a new object to support 8 players (one object per character)
-							ObjectMaster * tempobj = LoadObject(LoadObj_Data1, 0, RailMain);
-							CharObj2 * co2 = GetCharObj2(slot);
-							tempobj->Data1->InvulnerableTime = point; //store current spline point
-							tempobj->Data1->Scale.x = l; //store position in spline
-							tempobj->Data1->NextAction = slot; //store character it applies to
-							tempobj->Data1->LoopData = a1->Data1->LoopData;
-							if (co2) tempobj->Data1->Scale.y = co2->Speed.x * 2; //store horizontal speed
-							if (tempobj->Data1->Scale.y == 0) RailValues[RailPhysics_MaxSpeed];
-							players[slot]->NextAction = 1;
-							
-							//get direction
-							float ang = fPositionToRotation(co2, loopdata->LoopList[point].Position, loopdata->LoopList[point + 1].Position);
-							float min = ang - 0x4000;
-							if (min < 0) min += 0x10000;
-							float max = ang + 0x4000;
-							if (max > 65536) max -= 0x10000;
-
-							if (min > max) {
-								ang = max;
-								max = min;
-								min = ang;
-
-								if (players[slot]->Rotation.y > min && players[slot]->Rotation.y < max) tempobj->Data1->CharIndex = 1; //backward
-								else tempobj->Data1->CharIndex = 0; //forward
-							}
-							else {
-								if (players[slot]->Rotation.y > min && players[slot]->Rotation.y < max) tempobj->Data1->CharIndex = 0; //forward
-								else tempobj->Data1->CharIndex = 1; //backward
-							}
-
-							//tempobj->Data1->CharIndex = 0;
-
-							break;
-						}
-					}
-					if (a1->Data1->Action == 1) break;
-				}
-			}
-		}
-	}
-	else a1->Data1->Action = 0;
-}
-#pragma endregion
-
-#pragma region AutoLoop
-void AutoLoopMain(ObjectMaster * a1) {
+void AutoLoop_Main(ObjectMaster * a1) {
 	LoopHead * loopdata = (LoopHead*)a1->Data1->LoopData; //current rail
 	EntityData1 * entity = a1->Data1; //we can store data in this
 
@@ -289,7 +249,6 @@ void AutoLoopMain(ObjectMaster * a1) {
 				//Animations
 				if (ControllerPointers[a1->Data1->NextAction]->PressedButtons & Buttons_A) {
 					player->Status = Status_Ball;
-					player->Action = 8;
 					co2->AnimationThing.Index = 14;
 					co2->Speed.y = 2;
 				}
@@ -351,11 +310,12 @@ void AutoLoopMain(ObjectMaster * a1) {
 	}
 }
 
-void AutoLoop(ObjectMaster * a1) {
+//Detects if a player interacts with a path
+void Path_Main(ObjectMaster * a1) {
 	LoopHead * loopdata = (LoopHead*)a1->Data1->LoopData;
 	EntityData1 * entity = a1->Data1;
 
-	char slope = a1->Data1->field_A;
+	char type = a1->Data1->field_A;
 
 	if (!a1->Data1->Action) {
 		EntityData1 ** players = EntityData1Ptrs; //suport for 8 players, let's get all the pointers
@@ -370,24 +330,55 @@ void AutoLoop(ObjectMaster * a1) {
 						a1->Data1->Position.y = (loopdata->LoopList[point + 1].Position.y - loopdata->LoopList[point].Position.y) * l + loopdata->LoopList[point].Position.y;
 						a1->Data1->Position.z = (loopdata->LoopList[point + 1].Position.z - loopdata->LoopList[point].Position.z) * l + loopdata->LoopList[point].Position.z;
 
-						if ((a1->Data1->Position.x >(players[slot]->Position.x - 10) && a1->Data1->Position.x < (players[slot]->Position.x + 10))
-							&& (a1->Data1->Position.y >(players[slot]->Position.y - 10) && a1->Data1->Position.y < (players[slot]->Position.y + 10))
-							&& (a1->Data1->Position.z >(players[slot]->Position.z - 10) && a1->Data1->Position.z < (players[slot]->Position.z + 10))) {
+						int range = 10;
+						if (a1->Data1->field_A == 2) range = 5;
+
+						if ((a1->Data1->Position.x > (players[slot]->Position.x - range) && a1->Data1->Position.x < (players[slot]->Position.x + range))
+							&& (a1->Data1->Position.y > (players[slot]->Position.y - range) && a1->Data1->Position.y < (players[slot]->Position.y + range))
+							&& (a1->Data1->Position.z > (players[slot]->Position.z - range) && a1->Data1->Position.z < (players[slot]->Position.z + range))) {
+
+							a1->Data1->Scale = { -3, 8, 4 }; //fix weird bug
+							if (IsPlayerInsideSphere(&a1->Data1->Scale, 10)) return;
 
 							players[slot]->Position = a1->Data1->Position;
 							a1->Data1->Action = 1;
 
 							//we create a new object to support 8 players (one object per character)
-							ObjectMaster * tempobj = LoadObject(LoadObj_Data1, 0, AutoLoopMain);
+							ObjectMaster * tempobj;
+							if (type == 2) tempobj = LoadObject(LoadObj_Data1, 0, RailPath_Main);
+							else tempobj = LoadObject(LoadObj_Data1, 0, AutoLoop_Main);
+
 							CharObj2 * co2 = GetCharObj2(slot);
 							tempobj->Data1->InvulnerableTime = point; //store current spline point
 							tempobj->Data1->Scale.x = l; //store position in spline
 							tempobj->Data1->NextAction = slot; //store character it applies to
 							tempobj->Data1->LoopData = a1->Data1->LoopData;
-							tempobj->Data1->field_A = a1->Data1->field_A;
+							tempobj->Data1->field_A = type;
 							players[slot]->NextAction = 1;
 
-							if (slope == 0 && slot == 0) camera_flags = 6;
+							//get direction
+							if (type == 2) {
+								float ang = fPositionToRotation(co2, loopdata->LoopList[point].Position, loopdata->LoopList[point + 1].Position);
+								float min = ang - 0x4000;
+								if (min < 0) min += 0x10000;
+								float max = ang + 0x4000;
+								if (max > 65536) max -= 0x10000;
+
+								if (min > max) {
+									ang = max;
+									max = min;
+									min = ang;
+
+									if (players[slot]->Rotation.y > min && players[slot]->Rotation.y < max) tempobj->Data1->CharIndex = 1; //backward
+									else tempobj->Data1->CharIndex = 0; //forward
+								}
+								else {
+									if (players[slot]->Rotation.y > min && players[slot]->Rotation.y < max) tempobj->Data1->CharIndex = 0; //forward
+									else tempobj->Data1->CharIndex = 1; //backward
+								}
+							}
+							
+							if (type == 0 && slot == 0) camera_flags = 6;
 
 							break;
 						}
@@ -399,11 +390,18 @@ void AutoLoop(ObjectMaster * a1) {
 	}
 	else a1->Data1->Action = 0;
 }
-#pragma endregion
 
-#pragma region Slopes
+//Path Initializing
+void AutoLoop(ObjectMaster * a1) {
+	a1->MainSub = Path_Main;
+}
+
+void RailPath(ObjectMaster * a1) {
+	a1->Data1->field_A = 2;
+	a1->MainSub = Path_Main;
+}
+
 void SlopePath(ObjectMaster * a1) {
 	a1->Data1->field_A = 1;
-	AutoLoop(a1);
+	a1->MainSub = Path_Main;
 }
-#pragma endregion

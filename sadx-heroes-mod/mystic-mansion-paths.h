@@ -1347,6 +1347,365 @@ Loop MM_RailPath11_Entries[] = {
 
 LoopHead MM_RailPath11 = { 0, LengthOfArray<int16_t>(MM_RailPath11_Entries), 532.2036f, MM_RailPath11_Entries, (ObjectFuncPtr)&RailPath };
 
+//Spider Web 1
+Loop MM_SpiderRail1_Entries[] = {
+	{ 0, 0, 114,{ 3255, -4250, -20109 } },
+	{ 0, 0, 0,{ 3255, -4250, -19995 } }
+};
+
+LoopHead MM_SpiderRail1 = { 26, LengthOfArray<int16_t>(MM_SpiderRail1_Entries), 114, MM_SpiderRail1_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail2_Entries[] = {
+	{ 0, 0, 25,{ 3255, -4250, -19995 } },
+	{ 0, 0, 0,{ 3230, -4250, -19995 } }
+};
+
+LoopHead MM_SpiderRail2 = { 27, LengthOfArray<int16_t>(MM_SpiderRail2_Entries), 25, MM_SpiderRail2_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail3_Entries[] = {
+	{ 0, 0, 45,{ 3230, -4250, -19995 } },
+	{ 0, 0, 0,{ 3230, -4250, -19950 } }
+};
+
+LoopHead MM_SpiderRail3 = { 28, LengthOfArray<int16_t>(MM_SpiderRail3_Entries), 45, MM_SpiderRail3_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail4_Entries[] = {
+	{ 0, 0, 25,{ 3230, -4250, -19950 } },
+	{ 0, 0, 0,{ 3205, -4250, -19950 } }
+};
+
+LoopHead MM_SpiderRail4 = { 29, LengthOfArray<int16_t>(MM_SpiderRail4_Entries), 25, MM_SpiderRail4_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail5_Entries[] = {
+	{ 0, 0, 70,{ 3205, -4250, -19950 } },
+	{ 0, 0, 0,{ 3205, -4250, -19880 } }
+};
+
+LoopHead MM_SpiderRail5 = { 30, LengthOfArray<int16_t>(MM_SpiderRail5_Entries), 70, MM_SpiderRail5_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail6_Entries[] = {
+	{ 0, 0, 29,{ 3205, -4250, -19950 } },
+	{ 0x10ED, 0, 21,{ 3205, -4251, -19851 } },
+	{ 0x1F46, 0, 14,{ 3205, -4260, -19832 } },
+	{ 0x31E7, 0, 10,{ 3205, -4270, -19822 } },
+	{ 0, 0, 0,{ 3205, -4280, -19819 } },
+};
+
+LoopHead MM_SpiderRail6 = { 0xFF, LengthOfArray<int16_t>(MM_SpiderRail6_Entries), 74, MM_SpiderRail6_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail7_Entries[] = {
+	{ 0, 0, 25,{ 3230, -4250, -20020 } },
+	{ 0, 0, 0,{ 3230, -4250, -19995 } }
+};
+
+LoopHead MM_SpiderRail7 = { 27, LengthOfArray<int16_t>(MM_SpiderRail7_Entries), 25, MM_SpiderRail7_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail8_Entries[] = {
+	{ 0, 0, 89,{ 3230, -4250, -20109 } },
+	{ 0, 0, 0,{ 3230, -4250, -20020 } }
+};
+
+LoopHead MM_SpiderRail8 = { 33, LengthOfArray<int16_t>(MM_SpiderRail8_Entries), 89, MM_SpiderRail8_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail9_Entries[] = {
+	{ 0, 0, 25,{ 3230, -4250, -20020 } },
+	{ 0, 0, 0,{ 3205, -4250, -20020 } }
+};
+
+LoopHead MM_SpiderRail9 = { 34, LengthOfArray<int16_t>(MM_SpiderRail9_Entries), 25, MM_SpiderRail9_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail10_Entries[] = {
+	{ 0, 0, 70,{ 3205, -4250, -20020 } },
+	{ 0, 0, 0,{ 3205, -4250, -19950 } }
+};
+
+LoopHead MM_SpiderRail10 = { 35, LengthOfArray<int16_t>(MM_SpiderRail10_Entries), 70, MM_SpiderRail10_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail11_Entries[] = {
+	{ 0, 0, 25,{ 3205, -4250, -19950 } },
+	{ 0, 0, 0,{ 3230, -4250, -19950 } }
+};
+
+LoopHead MM_SpiderRail11 = { 36, LengthOfArray<int16_t>(MM_SpiderRail11_Entries), 25, MM_SpiderRail11_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail12_Entries[] = {
+	{ 0, 0, 40,{ 3230, -4250, -19950 } },
+	{ 0, 0, 0,{ 3230, -4250, -19910 } }
+};
+
+LoopHead MM_SpiderRail12 = { 37, LengthOfArray<int16_t>(MM_SpiderRail12_Entries), 40, MM_SpiderRail12_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail13_Entries[] = {
+	{ 0, 0, 25,{ 3230, -4250, -19910 } },
+	{ 0, 0, 0,{ 3255, -4250, -19910 } }
+};
+
+LoopHead MM_SpiderRail13 = { 38, LengthOfArray<int16_t>(MM_SpiderRail13_Entries), 25, MM_SpiderRail13_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail14_Entries[] = {
+	{ 0, 0, 34,{ 3255, -4250, -19910 } },
+	{ 0x222, 0, 25,{ 3255, -4250, -19876 } },
+	{ 0x10ED, 0, 21,{ 3255, -4251, -19851 } },
+	{ 0x1F46, 0, 14,{ 3255, -4260, -19832 } },
+	{ 0x31E7, 0, 10,{ 3255, -4270, -19822 } },
+	{ 0, 0, 0,{ 3255, -4280, -19819 } }
+};
+
+LoopHead MM_SpiderRail14 = { 0xFF, LengthOfArray<int16_t>(MM_SpiderRail14_Entries), 104, MM_SpiderRail14_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail15_Entries[] = {
+	{ 0, 0, 30,{ 3230, -4250, -19910 } },
+	{ 0, 0, 0,{ 3230, -4250, -19880 } }
+};
+
+LoopHead MM_SpiderRail15 = { 41, LengthOfArray<int16_t>(MM_SpiderRail15_Entries), 30, MM_SpiderRail15_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail16_Entries[] = {
+	{ 0, 0, 89,{ 3205, -4250, -20109 } },
+	{ 0, 0, 0,{ 3205, -4250, -20020 } }
+};
+
+LoopHead MM_SpiderRail16 = { 34, LengthOfArray<int16_t>(MM_SpiderRail16_Entries), 89, MM_SpiderRail16_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail17_Entries[] = {
+	{ 0, 0, 106,{ 3230, -4250, -19880 } },
+	{ 0, 0, 21,{ 3230, -4250, -19773 } },
+	{ 0, 0, 18,{ 3230, -4248, -19752 } },
+	{ 0, 0, 21,{ 3230, -4244, -19734 } },
+	{ 0, 0, 19,{ 3230, -4233, -19715 } },
+	{ 0, 0, 0,{ 3230, -4220, -19700 } }
+};
+
+LoopHead MM_SpiderRail17 = { 0xFF, LengthOfArray<int16_t>(MM_SpiderRail17_Entries), 185, MM_SpiderRail17_Entries, (ObjectFuncPtr)&RailPath };
+
+//Spider Web 2
+Loop MM_SpiderRail18_Entries[] = {
+	{ 0, 0, 160,{ 17450, -9098, -40780 } },
+	{ 0, 0, 0,{ 17450, -9098, -40940 } }
+};
+
+LoopHead MM_SpiderRail18 = { 43, LengthOfArray<int16_t>(MM_SpiderRail18_Entries), 160, MM_SpiderRail18_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail19_Entries[] = {
+	{ 0, 0, 40,{ 17450, -9098, -40940 } },
+	{ 0, 0, 19,{ 17450, -9098, -40980 } },
+	{ 0, 0, 2,{ 17450, -9098, -40999 } },
+	{ 0, 0, 62,{ 17452, -9098, -41000 } },
+	{ 0xFBDB, 0, 12,{ 17468, -9098, -41060 } },
+	{ 0xF412, 0, 8,{ 17470, -9100, -41072 } },
+	{ 0xEAAC, 0, 10,{ 17470, -9103, -41080 } },
+	{ 0, 0, 0,{ 17470, -9108, -41089 } }
+};
+
+LoopHead MM_SpiderRail19 = { 44, LengthOfArray<int16_t>(MM_SpiderRail19_Entries), 153, MM_SpiderRail19_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail20_Entries[] = {
+	{ 0, 0, 50,{ 17470, -9108, -41089 } },
+	{ 0, 0, 0,{ 17420, -9108, -41089 } }
+};
+
+LoopHead MM_SpiderRail20 = { 45, LengthOfArray<int16_t>(MM_SpiderRail20_Entries), 50, MM_SpiderRail20_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail21_Entries[] = {
+	{ 0xEA20, 0, 50,{ 17420, -9108, -41089 } },
+	{ 0, 0, 0,{ 17420, -9138, -41141 } }
+};
+
+LoopHead MM_SpiderRail21 = { 46, LengthOfArray<int16_t>(MM_SpiderRail21_Entries), 50, MM_SpiderRail21_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail22_Entries[] = {
+	{ 0xEAAB, 0, 100,{ 17420, -9138, -41141 } },
+	{ 0, 0, 0,{ 17420, -9188, -41228 } }
+};
+
+LoopHead MM_SpiderRail22 = { 47, LengthOfArray<int16_t>(MM_SpiderRail22_Entries), 100, MM_SpiderRail22_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail23_Entries[] = {
+	{ 0xEAAB, 0, 70,{ 17420, -9188, -41228 } },
+	{ 0, 0, 0,{ 17420, -9223, -41289 } }
+};
+
+LoopHead MM_SpiderRail23 = { 48, LengthOfArray<int16_t>(MM_SpiderRail23_Entries), 70, MM_SpiderRail23_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail24_Entries[] = {
+	{ 0, 0, 50,{ 17420, -9223, -41289 } },
+	{ 0, 0, 0,{ 17470, -9223, -41289 } }
+};
+
+LoopHead MM_SpiderRail24 = { 49, LengthOfArray<int16_t>(MM_SpiderRail24_Entries), 50, MM_SpiderRail24_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail25_Entries[] = {
+	{ 0xEAAB, 0, 129,{ 17470, -9223, -41289 } },
+	{ 0, 0, 0,{ 17470, -9288, -41401 } }
+};
+
+LoopHead MM_SpiderRail25 = { 50, LengthOfArray<int16_t>(MM_SpiderRail25_Entries), 129, MM_SpiderRail25_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail26_Entries[] = {
+	{ 0xEAAB, 0, 30,{ 17470, -9288, -41401 } },
+	{ 0xEF7B, 0, 12,{ 17470, -9303, -41427 } },
+	{ 0xF8FA, 0, 12,{ 17470, -9308, -41438 } },
+	{ 0, 0, 50,{ 17470, -9310, -41450 } },
+	{ 0, 0, 20,{ 17470, -9310, -41500 } },
+	{ 0, 0, 20,{ 17472, -9310, -41520 } },
+	{ 0, 0, 19,{ 17477, -9310, -41540 } },
+	{ 0, 0, 19,{ 17486, -9310, -41557 } },
+	{ 0, 0, 19,{ 17499, -9310, -41571 } },
+	{ 0, 0, 19,{ 17516, -9310, -41581 } },
+	{ 0, 0, 19,{ 17534, -9310, -41588 } },
+	{ 0, 0, 20,{ 17553, -9310, -41591 } },
+	{ 0, 0, 0,{ 17573, -9310, -41591 } }
+};
+
+LoopHead MM_SpiderRail26 = { 0xFF, LengthOfArray<int16_t>(MM_SpiderRail26_Entries), 259, MM_SpiderRail26_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail27_Entries[] = {
+	{ 0, 0, 160,{ 17420, -9098, -40780 } },
+	{ 0, 0, 0,{ 17420, -9098, -40940 } }
+};
+
+LoopHead MM_SpiderRail27 = { 52, LengthOfArray<int16_t>(MM_SpiderRail27_Entries), 160, MM_SpiderRail27_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail28_Entries[] = {
+	{ 0, 0, 30,{ 17420, -9098, -40940 } },
+	{ 0, 0, 0,{ 17450, -9098, -40940 } }
+};
+
+LoopHead MM_SpiderRail28 = { 43, LengthOfArray<int16_t>(MM_SpiderRail28_Entries), 30, MM_SpiderRail28_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail29_Entries[] = {
+	{ 0, 0, 190,{ 17390, -9098, -40780 } },
+	{ 0, 0, 0,{ 17390, -9098, -40970 } }
+};
+
+LoopHead MM_SpiderRail29 = { 54, LengthOfArray<int16_t>(MM_SpiderRail29_Entries), 190, MM_SpiderRail29_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail30_Entries[] = {
+	{ 0, 0, 20,{ 17390, -9098, -40970 } },
+	{ 0, 0, 10,{ 17389, -9098, -40990 } },
+	{ 0, 0, 62,{ 17388, -9098, -41000 } },
+	{ 0xFBDB, 0, 11,{ 17372, -9098, -41060 } },
+	{ 0xF412, 0, 10,{ 17370, -9100, -41071 } },
+	{ 0xEAAC, 0, 69,{ 17370, -9103, -41081 } },
+	{ 0, 0, 0,{ 17370, -9138, -41141 } }
+};
+
+LoopHead MM_SpiderRail30 = { 55, LengthOfArray<int16_t>(MM_SpiderRail30_Entries), 182, MM_SpiderRail30_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail31_Entries[] = {
+	{ 0, 0, 260,{ 17370, -9138, -41141 } },
+	{ 0, 0, 0,{ 17370, -9268, -41367 } }
+};
+
+LoopHead MM_SpiderRail31 = { 56, LengthOfArray<int16_t>(MM_SpiderRail31_Entries), 260, MM_SpiderRail31_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail32_Entries[] = {
+	{ 0xEAAB, 0, 70,{ 17370, -9268, -41367 } },
+	{ 0xEF7B, 0, 12,{ 17370, -9303, -41428 } },
+	{ 0xF8FA, 0, 11,{ 17370, -9308, -41439 } },
+	{ 0, 0, 50,{ 17370, -9310, -41450 } },
+	{ 0, 0, 20,{ 17370, -9310, -41500 } },
+	{ 0, 0, 19,{ 17368, -9310, -41520 } },
+	{ 0, 0, 20,{ 17363, -9310, -41539 } },
+	{ 0, 0, 19,{ 17354, -9310, -41557 } },
+	{ 0, 0, 19,{ 17341, -9310, -41571 } },
+	{ 0, 0, 18,{ 17324, -9310, -41581 } },
+	{ 0, 0, 19,{ 17306, -9310, -41587 } },
+	{ 0, 0, 0,{ 17287, -9310, -41590 } }
+};
+
+LoopHead MM_SpiderRail32 = { 0xFF, LengthOfArray<int16_t>(MM_SpiderRail32_Entries), 280, MM_SpiderRail32_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail33_Entries[] = {
+	{ 0, 0, 30,{ 17420, -9098, -40940 } },
+	{ 0, 0, 0,{ 17420, -9098, -40970 } }
+};
+
+LoopHead MM_SpiderRail33 = { 58, LengthOfArray<int16_t>(MM_SpiderRail33_Entries), 30, MM_SpiderRail33_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail34_Entries[] = {
+	{ 0, 0, 30,{ 17420, -9098, -40970 } },
+	{ 0, 0, 0,{ 17390, -9098, -40970 } }
+};
+
+LoopHead MM_SpiderRail34 = { 54, LengthOfArray<int16_t>(MM_SpiderRail34_Entries), 30, MM_SpiderRail34_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail35_Entries[] = {
+	{ 0, 0, 90,{ 17420, -9098, -40970 } },
+	{ 0xFBDB, 0, 11,{ 17420, -9098, -41060 } },
+	{ 0xF412, 0, 10,{ 17420, -9100, -41071 } },
+	{ 0xEA20, 0, 9,{ 17420, -9103, -41081 } },
+	{ 0, 0, 0,{ 17420, -9108, -41089 } }
+};
+
+LoopHead MM_SpiderRail35 = { 45, LengthOfArray<int16_t>(MM_SpiderRail35_Entries), 121, MM_SpiderRail35_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail36_Entries[] = {
+	{ 0xEA20, 0, 160,{ 17470, -9108, -41089 } },
+	{ 0, 0, 0,{ 17470, -9188, -41228 } }
+};
+
+LoopHead MM_SpiderRail36 = { 61, LengthOfArray<int16_t>(MM_SpiderRail36_Entries), 160, MM_SpiderRail36_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail37_Entries[] = {
+	{ 0xEAAB, 0, 70,{ 17470, -9188, -41228 } },
+	{ 0, 0, 0,{ 17470, -9223, -41289 } }
+};
+
+LoopHead MM_SpiderRail37 = { 49, LengthOfArray<int16_t>(MM_SpiderRail37_Entries), 70, MM_SpiderRail37_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail38_Entries[] = {
+	{ 0, 0, 50,{ 17470, -9188, -41228 } },
+	{ 0, 0, 0,{ 17420, -9188, -41228 } }
+};
+
+LoopHead MM_SpiderRail38 = { 47, LengthOfArray<int16_t>(MM_SpiderRail38_Entries), 50, MM_SpiderRail38_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail39_Entries[] = {
+	{ 0, 0, 50,{ 17370, -9138, -41141 } },
+	{ 0, 0, 0,{ 17420, -9138, -41141 } }
+};
+
+LoopHead MM_SpiderRail39 = { 46, LengthOfArray<int16_t>(MM_SpiderRail39_Entries), 50, MM_SpiderRail39_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail40_Entries[] = {
+	{ 0xEAAB, 0, 90,{ 17420, -9223, -41289 } },
+	{ 0, 0, 0,{ 17420, -9268, -41367 } }
+};
+
+LoopHead MM_SpiderRail40 = { 65, LengthOfArray<int16_t>(MM_SpiderRail40_Entries), 90, MM_SpiderRail40_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail41_Entries[] = {
+	{ 0xEAAB, 0, 39,{ 17420, -9268, -41367 } },
+	{ 0, 0, 0,{ 17420, -9288, -41401 } }
+};
+
+LoopHead MM_SpiderRail41 = { 68, LengthOfArray<int16_t>(MM_SpiderRail41_Entries), 39, MM_SpiderRail41_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail42_Entries[] = {
+	{ 0, 0, 50,{ 17370, -9268, -41367 } },
+	{ 0, 0, 0,{ 17420, -9268, -41367 } }
+};
+
+LoopHead MM_SpiderRail42 = { 65, LengthOfArray<int16_t>(MM_SpiderRail42_Entries), 50, MM_SpiderRail42_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail43_Entries[] = {
+	{ 0, 0, 50,{ 17470, -9288, -41401 } },
+	{ 0, 0, 0,{ 17420, -9288, -41401 } }
+};
+
+LoopHead MM_SpiderRail43 = { 68, LengthOfArray<int16_t>(MM_SpiderRail43_Entries), 50, MM_SpiderRail43_Entries, (ObjectFuncPtr)&RailPath };
+
+Loop MM_SpiderRail44_Entries[] = {
+	{ 0xEAAB, 0, 30,{ 17420, -9288, -41401 } },
+	{ 0xEF74, 0, 11,{ 17420, -9303, -41428 } },
+	{ 0xF8FA, 0, 12,{ 17420, -9308, -41438 } },
+	{ 0, 0, 300,{ 17420, -9310, -41450 } },
+	{ 0, 0, 0,{ 17420, -9310, -41750 } }
+};
+
+LoopHead MM_SpiderRail44 = { 0xFF, LengthOfArray<int16_t>(MM_SpiderRail44_Entries), 353, MM_SpiderRail44_Entries, (ObjectFuncPtr)&RailPath };
+
 LoopHead *MysticMansionPathList[] = {
 	&MM_CamPath1,
 	&MM_CamPath2,
@@ -1373,6 +1732,50 @@ LoopHead *MysticMansionPathList[] = {
 	&MM_RailPath9,
 	&MM_RailPath10,
 	&MM_RailPath11,
+	&MM_SpiderRail1,
+	&MM_SpiderRail2,
+	&MM_SpiderRail3,
+	&MM_SpiderRail4,
+	&MM_SpiderRail5,
+	&MM_SpiderRail6,
+	&MM_SpiderRail7,
+	&MM_SpiderRail8,
+	&MM_SpiderRail9,
+	&MM_SpiderRail10,
+	&MM_SpiderRail11,
+	&MM_SpiderRail12,
+	&MM_SpiderRail13,
+	&MM_SpiderRail14,
+	&MM_SpiderRail15,
+	&MM_SpiderRail16,
+	&MM_SpiderRail17,
+	&MM_SpiderRail18,
+	&MM_SpiderRail19,
+	&MM_SpiderRail20,
+	&MM_SpiderRail21,
+	&MM_SpiderRail22,
+	&MM_SpiderRail23,
+	&MM_SpiderRail24,
+	&MM_SpiderRail25,
+	&MM_SpiderRail26,
+	&MM_SpiderRail27,
+	&MM_SpiderRail28,
+	&MM_SpiderRail29,
+	&MM_SpiderRail30,
+	&MM_SpiderRail31,
+	&MM_SpiderRail32,
+	&MM_SpiderRail33,
+	&MM_SpiderRail34,
+	&MM_SpiderRail35,
+	&MM_SpiderRail36,
+	&MM_SpiderRail37,
+	&MM_SpiderRail38,
+	&MM_SpiderRail39,
+	&MM_SpiderRail40,
+	&MM_SpiderRail41,
+	&MM_SpiderRail42,
+	&MM_SpiderRail43,
+	&MM_SpiderRail44,
 	NULL
 };
 
