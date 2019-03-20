@@ -136,7 +136,7 @@ void CartActions(ObjectMaster * a1) {
 }
 
 void CartDisplay(ObjectMaster * a1) {
-	if (!MissedFrames) {
+	if (!MissedFrames && IsPlayerInsideSphere(&a1->Data1->Position, 1000)) {
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
@@ -157,8 +157,7 @@ void MysticCart(ObjectMaster * a1) {
 	//Initialize
 	if (entity->Action == 0) {
 		a1->Data1->Position = loopdata->LoopList[0].Position;
-		a1->Data1->Rotation.x = loopdata->LoopList[1].Ang_X;
-		a1->Data1->Rotation.z = loopdata->LoopList[1].Ang_Y;
+		a1->Data1->Rotation.y = loopdata->LoopList[0].Ang_Y;
 		a1->DisplaySub = CartDisplay;
 		entity->Action = 1;
 	}
@@ -217,6 +216,7 @@ void MysticCart(ObjectMaster * a1) {
 
 		entity->Scale.x = entity->Scale.x + (loopdata->TotalDist / loopdata->LoopList[entity->InvulnerableTime].Dist) / loopdata->TotalDist * speed;
 		TransformSpline(a1, loopdata->LoopList[entity->InvulnerableTime].Position, loopdata->LoopList[entity->InvulnerableTime + 1].Position, a1->Data1->Scale.x);
+		
 		player->Position.y -= 8;
 		RotateToCharacter(a1);
 

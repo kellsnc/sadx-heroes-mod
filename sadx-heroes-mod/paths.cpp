@@ -18,24 +18,33 @@ void TransformSpline(ObjectMaster * a1, NJS_VECTOR orig, NJS_VECTOR dest, float 
 	entity->Position.z = (dest.z - orig.z) * state + orig.z;
 }
 
-float fPositionToRotation(CharObj2 * co2, NJS_VECTOR orig, NJS_VECTOR point) {
-	co2->SoManyVectors[8].x = orig.x - point.x;
-	co2->SoManyVectors[8].y = orig.y - point.y;
-	co2->SoManyVectors[8].z = orig.z - point.z;
-	float len = co2->SoManyVectors[8].z * co2->SoManyVectors[8].z + co2->SoManyVectors[8].y * co2->SoManyVectors[8].y;
-	float temp = 0xBFFF;
-	if (CurrentLevel == 7) {
-		temp = 0x4000;
-		if (EntityData1Ptrs[0]->Position.z < -17000) temp += 0x8000;
-	}
-	return (atan2(co2->SoManyVectors[8].x, squareroot(len)) * 65536.0 * 0.1591549762031479) + temp;
+Rotation3 fPositionToRotation(NJS_VECTOR orig, NJS_VECTOR point) {
+	NJS_VECTOR dist;
+	Rotation3 result;
+
+	dist.x = orig.x - point.x;
+	dist.y = orig.y - point.y;
+	dist.z = orig.z - point.z;
+
+	result.x = atan2(dist.y, dist.z) * 65536.0 * -0.1591549762031479;
+	float len = dist.z * dist.z + dist.y * dist.y;
+	result.y = atan2(dist.x, squareroot(len)) * 65536.0 * 0.1591549762031479;
+
+	if (dist.x < 0 && dist.z < 0) { result.y = result.y; result.x = result.x; }
+	if (dist.z < 0 && dist.x > 0) { result.y = result.y; result.x = result.x; }
+	if (dist.x < 0 || dist.z < 0) { result.y += 0x8000; result.x += 0x8000; }
+	if (dist.x < 0 && dist.z > 0) { result.y += 0x8000; result.x += 0x8000; }
+
+	result.y = -result.y - 0x4000;
+	return result;
 }
 
 void LookAt(char player, NJS_VECTOR orig, NJS_VECTOR point) {
 	auto entity = EntityData1Ptrs[player];
-	CharObj2 * co2 = GetCharObj2(player);
 
-	entity->Rotation.y = fPositionToRotation(co2, orig, point);
+	int temp = entity->Rotation.z;
+	entity->Rotation = fPositionToRotation(orig, point);
+	entity->Rotation.z = temp;
 }
 
 //Rail Physics
@@ -358,7 +367,7 @@ void Path_Main(ObjectMaster * a1) {
 
 							//get direction
 							if (type == 2) {
-								float ang = fPositionToRotation(co2, loopdata->LoopList[point].Position, loopdata->LoopList[point + 1].Position);
+								float ang = fPositionToRotation(loopdata->LoopList[point].Position, loopdata->LoopList[point + 1].Position).y;
 								float min = ang - 0x4000;
 								if (min < 0) min += 0x10000;
 								float max = ang + 0x4000;
