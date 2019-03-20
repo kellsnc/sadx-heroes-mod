@@ -26,6 +26,8 @@ CHUNK_LIST MysticMansionChunks[]{
 SH_ANIMTEXS MysticMansionAnimTexs[]{
 	{ 72, 18,{ 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2 } },
 	{ 106, 13,{ 1,1,1,1,1,1,1,1,1,1,1,1,1,1 } },
+	{ 122, 13,{ 2,2,2,2,2,2,2,2,2,2,2,2,2,2 } },
+	{ 138, 13,{ 2,2,2,2,2,2,2,2,2,2,2,2,2,2 } },
 };
 
 DeathZone MysticMansionDeathZones[] = {
@@ -48,5 +50,8 @@ extern ModelInfo * MM_MYSTCAR;
 extern ModelInfo * MM_MOVPLAT;
 extern ModelInfo * MM_MYSDOOR;
 extern ModelInfo * MM_MYSWALL;
+extern ModelInfo * MM_TORCHES;
 extern ModelInfo * HC_SPKWARP;
 extern ModelInfo * HC_HFLAMES;
+
+extern int flamecount;

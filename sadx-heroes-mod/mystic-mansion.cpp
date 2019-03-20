@@ -13,6 +13,7 @@ void MysticMansion_InitObjects() {
 	MM_MOVPLAT = LoadMDL("MM_MOVPLAT");
 	MM_MYSDOOR = LoadMDL("MM_MYSDOOR");
 	MM_MYSWALL = LoadMDL("MM_MYSWALL");
+	MM_TORCHES = LoadMDL("MM_TORCHES");
 	HC_SPKWARP = LoadMDL("HC_SPKWARP");
 	HC_HFLAMES = LoadMDL("HC_HFLAMES");
 
@@ -34,6 +35,7 @@ void MysticMansion_Delete(ObjectMaster * a1) {
 	FreeMDL(MM_MOVPLAT);
 	FreeMDL(MM_MYSDOOR);
 	FreeMDL(MM_MYSWALL);
+	FreeMDL(MM_TORCHES);
 	FreeMDL(HC_SPKWARP);
 	FreeMDL(HC_HFLAMES);
 
@@ -45,6 +47,8 @@ void MysticMansion_Delete(ObjectMaster * a1) {
 	LevelHandler_Delete(a1);
 }
 
+void __cdecl MysticTorches(ObjectMaster *a1);
+
 void MysticMansionHandler(ObjectMaster * a1) {
 	auto entity = EntityData1Ptrs[0];
 	CharObj2 * co2 = GetCharObj2(0);
@@ -53,6 +57,11 @@ void MysticMansionHandler(ObjectMaster * a1) {
 		InitializeSoundManager();
 		PlayMusic(MusicIDs_finaleg1);
 		SoundManager_Delete2();
+
+		flamecount = 0;
+		for (uint16_t i = 0; i < SETTable_Count; ++i) {
+			if (CurrentSetFile[i].ObjectType == 53) flamecount += 1;
+		}
 
 		a1->Data1->Action = 1;
 		a1->DeleteSub = MysticMansion_Delete;

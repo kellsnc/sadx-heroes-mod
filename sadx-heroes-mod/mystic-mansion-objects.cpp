@@ -11,6 +11,86 @@ ModelInfo * MM_SPHERE1;
 ModelInfo * MM_SPHERE2;
 ModelInfo * MM_SKELFAN;
 ModelInfo * MM_MYSTCAR;
+ModelInfo * MM_TORCHES;
+extern ModelInfo * HC_HFLAMES;
+
+int flamecount;
+
+#pragma region MM Torches
+void MysticTorches_Display(ObjectMaster *a1)
+{
+	if (!MissedFrames) {
+		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		njPushMatrix(0);
+		njTranslateV(0, &a1->Data1->Position);
+		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
+		DrawQueueDepthBias = -5000.0f;
+		njDrawModel_SADX(MM_TORCHES->getmodel()->child->basicdxmodel);
+		if (a1->Data1->Scale.x == 0) {
+			njDrawModel_SADX(MM_TORCHES->getmodel()->child->child->child->basicdxmodel);
+			njTranslate(0, 0, 31, 0);
+			njScale(0, 1.2f, 1.2f, 1.2f);
+			njRotateY(0, Camera_Data1->Rotation.y - a1->Data1->Rotation.y);
+			njDrawModel_SADX(HC_HFLAMES->getmodel()->basicdxmodel);
+		}
+		else if (a1->Data1->Scale.x == 2) {
+			njDrawModel_SADX(MM_TORCHES->getmodel()->child->child->child->child->basicdxmodel);
+			njTranslate(0, 0, 31, 0);
+			njScale(0, 1.2f, 1.2f, 1.2f);
+			njRotateY(0, Camera_Data1->Rotation.y - a1->Data1->Rotation.y);
+			njDrawModel_SADX(HC_HFLAMES->getmodel()->child->basicdxmodel);
+		}
+		else {
+			njDrawModel_SADX(MM_TORCHES->getmodel()->child->child->basicdxmodel);
+		}
+		
+		DrawQueueDepthBias = 0;
+		njPopMatrix(1u);
+	}
+}
+
+void MysticTorches_Main(ObjectMaster *a1)
+{
+	if (IsPlayerInsideSphere(&a1->Data1->Position, 1500.0f)) {
+		
+		if (a1->Data1->Scale.x != 1) {
+			NJS_VECTOR flame = a1->Data1->Position;
+			flame.y += 31;
+			int player = IsPlayerInsideSphere(&flame, 8.f);
+			if (player != 0) {
+				if (EntityData1Ptrs[player - 1]->Status | StatusBits_Attack ||
+					EntityData1Ptrs[player - 1]->Status | StatusBits_Ball) {
+					a1->Data1->Scale.x = 1;
+					flamecount -= 1;
+
+					if (flamecount == 0) LoadLevelResults();
+				}
+				else {
+					HurtCharacter(player - 1);
+				}
+			}
+		}
+
+		MysticTorches_Display(a1);
+	}
+	else {
+		deleteSub_Global(a1);
+	}
+}
+
+void __cdecl MysticTorches(ObjectMaster *a1)
+{
+	HC_HFLAMES->getmodel()->basicdxmodel->mats[0].attr_texId = 138;
+	HC_HFLAMES->getmodel()->child->basicdxmodel->mats[0].attr_texId = 122;
+
+	a1->Data1->Object = MM_TORCHES->getmodel();
+	AddToCollision(a1, 0);
+
+	a1->MainSub = &MysticTorches_Main;
+	a1->DisplaySub = &MysticTorches_Display;
+	a1->DeleteSub = &deleteSub_Global;
+}
+#pragma endregion
 
 #pragma region MM Sphere
 void MysticSphere_Display(ObjectMaster *a1)
@@ -326,7 +406,8 @@ ObjectListEntry MysticMansionObjectList_list[] = {
 { 2, 3, 1, 1000000, 0, (ObjectFuncPtr)&ObjReel, "Reel" } /* "Heroes reels" */,
 { 2, 3, 1, 1060000, 0, &ObjFan, "ObjFan" } /* "SH FANS" 50 */,
 { 2, 3, 1, 1060000, 0, &MysticFan, "MysticFan" } /* "MM FANS" */,
-{ 2, 3, 1, 1060000, 0, &MysticSphere, "MysticSphere" } /* "MM SPHERE" */,
+{ 2, 3, 1, 1060000, 0, &MysticSphere, "MMSPHERE" } /* "MM SPHERE" */,
+{ 2, 3, 1, 1060000, 0, &MysticTorches, "MMTORCHES" } /* "MM TORCHES" */
 };
 ObjectList MysticMansionObjectList = { arraylengthandptrT(MysticMansionObjectList_list, int) };
 

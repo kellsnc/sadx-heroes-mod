@@ -153,6 +153,14 @@ void LevelHandler_Delete(ObjectMaster * a1) {
 	delete oldinfo;
 	oldinfo = nullptr;
 	anim = 0;
+
+	for (uint16_t i = 0; i < SETTable_Count; ++i) {
+		if (CurrentSetFile[i].Properties.z == 1
+			&& CurrentSetFile[i].Properties.x == 0
+			&& CurrentSetFile[i].Properties.y == 0) {
+			CurrentSetFile[i].Properties.z = 0;
+		}
+	}
 }
 
 //Animate textures of the current landtable in a similar way to Sonic Heroes

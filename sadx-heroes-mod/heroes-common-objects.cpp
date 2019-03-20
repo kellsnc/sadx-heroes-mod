@@ -913,9 +913,6 @@ void ObjBoxW_Main(ObjectMaster *a1)
 			}
 			ObjBoxW_Display(a1);
 		}
-		else {
-
-		}
 	}
 	else {
 		deleteSub_Global(a1);

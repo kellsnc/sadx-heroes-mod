@@ -219,7 +219,7 @@ void HCDOOR_Main(ObjectMaster *a1) {
 			else {
 				if (IsPlayerInsideSphere(&a1->Data1->Scale, 100)) {
 					a1->Data1->Action = 1;
-					a1->Data1->Object->pos[1] = 0;
+					a1->Data1->Object->pos[1] = 1000;
 					PlaySound(44, 0, 0, 0);
 				}
 			}
@@ -300,6 +300,9 @@ void HCTORCH_Main(ObjectMaster *a1) {
 
 void __cdecl HCTORCH(ObjectMaster *a1)
 {
+	HC_HFLAMES->getmodel()->basicdxmodel->mats[0].attr_texId = 55;
+	HC_HFLAMES->getmodel()->child->basicdxmodel->mats[0].attr_texId = 71;
+
 	a1->Data1->Action = a1->Data1->Scale.x;
 	if (a1->Data1->Action == 0) a1->Data1->Position.y -= 20;
 	else if (a1->Data1->Action == 3) a1->Data1->Position.y -= 30;

@@ -361,7 +361,7 @@ void Path_Main(ObjectMaster * a1) {
 							tempobj->Data1->field_A = type;
 							players[slot]->NextAction = 1;
 
-							//get direction
+							//rail stuff
 							if (type == 2) {
 								if (co2) tempobj->Data1->Scale.y = co2->Speed.x * 2; //store horizontal speed
 								if (tempobj->Data1->Scale.y == 0) RailValues[RailPhysics_MaxSpeed];
