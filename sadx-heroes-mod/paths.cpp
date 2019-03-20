@@ -2,14 +2,7 @@
 #include "mod.h"
 #include <math.h>
 
-extern LoopHead *MysticMansionPathList[];
-
-void TransformPlayer(char player, NJS_VECTOR orig, NJS_VECTOR dest, float state) {
-	auto entity = EntityData1Ptrs[player];
-	entity->Position.x = (dest.x - orig.x) * state + orig.x;
-	entity->Position.y = ((dest.y - orig.y) * state + orig.y);
-	entity->Position.z = (dest.z - orig.z) * state + orig.z;
-}
+extern LoopHead *MysticMansionPathList[70];
 
 void TransformSpline(ObjectMaster * a1, NJS_VECTOR orig, NJS_VECTOR dest, float state) {
 	EntityData1 * entity = a1->Data1;
@@ -209,15 +202,18 @@ void RailPath_Main(ObjectMaster * a1) {
 			}
 			if (GetCharacterID(a1->Data1->NextAction) == Characters_Knuckles) co2->AnimationThing.Index = 0;
 
-			TransformPlayer(a1->Data1->NextAction, loopdata->LoopList[a1->Data1->InvulnerableTime].Position, loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position, a1->Data1->Scale.x);
+			TransformSpline(GetCharacterObject(a1->Data1->NextAction), loopdata->LoopList[a1->Data1->InvulnerableTime].Position, loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position, a1->Data1->Scale.x);
 			player->Position.y += 5;
 			if (CurrentLevel == 7) player->Position.y += 5;
-			LookAt(a1->Data1->NextAction, loopdata->LoopList[a1->Data1->InvulnerableTime].Position, loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position);
-			if (loopdata->LoopList[a1->Data1->InvulnerableTime].Ang_X != 0) player->Rotation.x = loopdata->LoopList[a1->Data1->InvulnerableTime].Ang_X;
-
-			if (backward || (web && player->Position.z > -40000)) {
-				player->Rotation.y += 0x8000;
+			
+			if (web) {
+				player->Rotation.y = fPositionToRotation(loopdata->LoopList[a1->Data1->InvulnerableTime].Position, loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position).y + 0x8000;
+				if (player->Position.z < -40000) player->Rotation.y -= 0x8000;
 			}
+			else LookAt(a1->Data1->NextAction, loopdata->LoopList[a1->Data1->InvulnerableTime].Position, loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position);
+
+			if (loopdata->LoopList[a1->Data1->InvulnerableTime].Ang_X != 0) player->Rotation.x = loopdata->LoopList[a1->Data1->InvulnerableTime].Ang_X;
+			if (backward) player->Rotation.y += 0x8000;
 
 			//go to next point
 			if (!backward && a1->Data1->Scale.x > 1) { a1->Data1->Scale.x = 0; a1->Data1->InvulnerableTime++; }
@@ -301,7 +297,7 @@ void AutoLoop_Main(ObjectMaster * a1) {
 				break;
 			}
 
-			TransformPlayer(a1->Data1->NextAction, loopdata->LoopList[a1->Data1->InvulnerableTime].Position, loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position, a1->Data1->Scale.x);
+			TransformSpline(GetCharacterObject(a1->Data1->NextAction), loopdata->LoopList[a1->Data1->InvulnerableTime].Position, loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position, a1->Data1->Scale.x);
 			LookAt(a1->Data1->NextAction, loopdata->LoopList[a1->Data1->InvulnerableTime].Position, loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position);
 
 			//go to next point
@@ -367,6 +363,9 @@ void Path_Main(ObjectMaster * a1) {
 
 							//get direction
 							if (type == 2) {
+								if (co2) tempobj->Data1->Scale.y = co2->Speed.x * 2; //store horizontal speed
+								if (tempobj->Data1->Scale.y == 0) RailValues[RailPhysics_MaxSpeed];
+
 								float ang = fPositionToRotation(loopdata->LoopList[point].Position, loopdata->LoopList[point + 1].Position).y;
 								float min = ang - 0x4000;
 								if (min < 0) min += 0x10000;
