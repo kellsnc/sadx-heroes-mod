@@ -256,6 +256,8 @@ void __cdecl njReleaseTextureAll__r()
 	QueueDrawingState = 2;
 	sub_40D3B0();
 
+	if (CurrentLevel == 5 && EnableMysticMansion) CurrentLevel = HeroesLevelID_MysticMansion;
+
 	if (CurrentLevel) {
 		if ((CurrentLevel == HeroesLevelID_SeasideHill && EnableSeasideHill) ||
 			(CurrentLevel == HeroesLevelID_OceanPalace && EnableOceanPalace) ||

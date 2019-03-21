@@ -123,6 +123,8 @@
     <ClInclude Include="Data\hang-castle-paths.h" />
     <ClInclude Include="Data\heroes-common-objects.h" />
     <ClInclude Include="Data\mystic-common-objects.h" />
+    <ClInclude Include="Data\mystic-mansion-deathzones.h" />
+    <ClInclude Include="Data\mystic-mansion-paths.h" />
     <ClInclude Include="Data\ocean-palace-objects.h" />
     <ClInclude Include="Data\ocean-palace-paths.h" />
     <ClInclude Include="Data\power-plant-deathzones.h" />
@@ -133,8 +135,6 @@
     <ClInclude Include="hang-castle.h" />
     <ClInclude Include="lanternapi.h" />
     <ClInclude Include="levels.h" />
-    <ClInclude Include="mystic-mansion-deathzones.h" />
-    <ClInclude Include="mystic-mansion-paths.h" />
     <ClInclude Include="mystic-mansion.h" />
     <ClInclude Include="objects.h" />
     <ClInclude Include="Data\seaside-hill-deathzones.h" />

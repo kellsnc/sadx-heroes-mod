@@ -209,14 +209,14 @@
     <ClInclude Include="mystic-mansion.h">
       <Filter>Header Files\Levels</Filter>
     </ClInclude>
-    <ClInclude Include="mystic-mansion-deathzones.h">
-      <Filter>Header Files\Levels</Filter>
-    </ClInclude>
-    <ClInclude Include="mystic-mansion-paths.h">
-      <Filter>Header Files\Levels</Filter>
-    </ClInclude>
     <ClInclude Include="Data\mystic-common-objects.h">
       <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\mystic-mansion-deathzones.h">
+      <Filter>Header Files\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\mystic-mansion-paths.h">
+      <Filter>Header Files\Levels</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

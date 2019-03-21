@@ -82,9 +82,17 @@ void MysticMansionHandler(ObjectMaster * a1) {
 			AnimateTextures(MysticMansionAnimTexs, LengthOfArray(MysticMansionAnimTexs));
 			AnimateObjectsTextures(MMMODELLIST, 4, MysticMansionAnimTexs, LengthOfArray(MysticMansionAnimTexs));
 			AnimateUV(MysticMansion_UVShift, LengthOfArray(MysticMansion_UVShift));
+			
+			if (CurrentChunk > 1 && !FreeCam) {
+				FreeCam = 1;
+				SetCameraMode_(1);
+			}
+
+			if (CurrentChunk == 1 && EntityData1Ptrs[0]->Position.z < -1240 && EntityData1Ptrs[0]->Position.y < 198) SetCameraMode_(1);
+			else SetCameraMode_(FreeCam);
 
 			chunkswapped = false;
-
+			
 			break;
 		}
 	}
@@ -99,11 +107,7 @@ void MysticMansion_Init(const char *path, const HelperFunctions &helperFunctions
 	ReplaceBIN("PL_A0B", "mystic-mansion-shaders");
 
 	helperFunctions.RegisterPathList(MysticMansionPaths);
-
-	for (uint8_t i = 0; i < 3; i++) {
-		FogData_FinalEgg1[i].Toggle = false;
-	}
-
+	
 	WriteData((DeathZone**)0x1A49218, MysticMansionDeathZones);
 
 	WriteData((ObjectFuncPtr*)0x90BF60, &MysticMansionHandler);
