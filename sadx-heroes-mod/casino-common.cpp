@@ -5,8 +5,9 @@
 extern uint8_t SlotState = 0;
 
 extern bool NoPinball;
-extern bool IsRolling = false;
 extern bool inSlot;
+
+bool IsRolling = false;
 bool IsPinRolling = false;
 
 void PinTableCamera(EntityData1 *entity) {
@@ -69,13 +70,18 @@ void PinTablePhysics() {
 					}
 
 					/* Out of pintable */
-					if (anim % 11 == 0 && entity->Rotation.x == 0 && IsPinRolling && co2->SurfaceFlags != 0x81) {
-						camera_flags = 7;
+					if ((anim % 11 == 0 && entity->Rotation.x == 0 && IsPinRolling && co2->SurfaceFlags != 0x81)
+						|| (entity->NextAction == 1)) {
+						SetCameraMode_(1);
 						IsPinRolling = false;
 						IsRolling = false;
-						entity->Status = 0;
-						entity->Action = 1;
-						co2->AnimationThing.Index = 0;
+
+						if (entity->NextAction != 1) {
+							entity->Status = 0;
+							entity->Action = 1;
+							co2->AnimationThing.Index = 0;
+						}
+
 						DoSomethingWithFOV(12743);
 					}
 

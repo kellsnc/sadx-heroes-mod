@@ -2,6 +2,7 @@
 #include "mod.h"
 #include <math.h>
 
+ObjectMaster * railcam;
 extern LoopHead *MysticMansionPathList[70];
 
 void TransformSpline(ObjectMaster * a1, NJS_VECTOR orig, NJS_VECTOR dest, float state) {
@@ -225,7 +226,13 @@ void RailPath_Main(ObjectMaster * a1) {
 		if (a1->Data1->CharIndex < 20) a1->Data1->CharIndex += 1;
 		else {
 			auto entity = EntityData1Ptrs[a1->Data1->NextAction];
+
 			entity->NextAction = 0;
+			if (railcam) {
+				DeleteObjectMaster(railcam);
+				railcam = nullptr;
+			}
+
 			DeleteObjectMaster(a1);
 		}
 	}
@@ -264,7 +271,7 @@ void AutoLoop_Main(ObjectMaster * a1) {
 					co2->AnimationThing.Index = 13;
 				}
 
-				if (player = EntityData1Ptrs[0]) camera_flags = 7;
+				if (player = EntityData1Ptrs[0]) SetCameraMode_(1);
 				return;
 			}
 			else {
@@ -360,6 +367,13 @@ void Path_Main(ObjectMaster * a1) {
 							tempobj->Data1->LoopData = a1->Data1->LoopData;
 							tempobj->Data1->field_A = type;
 							players[slot]->NextAction = 1;
+
+							if (type == 1) {
+								//Load Camera
+								railcam = LoadObject(LoadObj_Data1, 2, (ObjectFuncPtr)0x613460);
+								railcam->Data1->LoopData = (Loop*)a1->Data1->LoopData;
+								railcam->Data1->Object = a1->Data1->Object;
+							}
 
 							//rail stuff
 							if (type == 2) {
