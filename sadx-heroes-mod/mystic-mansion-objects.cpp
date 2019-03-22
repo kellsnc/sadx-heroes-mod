@@ -196,7 +196,7 @@ void __cdecl MysticFan(ObjectMaster *a1)
 #pragma region Cart
 void DoBall(EntityData1 * entity);
 void TransformSpline(ObjectMaster * a1, NJS_VECTOR orig, NJS_VECTOR dest, float state);
-ObjectFunc(RotateToCharacter, 0x5BBE50);
+Rotation3 fPositionToRotation(NJS_VECTOR orig, NJS_VECTOR point);
 
 void CartActions(ObjectMaster * a1) {
 	EntityData1 * entity = a1->Data1;
@@ -220,8 +220,11 @@ void CartDisplay(ObjectMaster * a1) {
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
-		if (a1->Data1->Action == 3) njRotateXYZ(0, HIWORD(a1->Data1->Object), LOWORD(a1->Data1->Object), a1->Data1->Rotation.z);
-		else njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
+		
+		njRotateY(nullptr, a1->Data1->Rotation.y);
+		if (a1->Data1->Action > 2) njRotateY(0, 0x4000);
+		njRotateX(0, a1->Data1->Rotation.x);
+
 		njTranslate(0, -1.5f, 0, 0);
 		DrawQueueDepthBias = -6000.0f;
 		njDrawModel_SADX(MM_MYSTCAR->getmodel()->basicdxmodel);
@@ -296,16 +299,14 @@ void MysticCart(ObjectMaster * a1) {
 
 		entity->Scale.x = entity->Scale.x + (loopdata->TotalDist / loopdata->LoopList[entity->InvulnerableTime].Dist) / loopdata->TotalDist * speed;
 		TransformSpline(a1, loopdata->LoopList[entity->InvulnerableTime].Position, loopdata->LoopList[entity->InvulnerableTime + 1].Position, a1->Data1->Scale.x);
-		
-		player->Position.y -= 8;
-		RotateToCharacter(a1);
+		a1->Data1->Rotation = fPositionToRotation(loopdata->LoopList[entity->InvulnerableTime].Position, loopdata->LoopList[entity->InvulnerableTime + 1].Position);
+		a1->Data1->Rotation.z = 0;
 
 		player->Position = entity->Position;
 		entity->Position.y += 2;
 		player->Position.y += 6;
 		
 		player->Rotation = entity->Rotation;
-		player->Rotation.y -= 0x4000;
 
 		CartActions(a1);
 
@@ -314,8 +315,8 @@ void MysticCart(ObjectMaster * a1) {
 		if (IsPlayerInsideSphere(&loopdata->LoopList[loopdata->Count - 1].Position, 20) == entity->Index) {
 			entity->Action = 4;
 			
-			co2->Speed.y = 4;
-			co2->Speed.x = 6;
+			co2->Speed.y = 1;
+			co2->Speed.x = 4;
 		}
 	}
 

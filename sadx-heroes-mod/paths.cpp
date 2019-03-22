@@ -207,10 +207,7 @@ void RailPath_Main(ObjectMaster * a1) {
 			player->Position.y += 5;
 			if (CurrentLevel == 7) player->Position.y += 5;
 			
-			if (web) {
-				player->Rotation.y = fPositionToRotation(loopdata->LoopList[a1->Data1->InvulnerableTime].Position, loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position).y + 0x8000;
-				if (player->Position.z < -40000) player->Rotation.y -= 0x8000;
-			}
+			if (web) player->Rotation.y = fPositionToRotation(loopdata->LoopList[a1->Data1->InvulnerableTime].Position, loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position).y;
 			else LookAt(a1->Data1->NextAction, loopdata->LoopList[a1->Data1->InvulnerableTime].Position, loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position);
 
 			if (loopdata->LoopList[a1->Data1->InvulnerableTime].Ang_X != 0) player->Rotation.x = loopdata->LoopList[a1->Data1->InvulnerableTime].Ang_X;
