@@ -16,7 +16,7 @@ void MysticMansion_InitObjects() {
 	MM_TORCHES = LoadMDL("MM_TORCHES");
 	HC_SPKWARP = LoadMDL("HC_SPKWARP");
 	HC_HFLAMES = LoadMDL("HC_HFLAMES");
-
+	
 	MMMODELLIST[0] = MM_SPHERE1->getmodel()->basicdxmodel;
 	MMMODELLIST[1] = MM_SPHERE1->getmodel()->basicdxmodel;
 	MMMODELLIST[2] = HC_HFLAMES->getmodel()->basicdxmodel;
@@ -101,6 +101,8 @@ void MysticMansionHandler(ObjectMaster * a1) {
 void MysticMansion_Init(const char *path, const HelperFunctions &helperFunctions) {
 	ReplacePVM("FINALEGG1", "mystic-mansion");
 	ReplaceBIN("SET1000S", "mystic-mansion-set");
+	ReplaceBIN("SET1000M", "mystic-mansion-set-tails");
+	ReplaceBIN("SET1000K", "mystic-mansion-set-knux");
 	ReplaceBIN("CAM1000S", "mystic-mansion-cam");
 	ReplaceDAT("FINAL_EGG_BANK01", "MYSTIC_BANK");
 	ReplaceADX("finaleg1", "mystic-mansion");

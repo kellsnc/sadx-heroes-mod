@@ -423,7 +423,7 @@ void __cdecl HCWALL(ObjectMaster *a1)
 		AddToCollision(a1, 1);
 	}
 	else {
-		if (IsSwitchPressed(a1->Data1->Scale.z)) {
+		if (a1->Data1->Scale.z == 255 || IsSwitchPressed(a1->Data1->Scale.z)) {
 			a1->Data1->Action = 2;
 		}
 		else {
@@ -495,7 +495,7 @@ void HCPLATFORM_Main(ObjectMaster *a1) {
 
 				od2->vector_c = a1->Data1->Position; //get the position before transform
 
-													 //some bad things to get a movement speed
+				//some bad things to get a movement speed
 				float dist = (2 * (dest.x - orig.x) + 2 * (dest.y - orig.y) + 2 * (dest.z - orig.z)) / 2;
 				od2->field_C4 += 1 / (abs(dist) * 2);
 
