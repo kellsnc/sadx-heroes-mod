@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "mod.h"
 
-extern std::string modpath;
-
 //Load Object File
 ModelInfo* LoadMDL(const char *name) {
 	PrintDebug("Loading model "); PrintDebug(name); PrintDebug("... ");

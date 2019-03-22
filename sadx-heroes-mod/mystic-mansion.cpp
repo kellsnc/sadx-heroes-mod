@@ -5,6 +5,38 @@
 #include "mystic-mansion-deathzones.h"
 #include "mystic-mansion.h"
 
+extern bool NoMysticMusic;
+int musicid;
+
+void MysticMansion_MusicHandler() {
+	uint8_t nb;
+
+	switch (CurrentChunk) {
+	case 1:
+	case 2:
+	case 3: nb = 2; break;
+	case 4: nb = 4; break;
+	case 5: 
+	case 6:
+	case 7: nb = 2; break;
+	case 8: 
+	case 9: nb = 5; break;
+	case 10:
+	case 11: nb = 3; break;
+	case 12: 
+	case 13: nb = 5; break;
+	case 14: 
+	case 15:
+	case 16:
+	case 17: 
+	case 18: nb = 3; break;
+	}
+
+	if (CurrentChunk == 16 && EntityData1Ptrs[0]->Position.x > 28500) nb = 2;
+
+	CurrentSong = musicid + nb - 1;
+}
+
 void MysticMansion_InitObjects() {
 	MM_SKELFAN = LoadMDL("MM_SKELFAN");
 	MM_SPHERE1 = LoadMDL("MM_SPHERE1");
@@ -47,15 +79,16 @@ void MysticMansion_Delete(ObjectMaster * a1) {
 	LevelHandler_Delete(a1);
 }
 
-void __cdecl MysticTorches(ObjectMaster *a1);
-
 void MysticMansionHandler(ObjectMaster * a1) {
 	auto entity = EntityData1Ptrs[0];
 	CharObj2 * co2 = GetCharObj2(0);
 
 	if (a1->Data1->Action == 0) {
 		InitializeSoundManager();
-		PlayMusic(MusicIDs_finaleg1);
+
+		if (musicid) PlayMusic((MusicIDs)musicid);
+		else PlayMusic(MusicIDs_finaleg1);
+
 		SoundManager_Delete2();
 
 		flamecount = 0;
@@ -91,6 +124,12 @@ void MysticMansionHandler(ObjectMaster * a1) {
 			if (CurrentChunk == 1 && EntityData1Ptrs[0]->Position.z < -1240 && EntityData1Ptrs[0]->Position.y < 198) SetCameraMode_(1);
 			else SetCameraMode_(FreeCam);
 
+			++a1->Data1->InvulnerableTime;
+			if (musicid && a1->Data1->InvulnerableTime == 960) {
+				MysticMansion_MusicHandler();
+				a1->Data1->InvulnerableTime = 0;
+			}
+
 			chunkswapped = false;
 			
 			break;
@@ -107,6 +146,22 @@ void MysticMansion_Init(const char *path, const HelperFunctions &helperFunctions
 	ReplaceDAT("FINAL_EGG_BANK01", "MYSTIC_BANK");
 	ReplaceADX("finaleg1", "mystic-mansion");
 	ReplaceBIN("PL_A0B", "mystic-mansion-shaders");
+
+	if (helperFunctions.Version >= 9 && !NoMysticMusic) {
+		MoveADX("mystic-mansion-a");
+		MoveADX("mystic-mansion-b");
+		MoveADX("mystic-mansion-c");
+		MoveADX("mystic-mansion-d");
+		MoveADX("mystic-mansion-e");
+		MoveADX("mystic-mansion-f");
+
+		musicid = helperFunctions.RegisterMusicFile(MysticMansionMusics[0]);
+		helperFunctions.RegisterMusicFile(MysticMansionMusics[1]);
+		helperFunctions.RegisterMusicFile(MysticMansionMusics[2]);
+		helperFunctions.RegisterMusicFile(MysticMansionMusics[3]);
+		helperFunctions.RegisterMusicFile(MysticMansionMusics[4]);
+		helperFunctions.RegisterMusicFile(MysticMansionMusics[5]);
+	}
 
 	helperFunctions.RegisterPathList(MysticMansionPaths);
 	

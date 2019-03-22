@@ -19,7 +19,6 @@ DataPointer(int, DroppedFrames, 0x03B1117C);
 DataPointer(int, FramerateSetting, 0x0389D7DC);
 DataArray(int, HeldButtons2, 0x3B0E3A8, 8);
 DataArray(Rotation3, LevelGlobalColors, 0x90BFE8, 42);
-DataArray(ObjectFuncPtr, SkyboxObjects, 0x90C1F0, 42);
 
 ModelInfo* LoadMDL(const char *shortname);
 void FreeMDL(ModelInfo * pointer);
@@ -32,6 +31,7 @@ extern bool EnableModels;
 extern bool EnableSounds;
 extern bool IsLoaded;
 extern bool ChunkSwapped;
+extern std::string modpath;
 
 class ModelInfo;
 

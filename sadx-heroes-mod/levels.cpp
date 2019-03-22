@@ -14,6 +14,7 @@ static bool EnableBingoHighway = true;
 static bool EnableHangCastle = true;
 static bool EnableMysticMansion = true;
 
+bool NoMysticMusic = false;
 bool NoPinball = false;
 bool EnableFog = true;
 bool chunkswapped = false;
@@ -335,7 +336,8 @@ void Levels_Init(const char *path, const HelperFunctions &helperFunctions)
 	EnableCasinoPark = config->getBool("Levels", "EnableCasinoPark", true);
 	EnableBingoHighway = config->getBool("Levels", "EnableBingoHighway", true);
 	EnableHangCastle = config->getBool("Levels", "EnableHangCastle", true);
-	EnableMysticMansion = config->getBool("Levels", "EnableHangCastle", true);
+	EnableMysticMansion = config->getBool("Levels", "EnableMysticMansion", true);
+	NoMysticMusic = config->getBool("General", "NoMysticMusic", false);
 	NoPinball = config->getBool("General", "NoPinball", false);
 	EnableFog = config->getBool("General", "EnableFog", true);
 	delete config;
