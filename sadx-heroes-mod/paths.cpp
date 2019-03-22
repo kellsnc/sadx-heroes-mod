@@ -143,6 +143,7 @@ void RailPath_Main(ObjectMaster * a1) {
 
 					if (ControllerPointers[a1->Data1->NextAction]->PressedButtons & Buttons_A) {
 						player->Status = Status_Ball;
+						if (GetCharacterID(a1->Data1->NextAction) == Characters_Tails) player->Action = 8;
 						co2->AnimationThing.Index = 14;
 						co2->Speed.y = 2;
 					}
@@ -165,6 +166,7 @@ void RailPath_Main(ObjectMaster * a1) {
 				//Animations
 				if (ControllerPointers[a1->Data1->NextAction]->PressedButtons & Buttons_A) {
 					player->Status = Status_Ball;
+					if (GetCharacterID(a1->Data1->NextAction) == Characters_Tails) player->Action = 8;
 					co2->AnimationThing.Index = 14;
 					co2->Speed.y = 2;
 				}
