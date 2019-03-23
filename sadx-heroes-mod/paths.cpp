@@ -253,7 +253,6 @@ void AutoLoop_Main(ObjectMaster * a1) {
 
 		CharObj2 * co2 = GetCharObj2(a1->Data1->NextAction);
 
-		//detach from rail if it's the last point / if the player press jump
 		if (loopdata->LoopList[a1->Data1->InvulnerableTime].Dist == 0 || ControllerPointers[a1->Data1->NextAction]->PressedButtons & Buttons_A) {
 			if (slope == 0) {
 				a1->Data1->Action = 1;

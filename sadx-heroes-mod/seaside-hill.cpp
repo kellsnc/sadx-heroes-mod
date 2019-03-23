@@ -5,22 +5,32 @@
 #include "seaside-hill-deathzones.h"
 #include "seaside-hill.h"
 
-static int slowtimer = 0;
+static int slowtimer = 1;
 static uint8_t sh_trigger = 1;
 
 void SeasideHill_OnFrame(EntityData1 * entity, CharObj2 * co2) {
 	if (anim % 4 == 0) {
 		if (CurrentChunk == 16) {
 			if (entity->Position.z > -200) {
+				SetCameraMode_(0);
 				co2->AnimationThing.Index = 13;
 				entity->Action = 2;
 				ruin = 0;
 			}
-				
+
 			if (entity->Position.z > -1000)
 				CurrentLandTable->Col[CurrentLandTable->COLCount - 1].Flags = 1;
-			if (entity->Position.z > -1994 && entity->Position.z < -1974)
+			if (entity->Position.z > -1994 && entity->Position.z < -1974) {
 				CurrentLandTable->Col[CurrentLandTable->COLCount - 1].Flags = 0;
+				SetCameraMode_(1);
+			}
+		}
+
+		if (CurrentChunk == 8 || CurrentChunk == 9 || CurrentChunk == 10) {
+			LevelFogData.Toggle = false;
+		}
+		else {
+			LevelFogData.Toggle = true;
 		}
 	}
 
@@ -74,11 +84,11 @@ void SeasideHillHandler(ObjectMaster * a1) {
 	auto entity = EntityData1Ptrs[0];
 	CharObj2 * co2 = GetCharObj2(0);
 
-	SetFog(&SeasideHill_Fog);
-
 	if (a1->Data1->Action == 0) {
 		a1->Data1->Action = 1;
 		a1->DeleteSub = SeasideHill_Delete;
+
+		SetFog(&SeasideHill_Fog);
 
 		PlaySound(44, 0, 0, 0);
 

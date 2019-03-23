@@ -30,6 +30,8 @@ void OceanPalace_InitObjects() {
 	OP_BOULDER = LoadMDL("OP_BOULDER");
 	OP_POLFLAG = LoadMDL("OP_POLFLAG");
 
+	LoadObject(LoadObj_Data1, 3, OPWaterfalls);
+
 	OceanPalace_UVShift[0].List = OP_WATERFS->getmodel()->basicdxmodel->meshsets[0].vertuv;
 	OceanPalace_UVShift[1].List = OP_WATERFS->getmodel()->child->basicdxmodel->meshsets[0].vertuv;
 	OceanPalace_UVShift[2].List = OP_WATERFS->getmodel()->child->child->basicdxmodel->meshsets[0].vertuv;
@@ -81,8 +83,6 @@ void OceanPalaceHandler(ObjectMaster * a1) {
 
 		OceanPalace_InitObjects();
 
-		LoadObject(LoadObj_Data1, 3, OPWaterfalls);
-
 		if (CurrentAct == 0) {
 			//Ocean Palace
 			PlaySound(44, 0, 0, 0);
@@ -97,7 +97,6 @@ void OceanPalaceHandler(ObjectMaster * a1) {
 			LoadObject(LoadObj_Data1, 3, OPFlowers);
 			LoadObject(LoadObj_Data1, 3, OPFins);
 			LoadObject(LoadObj_Data1, 3, OPBoulders);
-			LoadObject(LoadObj_Data1, 3, SHSuns_Init)->Data1->Position = { 74, 11106, 425 }; //load the sun
 
 			if (entity->Position.z > -10637) LoadLevelFile("OP", 01);
 		}

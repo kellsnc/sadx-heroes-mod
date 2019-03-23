@@ -5,7 +5,6 @@
 #include "mystic-mansion-deathzones.h"
 #include "mystic-mansion.h"
 
-extern bool NoMysticMusic;
 int musicid;
 
 void MysticMansion_MusicHandler() {

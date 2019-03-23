@@ -40,7 +40,8 @@ void __cdecl SHCameraSwitch_Main(ObjectMaster *a1)
 	if (IsPlayerInsideSphere(&a1->Data1->Position, 500.0f)) {
 		if (camera_flags != (Uint32)a1->Data1->Scale.x) {
 			if (IsPlayerInsideSphere(&a1->Data1->Position, a1->Data1->Scale.y)) {
-				camera_flags = a1->Data1->Scale.x;
+				if (a1->Data1->Scale.x == 7) SetCameraMode_(1);
+				else camera_flags = a1->Data1->Scale.x;
 			}
 		}
 	}
@@ -438,11 +439,11 @@ void ObjCannon_Display(ObjectMaster *a1)
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, 0, a1->Data1->Rotation.y, 0);
 		DrawQueueDepthBias = -6000.0f;
-		njDrawModel_SADX(CO_DSHHOOP->getmodel()->basicdxmodel);
+		njDrawModel_SADX(CO_OCANNON->getmodel()->basicdxmodel);
 
 		njTranslate(0, 0, 5, 0);
 		njRotateXYZ(0, a1->Data1->Rotation.x, 0, 0);
-		njDrawModel_SADX(CO_DSHHOOP->getmodel()->child->basicdxmodel);
+		njDrawModel_SADX(CO_OCANNON->getmodel()->child->basicdxmodel);
 
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);

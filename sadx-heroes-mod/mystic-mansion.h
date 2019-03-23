@@ -75,3 +75,4 @@ extern ModelInfo * HC_SPKWARP;
 extern ModelInfo * HC_HFLAMES;
 
 extern int flamecount;
+extern bool NoMysticMusic;
