@@ -333,6 +333,7 @@ void Path_Main(ObjectMaster * a1) {
 			if (players[slot]) {
 
 				if (players[slot]->NextAction == 1) return;
+				if (CurrentLevel == HeroesLevelID_SeasideHill && players[slot]->Position.z > -900) return;
 
 				for (uint8_t point = 0; point < loopdata->Count; ++point) {
 					for (float l = 0; l <= 1; l += 0.01f) {

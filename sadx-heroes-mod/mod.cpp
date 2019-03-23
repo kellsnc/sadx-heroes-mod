@@ -22,6 +22,8 @@ unsigned int anim = 0;
 uint8_t CurrentChunk = 0;
 NJS_TEXLIST * CurrentLevelTexlist;
 
+static const Uint8 FREECAM_FIX[] = { 0x81, 0x0D, /*0xA8, 0xCB, 0xB2, 0x03, 0x0C, 0x00, 0x00, 0x80*/ };
+
 void Levels_Init(const char *path, const HelperFunctions &helperFunctions);
 void Objects_Init(const char *path, const HelperFunctions &helperFunctions);
 void CommonObjects_OnFrame();
@@ -52,6 +54,8 @@ extern "C"
 			set_specular_blend_factor_ptr = (void(*)(float))GetProcAddress(LanternDLL, "set_specular_blend_factor");
 			set_blend_ptr = (void(*)(int32_t, int32_t))GetProcAddress(LanternDLL, "set_blend");
 		}
+
+		WriteData((Uint8*)0x438330, FREECAM_FIX); //freecam fix by SonicFreak94
 		
 		Levels_Init(path, helperFunctions);
 		Objects_Init(path, helperFunctions);

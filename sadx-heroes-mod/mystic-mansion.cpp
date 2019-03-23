@@ -84,10 +84,8 @@ void MysticMansionHandler(ObjectMaster * a1) {
 
 	if (a1->Data1->Action == 0) {
 		InitializeSoundManager();
-
 		if (musicid) PlayMusic((MusicIDs)musicid);
 		else PlayMusic(MusicIDs_finaleg1);
-
 		SoundManager_Delete2();
 
 		flamecount = 0;
