@@ -79,8 +79,8 @@ void MysticMansion_Delete(ObjectMaster * a1) {
 }
 
 void MysticMansionHandler(ObjectMaster * a1) {
-	auto entity = EntityData1Ptrs[0];
-	CharObj2 * co2 = GetCharObj2(0);
+	EntityData1 *entity = EntityData1Ptrs[0];
+	CharObj2 * co2 = CharObj2Ptrs[0];
 
 	if (a1->Data1->Action == 0) {
 		InitializeSoundManager();
@@ -138,7 +138,6 @@ void MysticMansion_Init(const char *path, const HelperFunctions &helperFunctions
 	ReplacePVM("FINALEGG1", "mystic-mansion");
 	ReplaceBIN("SET1000S", "mystic-mansion-set");
 	ReplaceBIN("SET1000M", "mystic-mansion-set-tails");
-	ReplaceBIN("SET1000K", "mystic-mansion-set-knux");
 	ReplaceBIN("CAM1000S", "mystic-mansion-cam");
 	ReplaceDAT("FINAL_EGG_BANK01", "MYSTIC_BANK");
 	ReplaceADX("finaleg1", "mystic-mansion");

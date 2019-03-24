@@ -177,7 +177,7 @@ void PPTankHandler_Display(ObjectMaster *a1) {
 
 void PPTankHandler_Main(ObjectMaster *a1) {
 	if (CurrentChunk == 11) {
-		auto entity = EntityData1Ptrs[0];
+		EntityData1 *entity = EntityData1Ptrs[0];
 		if (entity->Position.x > 22754) {
 			if (CurrentLandTable->Col[20].Model->pos[1] < 10723) {
 				CurrentLandTable->Col[20].Model->pos[1] += 0.3f;
@@ -274,7 +274,7 @@ void PathsFunction() {
 		EntityData1 ** players = EntityData1Ptrs;
 		for (uint8_t slot = 0; slot < 8; ++slot) {
 			if (players[slot]) {
-				auto entity = EntityData1Ptrs[slot];
+				EntityData1 *entity = EntityData1Ptrs[slot];
 				bool elevate = false;
 				if (CurrentChunk == 2) {
 					if (IsSwitchPressed(41) && IsPlayerInBox(entity->Position, { 4819.545f, 1334.25f, -2807.884f }, { 4920.795f, 1599.75f, -2750.509f })) elevate = true;
@@ -538,7 +538,7 @@ void PPStopper_Main(ObjectMaster *a1)
 			PPStopper_Display(a1);
 
 			//check if the player is blocked
-			auto entity = EntityData1Ptrs[0];
+			EntityData1 *entity = EntityData1Ptrs[0];
 			if (entity->Position.y > a1->Data1->Position.y - 20) {
 				if (killcount >= a1->Data1->Scale.y) a1->Data1->Action = 1;
 			}
@@ -698,8 +698,8 @@ void PPPathsHandler() {
 	EntityData1 ** players = EntityData1Ptrs;
 	for (uint8_t slot = 0; slot < 8; ++slot) {
 		if (players[slot]) {
-			auto entity = EntityData1Ptrs[slot];
-			CharObj2 *co2 = GetCharObj2(slot);
+			EntityData1 *entity = EntityData1Ptrs[slot];
+			CharObj2 *co2 = CharObj2Ptrs[slot];
 
 			if (co2) {
 				if (co2->SurfaceFlags == 0x8A1 || co2->SurfaceFlags == 0xA81) {

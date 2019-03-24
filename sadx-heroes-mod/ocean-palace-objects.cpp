@@ -216,8 +216,8 @@ void __cdecl OPPOLE(ObjectMaster *a1)
 
 #pragma region Boulders
 void OP_AnimFix() {
-	auto entity = EntityData1Ptrs[0];
-	CharObj2 *co2 = GetCharObj2(0);
+	EntityData1 *entity = EntityData1Ptrs[0];
+	CharObj2 *co2 = CharObj2Ptrs[0];
 	if (!SuperSonicFlag) {
 		entity->Action = 2;
 		co2->AnimationThing.Index = 13;

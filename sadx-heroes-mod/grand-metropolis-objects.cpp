@@ -477,7 +477,7 @@ void AutoPathsMovs() {
 	EntityData1 ** players = EntityData1Ptrs; //suport for 8 players, let's get all the pointers
 	for (uint8_t slot = 0; slot < 8; ++slot) {
 		if (players[slot]) {
-			CharObj2 *co2 = GetCharObj2(slot);
+			CharObj2 *co2 = CharObj2Ptrs[slot];
 			if (co2) {
 				if (co2->SurfaceFlags == 0x8a1 || co2->SurfaceFlags == 0xA81 || 
 					co2->SurfaceFlags == 0x18000001 || co2->SurfaceFlags == 0x08000001) {
@@ -486,7 +486,7 @@ void AutoPathsMovs() {
 						set_diffuse_blend_factor_ptr(0.3f);
 					}
 
-					auto entity = EntityData1Ptrs[slot];
+					EntityData1 *entity = EntityData1Ptrs[slot];
 					if (entity->Position.z > 472) entity->Position.z -= 2;
 					else if (entity->Position.z > -743) {}
 					else if (entity->Position.z > -1808) entity->Position.z -= 2;

@@ -50,7 +50,7 @@ void CPSLOT_Display(ObjectMaster *a1) {
 		}
 	}
 
-	auto entity = EntityData1Ptrs[0];
+	EntityData1 *entity = EntityData1Ptrs[0];
 	if (entity->Position.z > 1050) return;
 
 	if (type == 0 || type == 2) DrawObjModel(a1, CP_SLOTMCS->getmodel()->child->child->basicdxmodel, false);

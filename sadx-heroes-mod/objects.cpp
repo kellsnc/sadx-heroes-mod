@@ -29,8 +29,8 @@ void __cdecl ObjectData2_SetStartPosition_r(EntityData1 *a1, ObjectData2 *a2)
 #pragma endregion
 
 void ElevatePlayer(uint8_t slot) {
-	auto entity = EntityData1Ptrs[slot];
-	CharObj2 *co2 = GetCharObj2(slot);
+	EntityData1 *entity = EntityData1Ptrs[slot];
+	CharObj2 *co2 = CharObj2Ptrs[slot];
 	co2->Speed.y = 2;
 
 	if (GetCharacterID(slot) == Characters_Sonic && !SuperSonicFlag) {

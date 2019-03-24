@@ -38,7 +38,7 @@ void SeasideHill_OnFrame(EntityData1 * entity, CharObj2 * co2) {
 		if (slowtimer > 0 && slowtimer < 301) slowtimer++;
 		if (slowtimer == 300) { sh_trigger = 1; slowtimer = 1; }
 		if (sh_trigger == 1) {
-			auto entity = EntityData1Ptrs[0];
+			EntityData1 *entity = EntityData1Ptrs[0];
 			if (entity != nullptr) {
 				if (entity->Position.z < -2676 && entity->Position.z > -4364) { PlaySound(44, 0, 0, 0); sh_trigger = 0; }
 				if (entity->Position.z < -7228 && entity->Position.z > -8029 && entity->Position.x > -90) { PlaySound(44, 0, 0, 0); sh_trigger = 0; }
@@ -81,8 +81,8 @@ void SeasideHill_Delete(ObjectMaster * a1) {
 }
 
 void SeasideHillHandler(ObjectMaster * a1) {
-	auto entity = EntityData1Ptrs[0];
-	CharObj2 * co2 = GetCharObj2(0);
+	EntityData1 *entity = EntityData1Ptrs[0];
+	CharObj2 * co2 = CharObj2Ptrs[0];
 
 	if (a1->Data1->Action == 0) {
 		a1->Data1->Action = 1;

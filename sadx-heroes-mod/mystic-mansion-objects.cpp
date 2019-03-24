@@ -156,8 +156,8 @@ void MysticFan_Main(ObjectMaster *a1)
 
 		int slot = IsPlayerInsideSphere(&a1->Data1->Position, 45.0f);
 		if (slot > 0) {
-			auto entity = EntityData1Ptrs[slot - 1];
-			CharObj2 *co2 = GetCharObj2(slot - 1);
+			EntityData1 *entity = EntityData1Ptrs[slot - 1];
+			CharObj2 *co2 = CharObj2Ptrs[slot - 1];
 			if (co2 != NULL) {
 				co2->Speed.x = 0; co2->Speed.z = 0;
 				entity->Rotation.x = 0;
@@ -194,7 +194,7 @@ void __cdecl MysticFan(ObjectMaster *a1)
 #pragma endregion
 
 #pragma region Cart
-void DoBall(EntityData1 * entity);
+void DoBall(uint8_t id);
 void TransformSpline(ObjectMaster * a1, NJS_VECTOR orig, NJS_VECTOR dest, float state);
 Rotation3 fPositionToRotation(NJS_VECTOR orig, NJS_VECTOR point);
 
@@ -277,7 +277,7 @@ void MysticCart(ObjectMaster * a1) {
 		player->Position.y = (disty)* timer + y0;
 		player->Position.z = (distz)* timer + z0;
 
-		DoBall(player);
+		DoBall(entity->Index - 1);
 
 		if (a1->Data1->NextAction < 21) a1->Data1->NextAction += 1;
 		else {
@@ -289,9 +289,9 @@ void MysticCart(ObjectMaster * a1) {
 	//Launch Cart
 	else if (entity->Action == 3) {
 		auto player = EntityData1Ptrs[entity->Index - 1];
-		CharObj2 * co2 = GetCharObj2(entity->Index - 1);
+		CharObj2 * co2 = CharObj2Ptrs[entity->Index - 1];
 
-		DoBall(player);
+		DoBall(entity->Index - 1);
 
 		int speed = 22;
 		if (ControllerPointers[entity->Index - 1]->HeldButtons & Buttons_X) speed += 6;

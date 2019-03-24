@@ -129,7 +129,7 @@ void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size, NJS_
 	if (!DroppedFrames && anim % 4 == 0) {
 		for (Int i = 0; i < size; ++i) {
 			if (chunklist[i].Chunk != CurrentChunk) {
-				auto entity = EntityData1Ptrs[0];
+				EntityData1 *entity = EntityData1Ptrs[0];
 				if (entity != nullptr) {
 					if (((chunklist[i].Position1.x == 0 || pos.x < chunklist[i].Position1.x)) &&
 						((chunklist[i].Position1.y == 0 || pos.y < chunklist[i].Position1.y)) &&

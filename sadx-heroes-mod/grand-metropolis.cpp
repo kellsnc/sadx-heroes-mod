@@ -48,8 +48,8 @@ void GrandMetropolis_Delete(ObjectMaster * a1) {
 }
 
 void GrandMetropolisHandler(ObjectMaster * a1) {
-	auto entity = EntityData1Ptrs[0];
-	CharObj2 * co2 = GetCharObj2(0);
+	EntityData1 *entity = EntityData1Ptrs[0];
+	CharObj2 * co2 = CharObj2Ptrs[0];
 
 	if (a1->Data1->Action == 0) {
 		InitializeSoundManager();
@@ -81,7 +81,7 @@ void GrandMetropolisHandler(ObjectMaster * a1) {
 
 			if (anim % 4 == 0) {
 				if (entity->Position.z > 3675) {
-					CharObj2 * co2 = GetCharObj2(0);
+					CharObj2 * co2 = CharObj2Ptrs[0];
 					co2->AnimationThing.Index = 13;
 					entity->Action = 2;
 				}

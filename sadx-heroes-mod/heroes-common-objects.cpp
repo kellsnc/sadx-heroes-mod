@@ -82,8 +82,8 @@ void ObjFan_Main(ObjectMaster *a1)
 
 		int slot = IsPlayerInsideSphere(&a1->Data1->Position, 45.0f);
 		if (slot > 0) {
-			auto entity = EntityData1Ptrs[slot - 1];
-			CharObj2 *co2 = GetCharObj2(slot - 1);
+			EntityData1 *entity = EntityData1Ptrs[slot - 1];
+			CharObj2 *co2 = CharObj2Ptrs[slot - 1];
 			if (co2 != NULL) {
 				co2->Speed.x = 0; co2->Speed.z = 0;
 				entity->Rotation.x = 0;
@@ -169,10 +169,10 @@ void ObjReel_Main(ObjectMaster *a1)
 		
 		if (a1->Data1->Scale.y > 0 && a1->Data1->Scale.y < 9) {
 			uint8_t slot = a1->Data1->Scale.y - 1;
-			auto entity = EntityData1Ptrs[slot];
+			EntityData1 *entity = EntityData1Ptrs[slot];
 			if (!entity) a1->Data1->Scale.y = 9; //out
 			else {
-				CharObj2 *co2 = GetCharObj2(slot);
+				CharObj2 *co2 = CharObj2Ptrs[slot];
 
 				if (GetCharacterID(slot) == Characters_Sonic) co2->AnimationThing.Index = 47;
 				if (GetCharacterID(slot) == Characters_Tails) co2->AnimationThing.Index = 100;
@@ -306,7 +306,7 @@ void ObjBalloon_Main(ObjectMaster *a1)
 				if (a1->Data1->Scale.x == 3.1f) {
 					if (a1->Data1->Action == 12) {
 						if (GetCharacterID(0) == Characters_Tails) {
-							CharObj2 *co2 = GetCharObj2(0);
+							CharObj2 *co2 = CharObj2Ptrs[0];
 							co2->TailsFlightTime = 0.1f;
 						}
 					}
@@ -413,8 +413,9 @@ void __cdecl SHDashHoop(ObjectMaster *a1)
 #pragma endregion
 
 #pragma region Cannon
-void DoBall(EntityData1 * entity) {
-	CharObj2 *co2 = GetCharObj2(0);
+void DoBall(uint8_t id) {
+	EntityData1 *entity = EntityData1Ptrs[id];
+	CharObj2 *co2 = CharObj2Ptrs[id];
 
 	entity->Status = Status_Ball;
 	if (GetCharacterID(0) == Characters_Sonic) {
@@ -461,19 +462,18 @@ void ObjCannon_Main(ObjectMaster *a1)
 				a1->Data1->Action = 1;
 				a1->Data1->Scale.z = 20;
 				a1->Data1->Status -= 1;
-
-				auto entity = EntityData1Ptrs[a1->Data1->Status];
-				CharObj2 *co2 = GetCharObj2(a1->Data1->Status);
+				
+				CharObj2 *co2 = CharObj2Ptrs[a1->Data1->Status];
 
 				co2->Speed.y += 2;
-				DoBall(entity);
+				DoBall(a1->Data1->Status);
 			}
 		}
 
 		if (a1->Data1->Action == 1) {
 			if (a1->Data1->Scale.z != 0) a1->Data1->Scale.z -= 1;
 			else {
-				auto entity = EntityData1Ptrs[a1->Data1->Status];
+				EntityData1 *entity = EntityData1Ptrs[a1->Data1->Status];
 
 				NJS_VECTOR startPos = entity->Position;
 				NJS_VECTOR targetPos = a1->Data1->Position;
@@ -501,12 +501,12 @@ void ObjCannon_Main(ObjectMaster *a1)
 				entity->Position.y = (disty)* timer + y0;
 				entity->Position.z = (distz)* timer + z0;
 
-				DoBall(entity);
+				DoBall(a1->Data1->Status);
 			}
 		}
 
 		if (a1->Data1->Action == 2) {
-			auto entity = EntityData1Ptrs[a1->Data1->Status];
+			EntityData1 *entity = EntityData1Ptrs[a1->Data1->Status];
 
 			NJS_VECTOR startPos = entity->Position;
 			NJS_VECTOR targetPos = a1->Data1->Position;
@@ -527,7 +527,7 @@ void ObjCannon_Main(ObjectMaster *a1)
 			entity->Position.z = targetPos.z;
 			entity->Position.y = (dist)* timer + y0;
 			entity->Rotation.y = a1->Data1->Rotation.y;
-			DoBall(entity);
+			DoBall(a1->Data1->Status);
 		}
 
 		if (a1->Data1->Action == 3) {
@@ -542,14 +542,13 @@ void ObjCannon_Main(ObjectMaster *a1)
 				a1->Data1->Action = 4;
 			}
 
-			auto entity = EntityData1Ptrs[a1->Data1->Status];
+			EntityData1 *entity = EntityData1Ptrs[a1->Data1->Status];
 			entity->Position = a1->Data1->Position;
 			entity->Rotation.y = a1->Data1->Rotation.y;
-			DoBall(entity);
+			DoBall(a1->Data1->Status);
 		}
 
 		if (a1->Data1->Action == 4) {
-			auto entity = EntityData1Ptrs[a1->Data1->Status];
 			if (a1->Data1->NextAction < 101) {
 				a1->Data1->NextAction += 1;
 			}
@@ -560,14 +559,15 @@ void ObjCannon_Main(ObjectMaster *a1)
 
 
 			if (a1->Data1->NextAction == 1) {
-				CharObj2 *co2 = GetCharObj2(a1->Data1->Status);
+				EntityData1 *entity = EntityData1Ptrs[a1->Data1->Status];
+				CharObj2 *co2 = CharObj2Ptrs[a1->Data1->Status];
 				entity->Rotation.y = a1->Data1->Rotation.y - 0x4000;
 				co2->Speed.x = a1->Data1->Scale.x;
 				co2->Speed.y = a1->Data1->Scale.y;
 				PlaySound(84, 0, 0, 0);
 			}
 
-			DoBall(entity);
+			DoBall(a1->Data1->Status);
 		}
 
 		if (a1->Data1->Action == 5) {
@@ -737,7 +737,7 @@ void Capsule_Main_r(ObjectMaster *a1)
 		}
 
 		if (a1->Data1->Action == 1) {
-			auto entity = EntityData1Ptrs[0];
+			EntityData1 *entity = EntityData1Ptrs[0];
 			entity->Position = v1->Position;
 			if (v1->Scale.x > 0.05f) {
 				v1->Scale.x -= 0.05f;
@@ -824,7 +824,7 @@ void ObjBob_Main(ObjectMaster *a1)
 	if (IsPlayerInsideSphere(&a1->Data1->Position, 1500.0f)) {
 		if (IsPlayerInsideSphere(&a1->Data1->Position, 20.0f) == true) {
 			if (a1->Data1->Action == 0) {
-				auto entity = EntityData1Ptrs[0];
+				EntityData1 *entity = EntityData1Ptrs[0];
 				//GetBobSled(SH_BOBLEFT, SH_BOBRIGHT, a1->Data1->Scale.x);
 				a1->Data1->Position = entity->Position;
 				a1->Data1->Rotation.x = entity->Rotation.x;
@@ -838,7 +838,7 @@ void ObjBob_Main(ObjectMaster *a1)
 
 			if (a1->Data1->Action == 4) {
 				PlaySound(42, 0, 0, 0);
-				CharObj2 * co2 = GetCharObj2(0);
+				CharObj2 * co2 = CharObj2Ptrs[0];
 				co2->Speed.y = 2;
 				co2->Speed.x = 1;
 				deleteSub_Global(a1);

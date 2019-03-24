@@ -57,7 +57,7 @@ void FLIPPERS_display(ObjectMaster *a1)
 
 void FLIPPERS_main(ObjectMaster *a1) {
 	if (IsPlayerInsideSphere(&a1->Data1->Position, 1400.0f)) {
-		CharObj2 *co2 = GetCharObj2(0);
+		CharObj2 *co2 = CharObj2Ptrs[0];
 		if (co2->SurfaceFlags == 0x81 && IsPlayerInsideSphere(&a1->Data1->Position, 300)) {
 			if (a1->SETData.SETData->SETEntry->ObjectType == 42)  FlipperL_Main(a1);
 			else FlipperR_Main(a1);
@@ -329,8 +329,8 @@ void CPBOBINAIR_Main(ObjectMaster *a1) {
 
 		if (IsPlayerInsideSphere(&a1->Data1->Position, 12)) {
 
-			auto entity = EntityData1Ptrs[0];
-			CharObj2 *co2 = GetCharObj2(0);
+			EntityData1 *entity = EntityData1Ptrs[0];
+			CharObj2 *co2 = CharObj2Ptrs[0];
 
 			if ((entity->Position.y > a1->Data1->Position.y + 12)
 				|| (entity->Position.y < a1->Data1->Position.y - 12)) return;
@@ -422,7 +422,7 @@ int slotmax;
 int slotmax2;
 
 void SlotCamera(ObjectMaster *a1) {
-	auto entity = EntityData1Ptrs[0];
+	EntityData1 *entity = EntityData1Ptrs[0];
 	Camera_Data1->Position.x = a1->Data1->Position.x;
 	Camera_Data1->Position.y = a1->Data1->Position.y + 40;
 	Camera_Data1->Position.z = a1->Data1->Position.z;
@@ -464,7 +464,7 @@ void CPSLOTS_Main(ObjectMaster *a1) {
 
 		if (a1->Data1->Scale.y > 2) {
 			a1->Data1->Scale.y--;
-			auto entity = EntityData1Ptrs[0];
+			EntityData1 *entity = EntityData1Ptrs[0];
 			entity->Position = a1->Data1->Position;
 
 			int v1 = material[7].attr_texId;
@@ -605,7 +605,7 @@ void CPSLOTL_Main(ObjectMaster *a1) {
 		}
 
 		if (a1->Data1->Action == 1) {
-			auto entity = EntityData1Ptrs[0];
+			EntityData1 *entity = EntityData1Ptrs[0];
 			entity->Position = a1->Data1->Position;
 
 			if (ControllerPointers[0]->PressedButtons & Buttons_A) {

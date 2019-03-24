@@ -33,14 +33,6 @@ Rotation3 fPositionToRotation(NJS_VECTOR orig, NJS_VECTOR point) {
 	return result;
 }
 
-void LookAt(char player, NJS_VECTOR orig, NJS_VECTOR point) {
-	auto entity = EntityData1Ptrs[player];
-
-	int temp = entity->Rotation.z;
-	entity->Rotation = fPositionToRotation(orig, point);
-	entity->Rotation.z = temp;
-}
-
 //Rail Physics
 float RailValues[]{ 5, 8, 0.2f, 0.03f };
 
@@ -123,7 +115,7 @@ void RailPath_Main(ObjectMaster * a1) {
 			return;
 		}
 
-		CharObj2 * co2 = GetCharObj2(a1->Data1->NextAction);
+		CharObj2 * co2 = CharObj2Ptrs[a1->Data1->NextAction];
 		
 		bool web = false;
 		if (loopdata->Unknown_0 != 0) web = true;
@@ -210,7 +202,8 @@ void RailPath_Main(ObjectMaster * a1) {
 			if (CurrentLevel == 7) player->Position.y += 5;
 			
 			if (web) player->Rotation.y = fPositionToRotation(loopdata->LoopList[a1->Data1->InvulnerableTime].Position, loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position).y;
-			else LookAt(a1->Data1->NextAction, loopdata->LoopList[a1->Data1->InvulnerableTime].Position, loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position);
+			else player->Rotation = fPositionToRotation(loopdata->LoopList[a1->Data1->InvulnerableTime].Position, loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position);
+			player->Rotation.z = 0;
 
 			if (loopdata->LoopList[a1->Data1->InvulnerableTime].Ang_X != 0) player->Rotation.x = loopdata->LoopList[a1->Data1->InvulnerableTime].Ang_X;
 			if (backward) player->Rotation.y += 0x8000;
@@ -224,7 +217,7 @@ void RailPath_Main(ObjectMaster * a1) {
 	if (a1->Data1->Action == 1) {
 		if (a1->Data1->CharIndex < 20) a1->Data1->CharIndex += 1;
 		else {
-			auto entity = EntityData1Ptrs[a1->Data1->NextAction];
+			EntityData1 *entity = EntityData1Ptrs[a1->Data1->NextAction];
 
 			entity->NextAction = 0;
 			if (railcam) {
@@ -251,7 +244,7 @@ void AutoLoop_Main(ObjectMaster * a1) {
 			return;
 		}
 
-		CharObj2 * co2 = GetCharObj2(a1->Data1->NextAction);
+		CharObj2 * co2 = CharObj2Ptrs[a1->Data1->NextAction];
 
 		if (loopdata->LoopList[a1->Data1->InvulnerableTime].Dist == 0 || ControllerPointers[a1->Data1->NextAction]->PressedButtons & Buttons_A) {
 			if (slope == 0) {
@@ -303,7 +296,7 @@ void AutoLoop_Main(ObjectMaster * a1) {
 			}
 
 			TransformSpline(GetCharacterObject(a1->Data1->NextAction), loopdata->LoopList[a1->Data1->InvulnerableTime].Position, loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position, a1->Data1->Scale.x);
-			LookAt(a1->Data1->NextAction, loopdata->LoopList[a1->Data1->InvulnerableTime].Position, loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position);
+			player->Rotation.y = fPositionToRotation(loopdata->LoopList[a1->Data1->InvulnerableTime].Position, loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position).y;
 
 			//go to next point
 			if (a1->Data1->Scale.x > 1) { a1->Data1->Scale.x = 0; a1->Data1->InvulnerableTime++; }
@@ -313,7 +306,7 @@ void AutoLoop_Main(ObjectMaster * a1) {
 	if (a1->Data1->Action == 1) {
 		if (a1->Data1->CharIndex < 20) a1->Data1->CharIndex += 1;
 		else {
-			auto entity = EntityData1Ptrs[a1->Data1->NextAction];
+			EntityData1 *entity = EntityData1Ptrs[a1->Data1->NextAction];
 			entity->NextAction = 0;
 			DeleteObjectMaster(a1);
 		}
@@ -359,7 +352,7 @@ void Path_Main(ObjectMaster * a1) {
 							if (type == 2) tempobj = LoadObject(LoadObj_Data1, 0, RailPath_Main);
 							else tempobj = LoadObject(LoadObj_Data1, 0, AutoLoop_Main);
 
-							CharObj2 * co2 = GetCharObj2(slot);
+							CharObj2 * co2 = CharObj2Ptrs[slot];
 							tempobj->Data1->InvulnerableTime = point; //store current spline point
 							tempobj->Data1->Scale.x = l; //store position in spline
 							tempobj->Data1->NextAction = slot; //store character it applies to

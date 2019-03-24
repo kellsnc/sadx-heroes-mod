@@ -37,7 +37,7 @@ void PinTableCamera(EntityData1 *entity) {
 			}
 			else {
 				Camera_Data1->Position.y = entity->Position.y + 80;
-				CharObj2 * co2 = GetCharObj2(0);
+				CharObj2 * co2 = CharObj2Ptrs[0];
 				co2->PhysicsData.Gravity = 0.2f;
 			}
 		}
@@ -46,8 +46,8 @@ void PinTableCamera(EntityData1 *entity) {
 
 void PinTablePhysics() {
 	for (uint8_t i = 0; i < 8; ++i) {
-		auto entity = EntityData1Ptrs[i];
-		CharObj2 * co2 = GetCharObj2(i);
+		EntityData1 *entity = EntityData1Ptrs[i];
+		CharObj2 * co2 = CharObj2Ptrs[i];
 		if (i == 0) {
 			if (entity && co2) {
 				if (!NoPinball && ((GetCharacterID(i) == Characters_Sonic && !SuperSonicFlag) || GetCharacterID(i) == Characters_Tails)) {
@@ -118,8 +118,8 @@ void CasinoCommon_Delete(ObjectMaster * a1) {
 }
 
 void CasinoCommon_OnFrame() {
-	auto entity = EntityData1Ptrs[0];
-	CharObj2 *co2 = GetCharObj2(0);
+	EntityData1 *entity = EntityData1Ptrs[0];
+	CharObj2 *co2 = CharObj2Ptrs[0];
 
 	if (anim % 250 == 0) SlotState += 1;
 	if (SlotState == 6) SlotState = 0;

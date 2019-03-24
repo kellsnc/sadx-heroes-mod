@@ -54,20 +54,20 @@ void HCWARP_Main(ObjectMaster *a1) {
 
 			if (IsPlayerInsideSphere(&od2->vector_a, 15)) {
 				if (EnableSounds) PlaySound(41, 0, 0, 0);
-				auto entity = EntityData1Ptrs[0];
+				EntityData1 *entity = EntityData1Ptrs[0];
 				od2->vector_a = entity->Position;
 				a1->Data1->Action = 1;
 			}
 		}
 
 		if (a1->Data1->Action == 1) {
-			auto entity = EntityData1Ptrs[0];
+			EntityData1 *entity = EntityData1Ptrs[0];
 			entity->Position = od2->vector_a;
 			if (a1->Data1->Rotation.z = 2) od2->vector_a.y += 0.05f;
 			else od2->vector_a.y -= 0.05f;
 
 			entity->Status = 0;
-			CharObj2 * co2 = GetCharObj2(0);
+			CharObj2 * co2 = CharObj2Ptrs[0];
 			if (GetCharacterID(0) == Characters_Sonic) {
 				co2->AnimationThing.Index = 18;
 			}
@@ -513,7 +513,7 @@ void HCPLATFORM_Main(ObjectMaster *a1) {
 				}
 
 				//inacurate check to get if the character is on the platform
-				auto entity = EntityData1Ptrs[0];
+				EntityData1 *entity = EntityData1Ptrs[0];
 
 				if (entity->Position.x > a1->Data1->Position.x - 30
 					&& entity->Position.x < a1->Data1->Position.x + 30

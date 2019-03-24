@@ -172,7 +172,7 @@ void __cdecl SHRUINTRIGGER_Main(ObjectMaster *a1)
 {
 	if (IsPlayerInsideSphere(&a1->Data1->Position, 2500.0f)) {
 		if (ruin != a1->Data1->Scale.x) {
-			auto entity = EntityData1Ptrs[0];
+			EntityData1 *entity = EntityData1Ptrs[0];
 			if (IsPlayerInsideSphere(&a1->Data1->Position, a1->Data1->Scale.y)) {
 				ruin = a1->Data1->Scale.x;
 			}
