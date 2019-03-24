@@ -52,7 +52,7 @@ void HCWARP_Main(ObjectMaster *a1) {
 			od2->vector_a = a1->Data1->Position;
 			od2->vector_a.y += 10;
 
-			if (IsPlayerInsideSphere(&od2->vector_a, 15)) {
+			if (IsPlayerInsideSphere(&od2->vector_a, 15) == 1) {
 				if (EnableSounds) PlaySound(41, 0, 0, 0);
 				EntityData1 *entity = EntityData1Ptrs[0];
 				od2->vector_a = entity->Position;

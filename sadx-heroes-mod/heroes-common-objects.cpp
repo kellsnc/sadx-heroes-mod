@@ -296,7 +296,9 @@ void ObjBalloon_Main(ObjectMaster *a1)
 		float item = a1->Data1->Action;
 
 		if (a1->Data1->Scale.z != 4 && a1->Data1->NextAction != 2) {
-			if (IsPlayerInsideSphere(&a1->Data1->Position, 50)) a1->Data1->NextAction = 1;
+			a1->Data1->CharIndex = IsPlayerInsideSphere(&a1->Data1->Position, 50);
+
+			if (a1->Data1->CharIndex) a1->Data1->NextAction = 1;
 
 			if (a1->Data1->NextAction == 1) {
 				a1->Data1->Scale.x += 0.1f;
@@ -305,8 +307,8 @@ void ObjBalloon_Main(ObjectMaster *a1)
 
 				if (a1->Data1->Scale.x == 3.1f) {
 					if (a1->Data1->Action == 12) {
-						if (GetCharacterID(0) == Characters_Tails) {
-							CharObj2 *co2 = CharObj2Ptrs[0];
+						if (GetCharacterID(a1->Data1->CharIndex - 1) == Characters_Tails) {
+							CharObj2 *co2 = CharObj2Ptrs[a1->Data1->CharIndex - 1];
 							co2->TailsFlightTime = 0.1f;
 						}
 					}

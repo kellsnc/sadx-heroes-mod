@@ -326,11 +326,12 @@ void CPBOBINAIR_Main(ObjectMaster *a1) {
 	if (IsPlayerInsideSphere(&a1->Data1->Position, 2000.0f)) {
 
 		a1->Data1->Rotation.y += 10;
+		a1->Data1->CharIndex = IsPlayerInsideSphere(&a1->Data1->Position, 12);
 
-		if (IsPlayerInsideSphere(&a1->Data1->Position, 12)) {
+		if (a1->Data1->CharIndex) {
 
-			EntityData1 *entity = EntityData1Ptrs[0];
-			CharObj2 *co2 = CharObj2Ptrs[0];
+			EntityData1 *entity = EntityData1Ptrs[a1->Data1->CharIndex - 1];
+			CharObj2 *co2 = CharObj2Ptrs[a1->Data1->CharIndex - 1];
 
 			if ((entity->Position.y > a1->Data1->Position.y + 12)
 				|| (entity->Position.y < a1->Data1->Position.y - 12)) return;
