@@ -13,6 +13,7 @@ static bool EnableCasinoPark = true;
 static bool EnableBingoHighway = true;
 static bool EnableHangCastle = true;
 static bool EnableMysticMansion = true;
+static bool EnableSpecialStages = true;
 
 bool NoMysticMusic = false;
 bool NoPinball = false;
@@ -267,7 +268,8 @@ void __cdecl njReleaseTextureAll__r()
 			(CurrentLevel == HeroesLevelID_CasinoPark && EnableCasinoPark) ||
 			(CurrentLevel == HeroesLevelID_BingoHighway && EnableBingoHighway) ||
 			(CurrentLevel == HeroesLevelID_HangCastle && EnableHangCastle) ||
-			(CurrentLevel == HeroesLevelID_MysticMansion && EnableMysticMansion)) {
+			(CurrentLevel == HeroesLevelID_MysticMansion && EnableMysticMansion) ||
+			(CurrentLevel == HeroesLevelID_SpecialStages && EnableSpecialStages)) {
 
 			IsHeroesLevel = true;
 
@@ -337,6 +339,7 @@ void Levels_Init(const char *path, const HelperFunctions &helperFunctions)
 	EnableBingoHighway = config->getBool("Levels", "EnableBingoHighway", true);
 	EnableHangCastle = config->getBool("Levels", "EnableHangCastle", true);
 	EnableMysticMansion = config->getBool("Levels", "EnableMysticMansion", true);
+	EnableSpecialStages = config->getBool("Levels", "EnableSpecialStages", true);
 	NoMysticMusic = config->getBool("General", "NoMysticMusic", false);
 	NoPinball = config->getBool("General", "NoPinball", false);
 	EnableFog = config->getBool("General", "EnableFog", true);
@@ -362,6 +365,7 @@ void Levels_Init(const char *path, const HelperFunctions &helperFunctions)
 	if (EnableBingoHighway) BingoHighway_Init(path, helperFunctions);
 	if (EnableHangCastle) HangCastle_Init(path, helperFunctions);
 	if (EnableMysticMansion) MysticMansion_Init(path, helperFunctions);
+	if (EnableSpecialStages) SpecialStages_Init(path, helperFunctions);
 
 	SetCharactersLevelData(helperFunctions);
 }

@@ -43,7 +43,8 @@ enum HeroesLevelIDs {
 	HeroesLevelID_HangCastle = 7,
 	HeroesLevelID_PowerPlant,
 	HeroesLevelID_GrandMetropolis,
-	HeroesLevelID_MysticMansion
+	HeroesLevelID_MysticMansion,
+	HeroesLevelID_SpecialStages = 35
 };
 
 typedef struct {

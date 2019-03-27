@@ -34,3 +34,4 @@ void CasinoPark_Init(const char *path, const HelperFunctions &helperFunctions);
 void BingoHighway_Init(const char *path, const HelperFunctions &helperFunctions);
 void HangCastle_Init(const char *path, const HelperFunctions &helperFunctions);
 void MysticMansion_Init(const char *path, const HelperFunctions &helperFunctions);
+void SpecialStages_Init(const char *path, const HelperFunctions &helperFunctions);
