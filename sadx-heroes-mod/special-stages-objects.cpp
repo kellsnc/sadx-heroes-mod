@@ -4,6 +4,51 @@
 
 ModelInfo * SS_SSWAVES;
 
+SOI_LIST2 FluidWaves[]{
+	{0},{0, {500, 0, 0}},{0, {1000, 0, 0}},{0, {1500, 0, 0}},{0, {2000, 0, 0}},{0, {2500, 0, 0}},{0, {3000, 0, 0}},{0, {3500, 0, 0}},{0, {4000, 0, 0}},{0, {4500, 0, 0}},{0, {5000, 0, 0}},{0, {5500, 0, 0}},{0, {6000, 0, 0}},{0, {6500, 0, 0}},{0, {7000, 0, 0}},{0, {7500, 0, 0}},
+	{5, {8005, 0, 1487},{0, -2730, 0}},{5, {8005, 0, 1487}, {0, -8330, 0}},{5, {8005, 0, 1467}, {0, -13950, 0}},{5, {8005, 0, 1467}, {0, -19270, 0}},{5, {8020, 0, 1488}, {0, -24793, 0}},{5, {8020, 0, 1496}, {0, -30253, 0}},
+	{0, {8000, 0, 3000},{0, 0x8000, 0}},{0, {7500, 0, 3000}, {0, 0x8000, 0}},{0, {7000, 0, 3000}, {0, 0x8000, 0}},{0, {6500, 0, 3000}, {0, 0x8000, 0}},{0, {6000, 0, 3000}, {0, 0x8000, 0}},{0, {5500, 0, 3000}, {0, 0x8000, 0}},{0, {5000, 0, 3000}, {0, 0x8000, 0}},{0, {4500, 0, 3000}, {0, 0x8000, 0}},
+	{5, {4500, 0, 4250},{0, 2000, 0}},{5, {4500, 0, 4250}, {0, 9000, 0}},{5, {4500, 0, 4250}, {0, 13000, 0}},{5, {4500, 0, 4250}, {0, 19000, 0}},
+	{0, {4000, 0, 5000}},{0, {4500, 0, 5000}},{0, {5000, 0, 5000}},{0, {5500, 0, 5000}}
+};
+
+void SSWaves_Main(ObjectMaster *a1) {
+	if (!DroppedFrames) {
+
+		for (int i = 0; i < LengthOfArray(FluidWaves); ++i) {
+			if (CheckModelDisplay2(FluidWaves[i])) {
+				SOI_LIST2 item = FluidWaves[i];
+
+				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+				njPushMatrix(0);
+				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
+				njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);
+				DrawQueueDepthBias = -6000;
+
+				switch (item.Model) {
+				case 0: njDrawModel_SADX(SS_SSWAVES->getmodel()->basicdxmodel); break;
+				case 1: njDrawModel_SADX(SS_SSWAVES->getmodel()->child->basicdxmodel); break;
+				case 2: njDrawModel_SADX(SS_SSWAVES->getmodel()->child->child->basicdxmodel); break;
+				case 3: njDrawModel_SADX(SS_SSWAVES->getmodel()->child->child->child->basicdxmodel); break;
+				case 4: njDrawModel_SADX(SS_SSWAVES->getmodel()->child->child->child->child->basicdxmodel); break;
+				case 5: njDrawModel_SADX(SS_SSWAVES->getmodel()->child->child->child->child->child->basicdxmodel); break;
+				case 6: njDrawModel_SADX(SS_SSWAVES->getmodel()->child->child->child->child->child->child->basicdxmodel); break;
+				case 7: njDrawModel_SADX(SS_SSWAVES->getmodel()->child->child->child->child->child->child->child->basicdxmodel); break;
+				}
+
+				DrawQueueDepthBias = 0;
+				njPopMatrix(1u);
+			}
+		}
+	}
+}
+
+void __cdecl SSWaves(ObjectMaster *a1)
+{
+	a1->MainSub = &SSWaves_Main;
+	a1->DisplaySub = &SSWaves_Main;
+}
+
 PVMEntry SpecialStagesObjectTextures[] = {
 	{ "E_BOMB", &E_BOMB_TEXLIST },
 	{ 0 }

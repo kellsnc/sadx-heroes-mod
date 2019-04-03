@@ -3,12 +3,15 @@
 #include "levels.h"
 
 void SpecialStagesObjects_Init();
+void __cdecl SSWaves(ObjectMaster *a1);
 DataArray(LandTable*, dword_97DBE8, 0x97DBE8, 193);
 
 extern ModelInfo * SS_SSWAVES;
 
 void SpecialStage_InitObjects() {
 	SS_SSWAVES = LoadMDL("SS_SSWAVES");
+
+	LoadObject(LoadObj_Data1, 3, SSWaves);
 }
 
 void SpecialStage_Delete(ObjectMaster * a1) {
@@ -31,6 +34,8 @@ void SpecialStagesHandler(ObjectMaster * a1) {
 
 		CurrentLevelTexlist = (NJS_TEXLIST*)0xADF8A0;
 		CurrentLandAddress = &dword_97DBE8[160];
+
+		SpecialStage_InitObjects();
 
 		LoadLevelFile("SS", CurrentAct + 1);
 	}

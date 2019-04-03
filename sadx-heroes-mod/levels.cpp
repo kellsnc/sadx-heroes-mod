@@ -39,7 +39,8 @@ StartPosition Heroes_StartPositions[]{
 	{ HeroesLevelID_CasinoPark, 0,{ -8000, 2188, 0 }, 0xBFFF },
 	{ HeroesLevelID_BingoHighway, 0,{ 7999, 2277, 472 }, 0xBFFF },
 	{ HeroesLevelID_HangCastle, 0,{ 3999, 4000, 109 }, 0xBFFF },
-	{ HeroesLevelID_MysticMansion, 0,{ 0, 23, 777 }, 0xBFFF }
+	{ HeroesLevelID_MysticMansion, 0,{ 0, 23, 777 }, 0xBFFF },
+	{ HeroesLevelID_SpecialStages, 0,{ 200, 0, 0 }, 0xBFFF }
 };
 
 //Chunk system
