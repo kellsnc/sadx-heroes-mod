@@ -99,6 +99,8 @@ void MysticMansionHandler(ObjectMaster * a1) {
 		if (CurrentAct == 0) {
 			CurrentLevelTexlist = (TexList*)0x1B98518;
 			CurrentLandAddress = (LandTable**)0x97DB48;
+			
+			LoadPVM("FINALEGG1", (TexList*)0x1B98518);
 				
 			MysticMansion_InitObjects();
 
