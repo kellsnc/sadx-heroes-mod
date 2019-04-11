@@ -59,18 +59,15 @@ enum HeroesLevelIDs {
 
 typedef struct {
 	NJS_VECTOR		Position;
-	Angle			Rotation[3];		//manual value for the angle the object should have, the value is absolute, if unset it will calculate it relatively
-	float			Distance;			//manual value for the speed to the next point, if unset it will calculate it itself on frame
+	Angle			Rotation[3];
+	float			Distance;
 	uint8_t			parameter;
 } SH_PATH;
 
 typedef struct {
 	SH_PATH			*path;
 	float			totaldist;
-	uint8_t			parameters[3];	/*[0] > 1 to allow rotation
-									[1] > 1 to remove the main character gravity for the length of the path
-									[2] > 1 to remove the main character controls for the length of the path
-									*/
+	uint8_t			parameters[3];
 	uint8_t			pathentrysize;
 } SH_PATHS;
 

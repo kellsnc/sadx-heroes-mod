@@ -232,8 +232,6 @@ void SetCharactersLevelData(const HelperFunctions &helperFunctions) {
 }
 
 //We prevent the skybox objects from loading in heroes levels
-void __cdecl LoadSkyboxObject_r();
-Trampoline LoadSkyboxObject_t(0x414420, 0x414469, LoadSkyboxObject_r);
 void __cdecl LoadSkyboxObject_r()
 {
 	SetGlobalPoint2Col_Colors(LevelGlobalColors[CurrentLevel].x, LevelGlobalColors[CurrentLevel].y, LevelGlobalColors[CurrentLevel].z);
@@ -251,9 +249,7 @@ void __cdecl LoadSkyboxObject_r()
 }
 
 //We force acts here
-void __cdecl njReleaseTextureAll__r();
-Trampoline njReleaseTextureAll__t(0x406F00, 0x406F63, njReleaseTextureAll__r);
-void __cdecl njReleaseTextureAll__r()
+void __cdecl ForceAct()
 {
 	njReleaseTextureAll();
 	QueueDrawingState = 2;
@@ -304,9 +300,7 @@ void SetFog(FogData * fog) {
 	}
 }
 
-void __cdecl DrawLandTableObject_SimpleModel_r(NJS_MODEL_SADX *a1);
-Trampoline DrawLandTableObject_SimpleModel_t(0x40A140, 0x40A16E, DrawLandTableObject_SimpleModel_r);
-void __cdecl DrawLandTableObject_SimpleModel_r(NJS_MODEL_SADX *a1)
+void __cdecl DrawLandTableFog(NJS_MODEL_SADX *a1)
 {
 	if (a1->r < 900.0)
 	{
@@ -345,6 +339,10 @@ void Levels_Init(const char *path, const HelperFunctions &helperFunctions)
 	NoPinball = config->getBool("General", "NoPinball", false);
 	EnableFog = config->getBool("General", "EnableFog", true);
 	delete config;
+
+	WriteJump((void*)0x414420, LoadSkyboxObject_r);
+	WriteJump((void*)0x406F00, ForceAct); //njReleaseTextureAll_
+	WriteJump((void*)0x40A140, DrawLandTableFog); //DrawLandTableObject_SimpleModel
 
 	//Init sound effects
 	if (EnableSounds >= 1) {
