@@ -413,6 +413,6 @@ ObjectListEntry MysticMansionObjectList_list[] = {
 ObjectList MysticMansionObjectList = { arraylengthandptrT(MysticMansionObjectList_list, int) };
 
 void MysticMansionObjects_Init() {
-	WriteData((PVMEntry**)0x90EB90, MysticMansionObjectTextures);
-	WriteData((ObjectList**)0x974C38, &MysticMansionObjectList); //974C3C 974C40
+	TexLists_Obj[HeroesLevelID_MysticMansion] = MysticMansionObjectTextures;
+	ObjLists[HeroesLevelID_MysticMansion * 8] = &MysticMansionObjectList;
 }

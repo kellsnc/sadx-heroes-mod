@@ -104,9 +104,9 @@ void GrandMetropolis_Init(const char *path, const HelperFunctions &helperFunctio
 
 	helperFunctions.RegisterPathList(GrandMetropolisPaths);
 
-	WriteData((DeathZone**)0x1D7E374, GrandMetropolisDeathZones);
+	CasinopolisDeathZones[0] = GrandMetropolisDeathZones;
 
-	WriteJump((void *)0x5C0F40, &GrandMetropolisHandler);
+	LevelObjects[HeroesLevelID_GrandMetropolis] = GrandMetropolisHandler;
 
 	GrandMetropolisObjects_Init(path);
 }

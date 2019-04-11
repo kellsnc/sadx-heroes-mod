@@ -59,10 +59,6 @@ SH_ANIMTEXS BingoHighwayAnimTexs[]{
 	{ 279, 5,{ 10, 10, 10, 10, 10, 10 } }
 };
 
-DeathZone BingoHighwayDeathZones[] = {
-	{ 0 }
-};
-
 void BingoHighwayObjects_Init(const char *path);
 void CasinoCommon_OnFrame();
 void CasinoCommon_Delete(ObjectMaster * a1);

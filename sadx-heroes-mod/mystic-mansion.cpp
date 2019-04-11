@@ -160,10 +160,10 @@ void MysticMansion_Init(const char *path, const HelperFunctions &helperFunctions
 	}
 
 	helperFunctions.RegisterPathList(MysticMansionPaths);
-	
-	WriteData((DeathZone**)0x1A49218, MysticMansionDeathZones);
 
-	WriteData((ObjectFuncPtr*)0x90BF60, &MysticMansionHandler);
+	FinalEggDeathZones[0] = MysticMansionDeathZones;
+
+	LevelObjects[HeroesLevelID_MysticMansion] = MysticMansionHandler;
 
 	MysticMansionObjects_Init();
 }

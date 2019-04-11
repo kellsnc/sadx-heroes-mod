@@ -139,7 +139,7 @@ void RoadRock_Init(const char *path, const HelperFunctions &helperFunctions) {
 	ReplaceADX("wndyvly2", "road-rock");
 	ReplaceBIN("PL_21B", "road-rock-shaders");
 
-	WriteData((DeathZone**)0xBFD824, RoadRockDeathZones);
+	WindyValleyDeathZones[1] = RoadRockDeathZones;
 }
 
 void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions) {
@@ -153,9 +153,9 @@ void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions) 
 
 	helperFunctions.RegisterPathList(OceanPalacePaths);
 
-	WriteData((DeathZone**)0xBFD820, SeasideHillDeathZones);
+	WindyValleyDeathZones[0] = SeasideHillDeathZones;
 
-	WriteData((ObjectFuncPtr*)0x90BF40, OceanPalaceHandler);
+	LevelObjects[HeroesLevelID_OceanPalace] = OceanPalaceHandler;
 
 	RoadRock_Init(path, helperFunctions);
 	OceanPalaceObjects_Init(path);

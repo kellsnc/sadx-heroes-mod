@@ -111,9 +111,9 @@ void BingoHighway_Init(const char *path, const HelperFunctions &helperFunctions)
 
 	helperFunctions.RegisterPathList(BingoHighwayPaths);
 
-	WriteData((DeathZone**)0x26A5A94, BingoHighwayDeathZones);
+	DeathZoneList[HeroesLevelID_BingoHighway] = nullptr;
 
-	WriteData((ObjectFuncPtr*)0x90BF48, &BingoHighwayHandler);
+	LevelObjects[HeroesLevelID_BingoHighway] = BingoHighwayHandler;
 
 	BingoHighwayObjects_Init(path);
 }

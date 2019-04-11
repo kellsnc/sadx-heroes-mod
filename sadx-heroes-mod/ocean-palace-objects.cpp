@@ -447,7 +447,7 @@ ObjectListEntry OceanPalaceObjectList_list[] = {
 ObjectList OceanPalaceObjectList = { arraylengthandptrT(OceanPalaceObjectList_list, int) };
 
 void OceanPalaceObjects_Init(const char *path) {
-	WriteData((PVMEntry**)0x90EB70, OceanPalaceTextures);
-	WriteData((ObjectList**)0x974B38, &OceanPalaceObjectList);
-	WriteData((ObjectList**)0x974B3C, &OceanPalaceObjectList);
+	TexLists_Obj[HeroesLevelID_OceanPalace] = OceanPalaceTextures;
+	ObjLists[HeroesLevelID_OceanPalace * 8] =		&OceanPalaceObjectList;
+	ObjLists[HeroesLevelID_OceanPalace * 8 + 1] =	&OceanPalaceObjectList;
 }

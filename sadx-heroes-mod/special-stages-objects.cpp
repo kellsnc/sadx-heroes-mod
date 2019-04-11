@@ -81,6 +81,6 @@ ObjectListEntry SpecialStagesObjectList_list[] = {
 ObjectList SpecialStagesObjectList = { arraylengthandptrT(SpecialStagesObjectList_list, int) };
 
 void SpecialStagesObjects_Init() {
-	TexLists_Obj[35] = SpecialStagesObjectTextures;
-	ObjLists[280] = &SpecialStagesObjectList;
+	TexLists_Obj[HeroesLevelID_SpecialStages] = SpecialStagesObjectTextures;
+	ObjLists[HeroesLevelID_SpecialStages * 8] = &SpecialStagesObjectList;
 }

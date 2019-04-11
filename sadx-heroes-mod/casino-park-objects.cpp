@@ -238,6 +238,6 @@ ObjectListEntry CasinoParkObjectList_list[] = {
 ObjectList CasinoParkObjectList = { arraylengthandptrT(CasinoParkObjectList_list, int) };
 
 void CasinoParkObjects_Init(const char *path) {
-	WriteData((PVMEntry**)0x90EB74, CasinoParkObjectTextures);
-	WriteData((ObjectList**)0x974B58, &CasinoParkObjectList); //974B5C 974B60
+	TexLists_Obj[HeroesLevelID_CasinoPark] = CasinoParkObjectTextures;
+	ObjLists[HeroesLevelID_CasinoPark * 8] = &CasinoParkObjectList;
 }

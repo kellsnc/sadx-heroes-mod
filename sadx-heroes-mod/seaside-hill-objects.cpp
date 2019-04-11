@@ -439,9 +439,9 @@ ObjectListEntry SeasideHillObjectList_list[] = {
 ObjectList SeasideHillObjectList = { arraylengthandptrT(SeasideHillObjectList_list, int) };
 
 void SeasideHillObjects_Init(const char *path) {
-	WriteData((PVMEntry**)0x90EB6C, SeasideHillObjectTextures);
-	WriteData((ObjectList**)0x974B18, &SeasideHillObjectList); //Act 1
-	WriteData((ObjectList**)0x974B1C, &SeasideHillObjectList); //Act 2
+	TexLists_Obj[HeroesLevelID_SeasideHill] = SeasideHillObjectTextures;
+	ObjLists[HeroesLevelID_SeasideHill * 8] =		&SeasideHillObjectList;
+	ObjLists[HeroesLevelID_SeasideHill * 8 + 1] =	&SeasideHillObjectList;
 }
 
 void SeasideHillObjects_OnFrame(EntityData1 * entity) {

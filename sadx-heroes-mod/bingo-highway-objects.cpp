@@ -529,6 +529,6 @@ ObjectListEntry BingoHighwayObjectList_list[] = {
 ObjectList BingoHighwayObjectList = { arraylengthandptrT(BingoHighwayObjectList_list, int) };
 
 void BingoHighwayObjects_Init(const char *path) {
-	WriteData((PVMEntry**)0x90EB78, BingoHighwayObjectTextures);
-	WriteData((ObjectList**)0x974B78, &BingoHighwayObjectList); //974B7C 974B80
+	TexLists_Obj[HeroesLevelID_BingoHighway] = BingoHighwayObjectTextures;
+	ObjLists[HeroesLevelID_BingoHighway * 8] = &BingoHighwayObjectList;
 }

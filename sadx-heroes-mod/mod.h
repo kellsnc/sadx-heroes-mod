@@ -13,12 +13,22 @@ extern set_specular_blend_factor* set_specular_blend_factor_ptr;
 extern set_blend* set_blend_ptr;
 
 VoidFunc(sub_40D3B0, 0x40D3B0);
+
 FunctionPointer(void, DrawModelBlend_IsVisible, (NJS_MODEL_SADX *model, QueuedModelFlagsB blend, float radius_scale), 0x4094D0);
 FunctionPointer(void, DrawSimpleModel_IsVisible, (NJS_MODEL_SADX *model, float scale), 0x407A00);
+
 DataPointer(int, DroppedFrames, 0x03B1117C);
 DataPointer(int, FramerateSetting, 0x0389D7DC);
+
 DataArray(int, HeldButtons2, 0x3B0E3A8, 8);
 DataArray(Rotation3, LevelGlobalColors, 0x90BFE8, 42);
+DataArray(DeathZone*, EmeraldCoastDeathZones, 0x102F8E8, 4);
+DataArray(DeathZone*, WindyValleyDeathZones, 0xBFD820, 3);
+DataArray(DeathZone*, TwinkleParkDeathZones, 0x26B3C58, 4);
+DataArray(DeathZone*, IceCapDeathZones, 0xE2FE4C, 4);
+DataArray(DeathZone*, CasinopolisDeathZones, 0x1D7E374, 4);
+DataArray(DeathZone*, LostWorldDeathZones, 0x2032108, 3);
+DataArray(DeathZone*, FinalEggDeathZones, 0x1A49218, 4);
 
 ModelInfo* LoadMDL(const char *shortname);
 void FreeMDL(ModelInfo * pointer);

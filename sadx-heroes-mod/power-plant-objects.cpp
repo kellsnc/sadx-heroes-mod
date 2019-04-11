@@ -690,8 +690,8 @@ ObjectListEntry PowerPlantObjectList_list[] = {
 ObjectList PowerPlantObjectList = { arraylengthandptrT(PowerPlantObjectList_list, int) };
 
 void PowerPlantObjects_Init(const char *path) {
-	WriteData((PVMEntry**)0x90EB88, PowerPlantObjectTextures);
-	WriteData((ObjectList**)0x974BF8, &PowerPlantObjectList);
+	TexLists_Obj[HeroesLevelID_PowerPlant] = PowerPlantObjectTextures;
+	ObjLists[HeroesLevelID_PowerPlant * 8] = &PowerPlantObjectList;
 }
 
 void PPPathsHandler() {

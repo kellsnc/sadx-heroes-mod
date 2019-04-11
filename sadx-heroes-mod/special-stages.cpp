@@ -61,7 +61,7 @@ void SpecialStages_Init(const char *path, const HelperFunctions &helperFunctions
 	ReplaceBIN("PL_Z0B", "special-stages-shaders");
 
 	WriteJump((void*)0x4DAA80, SpecialStagesHandler);
-	DeathZoneList[35] = nullptr;
+	DeathZoneList[HeroesLevelID_SpecialStages] = nullptr;
 
 	SpecialStagesObjects_Init();
 }

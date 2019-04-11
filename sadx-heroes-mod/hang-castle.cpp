@@ -39,6 +39,8 @@ void HangCastle_Delete(ObjectMaster * a1) {
 		set_shader_flags_ptr(ShaderFlags_Blend, false);
 		set_blend_ptr(-1, -1);
 	}
+
+	CasinoLightRotation_Z = 0;
 	
 	LevelHandler_Delete(a1);
 }
@@ -77,12 +79,12 @@ void HangCastleHandler(ObjectMaster * a1) {
 			if (chunkswapped) {
 				if (CurrentChunk == 2 || CurrentChunk == 6 || CurrentChunk == 8 || CurrentChunk == 10 || CurrentChunk == 11) {
 					CurrentSong = MusicIDs_lstwrld2;
-					CurrentStageLight_Direction.y = 1;
+					CasinoLightRotation_Z = 0x8000;
 					LastSong = MusicIDs_lstwrld2;
 				}
 				else {
 					CurrentSong = MusicIDs_lstwrld1;
-					CurrentStageLight_Direction.y = -1;
+					CasinoLightRotation_Z = 0;
 					LastSong = MusicIDs_lstwrld1;
 				}
 			}
@@ -117,9 +119,9 @@ void HangCastle_Init(const char *path, const HelperFunctions &helperFunctions) {
 		FogData_LostWorld1[i].Toggle = false;
 	}
 
-	WriteData((DeathZone**)0x2032108, HangCastleDeathZones);
+	LostWorldDeathZones[0] = HangCastleDeathZones;
 
-	WriteData((ObjectFuncPtr*)0x90BF54, &HangCastleHandler);
+	LevelObjects[HeroesLevelID_HangCastle] = HangCastleHandler;
 
 	HangCastleObjects_Init(path);
 }

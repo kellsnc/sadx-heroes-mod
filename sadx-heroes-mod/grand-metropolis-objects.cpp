@@ -468,9 +468,8 @@ ObjectListEntry GrandMetropolisObjectList_list[] = {
 ObjectList GrandMetropolisObjectList = { arraylengthandptrT(GrandMetropolisObjectList_list, int) };
 
 void GrandMetropolisObjects_Init(const char *path) {
-	WriteData((PVMEntry**)0x90EB8C, GrandMetropolisObjectTextures);
-	WriteData((ObjectList**)0x974C18, &GrandMetropolisObjectList);
-	WriteData((ObjectList**)0x974C1C, &GrandMetropolisObjectList);
+	TexLists_Obj[HeroesLevelID_GrandMetropolis] = GrandMetropolisObjectTextures;
+	ObjLists[HeroesLevelID_GrandMetropolis * 8] = &GrandMetropolisObjectList;
 }
 
 void AutoPathsMovs() {

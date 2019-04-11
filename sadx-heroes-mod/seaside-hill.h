@@ -51,10 +51,6 @@ SH_ANIMTEXS SeaGateAnimTexs[]{
 	{ 84, 19,{ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 } }
 };
 
-DeathZone SeaGateDeathZones[] = {
-	{ 0 }
-};
-
 void SeasideHillObjects_Init(const char *path);
 void SeasideHillObjects_OnFrame(EntityData1 * entity);
 void SHSuns_Init(ObjectMaster * a1);
