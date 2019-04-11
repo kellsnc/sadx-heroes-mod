@@ -180,6 +180,11 @@ void RailPath_Main(ObjectMaster * a1) {
 			if (!web) {
 				RailPhysics(a1, player, co2, loopdata);
 				railspeed = a1->Data1->Scale.y;
+
+				if (++a1->field_30 > 125) {
+					a1->field_30 = 0;
+					PlaySound(49, 0, 0, 0);
+				}
 			}
 			
 			//next position in spline
