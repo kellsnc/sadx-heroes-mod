@@ -48,9 +48,10 @@ void PinTablePhysics() {
 	for (uint8_t i = 0; i < 8; ++i) {
 		EntityData1 *entity = EntityData1Ptrs[i];
 		CharObj2 * co2 = CharObj2Ptrs[i];
+
 		if (i == 0) {
 			if (entity && co2) {
-				if (!NoPinball && ((GetCharacterID(i) == Characters_Sonic && !SuperSonicFlag) || GetCharacterID(i) == Characters_Tails)) {
+				if (!NoPinball && ((GetCharacterID(i) == Characters_Sonic && (co2->Upgrades & Upgrades_SuperSonic) == 0) || GetCharacterID(i) == Characters_Tails)) {
 					/* On pintable */
 					if (co2->SurfaceFlags == 0x81 && EntityData1Ptrs[0] == entity) IsPinRolling = true;
 
@@ -93,7 +94,7 @@ void PinTablePhysics() {
 			if (co2) {
 				if (co2->SurfaceFlags == 0x81) {
 					entity->Status = Status_Ball;
-					if (GetCharacterID(i) == Characters_Sonic) {
+					if (GetCharacterID(i) == Characters_Sonic && (CharObj2Ptrs[i]->Upgrades & Upgrades_SuperSonic) == 0) {
 						LoadSonicDashTrail(entity);
 						entity->Action = 62;
 						co2->AnimationThing.Index = 125;

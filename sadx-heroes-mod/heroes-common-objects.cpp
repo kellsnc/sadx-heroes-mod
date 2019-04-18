@@ -89,7 +89,7 @@ void ObjFan_Main(ObjectMaster *a1)
 				entity->Rotation.x = 0;
 				entity->Rotation.z = 0;
 				co2->Speed.y = a1->Data1->Scale.x;
-				if (GetCharacterID(0) == Characters_Sonic && !SuperSonicFlag) {
+				if (GetCharacterID(0) == Characters_Sonic && (co2->Upgrades & Upgrades_SuperSonic) == 0) {
 					co2->AnimationThing.Index = 26;
 					entity->Status = 0;
 				}
@@ -174,10 +174,16 @@ void ObjReel_Main(ObjectMaster *a1)
 			else {
 				CharObj2 *co2 = CharObj2Ptrs[slot];
 
-				if (GetCharacterID(slot) == Characters_Sonic) co2->AnimationThing.Index = 47;
-				if (GetCharacterID(slot) == Characters_Tails) co2->AnimationThing.Index = 100;
-				if (GetCharacterID(slot) == Characters_Knuckles) co2->AnimationThing.Index = 110;
-				if (GetCharacterID(slot) == Characters_Amy) co2->AnimationThing.Index = 80;
+				switch (GetCharacterID(slot)) {
+				case Characters_Sonic:
+					if ((co2->Upgrades & Upgrades_SuperSonic) == 0) co2->AnimationThing.Index = 47;
+					else  co2->AnimationThing.Index = 141;
+					break;
+				case Characters_Tails: co2->AnimationThing.Index = 100; break;
+				case Characters_Knuckles: co2->AnimationThing.Index = 110; break;
+				case Characters_Amy: co2->AnimationThing.Index = 80; break;
+				}
+				
 				entity->Status = 0;
 
 				//Getting off
@@ -185,24 +191,30 @@ void ObjReel_Main(ObjectMaster *a1)
 					a1->Data1->Scale.y = 9;
 
 					if (GetCharacterID(slot) == Characters_Sonic) {
-						entity->Action = 8;
 						entity->Status = Status_Ball;
-						co2->AnimationThing.Index = 14;
+						
+						if ((co2->Upgrades & Upgrades_SuperSonic) == 0) {
+							entity->Action = 8;
+							co2->AnimationThing.Index = 14;
+						}
+						else {
+							co2->AnimationThing.Index = 145;
+						}
 					}
-					if (GetCharacterID(slot) == Characters_Tails || GetCharacterID(0) == Characters_Knuckles) {
+					else if (GetCharacterID(slot) == Characters_Tails || GetCharacterID(0) == Characters_Knuckles) {
 						entity->Action = 6;
 						entity->Status = Status_Ball;
 						co2->AnimationThing.Index = 14;
 					}
-					if (GetCharacterID(slot) == Characters_Amy) {
+					else if (GetCharacterID(slot) == Characters_Amy) {
 						entity->Action = 5;
 						co2->AnimationThing.Index = 14;
 					}
-					if (GetCharacterID(slot) == Characters_Big) {
+					else if (GetCharacterID(slot) == Characters_Big) {
 						entity->Action = 4;
 						co2->AnimationThing.Index = 15;
 					}
-					if (GetCharacterID(slot) == Characters_Gamma) {
+					else if (GetCharacterID(slot) == Characters_Gamma) {
 						entity->Action = 4;
 						co2->AnimationThing.Index = 6;
 					}
@@ -421,8 +433,13 @@ void DoBall(uint8_t id) {
 
 	entity->Status = Status_Ball;
 	if (GetCharacterID(0) == Characters_Sonic) {
-		entity->Action = 5;
-		co2->AnimationThing.Index = 15;
+		if ((co2->Upgrades & Upgrades_SuperSonic) == 0) {
+			entity->Action = 5;
+			co2->AnimationThing.Index = 15;
+		}
+		else {
+			co2->AnimationThing.Index = 145;
+		}
 	}
 	else if (GetCharacterID(0) == Characters_Tails) {
 		entity->Action = 4;

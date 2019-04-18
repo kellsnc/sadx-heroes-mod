@@ -163,7 +163,7 @@ void MysticFan_Main(ObjectMaster *a1)
 				entity->Rotation.x = 0;
 				entity->Rotation.z = 0;
 				co2->Speed.y = a1->Data1->Scale.x;
-				if (GetCharacterID(0) == Characters_Sonic && !SuperSonicFlag) {
+				if (GetCharacterID(0) == Characters_Sonic && (co2->Upgrades & Upgrades_SuperSonic) == 0) {
 					co2->AnimationThing.Index = 26;
 					entity->Status = 0;
 				}

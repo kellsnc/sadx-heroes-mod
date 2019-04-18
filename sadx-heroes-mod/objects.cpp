@@ -33,7 +33,7 @@ void ElevatePlayer(uint8_t slot) {
 	CharObj2 *co2 = CharObj2Ptrs[slot];
 	co2->Speed.y = 2;
 
-	if (GetCharacterID(slot) == Characters_Sonic && !SuperSonicFlag) {
+	if (GetCharacterID(slot) == Characters_Sonic && (co2->Upgrades & Upgrades_SuperSonic) == 0) {
 		co2->AnimationThing.Index = 26;
 		entity->Status = 0;
 	}

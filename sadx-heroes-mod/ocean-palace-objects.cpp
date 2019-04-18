@@ -218,7 +218,7 @@ void __cdecl OPPOLE(ObjectMaster *a1)
 void OP_AnimFix() {
 	EntityData1 *entity = EntityData1Ptrs[0];
 	CharObj2 *co2 = CharObj2Ptrs[0];
-	if (!SuperSonicFlag) {
+	if ((co2->Upgrades & Upgrades_SuperSonic) == 0) {
 		entity->Action = 2;
 		co2->AnimationThing.Index = 13;
 	}
@@ -346,6 +346,8 @@ PVMEntry OceanPalaceTextures[] = {
 	{ "TUBA", &TUBA_TEXLIST },
 	{ "MOGU", &MOGU_TEXLIST },
 	{ "TOGEBALL_TOGEBALL", &TOGEBALL_TOGEBALL_TEXLIST },
+	{ "UNI_C_UNIBODY", &UNI_C_UNIBODY_TEXLIST },
+	{ "UNI_A_UNIBODY", &UNI_A_UNIBODY_TEXLIST },
 	{ "E_BOMB", &E_BOMB_TEXLIST },
 	{ "SUPI_SUPI", &SUPI_SUPI_TEXLIST },
 	{ 0 }

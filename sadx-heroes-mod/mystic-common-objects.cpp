@@ -69,7 +69,8 @@ void HCWARP_Main(ObjectMaster *a1) {
 			entity->Status = 0;
 			CharObj2 * co2 = CharObj2Ptrs[0];
 			if (GetCharacterID(0) == Characters_Sonic) {
-				co2->AnimationThing.Index = 18;
+				if ((co2->Upgrades & Upgrades_SuperSonic) == 0) co2->AnimationThing.Index = 18;
+				else co2->AnimationThing.Index = 141;
 			}
 			else if (GetCharacterID(0) == Characters_Tails || GetCharacterID(0) == Characters_Knuckles) {
 				co2->AnimationThing.Index = 19;

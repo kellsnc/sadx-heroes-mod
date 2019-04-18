@@ -257,14 +257,20 @@ void AutoLoop_Main(ObjectMaster * a1) {
 				//Animations
 				if (ControllerPointers[a1->Data1->NextAction]->PressedButtons & Buttons_A) {
 					player->Status = Status_Ball;
-					co2->AnimationThing.Index = 14;
+					if ((co2->Upgrades & Upgrades_SuperSonic) == 0) co2->AnimationThing.Index = 14;
+					else co2->AnimationThing.Index = 145;
 					co2->Speed.y = 2;
 				}
 				else {
 					co2->Speed.x = 4;
 					player->Status = 0;
-					player->Action = 2;
-					co2->AnimationThing.Index = 13;
+					if ((co2->Upgrades & Upgrades_SuperSonic) == 0) {
+						player->Action = 2;
+						co2->AnimationThing.Index = 13;
+					}
+					else {
+						co2->AnimationThing.Index = 137;
+					}
 				}
 
 				if (player = EntityData1Ptrs[0]) SetCameraMode_(1);
@@ -291,12 +297,19 @@ void AutoLoop_Main(ObjectMaster * a1) {
 			switch (GetCharacterID(a1->Data1->NextAction)) {
 			case Characters_Sonic:
 			case Characters_Tails: 
-				player->Action = 4;
-				co2->AnimationThing.Index = 15; 
+				if ((co2->Upgrades & Upgrades_SuperSonic) == 0) {
+					player->Action = 4;
+					co2->AnimationThing.Index = 15;
+				}
+				else {
+					co2->AnimationThing.Index = 145;
+				}
 				break;
 			case Characters_Knuckles:
-				player->Action = 4;
-				co2->AnimationThing.Index = 35;
+				if ((co2->Upgrades & Upgrades_SuperSonic) == 0) {
+					player->Action = 4;
+					co2->AnimationThing.Index = 35;
+				}
 				break;
 			}
 
@@ -332,6 +345,7 @@ void Path_Main(ObjectMaster * a1) {
 
 				if (players[slot]->NextAction == 1) return;
 				if (CurrentLevel == HeroesLevelID_SeasideHill && players[slot]->Position.z > -900) return;
+				if (a1->Data1->field_A == 2 && CharObj2Ptrs[slot]->Upgrades & Upgrades_SuperSonic) return;
 
 				for (uint8_t point = 0; point < loopdata->Count; ++point) {
 					for (float l = 0; l <= 1; l += 0.01f) {

@@ -340,10 +340,15 @@ void CPBOBINAIR_Main(ObjectMaster *a1) {
 			entity->Position.y += 20;
 			co2->Speed.y = 4;
 
-			if (GetCharacterID(0) == Characters_Sonic || GetCharacterID(0) == Characters_Tails) {
+			if (GetCharacterID(a1->Data1->CharIndex) == Characters_Sonic || GetCharacterID(a1->Data1->CharIndex) == Characters_Tails) {
 				entity->Status = Status_Ball;
-				entity->Action = 8;
-				co2->AnimationThing.Index = 14;
+				if ((co2->Upgrades & Upgrades_SuperSonic) == 0) {
+					entity->Action = 8;
+					co2->AnimationThing.Index = 14;
+				}
+				else {
+					co2->AnimationThing.Index = 145;
+				}
 			}
 
 			PlaySound(46, 0, 0, 0);
