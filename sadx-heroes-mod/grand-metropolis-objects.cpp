@@ -56,7 +56,7 @@ void GMPistons_Display(ObjectMaster *a1) {
 					njTranslate(0, 0, a1->Data1->Scale.x, 0);
 				else {
 					njTranslate(0, 0, 24, 0);
-					njTranslate(0, 0, -a1->Data1->Scale.x, 0);
+					njTranslate(0, 0, -a1->Data1->Scale.y, 0);
 				}
 				
 				njDrawModel_SADX(GM_GPISTON->getmodel()->child->basicdxmodel);
@@ -70,18 +70,27 @@ void GMPistons_Display(ObjectMaster *a1) {
 
 void GMPistons_Main(ObjectMaster *a1) {
 	++a1->Data1->InvulnerableTime;
+	++a1->Data1->Index;
 
-	if (a1->Data1->NextAction == 0) a1->Data1->Scale.x = 0;
-	if (a1->Data1->InvulnerableTime == 400) a1->Data1->InvulnerableTime = 0;
-	if (a1->Data1->InvulnerableTime < 200) a1->Data1->NextAction = 1;
-	if (a1->Data1->InvulnerableTime > 199) a1->Data1->NextAction = 2;
-	if (a1->Data1->NextAction == 1) a1->Data1->Scale.x += 0.12f;
-	if (a1->Data1->NextAction == 2) a1->Data1->Scale.x -= 0.12f;
+	if (a1->Data1->InvulnerableTime == 125) a1->Data1->InvulnerableTime = 0;
+	if (a1->Data1->InvulnerableTime < 100) a1->Data1->NextAction = 1;
+	if (a1->Data1->InvulnerableTime > 99) a1->Data1->NextAction = 2;
+	if (a1->Data1->NextAction == 1) a1->Data1->Scale.x += 0.24f;
+	if (a1->Data1->NextAction == 2) a1->Data1->Scale.x -= 0.96f;
+
+	if (a1->Data1->Index == 125) a1->Data1->Index = 0;
+	if (a1->Data1->Index < 25) a1->Data1->CharIndex = 1;
+	if (a1->Data1->Index > 24) a1->Data1->CharIndex = 2;
+	if (a1->Data1->CharIndex == 1) a1->Data1->Scale.y += 0.96f;
+	if (a1->Data1->CharIndex == 2) a1->Data1->Scale.y -= 0.24f;
 
 	GMPistons_Display(a1);
 }
 
 void GMPistons(ObjectMaster *a1) {
+	a1->Data1->Scale.x = 0;
+	a1->Data1->Index = 0;
+
 	a1->DisplaySub = GMPistons_Display;
 	a1->MainSub = GMPistons_Main;
 }
