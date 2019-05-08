@@ -13,6 +13,7 @@ static bool EnableCasinoPark = true;
 static bool EnableBingoHighway = true;
 static bool EnableHangCastle = true;
 static bool EnableMysticMansion = true;
+static bool EnableEggFleet = true;
 static bool EnableSpecialStages = true;
 
 bool NoMysticMusic = false;
@@ -40,6 +41,7 @@ StartPosition Heroes_StartPositions[]{
 	{ HeroesLevelID_BingoHighway, 0,{ 7999, 2277, 472 }, 0xBFFF },
 	{ HeroesLevelID_HangCastle, 0,{ 3999, 4000, 109 }, 0xBFFF },
 	{ HeroesLevelID_MysticMansion, 0,{ 0, 23, 777 }, 0xBFFF },
+	{ HeroesLevelID_EggFleet, 0,{ 500, 4230, 5320 }, 0xBFFF },
 	{ HeroesLevelID_SpecialStages, 0,{ 200, 0, 0 }, 0xBFFF }
 };
 
@@ -266,6 +268,7 @@ void __cdecl ForceAct()
 			(CurrentLevel == HeroesLevelID_BingoHighway && EnableBingoHighway) ||
 			(CurrentLevel == HeroesLevelID_HangCastle && EnableHangCastle) ||
 			(CurrentLevel == HeroesLevelID_MysticMansion && EnableMysticMansion) ||
+			(CurrentLevel == HeroesLevelID_EggFleet && EnableEggFleet) ||
 			(CurrentLevel == HeroesLevelID_SpecialStages && EnableSpecialStages)) {
 
 			IsHeroesLevel = true;
@@ -334,6 +337,7 @@ void Levels_Init(const char *path, const HelperFunctions &helperFunctions)
 	EnableBingoHighway = config->getBool("Levels", "EnableBingoHighway", true);
 	EnableHangCastle = config->getBool("Levels", "EnableHangCastle", true);
 	EnableMysticMansion = config->getBool("Levels", "EnableMysticMansion", true);
+	EnableEggFleet = config->getBool("Levels", "EnableEggFleet", true);
 	EnableSpecialStages = config->getBool("Levels", "EnableSpecialStages", true);
 	NoMysticMusic = config->getBool("General", "NoMysticMusic", false);
 	NoPinball = config->getBool("General", "NoPinball", false);
@@ -364,6 +368,7 @@ void Levels_Init(const char *path, const HelperFunctions &helperFunctions)
 	if (EnableBingoHighway) BingoHighway_Init(path, helperFunctions);
 	if (EnableHangCastle) HangCastle_Init(path, helperFunctions);
 	if (EnableMysticMansion) MysticMansion_Init(path, helperFunctions);
+	if (EnableEggFleet) EggFleet_Init(path, helperFunctions);
 	if (EnableSpecialStages) SpecialStages_Init(path, helperFunctions);
 
 	SetCharactersLevelData(helperFunctions);

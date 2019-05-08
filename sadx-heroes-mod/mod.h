@@ -26,6 +26,7 @@ DataArray(DeathZone*, EmeraldCoastDeathZones, 0x102F8E8, 4);
 DataArray(DeathZone*, WindyValleyDeathZones, 0xBFD820, 3);
 DataArray(DeathZone*, TwinkleParkDeathZones, 0x26B3C58, 4);
 DataArray(DeathZone*, IceCapDeathZones, 0xE2FE4C, 4);
+DataArray(DeathZone*, SkyDeckDeathZones, 0x223082C, 3);
 DataArray(DeathZone*, CasinopolisDeathZones, 0x1D7E374, 4);
 DataArray(DeathZone*, LostWorldDeathZones, 0x2032108, 3);
 DataArray(DeathZone*, FinalEggDeathZones, 0x1A49218, 4);
@@ -50,7 +51,8 @@ enum HeroesLevelIDs {
 	HeroesLevelID_OceanPalace,
 	HeroesLevelID_CasinoPark,
 	HeroesLevelID_BingoHighway,
-	HeroesLevelID_HangCastle = 7,
+	HeroesLevelID_EggFleet = 6,
+	HeroesLevelID_HangCastle,
 	HeroesLevelID_PowerPlant,
 	HeroesLevelID_GrandMetropolis,
 	HeroesLevelID_MysticMansion,

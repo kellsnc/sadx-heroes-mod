@@ -84,6 +84,7 @@
     <ClCompile Include="casino-common.cpp" />
     <ClCompile Include="casino-park-objects.cpp" />
     <ClCompile Include="casino-park.cpp" />
+    <ClCompile Include="egg-fleet.cpp" />
     <ClCompile Include="grand-metropolis-objects.cpp" />
     <ClCompile Include="grand-metropolis.cpp" />
     <ClCompile Include="hang-castle-objects.cpp" />
@@ -133,6 +134,7 @@
     <ClInclude Include="Data\power-plant-objects.h" />
     <ClInclude Include="Data\power-plant-paths.h" />
     <ClInclude Include="Data\road-rock-deathzones.h" />
+    <ClInclude Include="egg-fleet.h" />
     <ClInclude Include="grand-metropolis.h" />
     <ClInclude Include="hang-castle.h" />
     <ClInclude Include="lanternapi.h" />
@@ -154,7 +156,6 @@
   </ImportGroup>
   <Target Name="AfterBuild">
     <Copy SourceFiles="..\bin\sadx-heroes-mod.dll" DestinationFolder="D:\Kell\SADX\mods\sadx-heroes-mod-dev" />
-    <Copy SourceFiles="D:\Kell\SADX Modding\SA TOOLS\SADXPC\system\SET0302S.bin; D:\Kell\SADX Modding\SA TOOLS\SADXPC\system\SET0302M.bin" DestinationFiles="D:\Kell\SADX\mods\sadx-heroes-mod-dev\system\power-plant-set.bin; D:\Kell\SADX\mods\sadx-heroes-mod-dev\system\power-plant-set-tails.bin" />
-    <Copy SourceFiles="D:\Kell\SADX Modding\SA TOOLS\SADXPC\system\SET0101S.bin; D:\Kell\SADX Modding\SA TOOLS\SADXPC\system\SET0101M.bin; D:\Kell\SADX Modding\SA TOOLS\SADXPC\system\SET0101K.bin; D:\Kell\SADX Modding\SA TOOLS\SADXPC\system\CAM0101S.bin" DestinationFiles="D:\Kell\SADX\mods\sadx-heroes-mod-dev\system\mystic-mansion-set.bin; D:\Kell\SADX\mods\sadx-heroes-mod-dev\system\mystic-mansion-set-tails.bin; D:\Kell\SADX\mods\sadx-heroes-mod-dev\system\mystic-mansion-set-knux.bin; D:\Kell\SADX\mods\sadx-heroes-mod-dev\system\mystic-mansion-cam.bin" />
+    <Copy SourceFiles="D:\Kell\SADX Modding\SA TOOLS MANAGER\SADXPC\Projects\test\system\SET0302S.bin; D:\Kell\SADX Modding\SA TOOLS MANAGER\SADXPC\Projects\test\system\SET0302M.bin; D:\Kell\SADX Modding\SA TOOLS MANAGER\SADXPC\Projects\test\system\CAM0302S.bin" DestinationFiles="D:\Kell\SADX\mods\sadx-heroes-mod-dev\system\egg-fleet-set.bin; D:\Kell\SADX\mods\sadx-heroes-mod-dev\system\egg-fleet-set-tails.bin; D:\Kell\SADX\mods\sadx-heroes-mod-dev\system\egg-fleet-cam.bin" />
   </Target>
 </Project>
