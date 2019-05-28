@@ -3,14 +3,16 @@
 
 //Load Object File
 ModelInfo* LoadMDL(const char *name) {
-	PrintDebug("Loading model "); PrintDebug(name); PrintDebug("... ");
-	std::string fullPath = modpath + "\\system\\objects\\" + name + ".sa1mdl";
+	PrintDebug("[SHM] Loading model "); PrintDebug(name); PrintDebug("... ");
+
+	std::string fullPath = "system\\objects\\";
+	fullPath = fullPath + name + ".sa1mdl";
 	const char *foo = fullPath.c_str();
 
-	ModelInfo * temp = new ModelInfo(foo);
+	ModelInfo * temp = new ModelInfo(HelperFunctionsGlobal.GetReplaceablePath(foo));
 
-	if (temp->getformat() == ModelFormat_Basic) PrintDebug("OK.\n");
-	else PrintDebug("ERROR.\n");
+	if (temp->getformat() == ModelFormat_Basic) PrintDebug("Done.\n");
+	else PrintDebug("Error.\n");
 
 	return temp;
 }

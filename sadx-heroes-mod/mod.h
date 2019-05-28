@@ -12,6 +12,8 @@ extern set_diffuse_blend_factor* set_diffuse_blend_factor_ptr;
 extern set_specular_blend_factor* set_specular_blend_factor_ptr;
 extern set_blend* set_blend_ptr;
 
+extern HelperFunctions HelperFunctionsGlobal;
+
 VoidFunc(sub_40D3B0, 0x40D3B0);
 
 FunctionPointer(void, DrawModelBlend_IsVisible, (NJS_MODEL_SADX *model, QueuedModelFlagsB blend, float radius_scale), 0x4094D0);

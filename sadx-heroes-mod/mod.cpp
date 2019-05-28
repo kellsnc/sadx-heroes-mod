@@ -13,6 +13,8 @@ set_diffuse_blend_factor* set_diffuse_blend_factor_ptr;
 set_specular_blend_factor* set_specular_blend_factor_ptr;
 set_blend* set_blend_ptr;
 
+HelperFunctions HelperFunctionsGlobal;
+
 bool EnableModels = true;
 bool EnableSounds = true;
 bool IsLoaded = false;
@@ -54,6 +56,8 @@ extern "C"
 			set_specular_blend_factor_ptr = (void(*)(float))GetProcAddress(LanternDLL, "set_specular_blend_factor");
 			set_blend_ptr = (void(*)(int32_t, int32_t))GetProcAddress(LanternDLL, "set_blend");
 		}
+
+		HelperFunctionsGlobal = helperFunctions;
 
 		WriteData((Uint8*)0x438330, FREECAM_FIX); //freecam fix by SonicFreak94
 		

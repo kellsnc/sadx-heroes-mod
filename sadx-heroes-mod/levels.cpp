@@ -101,15 +101,18 @@ void SwapCurrentLandTable() {
 }
 
 void LoadLevelFile(const char *shortname, int chunknb) {
-	std::string fullPath = modpath + "\\system\\levels\\" + shortname;
 	std::string numtos = std::to_string(chunknb);
+
+	PrintDebug("[SHM] Loading "); PrintDebug(shortname); if (chunknb < 10) PrintDebug("0");
+	PrintDebug(numtos.c_str()); PrintDebug("... ");
+	
+	std::string fullPath = "system\\levels\\";
+	fullPath += shortname;
 	if (chunknb < 10) fullPath += "0";
 	fullPath += numtos + ".sa1lvl";
 	const char *foo = fullPath.c_str();
 
-	PrintDebug("[SHM] Swapping for ");
-	PrintDebug(foo);
-	PrintDebug("\n");
+	PrintDebug("Freeing chunk... ");
 
 	FreeCurrentChunk(CurrentLevel, CurrentAct);
 
@@ -123,10 +126,15 @@ void LoadLevelFile(const char *shortname, int chunknb) {
 		info = nullptr;
 	}
 
-	info = new LandTableInfo(foo);
+	info = new LandTableInfo(HelperFunctionsGlobal.GetReplaceablePath(foo));
+
+	PrintDebug("Done. Loaded '"); PrintDebug(foo); PrintDebug("'. Swapping landtable... ");
+
 	CurrentChunk = chunknb;
 	SwapCurrentLandTable();
 	SetCurrentLandTable();
+
+	PrintDebug("Done. \n");
 }
 
 void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size, NJS_VECTOR pos) {
