@@ -241,12 +241,12 @@ void __cdecl LoadSkyboxObject_r()
 	if (IsHeroesLevel) {
 		LevelDrawDistance.Maximum = -999999.0f;
 		Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
+		if (CurrentLevel != HeroesLevelID_EggFleet) return;
 	}
-	else {
-		if (SkyboxObjects[CurrentLevel])
-		{
-			LoadObject(LoadObj_Data1, 1, SkyboxObjects[CurrentLevel]);
-		}
+	
+	if (SkyboxObjects[CurrentLevel])
+	{
+		LoadObject(LoadObj_Data1, 1, SkyboxObjects[CurrentLevel]);
 	}
 }
 

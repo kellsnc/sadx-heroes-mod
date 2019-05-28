@@ -10,13 +10,13 @@ void EggFleet_InitObjects() {
 	EF_SKYMDLS = LoadMDL("EF_SKYMDLS");
 }
 
-void EggFleet_Delete(ObjectMaster * a1) {
+void EggFleet_Delete(ObjectMaster *a1) {
 	FreeMDL(EF_SKYMDLS);
 
 	LevelHandler_Delete(a1);
 }
 
-void EggFleetHandler(ObjectMaster * a1) {
+void EggFleetHandler(ObjectMaster *a1) {
 	EntityData1 *entity = EntityData1Ptrs[0];
 	CharObj2 * co2 = CharObj2Ptrs[0];
 
@@ -25,33 +25,49 @@ void EggFleetHandler(ObjectMaster * a1) {
 		a1->DeleteSub = EggFleet_Delete;
 
 		EggFleet_InitObjects();
-
-		InitializeSoundManager();
-		PlayMusic(MusicIDs_SkyDeckSkydeckAGoGo);
-		SoundManager_Delete2();
-		
-		entity->Position = { 500, 4230, 5320 };
-
 		CurrentLevelTexlist = &SKYDECK01_TEXLIST;
 		CurrentLandAddress = (LandTable**)0x97DAC8;
+
+		PlayMusic(MusicIDs_SkyDeckSkydeckAGoGo);
+
+		entity->Position = { 500, 4230, 5320 };
 	}
 	else {
-		//AnimateUV(EggFleet_UVShift, LengthOfArray(EggFleet_UVShift));
 		ChunkHandler("EF", EggFleetChunks, LengthOfArray(EggFleetChunks), entity->Position);
 		AnimateTextures(EggFleetAnimTexs, LengthOfArray(EggFleetAnimTexs));
+	}
+}
 
-		//Draw the sky
-		if (!MissedFrames) {
-			njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
-			njPushMatrix(0);
-			njTranslateV(nullptr, &entity->Position);
-			njScale(nullptr, 0.1f, 0.1f, 0.1f);
-			DrawQueueDepthBias = -6000;
-			njDrawModel_SADX(EF_SKYMDLS->getmodel()->basicdxmodel);
-			njDrawModel_SADX(EF_SKYMDLS->getmodel()->child->basicdxmodel);
-			DrawQueueDepthBias = 0;
-			njPopMatrix(1u);
-		}
+void EggFleetSkybox(ObjectMaster *a1) {
+	if (a1->Data1->Action == 0) {
+		a1->Data1->Action = 1;
+		a1->DisplaySub = a1->MainSub;
+
+		LevelDrawDistance.Maximum = -999999.0f;
+		Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
+
+		return;
+	}
+	else if (a1->Data1->Action == 1) {
+		DeleteObjectMaster(CurrentLevelObject);
+		CurrentLevelObject = LoadObject(LoadObj_Data1, 1, EggFleetHandler);
+		a1->Data1->Action = 2;
+
+		return;
+	}
+	
+	if (!MissedFrames) {
+		DisableFog();
+		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		njPushMatrix(0);
+		njTranslateV(nullptr, &EntityData1Ptrs[0]->Position);
+		njScale(nullptr, 0.1f, 0.1f, 0.1f);
+		DrawQueueDepthBias = -6000;
+		njDrawModel_SADX(EF_SKYMDLS->getmodel()->basicdxmodel);
+		njDrawModel_SADX(EF_SKYMDLS->getmodel()->child->basicdxmodel);
+		DrawQueueDepthBias = 0;
+		njPopMatrix(1u);
+		ToggleStageFog();
 	}
 }
 
@@ -69,5 +85,5 @@ void EggFleet_Init(const char *path, const HelperFunctions &helperFunctions) {
 	SkyDeckDeathZones[0] = EggFleetDeathZones;
 
 	//Load the level handler
-	LevelObjects[HeroesLevelID_EggFleet] = EggFleetHandler;
+	SkyboxObjects[HeroesLevelID_EggFleet] = EggFleetSkybox;
 }
