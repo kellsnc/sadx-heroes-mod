@@ -25,9 +25,8 @@ NJS_VECTOR OceanPalaceTriggers[]{
 	{ -8350, 1301, -43101 }
 };
 
-#pragma region Fins
 void OPFins_Display(ObjectMaster *a1) {
-	if (!DroppedFrames) {
+	if (CurrentChunk == 5 && !DroppedFrames) {
 		for (int i = 0; i < LengthOfArray(OceanPalace_EventObjects); ++i) {
 			if (OceanPalace_EventObjects[i].Model > 1 && CheckModelDisplay2(OceanPalace_EventObjects[i])) {
 				SOI_LIST2 item = OceanPalace_EventObjects[i];
@@ -54,6 +53,11 @@ void OPFins_Display(ObjectMaster *a1) {
 }
 
 void OPFins_Main(ObjectMaster *a1) {
+	if (a1->Data1->Action == 0) {
+		a1->DisplaySub = OPFins_Display;
+		a1->Data1->Action = 1;
+	}
+
 	if (CurrentChunk == 5) {
 		finsstate++;
 		if (finsstate > 300) finsstate = 0;
@@ -86,14 +90,12 @@ void OPFins_Main(ObjectMaster *a1) {
 	}
 }
 
-void OPFins(ObjectMaster *a1) {
-	a1->DisplaySub = OPFins_Display;
-	a1->MainSub = OPFins_Main;
-}
-#pragma endregion
-
-#pragma region Flowers
-void OPFlowers_Display(ObjectMaster *a1) {
+void OPFlowers(ObjectMaster *a1) {
+	if (a1->Data1->Action == 0) {
+		a1->DisplaySub = a1->MainSub;
+		a1->Data1->Action = 1;
+	}
+	
 	if (!DroppedFrames) {
 		for (int i = 0; i < LengthOfArray(OceanPalace_Flowers); ++i) {
 			if (CheckModelDisplay2(OceanPalace_Flowers[i])) {
@@ -120,14 +122,12 @@ void OPFlowers_Display(ObjectMaster *a1) {
 	}
 }
 
-void OPFlowers(ObjectMaster *a1) {
-	a1->DisplaySub = OPFlowers_Display;
-	a1->MainSub = OPFlowers_Display;
-}
-#pragma endregion
-
-#pragma region Waterfalls
-void OPWaterfalls_Display(ObjectMaster *a1) {
+void OPWaterfalls(ObjectMaster *a1) {
+	if (a1->Data1->Action == 0) {
+		a1->DisplaySub = a1->MainSub;
+		a1->Data1->Action = 1;
+	}
+	
 	if (!DroppedFrames) {
 		if (CurrentAct == 0) {
 			for (int i = 0; i < LengthOfArray(OceanPalace_Waterfalls); ++i) {
@@ -171,49 +171,38 @@ void OPWaterfalls_Display(ObjectMaster *a1) {
 	}
 }
 
-void OPWaterfalls(ObjectMaster *a1) {
-	a1->DisplaySub = OPWaterfalls_Display;
-	a1->MainSub = OPWaterfalls_Display;
-}
-#pragma endregion
+void OPPOLE_Main(ObjectMaster *a1) {
+	if (!MissedFrames && !ClipSetObject(a1)) {
+		DynColRadius(a1, 1000, 0);
 
-#pragma region Poles
-void OPPOLE_Display(ObjectMaster *a1) {
-	if (!MissedFrames && IsPlayerInsideSphere(&a1->Data1->Position, 2000.0f)) {
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
 		DrawQueueDepthBias = -6000.0f;
 		njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
-		if (a1->Data1->Scale.x == 1) njDrawModel_SADX(OP_WATERFS->getmodel()->child->child->child->child->child->child->child->child->child->child->child->basicdxmodel);
-		else njDrawModel_SADX(OP_WATERFS->getmodel()->child->child->child->child->child->child->child->child->child->child->basicdxmodel);
+
+		if (a1->Data1->Scale.x == 1)
+			njDrawModel_SADX(OP_WATERFS->getmodel()->child->child->child->child->child->child->child->child->child->child->child->basicdxmodel);
+		else 
+			njDrawModel_SADX(OP_WATERFS->getmodel()->child->child->child->child->child->child->child->child->child->child->basicdxmodel);
+
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 	}
 }
 
-void OPPOLE_Main(ObjectMaster *a1) {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 1500.0f)) {
-		OPPOLE_Display(a1);
-	}
-	else {
-		deleteSub_Global(a1);
-	}
-}
-
-void __cdecl OPPOLE(ObjectMaster *a1)
+void OPPOLE(ObjectMaster *a1)
 {
 	if (a1->Data1->Scale.x == 1) a1->Data1->Object = OP_POLFLAG->getmodel()->child;
 	else a1->Data1->Object = OP_POLFLAG->getmodel();
-	AddToCollision(a1, 0);
 
 	a1->MainSub = &OPPOLE_Main;
-	a1->DisplaySub = &OPPOLE_Display;
+	a1->DisplaySub = &OPPOLE_Main;
 	a1->DeleteSub = &deleteSub_Global;
 }
-#pragma endregion
 
+//gotta rewrite this
 #pragma region Boulders
 void OP_AnimFix() {
 	EntityData1 *entity = EntityData1Ptrs[0];
@@ -267,8 +256,6 @@ void OPBoulders_Delete(ObjectMaster *a1) {
 }
 
 void OPBoulders_Main(ObjectMaster *a1) {
-	//todo: rewrite this shit
-
 	if (CurrentChunk > 5) {
 		if (IsPlayerInsideSphere(&OceanPalaceTriggers[1], 45.0f) == 1) OP_AnimFix();
 
@@ -354,97 +341,97 @@ PVMEntry OceanPalaceTextures[] = {
 };
 
 ObjectListEntry OceanPalaceObjectList_list[] = {
-	{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x450370, "RING   " } /* "RING   " */,
-	{ 2, 2, 1, 360000, 0, (ObjectFuncPtr)0x7A4C30, "SPRING " } /* "SPRING " */,
-	{ 2, 2, 1, 360000, 0, (ObjectFuncPtr)0x7A4E50, "SPRINGB" } /* "SPRINGB" */,
-	{ 3, 3, 1, 360000, 0, (ObjectFuncPtr)0x7A4450, "O AXPNL" } /* "O AXPNL" */,
-	{ 6, 3, 1, 360000, 0, (ObjectFuncPtr)0x7A4260, "O IRONB" } /* "O IRONB" */,
-	{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x7A3E50, "O FeBJG" } /* "O FeBJG" */,
-	{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x7A30E0, "O TOGE" } /* "O TOGE" */,
-	{ 3, 3, 1, 360000, 0, (ObjectFuncPtr)0x4A3420, "O EME P" } /* "O EME P" */,
-	{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x46B170, "O RELEASE" } /* "O RELEASE" */,
-	{ 6, 3, 1, 360000, 0, (ObjectFuncPtr)0x4CBA80, "O SWITCH" } /* "O SWITCH" */,
-	{ 10, 3, 1, 160000, 0, (ObjectFuncPtr)0x7A2B60, "CMN KUSA" } /* "CMN KUSA" */,
-	{ 14, 3, 1, 360000, 0, (ObjectFuncPtr)0x7A26F0, "CMN_DRING" } /* "CMN_DRING" */,
-	{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x7A21C0, "O BALOON" } /* "O BALOON" */,
-	{ 2, 3, 1, 160000, 0, (ObjectFuncPtr)0x4D6F10, "O ITEMBOX" } /* "O ITEMBOX" */,
-	{ 14, 2, 1, 360000, 0, (ObjectFuncPtr)0x4CA530, "Rocket H" } /* "Rocket H" */,
-	{ 14, 2, 1, 360000, 0, (ObjectFuncPtr)0x4CA660, "Rocket HS" } /* "Rocket HS" */,
-	{ 14, 2, 1, 360000, 0, (ObjectFuncPtr)0x4CA7D0, "Rocket V" } /* "Rocket V" */,
-	{ 14, 2, 1, 360000, 0, (ObjectFuncPtr)0x4CA900, "Rocket VS" } /* "Rocket VS" */,
-	{ 2, 2, 1, 4000000, 0, (ObjectFuncPtr)0x4B8DC0, "O JPanel" } /* "O JPanel" */,
-	{ 15, 6, 1, 360000, 0, (ObjectFuncPtr)0x44F540, "O Save Point" } /* "O Save Point" */,
-	{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4D4850, "WALL   " } /* "WALL   " */,
-	{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x79B2F0, "O_GRING" } /* "O_GRING" */,
-	{ 2, 2, 1, 360000, 0, (ObjectFuncPtr)0x4D4700, "C SPHERE" } /* "C SPHERE" */,
-	{ 2, 2, 1, 360000, 0, (ObjectFuncPtr)0x4D4770, "C CYLINDER" } /* "C CYLINDER" */,
-	{ 2, 2, 1, 360000, 0, (ObjectFuncPtr)0x4D47E0, "C CUBE" } /* "C CUBE" */,
-	{ 2, 2, 1, 360000, 0, (ObjectFuncPtr)0x4D4B70, "OTTOTTO" } /* "OTTOTTO" */,
-	{ 2, 2, 1, 360000, 0, (ObjectFuncPtr)0x7A1AA0, "O TIKAL" } /* "O TIKAL" */,
-	{ 2, 2, 1, 40000, 0, (ObjectFuncPtr)0x7A8E50, "O BUBBLE" } /* "O BUBBLE" */,
-	{ 2, 4, 1, 40000, 0, (ObjectFuncPtr)0x7A8A60, "O BUBBLES" } /* "O BUBBLES" */,
-	{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4AD140, "E SARU  " } /* "E SARU  " */,
-	{ 2, 3, 1, 160000, 0, (ObjectFuncPtr)0x7A1380, "E SAITO" } /* "E SAITO" */,
-	{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x7AA960, "E AMEMB" } /* "E AMEMB" */,
-	{ 2, 3, 1, 1360000, 0, &ObjFan, "OBJFAN" } /* "SH FANS" */,
-	{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x500FF0, "YASI1   " } /* "YASI1   " */,
-	{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x501090, "YASI2   " } /* "YASI2   " */,
-	{ 2, 3, 1, 1060000, 0, &ObjFan, "OBJFAN" } /* "SH FANS" */,
-	{ 6, 3, 1, 360000, 0, &SHCameraSwitch, "CAMSWITCH" } /* "SH Camera Switcher" */,
-	{ 6, 3, 1, 1360000, 0, &ObjBalloon, "SH BALLOON" } /* "SH Balloon" */,
-	{ 2, 3, 1, 1000000, 0, (ObjectFuncPtr)&ObjBoxW, "OBJ BOWX" } /* "Wooden Box" */,
-	{ 15, 3, 1, 360000, 0, (ObjectFuncPtr)0x500770, "O IWA   " } /* "O IWA   " */,
-	{ 6, 3, 1, 360000, 0, (ObjectFuncPtr)0x5001E0, "O JUMP   " } /* "O JUMP   " */,
-	{ 6, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FB770, "O IWAPO   " } /* "O IWAPO   " */,
-	{ 6, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FB750, "O ROCK   " } /* "O ROCK   " */,
-	{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FFDC0, "O FENA   " } /* "O FENA   " */,
-	{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FFE00, "O FENB   " } /* "O FENB   " */,
-	{ 2, 3, 1, 422500, 0, (ObjectFuncPtr)0x4FFE40, "O FENC   " } /* "O FENC   " */,
-	{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FFE80, "O FEND   " } /* "O FEND   " */,
-	{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FFD80, "O CORA   " } /* "O CORA   " */,
-	{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FFDA0, "O CORB   " } /* "O CORB   " */,
-	{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FFD00, "O GRASA   " } /* "O GRASA   " */,
-	{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FFD20, "O GRASB   " } /* "O GRASB   " */,
-	{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FFD40, "O GRASC   " } /* "O GRASC   " */,
-	{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FFD60, "O GRASD   " } /* "O GRASD   " */,
-	{ 10, 3, 1, 3240000, 0, (ObjectFuncPtr)0x4FACD0, "O DOLPHIN   " } /* "O DOLPHIN   " */,
-	{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FB790, "O SEKITYU   " } /* "O SEKITYU   " */,
-	{ 11, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FFC30, "O KAMOME   " } /* "O KAMOME   " */,
-	{ 11, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FFB60, "O KAMOMEL   " } /* "O KAMOMEL   " */,
-	{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FB7E0, "O KOMOMO   " } /* "O KOMOMO   " */,
-	{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FF5F0, "O PARASOL" } /* "O PARASOL" */,
-	{ 6, 3, 1, 250000, 0, (ObjectFuncPtr)0x4FF060, "O PIER" } /* "O PIER" */,
-	{ 2, 3, 1, 160000, 0, (ObjectFuncPtr)0x4FE8C0, "O GOMBAN" } /* "O GOMBAN" */,
-	{ 2, 3, 1, 160000, 0, (ObjectFuncPtr)0x4F7E90, "O ASIATO" } /* "O ASIATO" */,
-	{ 10, 3, 1, 160000, 0, (ObjectFuncPtr)0x4FD9D0, "O BKUSA" } /* "O BKUSA" */,
-	{ 10, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FD770, "O MKUSA" } /* "O MKUSA" */,
-	{ 2, 3, 1, 160000, 0, (ObjectFuncPtr)0x4FDA90, "O K2" } /* "O K2" */,
-	{ 2, 3, 1, 160000, 0, (ObjectFuncPtr)0x4FD160, "O SAKANA8K" } /* "O SAKANA8K" */,
-	{ 3, 3, 1, 1000000, 0, (ObjectFuncPtr)0x4FC550, "O BIGROCK" } /* "O BIGROCK" */,
-	{ 2, 3, 5, 360000, 0, (ObjectFuncPtr)0x4AF190, "E UNI A" } /* "E UNI A" */,
-	{ 2, 3, 5, 360000, 0, (ObjectFuncPtr)0x4AF500, "E UNI B" } /* "E UNI B" */,
-	{ 2, 3, 5, 250000, 0, (ObjectFuncPtr)0x4AF860, "E UNI C" } /* "E UNI C" */,
-	{ 2, 3, 1, 1000000, 0, (ObjectFuncPtr)0x4FBA70, "O TAKI" } /* "O TAKI" */,
-	{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FB800, "O Rock2" } /* "O Rock2" */,
-	{ 3, 3, 1, 1000000, 0, (ObjectFuncPtr)0x4FB5F0, "O ARCHROCK" } /* "O ARCHROCK" */,
-	{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FB160, "O BED" } /* "O BED" */,
-	{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FB050, "O KASA" } /* "O KASA" */,
-	{ 2, 3, 1, 160000, 0, (ObjectFuncPtr)0x4FAE30, "O DOLSW" } /* "O DOLSW" */,
-	{ 3, 3, 1, 160000, 0, (ObjectFuncPtr)0x5977F0, "S BASS " } /* "S BASS " */,
-	{ 3, 3, 1, 160000, 0, (ObjectFuncPtr)0x7A7AD0, "S KAERU" } /* "S KAERU" */,
-	{ 3, 3, 1, 90000, 0, (ObjectFuncPtr)0x597660, "S GENE " } /* "S GENE " */,
-	{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FA3B0, "O BEWIND " } /* "O BEWIND " */,
-	{ 2, 3, 1, 160000, 0, (ObjectFuncPtr)0x4FA320, "O FROG " } /* "O FROG " */,
-	{ 2, 3, 1, 160000, 0, (ObjectFuncPtr)0x4F9FB0, "O BZ " } /* "O BZ " */,
-	{ 15, 3, 1, 160000, 0, (ObjectFuncPtr)0x4C07D0, "O ItemBoxAir" } /* "O ItemBoxAir" */,
-	{ 2, 0, 1, 1000000, 0, (ObjectFuncPtr)0x4D4BE0, "BIGWJUMP" } /* "BIGWJUMP" */,
-	{ 2, 3, 4, 0, 0, (ObjectFuncPtr)0x4B0DF0, "SPINA A" } /* "SPINA A" */,
-	{ 2, 3, 4, 0, 0, (ObjectFuncPtr)0x4B0F40, "SPINA B" } /* "SPINA B" */,
-	{ 2, 3, 4, 0, 0, (ObjectFuncPtr)0x4B1090, "SPINA C" } /* "SPINA C" */,
-	{ 2, 2, 0, 0, 0, (ObjectFuncPtr)0x7A4E50, "O SPRING B" } /* "O SPRING B" */,
-	{ 2, 3, 0, 0, 0, (ObjectFuncPtr)0x79F860, "O SPRING H" } /* "O SPRING H" */,
-	{ 2, 3, 1, 1600000, 0, (ObjectFuncPtr)&OPPOLE, "Poles" } /* "Waterfall poles" */,
-	{ 2, 3, 1, 1600000, 0, (ObjectFuncPtr)&OPPOLE, "Poles" } /* "Waterfall poles" */
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, Ring_Main, "RING   " },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, 0, Spring_Main, "SPRING " },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, 0, SpringB_Main, "SPRINGB" },
+	{ LoadObj_Data2 | LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, DashPanel_Main, "O AXPNL" },
+	{ LoadObj_Data1 | LoadObj_UnknownA, ObjIndex_Stage, DistObj_UseDist, 360000, 0, SwingSpikeBall_Load, "O IRONB" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, FallingSpikeBall_Load, "O FeBJG" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, Spikes_Main, "O TOGE" },
+	{ LoadObj_Data2 | LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, EmeraldPiece_Load, "O EME P" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, Capsule_Load, "O RELEASE" },
+	{ LoadObj_Data1 | LoadObj_UnknownA, ObjIndex_Stage, DistObj_UseDist, 360000, 0, Switch_Main, "O SWITCH" },
+	{ LoadObj_Data1 | LoadObj_UnknownB, ObjIndex_Stage, DistObj_UseDist, 160000, 0, Weed_Main, "CMN KUSA" },
+	{ LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB, ObjIndex_Stage, DistObj_UseDist, 360000, 0, DashHoop_Main, "CMN_DRING" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, Balloon_Main, "O BALOON" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 160000, 0, ItemBox_Main, "O ITEMBOX" },
+	{ LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB, ObjIndex_Common, DistObj_UseDist, 360000, 0, RocketH_Main, "Rocket H" },
+	{ LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB, ObjIndex_Common, DistObj_UseDist, 360000, 0, RocketHS_Main, "Rocket HS" },
+	{ LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB, ObjIndex_Common, DistObj_UseDist, 360000, 0, RocketV_Main, "Rocket V" },
+	{ LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB, ObjIndex_Common, DistObj_UseDist, 360000, 0, RocketVS_Main, "Rocket VS" },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 4000000, 0, JumpPanel_Load, "O JPanel" },
+	{ LoadObj_Data2 | LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB, ObjIndex_6, DistObj_UseDist, 360000, 0, CheckPoint_Main, "O Save Point" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, Wall_Main, "WALL   " },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, RingGroup_Main, "O_GRING" },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, 0, CSphere, "C SPHERE" },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, 0, ColCylinder_Main, "C CYLINDER" },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, 0, ColCube_Main, "C CUBE" },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, 0, Ottotto_Main, "OTTOTTO" },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, 0, TikalHint_Load, "O TIKAL" },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 40000, 0, Bubble_Main, "O BUBBLE" },
+	{ LoadObj_Data1, ObjIndex_4, DistObj_UseDist, 40000, 0, Bubbles_Main, "O BUBBLES" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, Kiki_Load, "E SARU  " },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 160000, 0, RhinoTank_Main, "E SAITO" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, Sweep_Load, "E AMEMB" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3360000, 0, ObjFan, "OBJFAN" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 460000, 0, ObjFan, "OBJFAN" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 860000, 0, ObjFan, "OBJFAN" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1060000, 0, ObjFan, "OBJFAN" },
+	{ LoadObj_Data1 | LoadObj_UnknownA, ObjIndex_Stage, DistObj_UseDist, 360000, 0, SHCameraSwitch, "CAMSWITCH" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1360000, 0, ObjBalloon, "SH BALLOON" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1000000, 0, ObjBoxW, "CO_WOODBOX" },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ LoadObj_Data1 | LoadObj_UnknownA, ObjIndex_Stage, DistObj_UseDist, 360000, 0, (ObjectFuncPtr)0x5001E0, "O JUMP   " },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ LoadObj_Data1 | LoadObj_UnknownA, ObjIndex_Stage, DistObj_UseDist, 360000, 0, ORock, "O ROCK   " },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, OFena, "O FENA   " },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, OFenb, "O FENB   " },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 422500, 0, OFenc, "O FENC   " },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, OFend, "O FEND   " },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, OGrasa, "O GRASA   " },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, OGrasb, "O GRASB   " },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, OGrasc, "O GRASC   " },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, OGrasd, "O GRASD   " },
+	{ LoadObj_Data1 | LoadObj_UnknownB, ObjIndex_Stage, DistObj_UseDist, 3240000, 0, ODolphin, "O DOLPHIN   " },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, OSekityu, "O SEKITYU   " },
+	{ LoadObj_Data2 | LoadObj_Data1 | LoadObj_UnknownB, ObjIndex_Stage, DistObj_UseDist, 360000, 0, OKamome, "O KAMOME   " },
+	{ LoadObj_Data2 | LoadObj_Data1 | LoadObj_UnknownB, ObjIndex_Stage, DistObj_UseDist, 360000, 0, OKamomel, "O KAMOMEL   " },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, OKomomo, "O KOMOMO   " },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, OParasol_Load, "O PARASOL" },
+	{ LoadObj_Data1 | LoadObj_UnknownA, ObjIndex_Stage, DistObj_UseDist, 250000, 0, OPier, "O PIER" },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ LoadObj_Data1 | LoadObj_UnknownB, ObjIndex_Stage, DistObj_UseDist, 160000, 0, OBkusa, "O BKUSA" },
+	{ LoadObj_Data1 | LoadObj_UnknownB, ObjIndex_Stage, DistObj_UseDist, 360000, 0, OMkusa, "O MKUSA" },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ LoadObj_Data2 | LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1000000, 0, OBigrock, "O BIGROCK" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 360000, 0, UnidusA_Main, "E UNI A" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 360000, 0, UnidusB_Main, "E UNI B" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 250000, 0, UnidusC_Main, "E UNI C" },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, ORock2, "O Rock2" },
+	{ LoadObj_Data2 | LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1000000, 0, OArchrock, "O ARCHROCK" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, OBed, "O BED" },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, OBewind, "O BEWIND " },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 160000, 0, OFrog, "O FROG " },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ LoadObj_Data2 | LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB, ObjIndex_Stage, DistObj_UseDist, 160000, 0, ItemBoxAir_Main, "O ItemBoxAir" },
+	{ LoadObj_Data1, ObjIndex_NoDisplay, DistObj_UseDist, 1000000, 0, BigWJump_Main, "BIGWJUMP" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, 0, SpinnerA_Main, "SPINA A" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, 0, SpinnerB_Main, "SPINA B" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, 0, SpinnerC_Main, "SPINA C" },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Default, 0, 0, SpringH_Load, "O SPRING H" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1000000, 0, OPPOLE, "OP_POLFLAG" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 8000000, 0, OPPOLE, "OP_POLFLAG" }
 };
 ObjectList OceanPalaceObjectList = { arraylengthandptrT(OceanPalaceObjectList_list, int) };
 

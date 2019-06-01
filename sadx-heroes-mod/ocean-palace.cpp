@@ -95,7 +95,7 @@ void OceanPalaceHandler(ObjectMaster * a1) {
 			matlist_waterfall[0].attr_texId = 66;
 
 			LoadObject(LoadObj_Data1, 3, OPFlowers);
-			LoadObject(LoadObj_Data1, 3, OPFins);
+			LoadObject(LoadObj_Data1, 3, OPFins_Main);
 			LoadObject(LoadObj_Data1, 3, OPBoulders);
 
 			if (entity->Position.z > -10637) LoadLevelFile("OP", 01);

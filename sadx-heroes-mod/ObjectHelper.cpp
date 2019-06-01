@@ -41,8 +41,8 @@ void DrawObjModel(ObjectMaster *a1, NJS_MODEL_SADX *m, bool scalable) {
 void deleteSub_Global(ObjectMaster *a1) {
 	if (a1->Data1->Object)
 	{
-		DynamicCOL_Remove(a1, a1->Data1->Object);
-		ObjectArray_Remove(a1->Data1->Object);
+		DynamicCOL_Remove(a1, (NJS_OBJECT*)a1->Data1->LoopData);
+		ObjectArray_Remove((NJS_OBJECT*)a1->Data1->LoopData);
 	}
 	DeleteObject_(a1);
 }
@@ -98,11 +98,23 @@ void AddToCollision(ObjectMaster *a1, uint8_t col) {
 	colobject->pos[2] = original->Position.z;
 
 	colobject->basicdxmodel = a1->Data1->Object->basicdxmodel; //object it will use as a collision
-	a1->Data1->Object = colobject; //pointer to the collision object into our original object
+	a1->Data1->LoopData = (Loop*)colobject; //pointer to the collision object into our original object
 
 	if (col == 0 || col == 2) DynamicCOL_Add((ColFlags)1, a1, colobject); //Solid
 	else if (col == 1 || col == 3) DynamicCOL_Add((ColFlags)0x8000000, a1, colobject); //Dynamic, solid
 	else if (col == 4) DynamicCOL_Add((ColFlags)0x8000001, a1, colobject);
+}
+
+//Only allocate dynamic collision within radius
+void DynColRadius(ObjectMaster *a1, float radius, uint8_t col) {
+	if (IsPlayerInsideSphere(&a1->Data1->Position, radius)) {
+		if (!a1->Data1->LoopData) AddToCollision(a1, col);
+	} else if (a1->Data1->LoopData) {
+		DynamicCOL_Remove(a1, (NJS_OBJECT*)a1->Data1->LoopData);
+		ObjectArray_Remove((NJS_OBJECT*)a1->Data1->LoopData);
+
+		a1->Data1->LoopData = nullptr;
+	}
 }
 
 //Shift uv of models, requires a SH_UVSHIFT struct

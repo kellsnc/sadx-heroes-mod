@@ -30,7 +30,7 @@ DeathZone RoadRockDeathZones[] = {
 void OceanPalaceObjects_Init(const char *path);
 void SHSuns_Init(ObjectMaster * a1);
 
-void OPFins(ObjectMaster *a1);
+void OPFins_Main(ObjectMaster *a1);
 void OPFlowers(ObjectMaster *a1);
 void OPWaterfalls(ObjectMaster *a1);
 void OPBoulders(ObjectMaster *a1);
