@@ -111,6 +111,7 @@ void PowerPlant_Init(const char *path, const HelperFunctions &helperFunctions) {
 	IceCapDeathZones[0] = PowerPlantDeathZones;
 
 	LevelObjects[HeroesLevelID_PowerPlant] = PowerPlantHandler;
+	SkyboxObjects[HeroesLevelID_PowerPlant] = HeroesSkybox_Main;
 
 	PowerPlantObjects_Init(path);
 }

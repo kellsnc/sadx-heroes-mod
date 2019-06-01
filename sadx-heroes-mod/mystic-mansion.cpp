@@ -166,6 +166,7 @@ void MysticMansion_Init(const char *path, const HelperFunctions &helperFunctions
 	FinalEggDeathZones[0] = MysticMansionDeathZones;
 
 	LevelObjects[HeroesLevelID_MysticMansion] = MysticMansionHandler;
+	SkyboxObjects[HeroesLevelID_MysticMansion] = HeroesSkybox_Main;
 
 	MysticMansionObjects_Init();
 }

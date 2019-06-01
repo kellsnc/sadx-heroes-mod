@@ -1,6 +1,6 @@
 #pragma once
 
-extern float IsLantern;
+extern bool IsLantern;
 extern set_shader_flags* set_shader_flags_ptr;
 extern material_register* material_register_ptr;
 extern set_diffuse* set_diffuse_ptr;

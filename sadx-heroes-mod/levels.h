@@ -17,6 +17,7 @@ void AutoLoop(ObjectMaster * a1);
 void RailPath(ObjectMaster * a1);
 void SlopePath(ObjectMaster * a1);
 
+void HeroesSkybox_Main(ObjectMaster *a1);
 void AnimateObjectsTextures(NJS_MODEL_SADX * *objlist, int size, SH_ANIMTEXS *list, Int listcount);
 void AnimateUV(SH_UVSHIFT *UVSHIFT, int size);
 

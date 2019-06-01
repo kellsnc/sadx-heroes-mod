@@ -43,8 +43,7 @@ void EggFleetSkybox(ObjectMaster *a1) {
 		a1->Data1->Action = 1;
 		a1->DisplaySub = a1->MainSub;
 
-		LevelDrawDistance.Maximum = -999999.0f;
-		Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
+		HeroesSkybox_Main(a1);
 
 		return;
 	}

@@ -168,6 +168,7 @@ void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions) 
 
 	//Load the level handler
 	LevelObjects[HeroesLevelID_SeasideHill] = SeasideHillHandler;
+	SkyboxObjects[HeroesLevelID_SeasideHill] = HeroesSkybox_Main;
 	
 	SeaGate_Init(path, helperFunctions);
 	SeasideHillObjects_Init(path);

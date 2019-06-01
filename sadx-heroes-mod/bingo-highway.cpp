@@ -114,6 +114,7 @@ void BingoHighway_Init(const char *path, const HelperFunctions &helperFunctions)
 	DeathZoneList[HeroesLevelID_BingoHighway] = nullptr;
 
 	LevelObjects[HeroesLevelID_BingoHighway] = BingoHighwayHandler;
+	SkyboxObjects[HeroesLevelID_BingoHighway] = HeroesSkybox_Main;
 
 	BingoHighwayObjects_Init(path);
 }

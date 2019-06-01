@@ -122,6 +122,7 @@ void HangCastle_Init(const char *path, const HelperFunctions &helperFunctions) {
 	LostWorldDeathZones[0] = HangCastleDeathZones;
 
 	LevelObjects[HeroesLevelID_HangCastle] = HangCastleHandler;
+	SkyboxObjects[HeroesLevelID_HangCastle] = HeroesSkybox_Main;
 
 	HangCastleObjects_Init(path);
 }

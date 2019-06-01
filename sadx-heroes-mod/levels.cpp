@@ -28,8 +28,6 @@ std::string modpath;
 LandTableInfo *info = nullptr;
 LandTableInfo *oldinfo = nullptr;
 
-NJS_MATERIAL* landmtl[] = { nullptr };
-
 StartPosition Heroes_StartPositions[]{
 	{ HeroesLevelID_SeasideHill, 0,{ 0, 6.800581f, 5.217285f }, 0xBFFF },
 	{ HeroesLevelID_SeasideHill, 1,{ 6090, 30, 1000 }, 0xBFFF },			//Sea Gate
@@ -87,8 +85,10 @@ void SwapCurrentLandTable() {
 	LandTable *land = info->getlandtable();
 	for (Int j = 0; j < land->COLCount; ++j) {
 		if (land->Col[j].Flags == 0x80000000) {
+			land->Col[j].Flags |= ColFlags_UseSkyDrawDist;
+
 			for (Int k = 0; k < land->Col[j].Model->basicdxmodel->nbMat; ++k) {
-				landmtl[0] = &land->Col[j].Model->basicdxmodel->mats[k];
+				NJS_MATERIAL* landmtl[1] = { &land->Col[j].Model->basicdxmodel->mats[k] };
 				if (IsLantern) material_register_ptr(landmtl, LengthOfArray(landmtl), &ForceWhiteDiffuse);
 			}
 		}
@@ -180,7 +180,7 @@ void LevelHandler_Delete(ObjectMaster * a1) {
 void AnimateTextures(SH_ANIMTEXS *list, Int listcount) {
 	if (!DroppedFrames) {
 		for (Int j = 0; j < CurrentLandTable->COLCount; ++j) {
-			if (CurrentLandTable->Col[j].Flags == 0x80000000 || CurrentLandTable->Col[j].Flags == 0x80000001 || CurrentLandTable->Col[j].Flags == 0x80000002) {
+			if ((CurrentLandTable->Col[j].Flags & ColFlags_Visible) == ColFlags_Visible) {
 				for (Int k = 0; k < CurrentLandTable->Col[j].Model->basicdxmodel->nbMat; ++k) {
 
 					for (int l = 0; l < listcount; ++l) {
@@ -242,20 +242,11 @@ void SetCharactersLevelData(const HelperFunctions &helperFunctions) {
 }
 
 //We prevent the skybox objects from loading in heroes levels
-void __cdecl LoadSkyboxObject_r()
+void HeroesSkybox_Main(ObjectMaster *a1)
 {
-	SetGlobalPoint2Col_Colors(LevelGlobalColors[CurrentLevel].x, LevelGlobalColors[CurrentLevel].y, LevelGlobalColors[CurrentLevel].z);
-	
-	if (IsHeroesLevel) {
-		LevelDrawDistance.Maximum = -999999.0f;
-		Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
-		if (CurrentLevel != HeroesLevelID_EggFleet) return;
-	}
-	
-	if (SkyboxObjects[CurrentLevel])
-	{
-		LoadObject(LoadObj_Data1, 1, SkyboxObjects[CurrentLevel]);
-	}
+	LevelDrawDistance.Maximum = -100000.0f;
+	SkyboxDrawDistance.Maximum = -999999.0f;
+	Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, SkyboxDrawDistance.Maximum);
 }
 
 //We force acts here
@@ -352,7 +343,6 @@ void Levels_Init(const char *path, const HelperFunctions &helperFunctions)
 	EnableFog = config->getBool("General", "EnableFog", true);
 	delete config;
 
-	WriteJump((void*)0x414420, LoadSkyboxObject_r);
 	WriteJump((void*)0x406F00, ForceAct); //njReleaseTextureAll_
 	WriteJump((void*)0x40A140, DrawLandTableFog); //DrawLandTableObject_SimpleModel
 

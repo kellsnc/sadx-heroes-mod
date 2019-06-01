@@ -99,6 +99,7 @@ void CasinoPark_Init(const char *path, const HelperFunctions &helperFunctions) {
 	TwinkleParkDeathZones[0] = CasinoParkDeathZones;
 
 	LevelObjects[HeroesLevelID_CasinoPark] = CasinoParkHandler;
+	SkyboxObjects[HeroesLevelID_CasinoPark] = HeroesSkybox_Main;
 
 	CasinoParkObjects_Init(path);
 }

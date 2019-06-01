@@ -107,6 +107,7 @@ void GrandMetropolis_Init(const char *path, const HelperFunctions &helperFunctio
 	CasinopolisDeathZones[0] = GrandMetropolisDeathZones;
 
 	LevelObjects[HeroesLevelID_GrandMetropolis] = GrandMetropolisHandler;
+	SkyboxObjects[HeroesLevelID_GrandMetropolis] = HeroesSkybox_Main;
 
 	GrandMetropolisObjects_Init(path);
 }

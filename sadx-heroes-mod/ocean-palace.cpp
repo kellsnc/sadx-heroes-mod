@@ -156,6 +156,7 @@ void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions) 
 	WindyValleyDeathZones[0] = SeasideHillDeathZones;
 
 	LevelObjects[HeroesLevelID_OceanPalace] = OceanPalaceHandler;
+	SkyboxObjects[HeroesLevelID_OceanPalace] = HeroesSkybox_Main;
 
 	RoadRock_Init(path, helperFunctions);
 	OceanPalaceObjects_Init(path);

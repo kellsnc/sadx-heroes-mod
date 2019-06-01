@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "mod.h"
 
-float IsLantern = false;
+bool IsLantern = false;
 set_shader_flags* set_shader_flags_ptr;
 material_register* material_register_ptr;
 set_diffuse* set_diffuse_ptr;
