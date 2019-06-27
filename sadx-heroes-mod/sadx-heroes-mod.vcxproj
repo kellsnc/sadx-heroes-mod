@@ -124,7 +124,6 @@
     <ClInclude Include="Data\hang-castle-deathzones.h" />
     <ClInclude Include="Data\hang-castle-objects.h" />
     <ClInclude Include="Data\hang-castle-paths.h" />
-    <ClInclude Include="Data\heroes-common-objects.h" />
     <ClInclude Include="Data\mystic-common-objects.h" />
     <ClInclude Include="Data\mystic-mansion-deathzones.h" />
     <ClInclude Include="Data\mystic-mansion-paths.h" />

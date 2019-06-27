@@ -140,9 +140,6 @@
     <ClInclude Include="Data\seaside-hill-paths.h">
       <Filter>Header Files\Levels</Filter>
     </ClInclude>
-    <ClInclude Include="Data\heroes-common-objects.h">
-      <Filter>Header Files\Objects</Filter>
-    </ClInclude>
     <ClInclude Include="Data\seaside-hill-objects.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>

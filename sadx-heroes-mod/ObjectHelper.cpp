@@ -48,7 +48,7 @@ void deleteSub_Global(ObjectMaster *a1) {
 
 //Global display sub calling a generic drawing call
 void displaySub_Global(ObjectMaster *a1) {
-	if (!MissedFrames) DrawObjModel(a1, a1->Data1->Object->basicdxmodel, false);
+	DrawObjModel(a1, a1->Data1->Object->basicdxmodel, false);
 }
 
 //Global mainsub for object that just display their model

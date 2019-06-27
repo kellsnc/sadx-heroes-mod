@@ -6,7 +6,18 @@
 #include "seaside-hill.h"
 
 static int slowtimer = 1;
-static uint8_t sh_trigger = 1;
+static bool sh_trigger = true;
+
+void SeasideHillSkybox(ObjectMaster *a1) {
+	if (a1->Data1->Action == 0) {
+		a1->Data1->Action = 1;
+		a1->DisplaySub = a1->MainSub;
+		HeroesSkybox_Main(a1);
+	}
+
+	a1->Data1->Position = { 74, 11106, 425 };
+	DrawLensFlare(&a1->Data1->Position);
+}
 
 void SeasideHill_OnFrame(EntityData1 * entity, CharObj2 * co2) {
 	if (anim % 4 == 0) {
@@ -36,37 +47,34 @@ void SeasideHill_OnFrame(EntityData1 * entity, CharObj2 * co2) {
 
 	if (EnableSounds == 1) {
 		if (slowtimer > 0 && slowtimer < 301) slowtimer++;
-		if (slowtimer == 300) { sh_trigger = 1; slowtimer = 1; }
-		if (sh_trigger == 1) {
+		if (slowtimer == 300) { sh_trigger = true; slowtimer = 1; }
+		if (sh_trigger) {
 			EntityData1 *entity = EntityData1Ptrs[0];
 			if (entity != nullptr) {
-				if (entity->Position.z < -2676 && entity->Position.z > -4364) { PlaySound(44, 0, 0, 0); sh_trigger = 0; }
-				if (entity->Position.z < -7228 && entity->Position.z > -8029 && entity->Position.x > -90) { PlaySound(44, 0, 0, 0); sh_trigger = 0; }
-				if (entity->Position.z < -13345 && entity->Position.z > -14023) { PlaySound(44, 0, 0, 0); sh_trigger = 0; }
-				if (entity->Position.z < -14704 && entity->Position.z > -15648) { PlaySound(44, 0, 0, 0); sh_trigger = 0; }
+				if (entity->Position.z < -2676 && entity->Position.z > -4364) { PlaySound(44, 0, 0, 0); sh_trigger = false; }
+				if (entity->Position.z < -7228 && entity->Position.z > -8029 && entity->Position.x > -90) { PlaySound(44, 0, 0, 0); sh_trigger = false; }
+				if (entity->Position.z < -13345 && entity->Position.z > -14023) { PlaySound(44, 0, 0, 0); sh_trigger = false; }
+				if (entity->Position.z < -14704 && entity->Position.z > -15648) { PlaySound(44, 0, 0, 0); sh_trigger = false; }
 			}
 		}
 	}
 }
 
 void SeasideHill_InitObjects() {
-	SH_FLOWERS = LoadMDL("SH_FLOWERS");
 	SH_PLATFOR = LoadMDL("SH_PLATFOR");
 	SH_WATERFS = LoadMDL("SH_WATERFS");
 	SH_MORUINS = LoadMDL("SH_MORUINS");
-	SH_POLFLAG = LoadMDL("SH_POLFLAG");
-
+	
 	SeasideHill_UVShift[0].List = SH_WATERFS->getmodel()->basicdxmodel->meshsets[0].vertuv;
 	SeasideHill_UVShift[1].List = SH_WATERFS->getmodel()->child->basicdxmodel->meshsets[0].vertuv;
 	SeasideHill_UVShift[2].List = SH_WATERFS->getmodel()->child->child->basicdxmodel->meshsets[0].vertuv;
 	SeasideHill_UVShift[3].List = SH_WATERFS->getmodel()->child->child->child->basicdxmodel->meshsets[0].vertuv;
+
 	SeasideHill_UVShift[0].Size = SH_WATERFS->getmodel()->basicdxmodel->meshsets[0].nbMesh * 3;
 	SeasideHill_UVShift[1].Size = SH_WATERFS->getmodel()->child->basicdxmodel->meshsets[0].nbMesh * 3;
 	SeasideHill_UVShift[2].Size = SH_WATERFS->getmodel()->child->child->basicdxmodel->meshsets[0].nbMesh * 3;
 	SeasideHill_UVShift[3].Size = SH_WATERFS->getmodel()->child->child->child->basicdxmodel->meshsets[0].nbMesh * 3;
 
-	LoadObject(LoadObj_Data1, 3, SHSuns_Init)->Data1->Position = { 74, 11106, 425 }; //load the sun
-	LoadObject(LoadObj_Data1, 3, SHFlowers);
 	LoadObject(LoadObj_Data1, 3, SHWaterfalls);
 }
 
@@ -89,16 +97,19 @@ void SeasideHillHandler(ObjectMaster * a1) {
 		a1->DeleteSub = SeasideHill_Delete;
 
 		SetFog(&SeasideHill_Fog);
+		SeasideHill_InitObjects();
 
 		PlaySound(44, 0, 0, 0);
-
-		SeasideHill_InitObjects();
 
 		if (CurrentAct == 0) {
 			//Seaside Hill
 			InitializeSoundManager();
 			PlayMusic(MusicIDs_EmeraldCoastAzureBlueWorld);
 			SoundManager_Delete2();
+
+			SH_FLOWERS = LoadMDL("SH_FLOWERS");
+			SH_POLFLAG = LoadMDL("SH_POLFLAG");
+			LoadObject(LoadObj_Data1, 3, SHFlowers);
 
 			CurrentLevelTexlist = &BEACH01_TEXLIST;
 			CurrentLandAddress = (LandTable**)0x97DA28;
@@ -115,8 +126,6 @@ void SeasideHillHandler(ObjectMaster * a1) {
 			CurrentLevelTexlist = &BEACH02_TEXLIST;
 			CurrentLandAddress = (LandTable**)0x97DA2C;
 			matlist_waterfall[0].attr_texId = 83;
-
-			if (entity->Position.z > -6264) LoadLevelFile("SG", 01);
 		}
 	}
 	else {
@@ -132,7 +141,6 @@ void SeasideHillHandler(ObjectMaster * a1) {
 		case 1:
 			ChunkHandler("SG", SeaGateChunks, LengthOfArray(SeaGateChunks), entity->Position);
 			AnimateTextures(SeaGateAnimTexs, LengthOfArray(SeaGateAnimTexs));
-			SeasideHillObjects_OnFrame(entity);
 			break;
 		}	
 	}
@@ -168,7 +176,7 @@ void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions) 
 
 	//Load the level handler
 	LevelObjects[HeroesLevelID_SeasideHill] = SeasideHillHandler;
-	SkyboxObjects[HeroesLevelID_SeasideHill] = HeroesSkybox_Main;
+	SkyboxObjects[HeroesLevelID_SeasideHill] = SeasideHillSkybox;
 	
 	SeaGate_Init(path, helperFunctions);
 	SeasideHillObjects_Init(path);

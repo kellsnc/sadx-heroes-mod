@@ -2,8 +2,6 @@
 #include "mod.h"
 #include "objects.h"
 
-#include "heroes-common-objects.h"
-
 NJS_TEXNAME SHTexNames[40];
 NJS_TEXLIST SHCommonTextures = { arrayptrandlength(SHTexNames) };
 PVMEntry shobjpvm = { "heroes-common", &SHCommonTextures };
@@ -712,92 +710,6 @@ void Capsule_Main_r(ObjectMaster *a1)
 void __cdecl Capsule_Load_r(ObjectMaster *a1) {
 	a1->DisplaySub = Capsule_Display_r;
 	a1->MainSub = Capsule_Main_r;
-}
-
-void ObjBob_Display(ObjectMaster *a1)
-{
-	if (!MissedFrames) {
-		njSetTexture(&SHCommonTextures);
-		njPushMatrix(0);
-		njTranslateV(0, &a1->Data1->Position);
-		njRotateY(0, a1->Data1->Rotation.y);
-		if (a1->Data1->Rotation.x != -16384) njRotateX(0, a1->Data1->Rotation.x);
-		else njRotateX(0, 0);
-		njTranslate(0, 0, 0, -5);
-
-		DrawQueueDepthBias = -6000.0f;
-		njDrawModel_SADX(&SH_BOBSLED);
-
-		//Handles
-		njTranslate(0, 0, 6.78f, -6.355f);
-		int btn = HeldButtons2[0];
-		if (btn & Buttons_Left) {
-			njRotateZ(0, 0x1000);
-			njDrawModel_SADX(&SH_BOBHANDLES);
-			njRotateZ(0, -0x1000);
-		}
-		else if (btn & Buttons_Right) {
-			njRotateZ(0, -0x1000);
-			njDrawModel_SADX(&SH_BOBHANDLES);
-			njRotateZ(0, 0x1000);
-		}
-		else {
-			njDrawModel_SADX(&SH_BOBHANDLES);
-		}
-		njTranslate(0, 0, -6.78f, 6.355f);
-
-		//Star
-		njTranslate(0, 0, 5.445f, -18.989f);
-		njRotateZ(0, -a1->Data1->Scale.z);
-		njDrawModel_SADX(&SH_BOBSTAR);
-		njRotateZ(0, a1->Data1->Scale.z);
-		njTranslate(0, 0, -5.445f, 18.989f);
-
-		//Wheels
-		njTranslate(0, 0, 5.029f, 14.417f);
-		njScale(nullptr, 1.33F, 1, 1);
-		njRotateX(0, -a1->Data1->Scale.z);
-		njDrawModel_SADX(&SH_BOBWHEELS);
-
-		DrawQueueDepthBias = 0;
-		njPopMatrix(1u);
-	}
-}
-
-void ObjBob_Main(ObjectMaster *a1)
-{
-	if (!ClipSetObject(a1)) {
-		if (IsPlayerInsideSphere(&a1->Data1->Position, 20.0f) == true) {
-			if (a1->Data1->Action == 0) {
-				EntityData1 *entity = EntityData1Ptrs[0];
-				//GetBobSled(SH_BOBLEFT, SH_BOBRIGHT, a1->Data1->Scale.x);
-				a1->Data1->Position = entity->Position;
-				a1->Data1->Rotation.x = entity->Rotation.x;
-				a1->Data1->Rotation.y = entity->Rotation.y + 0x4000;
-				a1->Data1->Scale.z += 800;
-
-				/*if (CurrentLoop == -1) {
-					a1->Data1->Action = 4;
-				}*/
-			}
-
-			if (a1->Data1->Action == 4) {
-				PlaySound(42, 0, 0, 0);
-				CharObj2 * co2 = CharObj2Ptrs[0];
-				co2->Speed.y = 2;
-				co2->Speed.x = 1;
-				deleteSub_Global(a1);
-			}
-		}
-
-		ObjBob_Display(a1);
-	}
-}
-
-void __cdecl ObjBob(ObjectMaster *a1)
-{
-	/*a1->MainSub = &ObjBob_Main;
-	a1->DisplaySub = &ObjBob_Display;*/
 }
 
 void __cdecl ObjBox_Display(ObjectMaster* a1)

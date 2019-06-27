@@ -14,7 +14,7 @@ void GrandMetropolis_InitObjects() {
 	GM_MCLOUDS = LoadMDL("GM_MCLOUDS");
 	GM_ZEPPLIN = LoadMDL("GM_ZEPPLIN");
 
-	LoadObject(LoadObj_Data1, 3, SHSuns_Init)->Data1->Position = { 0, 12000, 5000 };;
+	//LoadObject(LoadObj_Data1, 3, SHSuns_Init)->Data1->Position = { 0, 12000, 5000 };;
 	LoadObject(LoadObj_Data1, 3, GMPistons);
 	LoadObject(LoadObj_Data1, 3, GMCars);
 	LoadObject(LoadObj_Data1, 3, GMSky);

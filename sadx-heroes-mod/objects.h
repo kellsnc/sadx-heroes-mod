@@ -23,7 +23,6 @@ void __cdecl ObjFan(ObjectMaster *a1);
 void __cdecl SHCameraSwitch(ObjectMaster *a1);
 void __cdecl ObjBalloon(ObjectMaster *a1);
 void __cdecl ObjCannon(ObjectMaster *a1);
-void __cdecl ObjBob(ObjectMaster *a1);
 void __cdecl ObjBoxW(ObjectMaster *a1);
 void __cdecl OBJCASE(ObjectMaster *a1);
 

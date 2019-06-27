@@ -36,7 +36,6 @@ DeathZone GrandMetropolisDeathZones[] = {
 
 void GrandMetropolisObjects_Init(const char *path);
 void AutoPathsMovs();
-void SHSuns_Init(ObjectMaster * a1);
 void GMPistons(ObjectMaster *a1);
 void GMCars(ObjectMaster *a1);
 void GMAds(ObjectMaster *a1);
