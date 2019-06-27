@@ -374,6 +374,7 @@ void BoulderPath(ObjectMaster *a1) {
 			njPopMatrix(1u);
 		}
 		else {
+			SetCameraMode_(1);
 			DeleteObject(a1);
 		}
 	}
