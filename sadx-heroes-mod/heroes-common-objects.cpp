@@ -3,7 +3,6 @@
 #include "objects.h"
 
 #include "heroes-common-objects.h"
-#include "bobsled-paths.h"
 
 NJS_TEXNAME SHTexNames[40];
 NJS_TEXLIST SHCommonTextures = { arrayptrandlength(SHTexNames) };
@@ -32,32 +31,36 @@ ModelInfo * CO_LCKCASE;
 ModelInfo * CO_OCANNON;
 ModelInfo * CO_WOODBOX;
 
-bool Animate = false;
+CollisionData Reel_col{
+	0, 0, 0x77, 0, 0x800400,{ 0, 0, 0 },{ 1, 1, 1 }, 0, 0
+};
 
-#pragma region CameraModeSwitch
-void __cdecl SHCameraSwitch_Main(ObjectMaster *a1)
+CollisionData ObjBoxW_col{
+	0, 2, 0x77, 0, 0x800400,{ 0, 0, 0 },{ 13, 13, 13 }, 0, 0
+};
+
+CollisionData Cases_col{
+	0, 2, 0x77, 0, 0x800400,{ 0, 10, 0 },{ 20, 17, 20 }, 0, 0
+};
+
+CollisionData CasesOpen_col{
+	0, 2, 0x77, 0, 0x800400,{ 0, 0, 0 },{ 20, 7, 20 }, 0, 0
+};
+
+void CPDashPanel(ObjectMaster *a1);
+
+void SHCameraSwitch(ObjectMaster *a1)
 {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 500.0f)) {
+	if (!ClipSetObject(a1)) {
 		if (camera_flags != (Uint32)a1->Data1->Scale.x) {
-			if (IsPlayerInsideSphere(&a1->Data1->Position, a1->Data1->Scale.y)) {
+			if (IsPlayerInsideSphere(&a1->Data1->Position, a1->Data1->Scale.y) == 1) {
 				if (a1->Data1->Scale.x == 7) SetCameraMode_(1);
 				else camera_flags = a1->Data1->Scale.x;
 			}
 		}
 	}
-	else {
-		deleteSub_Global(a1);
-	}
 }
 
-void __cdecl SHCameraSwitch(ObjectMaster *a1)
-{
-	a1->MainSub = &SHCameraSwitch_Main;
-	a1->DeleteSub = &deleteSub_Global;
-}
-#pragma endregion
-
-#pragma region Fans
 void ObjFan_Display(ObjectMaster *a1)
 {
 	if (!MissedFrames) {
@@ -76,7 +79,8 @@ void ObjFan_Display(ObjectMaster *a1)
 
 void ObjFan_Main(ObjectMaster *a1)
 {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 1500.0f)) {
+	if (!ClipSetObject(a1)) {
+		DynColRadius(a1, 350, 0);
 
 		a1->Data1->Scale.z += a1->Data1->Scale.y;
 
@@ -106,53 +110,43 @@ void ObjFan_Main(ObjectMaster *a1)
 
 		ObjFan_Display(a1);
 	}
-	else {
-		deleteSub_Global(a1);
-	}
 }
 
-void __cdecl ObjFan(ObjectMaster *a1)
+void ObjFan(ObjectMaster *a1)
 {
 	a1->Data1->Object = CO_COMNFAN->getmodel();
-	AddToCollision(a1, 0);
 
 	a1->MainSub = &ObjFan_Main;
 	a1->DisplaySub = &ObjFan_Display;
 	a1->DeleteSub = &deleteSub_Global;
 }
-#pragma endregion
-
-#pragma region Reel
-CollisionData Reel_col{
-	0, 0, 0x77, 0, 0x800400,{ 0, 0, 0 },{ 1, 1, 1 }, 0, 0
-};
 
 void ObjReel_Display(ObjectMaster *a1)
 {
-	njSetTexture(&SHCommonTextures);
-	njPushMatrix(0);
-	DrawQueueDepthBias = -6000.0f;
+	if (!MissedFrames) {
+		njSetTexture(&SHCommonTextures);
+		njPushMatrix(0);
+		DrawQueueDepthBias = -6000.0f;
 
-	njTranslate(0, a1->Data1->Position.x, a1->Data1->Scale.x, a1->Data1->Position.z);
-	njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
-	njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
+		njTranslate(0, a1->Data1->Position.x, a1->Data1->Scale.x, a1->Data1->Position.z);
+		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
+		njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
 
-	njTranslate(0, 0, a1->Data1->Position.y - a1->Data1->Scale.x + 15, 0);
-	njDrawModel_SADX(a1->Data1->Object->child->child->basicdxmodel);
+		njTranslate(0, 0, a1->Data1->Position.y - a1->Data1->Scale.x + 15, 0);
+		njDrawModel_SADX(a1->Data1->Object->child->child->basicdxmodel);
 
-	njTranslate(0, 0, a1->Data1->Scale.x - a1->Data1->Position.y - 15, 0);
-	njScale(nullptr, 1, (a1->Data1->Scale.x - a1->Data1->Position.y) / 10.15f, 1);
-	njDrawModel_SADX(a1->Data1->Object->child->basicdxmodel);
+		njTranslate(0, 0, a1->Data1->Scale.x - a1->Data1->Position.y - 15, 0);
+		njScale(nullptr, 1, (a1->Data1->Scale.x - a1->Data1->Position.y) / 10.15f, 1);
+		njDrawModel_SADX(a1->Data1->Object->child->basicdxmodel);
 
-	DrawQueueDepthBias = 0;
-	njPopMatrix(1u);
+		DrawQueueDepthBias = 0;
+		njPopMatrix(1u);
+	}
 }
 
 void ObjReel_Main(ObjectMaster *a1)
 {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 2500.0f)) {
-		Animate = true;
-
+	if (!ClipSetObject(a1)) {
 		float max = a1->Data1->Scale.x;
 		float min = a1->Data1->Scale.z;
 		NJS_VECTOR * pos = &a1->Data1->Position;
@@ -246,12 +240,9 @@ void ObjReel_Main(ObjectMaster *a1)
 
 		ObjReel_Display(a1);
 	}
-	else {
-		deleteSub_Global(a1);
-	}
 }
 
-void __cdecl ObjReel(ObjectMaster *a1)
+void ObjReel(ObjectMaster *a1)
 {
 	a1->Data1->Object = CO_CMNREEL->getmodel();
 
@@ -277,9 +268,7 @@ void __cdecl ObjReel(ObjectMaster *a1)
 	a1->DisplaySub = &ObjReel_Display;
 	a1->DeleteSub = &deleteSub_Global;
 }
-#pragma endregion
 
-#pragma region Balloons
 void ObjBalloon_Display(ObjectMaster *a1)
 {
 	if (!MissedFrames) {
@@ -287,7 +276,7 @@ void ObjBalloon_Display(ObjectMaster *a1)
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
-		njScale(nullptr, a1->Data1->Scale.x, a1->Data1->Scale.y, a1->Data1->Scale.z);
+		njScale(nullptr, a1->Data1->Scale.y, a1->Data1->Scale.y, a1->Data1->Scale.y);
 
 		if (a1->Data1->Scale.y != 1) {
 			float a = a1->Data1->Scale.y - 5;
@@ -304,8 +293,8 @@ void ObjBalloon_Display(ObjectMaster *a1)
 
 void ObjBalloon_Main(ObjectMaster *a1)
 {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 1500.0f)) {
-		float item = a1->Data1->Action;
+	if (!ClipSetObject(a1)) {
+		float item = a1->Data1->Scale.x;
 
 		if (a1->Data1->Scale.z != 4 && a1->Data1->NextAction != 2) {
 			a1->Data1->CharIndex = IsPlayerInsideSphere(&a1->Data1->Position, 50);
@@ -313,12 +302,10 @@ void ObjBalloon_Main(ObjectMaster *a1)
 			if (a1->Data1->CharIndex) a1->Data1->NextAction = 1;
 
 			if (a1->Data1->NextAction == 1) {
-				a1->Data1->Scale.x += 0.1f;
 				a1->Data1->Scale.y += 0.1f;
-				a1->Data1->Scale.z += 0.1f;
 
-				if (a1->Data1->Scale.x == 3.1f) {
-					if (a1->Data1->Action == 12) {
+				if (a1->Data1->Scale.y == 3.1f) {
+					if (item == 12) {
 						if (GetCharacterID(a1->Data1->CharIndex - 1) == Characters_Tails) {
 							CharObj2 *co2 = CharObj2Ptrs[a1->Data1->CharIndex - 1];
 							co2->TailsFlightTime = 0.1f;
@@ -333,30 +320,19 @@ void ObjBalloon_Main(ObjectMaster *a1)
 
 		ObjBalloon_Display(a1);
 	}
-	else {
-		deleteSub_Global(a1);
-	}
 }
 
 void __cdecl ObjBalloon(ObjectMaster *a1)
 {
-	a1->Data1->Action = a1->Data1->Scale.x;
-	a1->Data1->Scale.x = 3;
 	a1->Data1->Scale.y = 3;
-	a1->Data1->Scale.z = 3;
 
 	a1->MainSub = &ObjBalloon_Main;
 	a1->DisplaySub = &ObjBalloon_Display;
-	a1->DeleteSub = &deleteSub_Global;
 }
-#pragma endregion
-
-#pragma region DashPanels
-void CPDashPanel(ObjectMaster *a1);
 
 void __cdecl SHDashPanel(ObjectMaster *a1)
 {
-	if ((CurrentLevel == 3 || CurrentLevel == 4) && a1->Data1->Scale.z == 1) {
+	if ((CurrentLevel == HeroesLevelID_CasinoPark || CurrentLevel == HeroesLevelID_BingoHighway) && a1->Data1->Scale.z == 1) {
 		CPDashPanel(a1);
 	}
 	else {
@@ -388,45 +364,30 @@ void __cdecl SHDashPanel(ObjectMaster *a1)
 		}
 	}
 }
-#pragma endregion
 
-#pragma region DashHoops
 void __cdecl SHDashHoop(ObjectMaster *a1)
 {
-	EntityData1 *v1; // esi
-	Angle v2; // eax
-	Angle v3; // eax
-	Angle v4; // eax
+	EntityData1 *v1 = a1->Data1;
+	Rotation3 Angle = v1->Rotation;
 
-	v1 = a1->Data1;
 	if (!MissedFrames && IsVisible(&v1->Position, 100.0))
 	{
 		njSetTexture(&SHCommonTextures);
 		njPushMatrix(0);
 		njTranslateV(0, &v1->Position);
-		v2 = v1->Rotation.x;
-		if (v2)
-		{
-			njRotateX(0, v2);
-		}
-		v3 = v1->Rotation.y;
-		if (v3)
-		{
-			njRotateY(0, v3);
-		}
-		v4 = v1->Rotation.z;
-		if (v4)
-		{
-			njRotateZ(0, v4);
-		}
-		if (CurrentLevel != 3 && CurrentLevel != 4) njDrawModel_SADX(CO_DSHHOOP->getmodel()->basicdxmodel);
-		else njDrawModel_SADX(CO_DSHHOOP->getmodel()->child->basicdxmodel);
+		if (Angle.x) njRotateX(0, Angle.x);
+		if (Angle.y) njRotateY(0, Angle.y);
+		if (Angle.z) njRotateZ(0, Angle.z);
+
+		if (CurrentLevel != HeroesLevelID_CasinoPark && CurrentLevel != HeroesLevelID_BingoHighway) 
+			njDrawModel_SADX(CO_DSHHOOP->getmodel()->basicdxmodel);
+		else 
+			njDrawModel_SADX(CO_DSHHOOP->getmodel()->child->basicdxmodel);
+
 		njPopMatrix(1u);
 	}
 }
-#pragma endregion
 
-#pragma region Cannon
 void DoBall(uint8_t id) {
 	EntityData1 *entity = EntityData1Ptrs[id];
 	CharObj2 *co2 = CharObj2Ptrs[id];
@@ -472,8 +433,7 @@ void ObjCannon_Display(ObjectMaster *a1)
 
 void ObjCannon_Main(ObjectMaster *a1)
 {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 1500.0f)) {
-
+	if (!ClipSetObject(a1)) {
 		if (a1->Data1->Action == 0) {
 			a1->Data1->Status = IsPlayerInsideSphere(&a1->Data1->Position, 40);
 
@@ -602,9 +562,6 @@ void ObjCannon_Main(ObjectMaster *a1)
 
 		ObjCannon_Display(a1);
 	}
-	else {
-		deleteSub_Global(a1);
-	}
 }
 
 void __cdecl ObjCannon(ObjectMaster *a1)
@@ -615,9 +572,7 @@ void __cdecl ObjCannon(ObjectMaster *a1)
 	a1->DisplaySub = &ObjCannon_Display;
 	a1->DeleteSub = &deleteSub_Global;
 }
-#pragma endregion
 
-#pragma region Launch Ramp
 void __cdecl SHLaunchRamp(ObjectMaster *a1)
 {
 	if (!MissedFrames) {
@@ -631,15 +586,6 @@ void __cdecl SHLaunchRamp(ObjectMaster *a1)
 		njPopMatrix(1u);
 	}
 }
-#pragma endregion
-
-#pragma region Switch cases
-CollisionData Cases_col[]{
-	{ 0, 2, 0x77, 0, 0x800400,{ 0, 10, 0 },{ 20, 17, 20 }, 0, 0 },
-};
-CollisionData CasesOpen_col[]{
-	{ 0, 2, 0x77, 0, 0x800400,{ 0, 0, 0 },{ 20, 7, 20 }, 0, 0 },
-};
 
 void OBJCASE_Display(ObjectMaster *a1) {
 	if (!MissedFrames) {
@@ -669,8 +615,7 @@ void OBJCASE_Display(ObjectMaster *a1) {
 }
 
 void OBJCASE_Main(ObjectMaster *a1) {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 2000.0f)) {
-
+	if (!ClipSetObject(a1)) {
 		if (a1->Data1->Action == 0) {
 			if (IsSwitchPressed(a1->Data1->Scale.x)) {
 				a1->Data1->Action = 1;
@@ -684,16 +629,12 @@ void OBJCASE_Main(ObjectMaster *a1) {
 				a1->Data1->Action = 2;
 				a1->Data1->Scale.z = 20;
 				Collision_Free(a1);
-				Collision_Init(a1, CasesOpen_col, 1, 6u);
+				Collision_Init(a1, &CasesOpen_col, 1, 6u);
 			}
-
 		}
 
 		AddToCollisionList(a1->Data1);
 		OBJCASE_Display(a1);
-	}
-	else {
-		deleteSub_Global(a1);
 	}
 }
 
@@ -701,23 +642,21 @@ void __cdecl OBJCASE(ObjectMaster *a1)
 {
 	if (a1->Data1->Scale.y == 1 || IsSwitchPressed(a1->Data1->Scale.x)) {
 		a1->Data1->Action = 2;
-		Collision_Init(a1, CasesOpen_col, 1, 6u);
+		Collision_Init(a1, &CasesOpen_col, 1, 6u);
 	}
 	else {
-		Collision_Init(a1, Cases_col, 1, 3u);
+		Collision_Init(a1, &Cases_col, 1, 3u);
 	}
 
 	a1->MainSub = &OBJCASE_Main;
 	a1->DisplaySub = &OBJCASE_Display;
 	a1->DeleteSub = &deleteSub_Global;
 }
-#pragma endregion
 
-#pragma region Goal Ring
 void Capsule_Display_r(ObjectMaster *a1) {
-	EntityData1 *v1;
-	v1 = a1->Data1;
 	if (!MissedFrames) {
+		EntityData1 *v1 = a1->Data1;
+
 		njSetTexture(&SHCommonTextures);
 
 		njPushMatrix(0);
@@ -725,7 +664,7 @@ void Capsule_Display_r(ObjectMaster *a1) {
 		njTranslate(0, 0, 20, 0);
 		njRotateXYZ(nullptr, 0, v1->Rotation.y, 0);
 
-		njScale(nullptr, v1->Scale.x - (v1->Scale.x * 0.2f), v1->Scale.y - (v1->Scale.y * 0.2f), v1->Scale.z - (v1->Scale.z * 0.2f));
+		njScale(nullptr, v1->Scale.x - (v1->Scale.x * 0.2f), v1->Scale.x - (v1->Scale.x * 0.2f), v1->Scale.x - (v1->Scale.x * 0.2f));
 		njRotateY(nullptr, -(v1->Rotation.y * 2));
 
 		DrawQueueDepthBias = -6000.0f;
@@ -744,10 +683,8 @@ void Capsule_Display_r(ObjectMaster *a1) {
 
 void Capsule_Main_r(ObjectMaster *a1)
 {
-	EntityData1 *v1;
-	v1 = a1->Data1;
-
-	if (IsPlayerInsideSphere(&v1->Position, 2000)) {
+	if (!ClipSetObject(a1)) {
+		EntityData1 *v1 = a1->Data1;
 		v1->Rotation.y += 200;
 
 		if (IsPlayerInsideSphere(&v1->Position, 30) && a1->Data1->Action == 0) {
@@ -760,34 +697,23 @@ void Capsule_Main_r(ObjectMaster *a1)
 			entity->Position = v1->Position;
 			if (v1->Scale.x > 0.05f) {
 				v1->Scale.x -= 0.05f;
-				v1->Scale.y -= 0.05f;
-				v1->Scale.z -= 0.05f;
 			}
 		}
 		else {
 			v1->Scale.x = 1;
-			v1->Scale.y = 1;
-			v1->Scale.z = 1;
-
 
 			if (anim % 60 == 0) if (EnableSounds) if (GetPlayerDistance(a1->Data1, 0) < 1007600.0) PlaySound(85, 0, 0, 0);
 		}
 
 		Capsule_Display_r(a1);
 	}
-	else {
-		deleteSub_Global(a1);
-	}
 }
 
 void __cdecl Capsule_Load_r(ObjectMaster *a1) {
 	a1->DisplaySub = Capsule_Display_r;
 	a1->MainSub = Capsule_Main_r;
-	a1->DeleteSub = deleteSub_Global;
 }
-#pragma endregion
 
-#pragma region Bobsled
 void ObjBob_Display(ObjectMaster *a1)
 {
 	if (!MissedFrames) {
@@ -840,7 +766,7 @@ void ObjBob_Display(ObjectMaster *a1)
 
 void ObjBob_Main(ObjectMaster *a1)
 {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 1500.0f)) {
+	if (!ClipSetObject(a1)) {
 		if (IsPlayerInsideSphere(&a1->Data1->Position, 20.0f) == true) {
 			if (a1->Data1->Action == 0) {
 				EntityData1 *entity = EntityData1Ptrs[0];
@@ -866,27 +792,17 @@ void ObjBob_Main(ObjectMaster *a1)
 
 		ObjBob_Display(a1);
 	}
-	else {
-		deleteSub_Global(a1);
-	}
 }
 
 void __cdecl ObjBob(ObjectMaster *a1)
 {
 	/*a1->MainSub = &ObjBob_Main;
 	a1->DisplaySub = &ObjBob_Display;*/
-	a1->DeleteSub = &deleteSub_Global;
 }
-#pragma endregion
 
-#pragma region Wooden Boxes
-CollisionData ObjBoxW_col{
-	0, 2, 0x77, 0, 0x800400,{ 0, 0, 0 },{ 13, 13, 13 }, 0, 0
-};
-
-void ObjBoxW_Display(ObjectMaster *a1)
+void __cdecl ObjBox_Display(ObjectMaster* a1)
 {
-	if (!MissedFrames && a1->SETData.SETData->SETEntry->Properties.z != 1) {
+	if (!MissedFrames && a1->Data1->Action != 2 && IsPlayerInsideSphere(&a1->Data1->Position, a1->SETData.SETData->Distance / 1000)) {
 		njSetTexture(&SHCommonTextures);
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
@@ -894,64 +810,98 @@ void ObjBoxW_Display(ObjectMaster *a1)
 		DrawQueueDepthBias = -6000.0f;
 		if (a1->Data1->Action == 0) njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
 		else if (a1->Data1->Action == 1) {
+			CO_WOODBOX->getmodel()->child->child->child->child->basicdxmodel->mats[0].attrflags &= ~NJD_FLAG_USE_ALPHA;
+			CO_WOODBOX->getmodel()->child->child->child->child->child->basicdxmodel->mats[0].attrflags &= ~NJD_FLAG_USE_ALPHA;
+			CO_WOODBOX->getmodel()->child->child->child->child->child->child->basicdxmodel->mats[0].attrflags &= ~NJD_FLAG_USE_ALPHA;
+
+			if (a1->Data1->Scale.x == 0) {
+				CO_WOODBOX->getmodel()->child->child->child->child->basicdxmodel->mats[0].attr_texId = 10;
+				CO_WOODBOX->getmodel()->child->child->child->child->child->basicdxmodel->mats[0].attr_texId = 10;
+				CO_WOODBOX->getmodel()->child->child->child->child->child->child->basicdxmodel->mats[0].attr_texId = 10;
+			}
+			else if (a1->Data1->Scale.x == 1) {
+				CO_WOODBOX->getmodel()->child->child->child->child->basicdxmodel->mats[0].attr_texId = 8;
+				CO_WOODBOX->getmodel()->child->child->child->child->child->basicdxmodel->mats[0].attr_texId = 8;
+				CO_WOODBOX->getmodel()->child->child->child->child->child->child->basicdxmodel->mats[0].attr_texId = 8;
+			}
+			else {
+				CO_WOODBOX->getmodel()->child->child->child->child->basicdxmodel->mats[0].attrflags |= NJD_FLAG_USE_ALPHA;
+				CO_WOODBOX->getmodel()->child->child->child->child->child->basicdxmodel->mats[0].attrflags |= NJD_FLAG_USE_ALPHA;
+				CO_WOODBOX->getmodel()->child->child->child->child->child->child->basicdxmodel->mats[0].attrflags |= NJD_FLAG_USE_ALPHA;
+
+				CO_WOODBOX->getmodel()->child->child->child->child->basicdxmodel->mats[0].attr_texId = 7;
+				CO_WOODBOX->getmodel()->child->child->child->child->child->basicdxmodel->mats[0].attr_texId = 7;
+				CO_WOODBOX->getmodel()->child->child->child->child->child->child->basicdxmodel->mats[0].attr_texId = 7;
+			}
+
 			njTranslate(0, 0, -(a1->Data1->Scale.y / 3), 0);
 
 			njTranslate(0, 0, 0, 12 + a1->Data1->Scale.y / 90);
-			njDrawModel_SADX(CO_WOODBOX->getmodel()->child->basicdxmodel); //bar
+			njDrawModel_SADX(CO_WOODBOX->getmodel()->child->child->child->child->basicdxmodel); //bar
 			njTranslate(0, 0, 20, 0);
 
 			njTranslate(0, 0, -(a1->Data1->Scale.y), (a1->Data1->Scale.y / 3));
 			njRotateY(0, 0x5000 + a1->Data1->Scale.y * 5);
-			njDrawModel_SADX(CO_WOODBOX->getmodel()->child->child->basicdxmodel); //big one
+			njDrawModel_SADX(CO_WOODBOX->getmodel()->child->child->child->child->child->basicdxmodel); //big one
 			njRotateY(0, -(0x5000 + a1->Data1->Scale.y * 5));
 
 			njTranslate(0, 0, -(a1->Data1->Scale.y * 2), -(a1->Data1->Scale.y / 5));
 			njRotateY(0, -0x3000);
-			njDrawModel_SADX(CO_WOODBOX->getmodel()->child->child->child->basicdxmodel); //right
+			njDrawModel_SADX(CO_WOODBOX->getmodel()->child->child->child->child->child->child->basicdxmodel); //right
 		}
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 	}
 }
 
-void ObjBoxW_Main(ObjectMaster *a1)
-{
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 1500.0f)) {
-		if (a1->SETData.SETData->SETEntry->Properties.z != 1) {
-			if (a1->Data1->Action == 0) {
-				if (OhNoImDead(a1->Data1, (ObjectData2*)a1->Data2)) {
-					PlaySound(86, 0, 0, 0);
-					a1->Data1->Action = 1;
-					DynamicCOL_Remove(a1, a1->Data1->Object);
-				}
-				else AddToCollisionList(a1->Data1);
-			}
-
-			if (a1->Data1->Action == 1) {
-				if (a1->Data1->Scale.y < 100) a1->Data1->Scale.y++;
-				else a1->SETData.SETData->SETEntry->Properties.z = 1;
-			}
-			ObjBoxW_Display(a1);
-		}
-	}
-	else {
-		deleteSub_Global(a1);
-	}
-}
-
 void __cdecl ObjBoxW(ObjectMaster *a1)
 {
-	a1->Data1->Object = CO_WOODBOX->getmodel();
-	AllocateObjectData2(a1, a1->Data1);
-	Collision_Init(a1, &ObjBoxW_col, 1, 2u);
-	if (a1->SETData.SETData->SETEntry->Properties.z != 1) AddToCollision(a1, 0);
-	else a1->Data1->Action = 2;
+	uint8_t type = a1->Data1->Scale.x;
 
-	a1->MainSub = &ObjBoxW_Main;
-	a1->DisplaySub = &ObjBoxW_Display;
-	a1->DeleteSub = &deleteSub_Global;
+	if (a1->Data1->NextAction == 0) {
+		if (type == 0) a1->Data1->Object = CO_WOODBOX->getmodel();
+		else if (type == 1) a1->Data1->Object = CO_WOODBOX->getmodel()->child;
+		else if (type == 2) a1->Data1->Object = CO_WOODBOX->getmodel()->child->child;
+		else if (type == 3) a1->Data1->Object = CO_WOODBOX->getmodel()->child->child->child;
+
+		AllocateObjectData2(a1, a1->Data1);
+		Collision_Init(a1, &ObjBoxW_col, 1, 2u);
+
+		a1->DisplaySub = ObjBox_Display;
+		a1->DeleteSub = deleteSub_Global;
+
+		a1->Data1->NextAction = 1;
+	}
+	else {
+		if (a1->Data1->Action == 0) {
+			if (DynColRadius(a1, 100, 0)) {
+				if (a1->Data1->Action == 0 && type < 3) {
+					if (OhNoImDead(a1->Data1, (ObjectData2*)a1->Data2)) {
+						if (type == 0 || type == 2) PlaySound(86, 0, 0, 0);
+						else if (type == 1) PlaySound(86, 0, 0, 0);
+
+						a1->Data1->Action = 1;
+
+						DynamicCOL_Remove(a1, (NJS_OBJECT*)a1->Data1->LoopData);
+						ObjectArray_Remove((NJS_OBJECT*)a1->Data1->LoopData);
+						a1->Data1->LoopData = nullptr;
+
+						return;
+					}
+					else {
+						AddToCollisionList(a1->Data1);
+					}
+				}
+			}
+		}
+		else {
+			if (a1->Data1->Scale.y < 100) a1->Data1->Scale.y++;
+			else a1->Data1->Action = 2;
+		}
+
+		a1->DisplaySub(a1);
+	}
 }
-#pragma endregion
 
 void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions) {
 	helperFunctions.RegisterCommonObjectPVM(shobjpvm);
@@ -1000,5 +950,4 @@ void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions
 void CommonObjects_OnFrame() {
 	AnimateObjectsTextures(COMMONOBJLIST, LengthOfArray(COMMONOBJLIST), CommonAnimTexs, LengthOfArray(CommonAnimTexs));
 	AnimateUV(Objects_UVSHIFT, LengthOfArray(Objects_UVSHIFT));
-	Animate = false;
 }

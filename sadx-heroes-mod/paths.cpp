@@ -331,6 +331,54 @@ void AutoLoop_Main(ObjectMaster * a1) {
 	}
 }
 
+void BoulderPath(ObjectMaster *a1) {
+	LoopHead * loopdata = (LoopHead*)a1->Data1->LoopData;
+
+	if (a1->Data1->Action == 0) {
+		a1->DisplaySub = a1->MainSub;
+		a1->Data1->Action = 1;
+	}
+	else {
+		if (a1->Data1->InvulnerableTime < loopdata->Count) {
+			if (GameState != 16) {
+				a1->Data1->Scale.x = a1->Data1->Scale.x + (loopdata->TotalDist / loopdata->LoopList[a1->Data1->InvulnerableTime].Dist) / loopdata->TotalDist * 8;
+				TransformSpline(a1, loopdata->LoopList[a1->Data1->InvulnerableTime].Position, loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position, a1->Data1->Scale.x);
+				if (loopdata->LoopList[a1->Data1->InvulnerableTime].Ang_Y != 0) a1->Data1->Rotation.y = loopdata->LoopList[a1->Data1->InvulnerableTime].Ang_Y;
+				if (a1->Data1->Scale.x > 1) { a1->Data1->Scale.x = 0; a1->Data1->InvulnerableTime++; }
+				a1->Data1->Rotation.x += 1500;
+
+				a1->Data1->CharIndex = IsPlayerInsideSphere(&a1->Data1->Position, 130.0f);
+				for (uint8_t player = 0; player < 8; ++player) {
+					if (player == a1->Data1->CharIndex - 1) {
+						EntityData1 *ed1 = EntityData1Ptrs[player];
+						CharObj2 *co2 = CharObj2Ptrs[player];
+
+						ed1->Rotation.y = a1->Data1->Rotation.y + 0x4000;
+						co2->Speed.x = 22;
+						co2->Speed.y = 2;
+						HurtCharacter(player);
+					}
+				}
+			}
+			
+			njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+			njPushMatrix(0);
+			DrawQueueDepthBias = -6000.0f;
+
+			njTranslateV(0, &a1->Data1->Position);
+			njRotateY(nullptr, a1->Data1->Rotation.y);
+			njRotateX(nullptr, a1->Data1->Rotation.x);
+
+			njDrawModel_SADX(a1->Parent->Data1->Object->basicdxmodel);
+			DrawQueueDepthBias = 0;
+			njPopMatrix(1u);
+		}
+		else {
+			DeleteObject(a1);
+		}
+	}
+}
+
 //Detects if a player interacts with a path
 void Path_Main(ObjectMaster * a1) {
 	LoopHead * loopdata = (LoopHead*)a1->Data1->LoopData;

@@ -44,7 +44,6 @@ void deleteSub_Global(ObjectMaster *a1) {
 		DynamicCOL_Remove(a1, (NJS_OBJECT*)a1->Data1->LoopData);
 		ObjectArray_Remove((NJS_OBJECT*)a1->Data1->LoopData);
 	}
-	DeleteObject_(a1);
 }
 
 //Global display sub calling a generic drawing call
@@ -106,15 +105,17 @@ void AddToCollision(ObjectMaster *a1, uint8_t col) {
 }
 
 //Only allocate dynamic collision within radius
-void DynColRadius(ObjectMaster *a1, float radius, uint8_t col) {
+bool DynColRadius(ObjectMaster *a1, float radius, uint8_t col) {
 	if (IsPlayerInsideSphere(&a1->Data1->Position, radius)) {
 		if (!a1->Data1->LoopData) AddToCollision(a1, col);
+		return true;
 	} else if (a1->Data1->LoopData) {
 		DynamicCOL_Remove(a1, (NJS_OBJECT*)a1->Data1->LoopData);
 		ObjectArray_Remove((NJS_OBJECT*)a1->Data1->LoopData);
-
 		a1->Data1->LoopData = nullptr;
 	}
+
+	return false;
 }
 
 //Shift uv of models, requires a SH_UVSHIFT struct

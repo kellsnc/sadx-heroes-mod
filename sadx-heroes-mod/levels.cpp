@@ -28,21 +28,6 @@ std::string modpath;
 LandTableInfo *info = nullptr;
 LandTableInfo *oldinfo = nullptr;
 
-StartPosition Heroes_StartPositions[]{
-	{ HeroesLevelID_SeasideHill, 0,{ 0, 6.800581f, 5.217285f }, 0xBFFF },
-	{ HeroesLevelID_SeasideHill, 1,{ 6090, 30, 1000 }, 0xBFFF },			//Sea Gate
-	{ HeroesLevelID_OceanPalace, 0,{ -8771, 1303, -2819.688f }, 0xBFFF },
-	{ HeroesLevelID_OceanPalace, 1,{ 0, 3020, 4462 }, 0xBFFF },				//Road Rock
-	{ HeroesLevelID_GrandMetropolis, 0,{ 0.5f, 70, 4125.8f }, 0xBFFF },
-	{ HeroesLevelID_PowerPlant, 0,{ 2000, 1564, 63 }, 0xBFFF },
-	{ HeroesLevelID_CasinoPark, 0,{ -8000, 2188, 0 }, 0xBFFF },
-	{ HeroesLevelID_BingoHighway, 0,{ 7999, 2277, 472 }, 0xBFFF },
-	{ HeroesLevelID_HangCastle, 0,{ 3999, 4000, 109 }, 0xBFFF },
-	{ HeroesLevelID_MysticMansion, 0,{ 0, 23, 777 }, 0xBFFF },
-	{ HeroesLevelID_EggFleet, 0,{ 500, 4230, 5320 }, 0xBFFF },
-	{ HeroesLevelID_SpecialStages, 0,{ 200, 0, 0 }, 0xBFFF }
-};
-
 //Chunk system
 bool ForceWhiteDiffuse(NJS_MATERIAL* material, Uint32 flags)
 {
@@ -85,8 +70,6 @@ void SwapCurrentLandTable() {
 	LandTable *land = info->getlandtable();
 	for (Int j = 0; j < land->COLCount; ++j) {
 		if (land->Col[j].Flags == 0x80000000) {
-			land->Col[j].Flags |= ColFlags_UseSkyDrawDist;
-
 			for (Int k = 0; k < land->Col[j].Model->basicdxmodel->nbMat; ++k) {
 				NJS_MATERIAL* landmtl[1] = { &land->Col[j].Model->basicdxmodel->mats[k] };
 				if (IsLantern) material_register_ptr(landmtl, LengthOfArray(landmtl), &ForceWhiteDiffuse);
@@ -244,9 +227,9 @@ void SetCharactersLevelData(const HelperFunctions &helperFunctions) {
 //We prevent the skybox objects from loading in heroes levels
 void HeroesSkybox_Main(ObjectMaster *a1)
 {
-	LevelDrawDistance.Maximum = -100000.0f;
-	SkyboxDrawDistance.Maximum = -999999.0f;
-	Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, SkyboxDrawDistance.Maximum);
+	LevelDrawDistance.Maximum = -999999.0f;
+	SkyboxDrawDistance.Maximum = -36000.0f;
+	Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
 }
 
 //We force acts here

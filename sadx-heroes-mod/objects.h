@@ -13,7 +13,7 @@ bool IsPlayerInBox(NJS_VECTOR playerpos, NJS_VECTOR pos1, NJS_VECTOR pos2);
 void ElevatePlayer(uint8_t slot);
 bool CheckModelDisplay(SOI_LIST item);
 bool CheckModelDisplay2(SOI_LIST2 item);
-void DynColRadius(ObjectMaster *a1, float radius, uint8_t col);
+bool DynColRadius(ObjectMaster *a1, float radius, uint8_t col);
 
 void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions);
 void CommonObjects_OnFrame();

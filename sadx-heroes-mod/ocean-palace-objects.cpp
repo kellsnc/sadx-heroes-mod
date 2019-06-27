@@ -10,15 +10,7 @@ ModelInfo * OP_TURFINS;
 ModelInfo * OP_BOULDER;
 ModelInfo * OP_POLFLAG;
 
-static int finsstate = 0;
-
-static uint8_t rocktrigger = 0;
-static uint8_t rockstate = 0;
-static float rocktimer = 0;
-static uint8_t rockstate2 = 0;
-static float rocktimer2 = 0;
-static uint8_t rockstate3 = 0;
-static float rocktimer3 = 0;
+void BoulderPath(ObjectMaster *a1);
 
 NJS_VECTOR OceanPalaceTriggers[]{
 	{ -8200, 1401, -40045 },
@@ -59,8 +51,11 @@ void OPFins_Main(ObjectMaster *a1) {
 	}
 
 	if (CurrentChunk == 5) {
-		finsstate++;
-		if (finsstate > 300) finsstate = 0;
+		a1->Data1->InvulnerableTime++;
+		if (a1->Data1->InvulnerableTime > 300) a1->Data1->InvulnerableTime = 0;
+
+		short finsstate = a1->Data1->InvulnerableTime;
+
 		for (Int i = 9; i < 41; ++i) {
 			if (finsstate <= 100) {
 				OceanPalace_EventObjects[i].Rotation[1] -= 100;
@@ -173,7 +168,7 @@ void OPWaterfalls(ObjectMaster *a1) {
 
 void OPPOLE_Main(ObjectMaster *a1) {
 	if (!MissedFrames && !ClipSetObject(a1)) {
-		DynColRadius(a1, 1000, 0);
+		DynColRadius(a1, 200, 0);
 
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
 		njPushMatrix(0);
@@ -202,8 +197,6 @@ void OPPOLE(ObjectMaster *a1)
 	a1->DeleteSub = &deleteSub_Global;
 }
 
-//gotta rewrite this
-#pragma region Boulders
 void OP_AnimFix() {
 	EntityData1 *entity = EntityData1Ptrs[0];
 	CharObj2 *co2 = CharObj2Ptrs[0];
@@ -218,109 +211,72 @@ void OP_AnimFix() {
 }
 
 void OPBoulders_Display(ObjectMaster *a1) {
-	if (!DroppedFrames) {
-		for (int i = 2; i < 5; ++i) {
-			if (i > 2 && CurrentChunk != 7) break;
-			SOI_LIST2 item = OceanPalace_EventObjects[i];
+	njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+	njPushMatrix(0);
+	DrawQueueDepthBias = -6000.0f;
 
-			njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
-			njPushMatrix(0);
-			njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
-			njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);
-			DrawQueueDepthBias = item.Bias;
-
-			njDrawModel_SADX(OP_BOULDER->getmodel()->basicdxmodel);
-
-			DrawQueueDepthBias = 0;
-			njPopMatrix(1u);
-		}
+	switch (a1->Data1->Action) {
+	case 1: 
+		njTranslate(0, -8200.3408f, 2030, -39259.3);
+		njRotateY(nullptr, 32768);
+		break;
+	case 2:
+		njTranslate(0, -8274.9741f, 1363, -44980.36);
+		njRotateY(nullptr, 24735);
+		break;
+	case 3:
+		njTranslate(0, -6785.288f, 963, -46514.48);
+		njRotateY(nullptr, 32768);
+		break;
 	}
-}
-
-void OPBoulders_Delete(ObjectMaster *a1) {
-	rocktrigger = 0;
-	rockstate = 0;
-	rocktimer = 0;
-	rockstate2 = 0;
-	rocktimer2 = 0;
-	rockstate3 = 0;
-	rocktimer3 = 0;
-
-	OceanPalace_EventObjects[2].Position = { -8200.3408f, 2030, -39259.3f };
-	OceanPalace_EventObjects[3].Position = { -8274.9741f, 1363, -44980.36f };
-	OceanPalace_EventObjects[4].Position = { -6785.288f, 963, -46514.48f };
-
-	OceanPalace_EventObjects[2].Rotation[1] = 32768;
-	OceanPalace_EventObjects[3].Rotation[1] = 24735;
-	OceanPalace_EventObjects[4].Rotation[1] = 32768;
-}
-
-void OPBoulders_Main(ObjectMaster *a1) {
-	if (CurrentChunk > 5) {
-		if (IsPlayerInsideSphere(&OceanPalaceTriggers[1], 45.0f) == 1) OP_AnimFix();
-
-		if (IsPlayerInsideSphere(&OceanPalaceTriggers[0], 45.0f) == 1) {
-			rocktrigger = 1;
-			OP_AnimFix();
-			FreeCam = 0;
-		}
-
-		if (OceanPalace_EventObjects[2].Position.z < -44954) rocktrigger = 2;
-		if (OceanPalace_EventObjects[2].Position.z < -46553) rocktrigger = 3;
-
-		if (rocktrigger > 0) {
-			if (IsPlayerInsideSphere(&OceanPalace_EventObjects[2].Position, 120.0f) == 1 || IsPlayerInsideSphere(&OceanPalace_EventObjects[3].Position, 120.0f) == 1 || IsPlayerInsideSphere(&OceanPalace_EventObjects[4].Position, 120.0f) == 1) GameState = 7;
-
-			OceanPalace_EventObjects[2].Rotation[0] = OceanPalace_EventObjects[2].Rotation[0] + 1500;
-			if (rocktimer > 1) { rocktimer = 0; rockstate++; }
-
-			if (rockstate < LengthOfArray(OP_ROCK1) - 1) {
-				rocktimer = rocktimer + (OP_ROCKS[0].totaldist / OP_ROCK1[rockstate].Distance) / OP_ROCKS[0].totaldist * 8;
-				if (OP_ROCK1[rockstate].Rotation[1] != 0) {
-					OceanPalace_EventObjects[2].Rotation[1] = OP_ROCK1[rockstate].Rotation[1];
-				}
-				OceanPalace_EventObjects[2].Position.x = (OP_ROCK1[rockstate + 1].Position.x - OP_ROCK1[rockstate].Position.x) * rocktimer + OP_ROCK1[rockstate].Position.x;
-				OceanPalace_EventObjects[2].Position.y = (OP_ROCK1[rockstate + 1].Position.y - OP_ROCK1[rockstate].Position.y) * rocktimer + OP_ROCK1[rockstate].Position.y;
-				OceanPalace_EventObjects[2].Position.z = (OP_ROCK1[rockstate + 1].Position.z - OP_ROCK1[rockstate].Position.z) * rocktimer + OP_ROCK1[rockstate].Position.z;
-			}
-			if (rocktrigger > 1) {
-				OceanPalace_EventObjects[3].Rotation[0] = OceanPalace_EventObjects[3].Rotation[0] + 1500;
-				if (rocktimer2 > 1) { rocktimer2 = 0; rockstate2++; }
-				if (rockstate2 < LengthOfArray(OP_ROCK2) - 1) {
-					rocktimer2 = rocktimer2 + (OP_ROCKS[0].totaldist / OP_ROCK2[rockstate2].Distance) / OP_ROCKS[0].totaldist * 8;
-					if (OP_ROCK2[rockstate2].Rotation[1] != 0) {
-						OceanPalace_EventObjects[3].Rotation[1] = OP_ROCK2[rockstate2].Rotation[1];
-					}
-					OceanPalace_EventObjects[3].Position.x = (OP_ROCK2[rockstate2 + 1].Position.x - OP_ROCK2[rockstate2].Position.x) * rocktimer2 + OP_ROCK2[rockstate2].Position.x;
-					OceanPalace_EventObjects[3].Position.y = (OP_ROCK2[rockstate2 + 1].Position.y - OP_ROCK2[rockstate2].Position.y) * rocktimer2 + OP_ROCK2[rockstate2].Position.y;
-					OceanPalace_EventObjects[3].Position.z = (OP_ROCK2[rockstate2 + 1].Position.z - OP_ROCK2[rockstate2].Position.z) * rocktimer2 + OP_ROCK2[rockstate2].Position.z;
-				}
-				if (rocktrigger > 2) {
-					OceanPalace_EventObjects[4].Rotation[0] = OceanPalace_EventObjects[4].Rotation[0] + 1500;
-					if (rocktimer3 > 1) { rocktimer3 = 0; rockstate3++; }
-					if (rockstate3 < LengthOfArray(OP_ROCK3) - 1) {
-						rocktimer3 = rocktimer3 + (OP_ROCKS[0].totaldist / OP_ROCK3[rockstate3].Distance) / OP_ROCKS[0].totaldist * 8;
-						if (OP_ROCK3[rockstate3].Rotation[1] != 0) {
-							OceanPalace_EventObjects[4].Rotation[1] = OP_ROCK3[rockstate3].Rotation[1];
-						}
-						OceanPalace_EventObjects[4].Position.x = (OP_ROCK3[rockstate3 + 1].Position.x - OP_ROCK3[rockstate3].Position.x) * rocktimer3 + OP_ROCK3[rockstate3].Position.x;
-						OceanPalace_EventObjects[4].Position.y = (OP_ROCK3[rockstate3 + 1].Position.y - OP_ROCK3[rockstate3].Position.y) * rocktimer3 + OP_ROCK3[rockstate3].Position.y;
-						OceanPalace_EventObjects[4].Position.z = (OP_ROCK3[rockstate3 + 1].Position.z - OP_ROCK3[rockstate3].Position.z) * rocktimer3 + OP_ROCK3[rockstate3].Position.z;
-					}
-				}
-			}
-		}
-
-		OPBoulders_Display(a1);
-	}
+	
+	njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
+	DrawQueueDepthBias = 0;
+	njPopMatrix(1u);
 }
 
 void OPBoulders(ObjectMaster *a1) {
-	a1->DisplaySub = OPBoulders_Display;
-	a1->DeleteSub = OPBoulders_Delete;
-	a1->MainSub = OPBoulders_Main;
+	switch (a1->Data1->Action)
+	{
+	case 0:
+		a1->Data1->Object = OP_BOULDER->getmodel();
+		a1->DisplaySub = OPBoulders_Display;
+		a1->Data1->Action = 1;
+		break;
+	case 1:
+		if (IsPlayerInsideSphere(&OceanPalaceTriggers[0], 45.0f) == 1) {
+			a1->Data1->Action = 2;
+			SetCameraMode_(0);
+
+			LoadChildObject(LoadObj_Data1, BoulderPath, a1)->Data1->LoopData = (Loop*)&OP_BoulderPaths[0];
+		}
+
+		break;
+	case 2:
+		if (a1->Child->Data1->Position.z < -44954) {
+			a1->Data1->Action = 3;
+
+			LoadChildObject(LoadObj_Data1, BoulderPath, a1)->Data1->LoopData = (Loop*)&OP_BoulderPaths[1];
+		}
+
+		if (IsPlayerInsideSphere(&OceanPalaceTriggers[0], 45.0f) == 1 ||
+			IsPlayerInsideSphere(&OceanPalaceTriggers[1], 45.0f) == 1)
+			OP_AnimFix();
+
+		break;
+	case 3:
+		if (a1->Child->Data1->Position.z < -46583) {
+			a1->Data1->Action = 0;
+
+			LoadChildObject(LoadObj_Data1, BoulderPath, a1)->Data1->LoopData = (Loop*)&OP_BoulderPaths[2];
+		}
+
+		break;
+	}
+
+	RunObjectChildren(a1);
+	a1->DisplaySub(a1);
 }
-#pragma endregion
 
 PVMEntry OceanPalaceTextures[] = {
 	{ "E_SAI", &E_SAI_TEXLIST },
@@ -377,7 +333,7 @@ ObjectListEntry OceanPalaceObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 460000, 0, ObjFan, "OBJFAN" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 860000, 0, ObjFan, "OBJFAN" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1060000, 0, ObjFan, "OBJFAN" },
-	{ LoadObj_Data1 | LoadObj_UnknownA, ObjIndex_Stage, DistObj_UseDist, 360000, 0, SHCameraSwitch, "CAMSWITCH" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 50000, 0, SHCameraSwitch, "CAMSWITCH" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1360000, 0, ObjBalloon, "SH BALLOON" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1000000, 0, ObjBoxW, "CO_WOODBOX" },
 	{ 0, 0, 0, 0, 0, nullptr, NULL },

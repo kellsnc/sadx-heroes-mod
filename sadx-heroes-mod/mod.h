@@ -86,20 +86,6 @@ enum DistObj : Sint16
 typedef struct {
 	NJS_VECTOR		Position;
 	Angle			Rotation[3];
-	float			Distance;
-	uint8_t			parameter;
-} SH_PATH;
-
-typedef struct {
-	SH_PATH			*path;
-	float			totaldist;
-	uint8_t			parameters[3];
-	uint8_t			pathentrysize;
-} SH_PATHS;
-
-typedef struct {
-	NJS_VECTOR		Position;
-	Angle			Rotation[3];
 	uint8_t			Chunk;
 	Float			DrawDistance;
 } SOI_LIST;
