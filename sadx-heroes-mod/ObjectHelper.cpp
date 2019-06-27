@@ -118,6 +118,11 @@ bool DynColRadius(ObjectMaster *a1, float radius, uint8_t col) {
 	return false;
 }
 
+bool DynColRadiusAuto(ObjectMaster *a1, uint8_t col) {
+	//Use the model radius
+	return DynColRadius(a1, a1->Data1->Object->basicdxmodel->r + 50, col);
+}
+
 //Shift uv of models, requires a SH_UVSHIFT struct
 void AnimateUV(SH_UVSHIFT *UVSHIFT, int size) {
 	if (GameState != 16) {

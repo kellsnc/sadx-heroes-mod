@@ -99,7 +99,7 @@ void SHMovingPltfrms_Display(ObjectMaster *a1) {
 
 void SHMovingPltfrms_Main(ObjectMaster *a1) {
 	if (!ClipSetObject(a1)) {
-		DynColRadius(a1, a1->Data1->InvulnerableTime, a1->Data1->NextAction);
+		DynColRadiusAuto(a1, a1->Data1->NextAction);
 
 		if (ruin != 0 && ruin == a1->Data1->Scale.y) {
 			if (a1->Data1->Position.y != a1->Data1->Scale.z) {
@@ -134,13 +134,7 @@ void SHMovingPltfrms_Main(ObjectMaster *a1) {
 
 void __cdecl SHMovingPltfrms(ObjectMaster *a1)
 {
-	a1->Data1->InvulnerableTime = 300;
-
-	if (a1->Data1->Scale.x == 0) {
-		a1->Data1->Object = SH_MORUINS->getmodel();
-		a1->Data1->InvulnerableTime = 1000;
-	}
-
+	if (a1->Data1->Scale.x == 0) a1->Data1->Object = SH_MORUINS->getmodel();
 	if (a1->Data1->Scale.x == 1) a1->Data1->Object = SH_MORUINS->getmodel()->child;
 	if (a1->Data1->Scale.x == 2) a1->Data1->Object = SH_MORUINS->getmodel()->child->child;
 
