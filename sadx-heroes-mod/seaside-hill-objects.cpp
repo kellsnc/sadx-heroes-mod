@@ -51,36 +51,34 @@ void SHFlowers(ObjectMaster *a1) {
 }
 
 void SHWaterfalls(ObjectMaster *a1) {
-	if (a1->Data1->Action == 0) {
-		a1->DisplaySub = a1->MainSub;
-		a1->Data1->Action = 1;
-	}
-
 	if (!DroppedFrames) {
 		for (int i = 0; i < LengthOfArray(SeasideHill_Waterfalls); ++i) {
 			if ((CurrentAct == 0 && i > 49) || (CurrentAct == 1 && i < 50)) continue;
+			SOI_LIST2 item = SeasideHill_Waterfalls[i];
 
-			if (CheckModelDisplay2(SeasideHill_Waterfalls[i])) {
-				SOI_LIST2 item = SeasideHill_Waterfalls[i];
+			ObjectMaster *obj;
+			obj = LoadObject(LoadObj_Data1, 4, WaterfallObject);
+			obj->DisplaySub = WaterfallObject;
+			obj->Data1->Position = item.Position;
 
-				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
-				njPushMatrix(0);
-				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
-				njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);
-				njScale(nullptr, item.Scale.x, item.Scale.y, item.Scale.z);
-				DrawQueueDepthBias = item.Bias;
+			obj->Data1->Rotation.x = item.Rotation[0];
+			obj->Data1->Rotation.y = item.Rotation[1];
+			obj->Data1->Rotation.z = item.Rotation[2];
 
-				switch (item.Model) {
-				case 0: njDrawModel_SADX(SH_WATERFS->getmodel()->basicdxmodel); break;
-				case 1: njDrawModel_SADX(SH_WATERFS->getmodel()->child->basicdxmodel); break;
-				case 2: njDrawModel_SADX(SH_WATERFS->getmodel()->child->child->basicdxmodel); break;
-				case 3: njDrawModel_SADX(SH_WATERFS->getmodel()->child->child->child->basicdxmodel); break;
-				}
+			obj->Data1->Scale.y = item.Scale.x;
+			obj->Data1->Scale.x = item.DrawDistance;
+			obj->Data1->InvulnerableTime = item.Bias;
+			obj->Data1->NextAction = item.Chunk;
 
-				DrawQueueDepthBias = 0;
-				njPopMatrix(1u);
+			switch (item.Model) {
+			case 0: obj->Data1->Object = SH_WATERFS->getmodel(); break;
+			case 1: obj->Data1->Object = SH_WATERFS->getmodel()->child; break;
+			case 2: obj->Data1->Object = SH_WATERFS->getmodel()->child->child; break;
+			case 3: obj->Data1->Object = SH_WATERFS->getmodel()->child->child->child; break;
 			}
 		}
+
+		DeleteObjectMaster(a1);
 	}
 }
 

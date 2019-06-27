@@ -99,9 +99,10 @@ void AddToCollision(ObjectMaster *a1, uint8_t col) {
 	colobject->basicdxmodel = a1->Data1->Object->basicdxmodel; //object it will use as a collision
 	a1->Data1->LoopData = (Loop*)colobject; //pointer to the collision object into our original object
 
-	if (col == 0 || col == 2) DynamicCOL_Add((ColFlags)1, a1, colobject); //Solid
+	if (col == 0 || col == 2) DynamicCOL_Add(ColFlags_Solid, a1, colobject); //Solid
 	else if (col == 1 || col == 3) DynamicCOL_Add((ColFlags)0x8000000, a1, colobject); //Dynamic, solid
 	else if (col == 4) DynamicCOL_Add((ColFlags)0x8000001, a1, colobject);
+	else if (col == 5) DynamicCOL_Add(ColFlags_Water, a1, colobject);
 }
 
 //Only allocate dynamic collision within radius

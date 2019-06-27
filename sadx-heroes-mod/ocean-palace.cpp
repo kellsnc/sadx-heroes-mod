@@ -24,6 +24,28 @@ void OceanPalaceSkybox(ObjectMaster *a1) {
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 		ToggleStageFog();
+
+		switch (CurrentChunk) {
+		case 0:
+		case 1:
+		case 2:
+		case 3:
+			a1->Data1->Position = { -7000, 3000, -900 };
+			break;
+		case 4:
+		case 5:
+			a1->Data1->Position = { -5696, 3000, -24900 };
+			break;
+		case 6:
+			a1->Data1->Position = { -7200, 4000, -38900 };
+			break;
+		case 7:
+		case 8:
+			a1->Data1->Position = { -7000, 4500, -42900 };
+			break;
+		}
+
+		DrawLensFlare(&a1->Data1->Position);
 	}
 }
 

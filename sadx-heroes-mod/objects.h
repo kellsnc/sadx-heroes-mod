@@ -19,13 +19,14 @@ bool DynColRadiusAuto(ObjectMaster *a1, uint8_t col);
 void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions);
 void CommonObjects_OnFrame();
 
-void __cdecl ObjReel(ObjectMaster *a1);
-void __cdecl ObjFan(ObjectMaster *a1);
-void __cdecl SHCameraSwitch(ObjectMaster *a1);
-void __cdecl ObjBalloon(ObjectMaster *a1);
-void __cdecl ObjCannon(ObjectMaster *a1);
-void __cdecl ObjBoxW(ObjectMaster *a1);
-void __cdecl OBJCASE(ObjectMaster *a1);
+void ObjReel(ObjectMaster *a1);
+void ObjFan(ObjectMaster *a1);
+void SHCameraSwitch(ObjectMaster *a1);
+void ObjBalloon(ObjectMaster *a1);
+void ObjCannon(ObjectMaster *a1);
+void ObjBoxW(ObjectMaster *a1);
+void OBJCASE(ObjectMaster *a1);
+void WaterfallObject(ObjectMaster *a1);
 
 extern NJS_MATERIAL matlist_col[1];
 extern NJS_MATERIAL matlist_waterfall[1];

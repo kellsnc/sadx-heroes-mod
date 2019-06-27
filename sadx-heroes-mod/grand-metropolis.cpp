@@ -5,6 +5,17 @@
 #include "grand-metropolis-deathzones.h"
 #include "grand-metropolis.h"
 
+void GrandMetropolisSkybox(ObjectMaster *a1) {
+	if (a1->Data1->Action == 0) {
+		a1->Data1->Action = 1;
+		a1->DisplaySub = a1->MainSub;
+		HeroesSkybox_Main(a1);
+	}
+
+	a1->Data1->Position = { 0, 12000, 5000 };
+	DrawLensFlare(&a1->Data1->Position);
+}
+
 void GrandMetropolis_InitObjects() {
 	GM_ADVERTS = LoadMDL("GM_ADVERTS");
 	GM_FLYCARS = LoadMDL("GM_FLYCARS");
@@ -107,7 +118,7 @@ void GrandMetropolis_Init(const char *path, const HelperFunctions &helperFunctio
 	CasinopolisDeathZones[0] = GrandMetropolisDeathZones;
 
 	LevelObjects[HeroesLevelID_GrandMetropolis] = GrandMetropolisHandler;
-	SkyboxObjects[HeroesLevelID_GrandMetropolis] = HeroesSkybox_Main;
+	SkyboxObjects[HeroesLevelID_GrandMetropolis] = GrandMetropolisSkybox;
 
 	GrandMetropolisObjects_Init(path);
 }

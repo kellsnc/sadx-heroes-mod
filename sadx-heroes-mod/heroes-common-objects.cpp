@@ -267,6 +267,29 @@ void ObjReel(ObjectMaster *a1)
 	a1->DeleteSub = &deleteSub_Global;
 }
 
+void WaterfallObject(ObjectMaster *a1) {
+	if (a1->Data1->NextAction == 0 || a1->Data1->NextAction == CurrentChunk) {
+		if (a1->Data1->Scale.x == 0 || IsPlayerInsideSphere(&a1->Data1->Position, a1->Data1->Scale.x) == 1) {
+			if (DynColRadiusAuto(a1, 5)) {
+				NJS_OBJECT * col = (NJS_OBJECT*)a1->Data1->LoopData;
+				if (col) col->pos[1] = a1->Data1->Position.y + 1;
+			}
+
+			if (!MissedFrames) {
+				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+				njPushMatrix(0);
+				njTranslate(nullptr, a1->Data1->Position.x, a1->Data1->Position.y, a1->Data1->Position.z);
+				njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
+				njScale(nullptr, a1->Data1->Scale.y, a1->Data1->Scale.y, a1->Data1->Scale.y);
+				DrawQueueDepthBias = a1->Data1->InvulnerableTime;
+				njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
+				DrawQueueDepthBias = 0;
+				njPopMatrix(1u);
+			}
+		}
+	}
+}
+
 void ObjBalloon_Display(ObjectMaster *a1)
 {
 	if (!MissedFrames) {
