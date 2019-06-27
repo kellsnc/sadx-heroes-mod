@@ -59,3 +59,4 @@ extern ModelInfo * OP_FLOWERS;
 extern ModelInfo * OP_TURFINS;
 extern ModelInfo * OP_BOULDER;
 extern ModelInfo * OP_POLFLAG;
+extern ModelInfo * OP_SKYMDLS;

@@ -9,6 +9,7 @@ ModelInfo * OP_FLOWERS;
 ModelInfo * OP_TURFINS;
 ModelInfo * OP_BOULDER;
 ModelInfo * OP_POLFLAG;
+ModelInfo * OP_SKYMDLS;
 
 void BoulderPath(ObjectMaster *a1);
 
@@ -211,6 +212,9 @@ void OP_AnimFix() {
 }
 
 void OPBoulders_Display(ObjectMaster *a1) {
+	if (CurrentChunk < 6)
+		return;
+	
 	njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
 	njPushMatrix(0);
 	DrawQueueDepthBias = -6000.0f;
@@ -236,6 +240,9 @@ void OPBoulders_Display(ObjectMaster *a1) {
 }
 
 void OPBoulders(ObjectMaster *a1) {
+	if (CurrentChunk < 6)
+		return;
+
 	switch (a1->Data1->Action)
 	{
 	case 0:
