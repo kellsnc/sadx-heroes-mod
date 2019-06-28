@@ -12,9 +12,13 @@ ModelInfo * GM_GRPLANE;
 ModelInfo * GM_MCLOUDS;
 ModelInfo * GM_ZEPPLIN;
 
-#pragma region Sky
-void GMSky_Display(ObjectMaster *a1) {
+void GMSky(ObjectMaster *a1) {
 	if (!DroppedFrames) {
+		if (a1->Data1->Action == 0) {
+			a1->DisplaySub = a1->MainSub;
+			a1->Data1->Action = 1;
+		}
+
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
 		njPushMatrix(0);
 		njTranslate(nullptr, EntityData1Ptrs[0]->Position.x, 300, EntityData1Ptrs[0]->Position.z);
@@ -30,13 +34,6 @@ void GMSky_Display(ObjectMaster *a1) {
 	}
 }
 
-void GMSky(ObjectMaster *a1) {
-	a1->DisplaySub = GMSky_Display;
-	a1->MainSub = GMSky_Display;
-}
-#pragma endregion
-
-#pragma region Pistons
 void GMPistons_Display(ObjectMaster *a1) {
 	if (!DroppedFrames) {
 		for (int i = 0; i < LengthOfArray(GM_Pistons); ++i) {
@@ -94,11 +91,14 @@ void GMPistons(ObjectMaster *a1) {
 	a1->DisplaySub = GMPistons_Display;
 	a1->MainSub = GMPistons_Main;
 }
-#pragma endregion
 
-#pragma region Ads
-void GMAds_Display(ObjectMaster *a1) {
+void GMAds(ObjectMaster *a1) {
 	if (!DroppedFrames) {
+		if (a1->Data1->Action == 0) {
+			a1->DisplaySub = a1->MainSub;
+			a1->Data1->Action = 1;
+		}
+
 		for (int i = 0; i < LengthOfArray(GM_Ads); ++i) {
 			if (CheckModelDisplay(GM_Ads[i])) {
 				SOI_LIST item = GM_Ads[i];
@@ -116,13 +116,6 @@ void GMAds_Display(ObjectMaster *a1) {
 	}
 }
 
-void GMAds(ObjectMaster *a1) {
-	a1->DisplaySub = GMAds_Display;
-	a1->MainSub = GMAds_Display;
-}
-#pragma endregion
-
-#pragma region Cars
 void GMCars_Display(ObjectMaster *a1) {
 	if (!DroppedFrames) {
 		for (int i = 0; i < LengthOfArray(GM_FlyingObjs); ++i) {
@@ -156,7 +149,12 @@ void GMCars_Display(ObjectMaster *a1) {
 	}
 }
 
-void GMCars_Main(ObjectMaster *a1) {
+void GMCars(ObjectMaster *a1) {
+	if (a1->Data1->Action == 0) {
+		a1->DisplaySub = GMCars_Display;
+		a1->Data1->Action = 1;
+	}
+
 	if (anim % 1800 == 0) a1->Data1->Scale = { 0, 0, 0 };
 	else {
 		a1->Data1->Scale.x += 0.5f;
@@ -164,16 +162,9 @@ void GMCars_Main(ObjectMaster *a1) {
 		a1->Data1->Scale.z += 10.0f;
 	}
 
-	GMCars_Display(a1);
+	a1->DisplaySub(a1);
 }
 
-void GMCars(ObjectMaster *a1) {
-	a1->DisplaySub = GMCars_Display;
-	a1->MainSub = GMCars_Main;
-}
-#pragma endregion
-
-#pragma region Energy_H
 void __cdecl GMEnergyH_Display(ObjectMaster *a1)
 {
 	if (!DroppedFrames) {
@@ -189,32 +180,25 @@ void __cdecl GMEnergyH_Display(ObjectMaster *a1)
 	}
 }
 
-void __cdecl GMEnergyH_Main(ObjectMaster *a1)
+void __cdecl GMEnergyH(ObjectMaster *a1)
 {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 2500.0f)) {
+	if (a1->Data1->Action == 0) {
+		a1->DisplaySub = GMEnergyH_Display;
+		a1->Data1->Action = 1;
+	}
+
+	if (!ClipSetObject(a1)) {
 		if (a1->Data1->Scale.x == 0) a1->Data1->Scale.y = 180;
 		else {
 			if (IsSwitchPressed(a1->Data1->Scale.x)) {
 				if (a1->Data1->Scale.y < 180) a1->Data1->Scale.y += 5;
 			}
 		}
-		GMEnergyH_Display(a1);
-	}
-	else {
-		deleteSub_Global(a1);
+		a1->DisplaySub(a1);
 	}
 }
 
-void __cdecl GMEnergyH(ObjectMaster *a1)
-{
-	a1->MainSub = &GMEnergyH_Main;
-	a1->DisplaySub = &GMEnergyH_Display;
-	a1->DeleteSub = &deleteSub_Global;
-}
-#pragma endregion
-
-#pragma region Energy Doors
-void GM_ENERGYDOORS_Display(ObjectMaster *a1) {
+void GM_EnergyDoors_Display(ObjectMaster *a1) {
 	if (!MissedFrames && IsPlayerInsideSphere(&a1->Data1->Position, 2000.0f)) {
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
 		njPushMatrix(0);
@@ -228,10 +212,11 @@ void GM_ENERGYDOORS_Display(ObjectMaster *a1) {
 	}
 }
 
-void GM_ENERGYDOORS_Main(ObjectMaster *a1) {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 2500.0f)) {
-
+void GM_EnergyDoors_Main(ObjectMaster *a1) {
+	if (!ClipSetObject(a1)) {
 		if (a1->Data1->Action != 0) {
+			DynColRadius(a1, 50, 1);
+
 			if (IsSwitchPressed(a1->Data1->Action)) {
 				if (a1->Data1->Scale.y != 0 && a1->Data1->Scale.z != 0) {
 					if (a1->Data1->Position.x != a1->Data1->Scale.y) {
@@ -273,18 +258,23 @@ void GM_ENERGYDOORS_Main(ObjectMaster *a1) {
 					}
 				}
 			}
+
+			NJS_OBJECT * col = (NJS_OBJECT*)a1->Data1->LoopData;
+
+			if (col) {
+				col->pos[0] = a1->Data1->Position.x;
+				col->pos[2] = a1->Data1->Position.z;
+			}
+		}
+		else {
+			DynColRadius(a1, 50, 0);
 		}
 
-		a1->Data1->Object->pos[0] = a1->Data1->Position.x;
-		a1->Data1->Object->pos[2] = a1->Data1->Position.z;
-		GM_ENERGYDOORS_Display(a1);
-	}
-	else {
-		deleteSub_Global(a1);
+		a1->DisplaySub(a1);
 	}
 }
 
-void __cdecl GM_ENERGYDOORS(ObjectMaster *a1)
+void __cdecl GM_EnergyDoors(ObjectMaster *a1)
 {
 	if (a1->Data1->Rotation.x == 1) a1->Data1->Object = &s03_door_2obj;
 	else a1->Data1->Object = &s03_door_1obj;
@@ -292,7 +282,6 @@ void __cdecl GM_ENERGYDOORS(ObjectMaster *a1)
 	a1->Data1->Action = a1->Data1->Scale.x; //Action = switch id
 
 	if (a1->Data1->Action != 0) {
-		AddToCollision(a1, 1);
 		if (a1->Data1->Scale.y != 0 && a1->Data1->Scale.z != 0) {
 
 		}
@@ -307,16 +296,13 @@ void __cdecl GM_ENERGYDOORS(ObjectMaster *a1)
 			}
 		}
 	}
-	else AddToCollision(a1, 0);
 
-	a1->MainSub = &GM_ENERGYDOORS_Main;
-	a1->DisplaySub = &GM_ENERGYDOORS_Display;
+	a1->MainSub = &GM_EnergyDoors_Main;
+	a1->DisplaySub = &GM_EnergyDoors_Display;
 	a1->DeleteSub = &deleteSub_Global;
 }
-#pragma endregion
 
-#pragma region Energy Paths
-void GM_ENERGYPATHS_Display(ObjectMaster *a1) {
+void GM_EnergyPaths_Display(ObjectMaster *a1) {
 	if (!MissedFrames) {
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
 		njPushMatrix(0);
@@ -330,34 +316,30 @@ void GM_ENERGYPATHS_Display(ObjectMaster *a1) {
 	}
 }
 
-void GM_ENERGYPATHS_Main(ObjectMaster *a1) {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 2500.0f)) {
-		if (a1->Data1->Scale.z <= 1 && IsSwitchPressed(a1->Data1->Scale.y)) a1->Data1->Scale.z += 0.1f;
-		if (a1->Data1->Scale.z == 0.1f) {
-			PlaySound(52, 0, 0, 0);
-			a1->Data1->Object->pos[1] -= 10000;
+void GM_EnergyPaths_Main(ObjectMaster *a1) {
+	if (!ClipSetObject(a1)) {
+		if (IsSwitchPressed(a1->Data1->Scale.y)) {
+			DynColRadiusAuto(a1, 4);
+
+			if (a1->Data1->Scale.z <= 1)
+				a1->Data1->Scale.z += 0.1f;
+			else if (a1->Data1->Scale.z == 0.1f)
+				PlaySound(52, 0, 0, 0);
 		}
 
-		GM_ENERGYPATHS_Display(a1);
-	}
-	else {
-		deleteSub_Global(a1);
+		a1->DisplaySub(a1);
 	}
 }
 
-void __cdecl GM_ENERGYPATHS(ObjectMaster *a1)
+void __cdecl GM_EnergyPaths(ObjectMaster *a1)
 {
 	if (a1->Data1->Scale.x == 1)  a1->Data1->Object = GM_GRFLUID->getmodel()->child;
 	else a1->Data1->Object = GM_GRFLUID->getmodel();
-	
-	AddToCollision(a1, 4);
-	a1->Data1->Object->pos[1] += 10000;
 
-	a1->MainSub = &GM_ENERGYPATHS_Main;
-	a1->DisplaySub = &GM_ENERGYPATHS_Display;
+	a1->MainSub = &GM_EnergyPaths_Main;
+	a1->DisplaySub = &GM_EnergyPaths_Display;
 	a1->DeleteSub = &deleteSub_Global;
 }
-#pragma endregion
 
 PVMEntry GrandMetropolisObjectTextures[] = {
 	{ "E_SAI", &E_SAI_TEXLIST },
@@ -380,99 +362,99 @@ PVMEntry GrandMetropolisObjectTextures[] = {
 };
 
 ObjectListEntry GrandMetropolisObjectList_list[] = {
-	{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x450370, "RING   " } /* "RING   " */,
-{ 2, 2, 1, 360000, 0, (ObjectFuncPtr)0x7A4C30, "SPRING " } /* "SPRING " */,
-{ 2, 2, 1, 360000, 0, (ObjectFuncPtr)0x7A4E50, "SPRINGB" } /* "SPRINGB" */,
-{ 3, 3, 1, 360000, 0, (ObjectFuncPtr)0x7A4450, "O AXPNL" } /* "O AXPNL" */,
-{ 6, 3, 1, 360000, 0, (ObjectFuncPtr)0x7A4260, "O IRONB" } /* "O IRONB" */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x7A3E50, "O FeBJG" } /* "O FeBJG" */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x7A30E0, "O TOGE" } /* "O TOGE" */,
-{ 3, 3, 1, 360000, 0, (ObjectFuncPtr)0x4A3420, "O EME P" } /* "O EME P" */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x46B170, "O RELEASE" } /* "O RELEASE" */,
-{ 6, 3, 1, 360000, 0, (ObjectFuncPtr)0x4CBA80, "O SWITCH" } /* "O SWITCH" */,
-{ 10, 3, 1, 160000, 0, (ObjectFuncPtr)0x7A2B60, "CMN KUSA" } /* "CMN KUSA" */,
-{ 14, 3, 1, 360000, 0, (ObjectFuncPtr)0x7A26F0, "CMN_DRING" } /* "CMN_DRING" */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x7A21C0, "O BALOON" } /* "O BALOON" */,
-{ 2, 3, 1, 160000, 0, (ObjectFuncPtr)0x4D6F10, "O ITEMBOX" } /* "O ITEMBOX" */,
-{ 14, 2, 1, 360000, 0, (ObjectFuncPtr)0x4CA530, "Rocket H" } /* "Rocket H" */,
-{ 14, 2, 1, 360000, 0, (ObjectFuncPtr)0x4CA660, "Rocket HS" } /* "Rocket HS" */,
-{ 14, 2, 1, 360000, 0, (ObjectFuncPtr)0x4CA7D0, "Rocket V" } /* "Rocket V" */,
-{ 14, 2, 1, 360000, 0, (ObjectFuncPtr)0x4CA900, "Rocket VS" } /* "Rocket VS" */,
-{ 2, 2, 1, 4000000, 0, (ObjectFuncPtr)0x4B8DC0, "O JPanel" } /* "O JPanel" */,
-{ 15, 6, 1, 360000, 0, (ObjectFuncPtr)0x44F540, "O Save Point" } /* "O Save Point" */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4D4850, "WALL   " } /* "WALL   " */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x79B2F0, "O_GRING" } /* "O_GRING" */,
-{ 2, 2, 1, 360000, 0, (ObjectFuncPtr)0x4D4700, "C SPHERE" } /* "C SPHERE" */,
-{ 2, 2, 1, 360000, 0, (ObjectFuncPtr)0x4D4770, "C CYLINDER" } /* "C CYLINDER" */,
-{ 2, 2, 1, 360000, 0, (ObjectFuncPtr)0x4D47E0, "C CUBE" } /* "C CUBE" */,
-{ 2, 2, 1, 360000, 0, (ObjectFuncPtr)0x4D4B70, "OTTOTTO" } /* "OTTOTTO" */,
-{ 2, 2, 1, 360000, 0, (ObjectFuncPtr)0x7A1AA0, "O TIKAL" } /* "O TIKAL" */,
-{ 2, 2, 1, 40000, 0, (ObjectFuncPtr)0x7A8E50, "O BUBBLE" } /* "O BUBBLE" */,
-{ 2, 4, 1, 40000, 0, (ObjectFuncPtr)0x7A8A60, "O BUBBLES" } /* "O BUBBLES" */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4AD140, "E SARU  " } /* "E SARU  " */,
-{ 2, 3, 1, 160000, 0, (ObjectFuncPtr)0x7A1380, "E SAITO" } /* "E SAITO" */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x7AA960, "E AMEMB" } /* "E AMEMB" */,
-{ 2, 3, 1, 1360000, 0, &ObjReel, "OBJREEL" } /* "Reel" */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x500FF0, "YASI1   " } /* "YASI1   " */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x501090, "YASI2   " } /* "YASI2   " */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x500EC0, "YASI3   " } /* "YASI3   " */,
-{ 6, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FB710, "O BFLOOT   " } /* "O BFLOOT   " */,
-{ 6, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FB730, "O BUNGA   " } /* "O BUNGA   " */,
-{ 10, 3, 1, 160000, 0, (ObjectFuncPtr)0x500B90, "O BGIRO   " } /* "O BGIRO   " */,
-{ 15, 3, 1, 360000, 0, (ObjectFuncPtr)0x500770, "O IWA   " } /* "O IWA   " */,
-{ 6, 3, 1, 360000, 0, (ObjectFuncPtr)0x5001E0, "O JUMP   " } /* "O JUMP   " */,
-{ 6, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FB770, "O IWAPO   " } /* "O IWAPO   " */,
-{ 6, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FB750, "O ROCK   " } /* "O ROCK   " */,
-{ 2, 3, 1, 1860000, 0, &GM_ENERGYPATHS, "GM PATHS" } /* "GM Energy Paths" */,
-{ 2, 3, 1, 1360000, 0, &GM_ENERGYDOORS, "GM DOORS" } /* "GM Energy Doors" */,
-{ 2, 3, 1, 1360000, 0, &GMEnergyH, "GM ENER" } /* "GM Energy H" */,
-{ 2, 3, 1, 1000000, 0, (ObjectFuncPtr)&ObjBoxW, "OBJ BOWX" } /* "Wooden Box" */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FFD80, "O CORA   " } /* "O CORA   " */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FFDA0, "O CORB   " } /* "O CORB   " */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FFD00, "O GRASA   " } /* "O GRASA   " */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FFD20, "O GRASB   " } /* "O GRASB   " */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FFD40, "O GRASC   " } /* "O GRASC   " */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FFD60, "O GRASD   " } /* "O GRASD   " */,
-{ 10, 3, 1, 3240000, 0, (ObjectFuncPtr)0x4FACD0, "O DOLPHIN   " } /* "O DOLPHIN   " */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FB790, "O SEKITYU   " } /* "O SEKITYU   " */,
-{ 11, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FFC30, "O KAMOME   " } /* "O KAMOME   " */,
-{ 11, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FFB60, "O KAMOMEL   " } /* "O KAMOMEL   " */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FB7E0, "O KOMOMO   " } /* "O KOMOMO   " */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FF5F0, "O PARASOL" } /* "O PARASOL" */,
-{ 6, 3, 1, 250000, 0, (ObjectFuncPtr)0x4FF060, "O PIER" } /* "O PIER" */,
-{ 2, 3, 1, 160000, 0, (ObjectFuncPtr)0x4FE8C0, "O GOMBAN" } /* "O GOMBAN" */,
-{ 2, 3, 1, 160000, 0, (ObjectFuncPtr)0x4F7E90, "O ASIATO" } /* "O ASIATO" */,
-{ 10, 3, 1, 160000, 0, (ObjectFuncPtr)0x4FD9D0, "O BKUSA" } /* "O BKUSA" */,
-{ 10, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FD770, "O MKUSA" } /* "O MKUSA" */,
-{ 2, 3, 1, 160000, 0, (ObjectFuncPtr)0x4FDA90, "O K2" } /* "O K2" */,
-{ 2, 3, 1, 160000, 0, (ObjectFuncPtr)0x4FD160, "O SAKANA8K" } /* "O SAKANA8K" */,
-{ 3, 3, 1, 1000000, 0, (ObjectFuncPtr)0x4FC550, "O BIGROCK" } /* "O BIGROCK" */,
-{ 2, 3, 1, 160000, 0, (ObjectFuncPtr)0x4FBE40, "O AO SUMMON" } /* "O AO SUMMON" */,
-{ 2, 3, 1, 160000, 0, (ObjectFuncPtr)0x4FBCE0, "O AO KILL" } /* "O AO KILL" */,
-{ 2, 3, 1, 160000, 0, (ObjectFuncPtr)0x4FBBE0, "O PO SUMMON" } /* "O PO SUMMON" */,
-{ 2, 3, 1, 1000000, 0, (ObjectFuncPtr)0x4FBA70, "O TAKI" } /* "O TAKI" */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FB800, "O Rock2" } /* "O Rock2" */,
-{ 3, 3, 1, 1000000, 0, (ObjectFuncPtr)0x4FB5F0, "O ARCHROCK" } /* "O ARCHROCK" */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FB160, "O BED" } /* "O BED" */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FB050, "O KASA" } /* "O KASA" */,
-{ 2, 3, 1, 160000, 0, (ObjectFuncPtr)0x4FAE30, "O DOLSW" } /* "O DOLSW" */,
-{ 3, 3, 1, 160000, 0, (ObjectFuncPtr)0x5977F0, "S BASS " } /* "S BASS " */,
-{ 3, 3, 1, 160000, 0, (ObjectFuncPtr)0x7A7AD0, "S KAERU" } /* "S KAERU" */,
-{ 3, 3, 1, 90000, 0, (ObjectFuncPtr)0x597660, "S GENE " } /* "S GENE " */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FA3B0, "O BEWIND " } /* "O BEWIND " */,
-{ 2, 3, 1, 160000, 0, (ObjectFuncPtr)0x4FA320, "O FROG " } /* "O FROG " */,
-{ 2, 3, 1, 160000, 0, (ObjectFuncPtr)0x4F9FB0, "O BZ " } /* "O BZ " */,
-{ 15, 3, 1, 160000, 0, (ObjectFuncPtr)0x4C07D0, "O ItemBoxAir" } /* "O ItemBoxAir" */,
-{ 2, 0, 1, 1000000, 0, (ObjectFuncPtr)0x4D4BE0, "BIGWJUMP" } /* "BIGWJUMP" */,
-{ 2, 3, 4, 0, 0, (ObjectFuncPtr)0x4B0DF0, "SPINA A" } /* "SPINA A" */,
-{ 2, 3, 4, 0, 0, (ObjectFuncPtr)0x4B0F40, "SPINA B" } /* "SPINA B" */,
-{ 2, 3, 4, 0, 0, (ObjectFuncPtr)0x4B1090, "SPINA C" } /* "SPINA C" */,
-{ 2, 2, 0, 0, 0, (ObjectFuncPtr)0x7A4E50, "O SPRING B" } /* "O SPRING B" */,
-{ 2, 3, 0, 0, 0, (ObjectFuncPtr)0x79F860, "O SPRING H" } /* "O SPRING H" */,
-{ 2, 3, 5, 360000, 0, (ObjectFuncPtr)0x4AF190, "E UNI A" } /* "E UNI A" */,
-{ 2, 3, 5, 360000, 0, (ObjectFuncPtr)0x4AF500, "E UNI B" } /* "E UNI B" */,
-{ 2, 3, 5, 250000, 0, (ObjectFuncPtr)0x4AF860, "E UNI C" } /* "E UNI C" */,
-{ 2, 3, 5, 360000, 0, (ObjectFuncPtr)0x4B3210, "E POLICE" } /* "E POLICE" */,
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, Ring_Main, "RING   " },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, 0, Spring_Main, "SPRING " },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, 0, SpringB_Main, "SPRINGB" },
+	{ LoadObj_Data2 | LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, DashPanel_Main, "O AXPNL" },
+	{ LoadObj_Data1 | LoadObj_UnknownA, ObjIndex_Stage, DistObj_UseDist, 360000, 0, SwingSpikeBall_Load, "O IRONB" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, FallingSpikeBall_Load, "O FeBJG" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, Spikes_Main, "O TOGE" },
+	{ LoadObj_Data2 | LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, EmeraldPiece_Load, "O EME P" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, Capsule_Load, "O RELEASE" },
+	{ LoadObj_Data1 | LoadObj_UnknownA, ObjIndex_Stage, DistObj_UseDist, 360000, 0, Switch_Main, "O SWITCH" },
+	{ LoadObj_Data1 | LoadObj_UnknownB, ObjIndex_Stage, DistObj_UseDist, 160000, 0, Weed_Main, "CMN KUSA" },
+	{ LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB, ObjIndex_Stage, DistObj_UseDist, 360000, 0, DashHoop_Main, "CMN_DRING" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, Balloon_Main, "O BALOON" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 160000, 0, ItemBox_Main, "O ITEMBOX" },
+	{ LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB, ObjIndex_Common, DistObj_UseDist, 360000, 0, RocketH_Main, "Rocket H" },
+	{ LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB, ObjIndex_Common, DistObj_UseDist, 360000, 0, RocketHS_Main, "Rocket HS" },
+	{ LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB, ObjIndex_Common, DistObj_UseDist, 360000, 0, RocketV_Main, "Rocket V" },
+	{ LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB, ObjIndex_Common, DistObj_UseDist, 360000, 0, RocketVS_Main, "Rocket VS" },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 4000000, 0, JumpPanel_Load, "O JPanel" },
+	{ LoadObj_Data2 | LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB, ObjIndex_6, DistObj_UseDist, 360000, 0, CheckPoint_Main, "O Save Point" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, Wall_Main, "WALL   " },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, RingGroup_Main, "O_GRING" },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, 0, CSphere, "C SPHERE" },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, 0, ColCylinder_Main, "C CYLINDER" },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, 0, ColCube_Main, "C CUBE" },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, 0, Ottotto_Main, "OTTOTTO" },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, 0, TikalHint_Load, "O TIKAL" },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 40000, 0, Bubble_Main, "O BUBBLE" },
+	{ LoadObj_Data1, ObjIndex_4, DistObj_UseDist, 40000, 0, Bubbles_Main, "O BUBBLES" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, Kiki_Load, "E SARU  " },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 160000, 0, RhinoTank_Main, "E SAITO" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, Sweep_Load, "E AMEMB" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1360000, 0, &ObjReel, "OBJREEL" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1060000, 0, ObjFan, "OBJFAN" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1360000, 0, ObjBalloon, "SH BALLOON" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, SHCameraSwitch, "SH CAM SW" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1560000, 0, OBJCASE, "OBJ CASE" },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ LoadObj_Data1 | LoadObj_UnknownA, ObjIndex_Stage, DistObj_UseDist, 360000, 0, OJump, "O JUMP   " },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1860000, 0, GM_EnergyPaths, "GM PATHS" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2360000, 0, GM_EnergyDoors, "GM DOORS" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2360000, 0, GMEnergyH, "GM ENER" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2060000, 0, ObjBoxW, "CO_WOODBOX" },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ LoadObj_Data2 | LoadObj_Data1 | LoadObj_UnknownB, ObjIndex_Stage, DistObj_UseDist, 360000, 0, OKamome, "O KAMOME   " },
+	{ LoadObj_Data2 | LoadObj_Data1 | LoadObj_UnknownB, ObjIndex_Stage, DistObj_UseDist, 360000, 0, OKamomel, "O KAMOMEL   " },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ LoadObj_Data2 | LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB, ObjIndex_Stage, DistObj_UseDist, 160000, 0, ItemBoxAir_Main, "O ItemBoxAir" },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, 0, SpinnerA_Main, "SPINA A" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, 0, SpinnerB_Main, "SPINA B" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, 0, SpinnerC_Main, "SPINA C" },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Default, 0, 0, SpringH_Load, "O SPRING H" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 360000, 0, UnidusA_Main, "E UNI A" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 360000, 0, UnidusB_Main, "E UNI B" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 250000, 0, UnidusC_Main, "E UNI C" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 360000, 0, EPolice, "E POLICE" }
 };
 ObjectList GrandMetropolisObjectList = { arraylengthandptrT(GrandMetropolisObjectList_list, int) };
 
