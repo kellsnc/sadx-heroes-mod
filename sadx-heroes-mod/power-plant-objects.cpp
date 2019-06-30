@@ -7,18 +7,22 @@
 ModelInfo * PP_ELEVATR;
 ModelInfo * PP_FLDPATH;
 ModelInfo * PP_LGTSIGN;
-ModelInfo * PP_MCLOUDS;
 ModelInfo * PP_MTRUCKS;
 ModelInfo * PP_PLTFRMS;
 ModelInfo * PP_PPCRANE;
 ModelInfo * PP_SOLARPN;
 ModelInfo * PP_TNKDOOR;
 ModelInfo * PP_TNKSTEP;
+ModelInfo * PP_SKYMDLS;
 
 static bool alternate;
 
-#pragma region Solar panels
-void PPSolarpnls_Display(ObjectMaster *a1) {
+void PPSolarpnls(ObjectMaster *a1) {
+	if (a1->Data1->Action == 0) {
+		a1->DisplaySub = a1->MainSub;
+		a1->Data1->Action = 1;
+	}
+
 	if (!DroppedFrames) {
 		for (int i = 0; i < LengthOfArray(PP_Panels); ++i) {
 			if (CheckModelDisplay(PP_Panels[i])) {
@@ -40,14 +44,12 @@ void PPSolarpnls_Display(ObjectMaster *a1) {
 	}
 }
 
-void PPSolarpnls(ObjectMaster *a1) {
-	a1->DisplaySub = PPSolarpnls_Display;
-	a1->MainSub = PPSolarpnls_Display;
-}
-#pragma endregion
+void PPCranes(ObjectMaster *a1) {
+	if (a1->Data1->Action == 0) {
+		a1->DisplaySub = a1->MainSub;
+		a1->Data1->Action = 1;
+	}
 
-#pragma region Cranes
-void PPCranes_Display(ObjectMaster *a1) {
 	if (!DroppedFrames) {
 		for (int i = 0; i < LengthOfArray(PP_Cranes); ++i) {
 			if (CheckModelDisplay(PP_Cranes[i])) {
@@ -79,14 +81,12 @@ void PPCranes_Display(ObjectMaster *a1) {
 	}
 }
 
-void PPCranes(ObjectMaster *a1) {
-	a1->DisplaySub = PPCranes_Display;
-	a1->MainSub = PPCranes_Display;
-}
-#pragma endregion
+void PPLights(ObjectMaster *a1) {
+	if (a1->Data1->Action == 0) {
+		a1->DisplaySub = a1->MainSub;
+		a1->Data1->Action = 1;
+	}
 
-#pragma region Light signs
-void PPLights_Display(ObjectMaster *a1) {
 	if (!DroppedFrames) {
 		for (int i = 0; i < LengthOfArray(PP_Lights); ++i) {
 			if (CheckModelDisplay(PP_Lights[i])) {
@@ -108,32 +108,6 @@ void PPLights_Display(ObjectMaster *a1) {
 	}
 }
 
-void PPLights(ObjectMaster *a1) {
-	a1->DisplaySub = PPLights_Display;
-	a1->MainSub = PPLights_Display;
-}
-#pragma endregion
-
-#pragma region Sky
-void PPSky_Display(ObjectMaster *a1) {
-	if (!DroppedFrames) {
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
-		njPushMatrix(0);
-		njTranslate(nullptr, EntityData1Ptrs[0]->Position.x, 0, EntityData1Ptrs[0]->Position.z);
-		DrawQueueDepthBias = -7000;
-		njDrawModel_SADX(PP_MCLOUDS->getmodel()->basicdxmodel);
-		DrawQueueDepthBias = 0;
-		njPopMatrix(1u);
-	}
-}
-
-void PPSky(ObjectMaster *a1) {
-	a1->DisplaySub = PPSky_Display;
-	a1->MainSub = PPSky_Display;
-}
-#pragma endregion
-
-#pragma region TankHandler
 void PPTankHandler_Display(ObjectMaster *a1) {
 	if (CurrentChunk == 11) {
 		if (!DroppedFrames) {
@@ -210,9 +184,7 @@ void PPTankHandler(ObjectMaster *a1) {
 	a1->DisplaySub = PPTankHandler_Display;
 	a1->MainSub = PPTankHandler_Main;
 }
-#pragma endregion
 
-#pragma region Cars
 void PPTrucks_Display(ObjectMaster *a1) {
 	if (!DroppedFrames) {
 		for (int i = 0; i < LengthOfArray(PP_Trucks); ++i) {
@@ -240,7 +212,12 @@ void PPTrucks_Display(ObjectMaster *a1) {
 	}
 }
 
-void PPTrucks_Main(ObjectMaster *a1) {
+void PPTrucks(ObjectMaster *a1) {
+	if (a1->Data1->Action == 0) {
+		a1->DisplaySub = PPTrucks_Display;
+		a1->Data1->Action = 1;
+	}
+
 	if (anim % 1800 == 0) a1->Data1->Scale = { 0, 0, 0 };
 	else {
 		a1->Data1->Scale.x += 3;
@@ -250,13 +227,6 @@ void PPTrucks_Main(ObjectMaster *a1) {
 	PPTrucks_Display(a1);
 }
 
-void PPTrucks(ObjectMaster *a1) {
-	a1->DisplaySub = PPTrucks_Display;
-	a1->MainSub = PPTrucks_Main;
-}
-#pragma endregion
-
-#pragma region Energy Paths
 void PathsFunction() {
 	if (anim % 5 == 0) {
 		if (CurrentChunk == 2 && (IsSwitchPressed(2) || GetCharacterID(0) == 2)) CurrentLandTable->Col[17].Flags = 0xA81;
@@ -310,8 +280,8 @@ void PathsFunction() {
 	}
 }
 
-void PP_ENERGYPATHS_Display(ObjectMaster *a1) {
-	if (!MissedFrames && IsPlayerInsideSphere(&a1->Data1->Position, 2000.0f)) {
+void PPEnergyPaths_Display(ObjectMaster *a1) {
+	if (!MissedFrames) {
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
@@ -324,34 +294,29 @@ void PP_ENERGYPATHS_Display(ObjectMaster *a1) {
 	}
 }
 
-void PP_ENERGYPATHS_Main(ObjectMaster *a1) {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 2500.0f)) {
+void PPEnergyPaths_Main(ObjectMaster *a1) {
+	if (!ClipSetObject(a1)) {
 		if (a1->Data1->Scale.z < 1) if (IsSwitchPressed(a1->Data1->Scale.y)) a1->Data1->Scale.z += 0.1f;
 		if (a1->Data1->Scale.z == 0.1f) PlaySound(52, 0, 0, 0);
 
 		PathsFunction();
 
-		PP_ENERGYPATHS_Display(a1);
-	}
-	else {
-		deleteSub_Global(a1);
+		PPEnergyPaths_Display(a1);
 	}
 }
 
-void __cdecl PP_ENERGYPATHS(ObjectMaster *a1)
+void PPEnergyPaths(ObjectMaster *a1)
 {
 	if (a1->Data1->Scale.x == 0)  a1->Data1->Object = PP_FLDPATH->getmodel();
 	else if (a1->Data1->Scale.x == 1) a1->Data1->Object = PP_FLDPATH->getmodel()->child;
 	else a1->Data1->Object = PP_FLDPATH->getmodel()->child->child;
 
-	a1->MainSub = &PP_ENERGYPATHS_Main;
-	a1->DisplaySub = &PP_ENERGYPATHS_Display;
+	a1->MainSub = &PPEnergyPaths_Main;
+	a1->DisplaySub = &PPEnergyPaths_Display;
 	a1->DeleteSub = &deleteSub_Global;
 }
-#pragma endregion
 
-#pragma region Platforms_V
-void __cdecl PPPlatformsV_Display(ObjectMaster *a1)
+void PPPlatformsV_Display(ObjectMaster *a1)
 {
 	if (!DroppedFrames) {
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
@@ -365,40 +330,37 @@ void __cdecl PPPlatformsV_Display(ObjectMaster *a1)
 	}
 }
 
-void __cdecl PPPlatformsV_Main(ObjectMaster *a1)
+void PPPlatformsV_Main(ObjectMaster *a1)
 {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 2000.0f)) {
-
+	if (!ClipSetObject(a1)) {
 		if (a1->Data1->Scale.x != 0) {
+			DynColRadius(a1, 300, 1);
+
 			if (a1->Data1->Position.y < a1->Data1->Scale.y) {
-				if (IsSwitchPressed(a1->Data1->Scale.x)) {
-					a1->Data1->Position.y += 1;
-					a1->Data1->Object->pos[1] = a1->Data1->Position.y;
-				}
+				if (IsSwitchPressed(a1->Data1->Scale.x)) a1->Data1->Position.y += 1;
 			}
+
+			NJS_OBJECT * col = (NJS_OBJECT*)a1->Data1->LoopData;
+			if (col) col->pos[1] = a1->Data1->Position.y;
+		}
+		else {
+			DynColRadius(a1, 300, 0);
 		}
 
 		PPPlatformsV_Display(a1);
 	}
-	else {
-		deleteSub_Global(a1);
-	}
 }
 
-void __cdecl PPPlatformsV(ObjectMaster *a1)
+void PPPlatformsV(ObjectMaster *a1)
 {
 	a1->Data1->Object = PP_PLTFRMS->getmodel()->child;
-	if (a1->Data1->Scale.x == 0) AddToCollision(a1, 0);
-	else AddToCollision(a1, 1);
 
 	a1->MainSub = &PPPlatformsV_Main;
 	a1->DisplaySub = &PPPlatformsV_Display;
 	a1->DeleteSub = &deleteSub_Global;
 }
-#pragma endregion
 
-#pragma region Platforms_H
-void __cdecl PPPlatformsH_Display(ObjectMaster *a1)
+void PPPlatformsH_Display(ObjectMaster *a1)
 {
 	if (!DroppedFrames) {
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
@@ -412,9 +374,12 @@ void __cdecl PPPlatformsH_Display(ObjectMaster *a1)
 	}
 }
 
-void __cdecl PPPlatformsH_Main(ObjectMaster *a1)
+void PPPlatformsH_Main(ObjectMaster *a1)
 {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 2000.0f)) {
+	if (!ClipSetObject(a1)) {
+		DynColRadius(a1, 300, 1);
+		NJS_OBJECT * col = (NJS_OBJECT*)a1->Data1->LoopData;
+
 		if (a1->Data1->Scale.y != 0) {
 			if (a1->Data1->Position.x != a1->Data1->Scale.y) {
 				if (IsSwitchPressed(a1->Data1->Action)) {
@@ -424,9 +389,10 @@ void __cdecl PPPlatformsH_Main(ObjectMaster *a1)
 					else if (a1->Data1->Scale.x > a1->Data1->Scale.y) {
 						if (a1->Data1->Position.x > a1->Data1->Scale.y) a1->Data1->Position.x -= 1;
 					}
-					a1->Data1->Object->pos[0] = a1->Data1->Position.x;
 				}
 			}
+
+			if (col) col->pos[0] = a1->Data1->Position.x;
 		}
 		else {
 			if (a1->Data1->Position.z != a1->Data1->Scale.z) {
@@ -437,22 +403,18 @@ void __cdecl PPPlatformsH_Main(ObjectMaster *a1)
 					else if (a1->Data1->Scale.x > a1->Data1->Scale.z) {
 						if (a1->Data1->Position.z > a1->Data1->Scale.z) a1->Data1->Position.z -= 1;
 					}
-					a1->Data1->Object->pos[2] = a1->Data1->Position.z;
 				}
 			}
+
+			if (col) col->pos[2] = a1->Data1->Position.z;
 		}
 		PPPlatformsH_Display(a1);
 	}
-	else {
-		deleteSub_Global(a1);
-	}
 }
 
-void __cdecl PPPlatformsH(ObjectMaster *a1)
+void PPPlatformsH(ObjectMaster *a1)
 {
 	a1->Data1->Object = PP_PLTFRMS->getmodel();
-	AddToCollision(a1, 1);
-
 	a1->Data1->Action = a1->Data1->Scale.x;
 
 	if (a1->Data1->Scale.y != 0) {
@@ -466,9 +428,7 @@ void __cdecl PPPlatformsH(ObjectMaster *a1)
 	a1->DisplaySub = &PPPlatformsH_Display;
 	a1->DeleteSub = &deleteSub_Global;
 }
-#pragma endregion
 
-#pragma region Elevator
 void PPElevator_Display(ObjectMaster *a1)
 {
 	if (alternate) a1->Data1->Object->basicdxmodel->mats[7].diffuse.argb.a = 0x00;
@@ -478,9 +438,11 @@ void PPElevator_Display(ObjectMaster *a1)
 
 void PPElevator_Main(ObjectMaster *a1)
 {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 2000.0f)) {
+	if (!ClipSetObject(a1)) {
+		DynColRadius(a1, 300, 1);
+
 		if (anim % 120 == 0) alternate = !alternate;
-		PPElevator_Display(a1);
+		a1->DisplaySub(a1);
 
 		for (uint16_t i = 0; i < SETTable_Count; ++i) {
 			if (CurrentSetFile[i].ObjectType == 95
@@ -493,33 +455,29 @@ void PPElevator_Main(ObjectMaster *a1)
 			}
 		}
 
-		if (IsPlayerInsideSphere(&a1->Data1->Position, 300) && a1->Data1->Position.y < a1->Data1->Scale.x) {
+		if (IsPlayerInsideSphere(&a1->Data1->Position, 300) && a1->Data1->Position.y < a1->Data1->Scale.x)
 			a1->Data1->Position.y += a1->Data1->Scale.y;
-			a1->Data1->Object->pos[1] = a1->Data1->Position.y;
-		}
 
 		if (a1->Data1->Position.y > a1->Data1->Scale.x) a1->Data1->Position.y = a1->Data1->Scale.x;
-	}
-	else {
-		deleteSub_Global(a1);
+
+		NJS_OBJECT * col = (NJS_OBJECT*)a1->Data1->LoopData;
+		if (col) col->pos[1] = a1->Data1->Position.y;
 	}
 }
 
-void __cdecl PPElevator(ObjectMaster *a1)
+void PPElevator(ObjectMaster *a1)
 {
 	a1->Data1->Object = PP_ELEVATR->getmodel();
-	AddToCollision(a1, 1);
 
 	a1->MainSub = &PPElevator_Main;
 	a1->DisplaySub = &PPElevator_Display;
 	a1->DeleteSub = &deleteSub_Global;
 }
-#pragma endregion
 
-#pragma region Elevator Stopper
 void PPStopper_Display(ObjectMaster *a1)
 {
 	DrawObjModel(a1, a1->Data1->Object->basicdxmodel, false);
+
 	if (alternate) a1->Data1->Object->child->basicdxmodel->mats[1].diffuse.argb.a = 0x00;
 	if (!alternate) a1->Data1->Object->child->basicdxmodel->mats[1].diffuse.argb.a = 0xFF;
 	DrawObjModel(a1, a1->Data1->Object->child->basicdxmodel, false);
@@ -528,12 +486,11 @@ void PPStopper_Display(ObjectMaster *a1)
 void PPStopper_Delete(ObjectMaster *a1)
 {
 	a1->SETData.SETData->SETEntry->Properties.x = 0;
-	deleteSub_Global(a1);
 }
 
 void PPStopper_Main(ObjectMaster *a1)
 {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 1000.0f)) {
+	if (!ClipSetObject(a1)) {
 		if (a1->Data1->Action == 0) {
 			PPStopper_Display(a1);
 
@@ -549,12 +506,9 @@ void PPStopper_Main(ObjectMaster *a1)
 			a1->Data1->Action = 2;
 		}
 	}
-	else {
-		deleteSub_Global(a1);
-	}
 }
 
-void __cdecl PPStopper(ObjectMaster *a1)
+void PPStopper(ObjectMaster *a1)
 {
 	a1->Data1->Object = PP_ELEVATR->getmodel()->child;
 	a1->Data1->Action = 0;
@@ -563,7 +517,6 @@ void __cdecl PPStopper(ObjectMaster *a1)
 	a1->DisplaySub = &PPStopper_Display;
 	a1->DeleteSub = &PPStopper_Delete;
 }
-#pragma endregion
 
 PVMEntry PowerPlantObjectTextures[] = {
 	{ "E_SAI", &E_SAI_TEXLIST },
@@ -592,102 +545,102 @@ PVMEntry PowerPlantObjectTextures[] = {
 };
 
 ObjectListEntry PowerPlantObjectList_list[] = {
-	{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x450370, "RING   " } /* "RING   " */,
-{ 2, 2, 1, 360000, 0, (ObjectFuncPtr)0x7A4C30, "SPRING " } /* "SPRING " */,
-{ 2, 2, 1, 360000, 0, (ObjectFuncPtr)0x7A4E50, "SPRINGB" } /* "SPRINGB" */,
-{ 3, 3, 1, 360000, 0, (ObjectFuncPtr)0x7A4450, "O AXPNL" } /* "O AXPNL" */,
-{ 6, 3, 1, 360000, 0, (ObjectFuncPtr)0x7A4260, "O IRONB" } /* "O IRONB" */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x7A3E50, "O FeBJG" } /* "O FeBJG" */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x7A30E0, "O TOGE" } /* "O TOGE" */,
-{ 3, 3, 1, 360000, 0, (ObjectFuncPtr)0x4A3420, "O EME P" } /* "O EME P" */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x46B170, "O RELEASE" } /* "O RELEASE" */,
-{ 6, 3, 1, 360000, 0, (ObjectFuncPtr)0x4CBA80, "O SWITCH" } /* "O SWITCH" */,
-{ 10, 3, 1, 160000, 0, (ObjectFuncPtr)0x7A2B60, "CMN KUSA" } /* "CMN KUSA" */,
-{ 14, 3, 1, 360000, 0, (ObjectFuncPtr)0x7A26F0, "CMN_DRING" } /* "CMN_DRING" */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x7A21C0, "O BALOON" } /* "O BALOON" */,
-{ 2, 3, 1, 160000, 0, (ObjectFuncPtr)0x4D6F10, "O ITEMBOX" } /* "O ITEMBOX" */,
-{ 14, 2, 1, 360000, 0, (ObjectFuncPtr)0x4CA530, "Rocket H" } /* "Rocket H" */,
-{ 14, 2, 1, 360000, 0, (ObjectFuncPtr)0x4CA660, "Rocket HS" } /* "Rocket HS" */,
-{ 14, 2, 1, 360000, 0, (ObjectFuncPtr)0x4CA7D0, "Rocket V" } /* "Rocket V" */,
-{ 14, 2, 1, 360000, 0, (ObjectFuncPtr)0x4CA900, "Rocket VS" } /* "Rocket VS" */,
-{ 2, 2, 1, 4000000, 0, (ObjectFuncPtr)0x4B8DC0, "O JPanel" } /* "O JPanel" */,
-{ 15, 6, 1, 360000, 0, (ObjectFuncPtr)0x44F540, "O Save Point" } /* "O Save Point" */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4D4850, "WALL   " } /* "WALL   " */,
-{ 2, 3, 1, 1360000, 0, (ObjectFuncPtr)0x79B2F0, "O_GRING" } /* "O_GRING" */,
-{ 2, 2, 1, 360000, 0, (ObjectFuncPtr)0x4D4700, "C SPHERE" } /* "C SPHERE" */,
-{ 2, 2, 1, 360000, 0, (ObjectFuncPtr)0x4D4770, "C CYLINDER" } /* "C CYLINDER" */,
-{ 2, 2, 1, 360000, 0, (ObjectFuncPtr)0x4D47E0, "C CUBE" } /* "C CUBE" */,
-{ 2, 2, 1, 360000, 0, (ObjectFuncPtr)0x4D4B70, "OTTOTTO" } /* "OTTOTTO" */,
-{ 2, 2, 1, 360000, 0, (ObjectFuncPtr)0x7A1AA0, "O TIKAL" } /* "O TIKAL" */,
-{ 2, 2, 1, 40000, 0, (ObjectFuncPtr)0x7A8E50, "O BUBBLE" } /* "O BUBBLE" */,
-{ 2, 4, 1, 40000, 0, (ObjectFuncPtr)0x7A8A60, "O BUBBLES" } /* "O BUBBLES" */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4AD140, "E SARU  " } /* "E SARU  " */,
-{ 2, 3, 1, 160000, 0, (ObjectFuncPtr)0x7A1380, "E SAITO" } /* "E SAITO" */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x7AA960, "E AMEMB" } /* "E AMEMB" */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x500F50, "YASI0   " } /* "YASI0   " */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x500FF0, "YASI1   " } /* "YASI1   " */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x501090, "YASI2   " } /* "YASI2   " */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x500EC0, "YASI3   " } /* "YASI3   " */,
-{ 6, 3, 1, 1360000, 0, &ObjBalloon, "SH BALLOON" } /* "SH Balloon" */,
-{ 6, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FB730, "O BUNGA   " } /* "O BUNGA   " */,
-{ 10, 3, 1, 160000, 0, (ObjectFuncPtr)0x500B90, "O BGIRO   " } /* "O BGIRO   " */,
-{ 15, 3, 1, 360000, 0, (ObjectFuncPtr)0x500770, "O IWA   " } /* "O IWA   " */,
-{ 6, 3, 1, 360000, 0, (ObjectFuncPtr)0x5001E0, "O JUMP   " } /* "O JUMP   " */,
-{ 6, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FB770, "O IWAPO   " } /* "O IWAPO   " */,
-{ 6, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FB750, "O ROCK   " } /* "O ROCK   " */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FFDC0, "O FENA   " } /* "O FENA   " */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FFE00, "O FENB   " } /* "O FENB   " */,
-{ 2, 3, 1, 422500, 0, (ObjectFuncPtr)0x4FFE40, "O FENC   " } /* "O FENC   " */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FFE80, "O FEND   " } /* "O FEND   " */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FFD80, "O CORA   " } /* "O CORA   " */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FFDA0, "O CORB   " } /* "O CORB   " */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FFD00, "O GRASA   " } /* "O GRASA   " */,
-{ 2, 3, 1, 360000, 0, nullptr, "O GRASB   " } /* "O GRASB   " */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FFD40, "O GRASC   " } /* "O GRASC   " */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FFD60, "O GRASD   " } /* "O GRASD   " */,
-{ 10, 3, 1, 1640000, 0, &PPPlatformsH, "PP Plat H" } /* "PP Horizontal platforms" */,
-{ 2, 3, 1, 1000000, 0, &PPPlatformsV, "PP Plat V" } /* "PP Vertical platforms" */,
-{ 11, 3, 1, 360000, 0, &PP_ENERGYPATHS, "PP PATHS" } /* "PP Energy Paths" */,
-{ 2, 3, 1, 1000000, 0, (ObjectFuncPtr)&ObjBoxW, "OBJ BOWX" } /* "Wooden Box" */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FB7E0, "O KOMOMO   " } /* "O KOMOMO   " */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FF5F0, "O PARASOL" } /* "O PARASOL" */,
-{ 6, 3, 1, 250000, 0, (ObjectFuncPtr)0x4FF060, "O PIER" } /* "O PIER" */,
-{ 2, 3, 1, 160000, 0, (ObjectFuncPtr)0x4FE8C0, "O GOMBAN" } /* "O GOMBAN" */,
-{ 2, 3, 1, 160000, 0, (ObjectFuncPtr)0x4F7E90, "O ASIATO" } /* "O ASIATO" */,
-{ 10, 3, 1, 160000, 0, (ObjectFuncPtr)0x4FD9D0, "O BKUSA" } /* "O BKUSA" */,
-{ 10, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FD770, "O MKUSA" } /* "O MKUSA" */,
-{ 2, 3, 1, 160000, 0, (ObjectFuncPtr)0x4FDA90, "O K2" } /* "O K2" */,
-{ 2, 3, 1, 160000, 0, (ObjectFuncPtr)0x4FD160, "O SAKANA8K" } /* "O SAKANA8K" */,
-{ 3, 3, 1, 1000000, 0, (ObjectFuncPtr)0x4FC550, "O BIGROCK" } /* "O BIGROCK" */,
-{ 2, 3, 1, 160000, 0, (ObjectFuncPtr)0x4FBE40, "O AO SUMMON" } /* "O AO SUMMON" */,
-{ 2, 3, 1, 160000, 0, (ObjectFuncPtr)0x4FBCE0, "O AO KILL" } /* "O AO KILL" */,
-{ 2, 3, 1, 160000, 0, (ObjectFuncPtr)0x4FBBE0, "O PO SUMMON" } /* "O PO SUMMON" */,
-{ 2, 3, 1, 1000000, 0, (ObjectFuncPtr)0x4FBA70, "O TAKI" } /* "O TAKI" */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FB800, "O Rock2" } /* "O Rock2" */,
-{ 3, 3, 1, 1000000, 0, (ObjectFuncPtr)0x4FB5F0, "O ARCHROCK" } /* "O ARCHROCK" */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FB160, "O BED" } /* "O BED" */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FB050, "O KASA" } /* "O KASA" */,
-{ 2, 3, 1, 160000, 0, (ObjectFuncPtr)0x4FAE30, "O DOLSW" } /* "O DOLSW" */,
-{ 3, 3, 1, 160000, 0, (ObjectFuncPtr)0x5977F0, "S BASS " } /* "S BASS " */,
-{ 3, 3, 1, 160000, 0, (ObjectFuncPtr)0x7A7AD0, "S KAERU" } /* "S KAERU" */,
-{ 3, 3, 1, 90000, 0, (ObjectFuncPtr)0x597660, "S GENE " } /* "S GENE " */,
-{ 2, 3, 1, 360000, 0, (ObjectFuncPtr)0x4FA3B0, "O BEWIND " } /* "O BEWIND " */,
-{ 2, 3, 1, 160000, 0, (ObjectFuncPtr)0x4FA320, "O FROG " } /* "O FROG " */,
-{ 2, 3, 1, 160000, 0, (ObjectFuncPtr)0x4F9FB0, "O BZ " } /* "O BZ " */,
-{ 15, 3, 1, 160000, 0, (ObjectFuncPtr)0x4C07D0, "O ItemBoxAir" } /* "O ItemBoxAir" */,
-{ 2, 0, 1, 1000000, 0, (ObjectFuncPtr)0x4D4BE0, "BIGWJUMP" } /* "BIGWJUMP" */,
-{ 2, 3, 4, 0, 0, (ObjectFuncPtr)0x4B0DF0, "SPINA A" } /* "SPINA A" */,
-{ 2, 3, 4, 0, 0, (ObjectFuncPtr)0x4B0F40, "SPINA B" } /* "SPINA B" */,
-{ 2, 3, 4, 0, 0, (ObjectFuncPtr)0x4B1090, "SPINA C" } /* "SPINA C" */,
-{ 2, 2, 0, 0, 0, (ObjectFuncPtr)0x7A4E50, "O SPRING B" } /* "O SPRING B" */,
-{ 2, 3, 0, 0, 0, (ObjectFuncPtr)0x79F860, "O SPRING H" } /* "O SPRING H" */,
-{ 2, 3, 5, 360000, 0, (ObjectFuncPtr)0x4AF190, "E UNI A" } /* "E UNI A" */,
-{ 2, 3, 5, 360000, 0, (ObjectFuncPtr)0x4AF500, "E UNI B" } /* "E UNI B" */,
-{ 2, 3, 5, 250000, 0, (ObjectFuncPtr)0x4AF860, "E UNI C" } /* "E UNI C" */,
-{ 2, 3, 5, 360000, 0, (ObjectFuncPtr)0x4B3210, "E POLICE" } /* "E POLICE" */,
-{ 2, 3, 1, 1000000, 0, (ObjectFuncPtr)&PPElevator, "PPElevator" } /* "PPElevator" */,
-{ 2, 3, 1, 1000000, 0, (ObjectFuncPtr)&ObjReel, "Reel" } /* "Heroes reels" */,
-{ 2, 3, 1, 1000000, 0, (ObjectFuncPtr)&PPStopper, "PPSTOPPER" } /* "PPElevator stopper" */
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, Ring_Main, "RING   " },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, 0, Spring_Main, "SPRING " },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, 0, SpringB_Main, "SPRINGB" },
+	{ LoadObj_Data2 | LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, DashPanel_Main, "O AXPNL" },
+	{ LoadObj_Data1 | LoadObj_UnknownA, ObjIndex_Stage, DistObj_UseDist, 360000, 0, SwingSpikeBall_Load, "O IRONB" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, FallingSpikeBall_Load, "O FeBJG" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, Spikes_Main, "O TOGE" },
+	{ LoadObj_Data2 | LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, EmeraldPiece_Load, "O EME P" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, Capsule_Load, "O RELEASE" },
+	{ LoadObj_Data1 | LoadObj_UnknownA, ObjIndex_Stage, DistObj_UseDist, 360000, 0, Switch_Main, "O SWITCH" },
+	{ LoadObj_Data1 | LoadObj_UnknownB, ObjIndex_Stage, DistObj_UseDist, 160000, 0, Weed_Main, "CMN KUSA" },
+	{ LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB, ObjIndex_Stage, DistObj_UseDist, 360000, 0, DashHoop_Main, "CMN_DRING" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, Balloon_Main, "O BALOON" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 160000, 0, ItemBox_Main, "O ITEMBOX" },
+	{ LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB, ObjIndex_Common, DistObj_UseDist, 360000, 0, RocketH_Main, "Rocket H" },
+	{ LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB, ObjIndex_Common, DistObj_UseDist, 360000, 0, RocketHS_Main, "Rocket HS" },
+	{ LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB, ObjIndex_Common, DistObj_UseDist, 360000, 0, RocketV_Main, "Rocket V" },
+	{ LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB, ObjIndex_Common, DistObj_UseDist, 360000, 0, RocketVS_Main, "Rocket VS" },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 4000000, 0, JumpPanel_Load, "O JPanel" },
+	{ LoadObj_Data2 | LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB, ObjIndex_6, DistObj_UseDist, 360000, 0, CheckPoint_Main, "O Save Point" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, Wall_Main, "WALL   " },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, RingGroup_Main, "O_GRING" },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, 0, CSphere, "C SPHERE" },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, 0, ColCylinder_Main, "C CYLINDER" },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, 0, ColCube_Main, "C CUBE" },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, 0, Ottotto_Main, "OTTOTTO" },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 360000, 0, TikalHint_Load, "O TIKAL" },
+	{ LoadObj_Data1, ObjIndex_Common, DistObj_UseDist, 40000, 0, Bubble_Main, "O BUBBLE" },
+	{ LoadObj_Data1, ObjIndex_4, DistObj_UseDist, 40000, 0, Bubbles_Main, "O BUBBLES" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, Kiki_Load, "E SARU  " },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 160000, 0, RhinoTank_Main, "E SAITO" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, Sweep_Load, "E AMEMB" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1060000, 0, ObjFan, "OBJFAN" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1360000, 0, ObjBalloon, "SH BALLOON" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, SHCameraSwitch, "SH CAM SW" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1560000, 0, OBJCASE, "OBJ CASE" },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ LoadObj_Data1 | LoadObj_UnknownA, ObjIndex_Stage, DistObj_UseDist, 360000, 0, OJump, "O JUMP   " },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ LoadObj_Data1, 3, 1, 1640000, 0, PPPlatformsH, "PP Plat H" },
+	{ LoadObj_Data1, 3, 1, 1000000, 0, PPPlatformsV, "PP Plat V" },
+	{ LoadObj_Data1, 3, 1, 1000000, 0, PPEnergyPaths, "PP PATHS" },
+	{ LoadObj_Data1, 3, 1, 1000000, 0, ObjBoxW, "CO_WOODBOX" },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 160000, 0, OFrog, "O FROG " },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ LoadObj_Data2 | LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB, ObjIndex_Stage, DistObj_UseDist, 160000, 0, ItemBoxAir_Main, "O ItemBoxAir" },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, 0, SpinnerA_Main, "SPINA A" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, 0, SpinnerB_Main, "SPINA B" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, 0, SpinnerC_Main, "SPINA C" },
+	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Default, 0, 0, SpringH_Load, "O SPRING H" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 360000, 0, UnidusA_Main, "E UNI A" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 360000, 0, UnidusB_Main, "E UNI B" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 250000, 0, UnidusC_Main, "E UNI C" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 360000, 0, EPolice, "E POLICE" },
+	{ LoadObj_Data1, 3, 1, 1000000, 0, PPElevator, "PPElevator" },
+	{ LoadObj_Data1, 3, 1, 1000000, 0, ObjReel, "Reel" },
+	{ LoadObj_Data1, 3, 1, 1000000, 0, PPStopper, "PPSTOPPER" }
 };
 ObjectList PowerPlantObjectList = { arraylengthandptrT(PowerPlantObjectList_list, int) };
 

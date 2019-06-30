@@ -38,20 +38,19 @@ void PPPathsHandler();
 void PPSolarpnls(ObjectMaster *a1);
 void PPCranes(ObjectMaster *a1);
 void PPLights(ObjectMaster *a1);
-void PPSky(ObjectMaster *a1);
 void PPTankHandler(ObjectMaster *a1);
 void PPTrucks(ObjectMaster *a1);
 
 extern ModelInfo * PP_ELEVATR;
 extern ModelInfo * PP_FLDPATH;
 extern ModelInfo * PP_LGTSIGN;
-extern ModelInfo * PP_MCLOUDS;
 extern ModelInfo * PP_MTRUCKS;
 extern ModelInfo * PP_PLTFRMS;
 extern ModelInfo * PP_PPCRANE;
 extern ModelInfo * PP_SOLARPN;
 extern ModelInfo * PP_TNKDOOR;
 extern ModelInfo * PP_TNKSTEP;
+extern ModelInfo * PP_SKYMDLS;
 
 SH_UVSHIFT PowerPlant_UVSHIFT[]{
 	{ nullptr,0,{ 0, -1 }, 4 }, //2

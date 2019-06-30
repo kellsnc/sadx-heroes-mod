@@ -165,7 +165,7 @@ void GMCars(ObjectMaster *a1) {
 	a1->DisplaySub(a1);
 }
 
-void __cdecl GMEnergyH_Display(ObjectMaster *a1)
+void GMEnergyH_Display(ObjectMaster *a1)
 {
 	if (!DroppedFrames) {
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
@@ -180,7 +180,7 @@ void __cdecl GMEnergyH_Display(ObjectMaster *a1)
 	}
 }
 
-void __cdecl GMEnergyH(ObjectMaster *a1)
+void GMEnergyH(ObjectMaster *a1)
 {
 	if (a1->Data1->Action == 0) {
 		a1->DisplaySub = GMEnergyH_Display;
@@ -274,7 +274,7 @@ void GM_EnergyDoors_Main(ObjectMaster *a1) {
 	}
 }
 
-void __cdecl GM_EnergyDoors(ObjectMaster *a1)
+void GM_EnergyDoors(ObjectMaster *a1)
 {
 	if (a1->Data1->Rotation.x == 1) a1->Data1->Object = &s03_door_2obj;
 	else a1->Data1->Object = &s03_door_1obj;
@@ -331,7 +331,7 @@ void GM_EnergyPaths_Main(ObjectMaster *a1) {
 	}
 }
 
-void __cdecl GM_EnergyPaths(ObjectMaster *a1)
+void GM_EnergyPaths(ObjectMaster *a1)
 {
 	if (a1->Data1->Scale.x == 1)  a1->Data1->Object = GM_GRFLUID->getmodel()->child;
 	else a1->Data1->Object = GM_GRFLUID->getmodel();
@@ -394,7 +394,7 @@ ObjectListEntry GrandMetropolisObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, Kiki_Load, "E SARU  " },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 160000, 0, RhinoTank_Main, "E SAITO" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, Sweep_Load, "E AMEMB" },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1360000, 0, &ObjReel, "OBJREEL" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1360000, 0, ObjReel, "OBJREEL" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1060000, 0, ObjFan, "OBJFAN" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1360000, 0, ObjBalloon, "SH BALLOON" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, SHCameraSwitch, "SH CAM SW" },
@@ -442,7 +442,7 @@ ObjectListEntry GrandMetropolisObjectList_list[] = {
 	{ 0, 0, 0, 0, 0, nullptr, NULL },
 	{ 0, 0, 0, 0, 0, nullptr, NULL },
 	{ 0, 0, 0, 0, 0, nullptr, NULL },
-	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 160000, 0, OFrog, "O FROG " },
 	{ 0, 0, 0, 0, 0, nullptr, NULL },
 	{ LoadObj_Data2 | LoadObj_Data1 | LoadObj_UnknownA | LoadObj_UnknownB, ObjIndex_Stage, DistObj_UseDist, 160000, 0, ItemBoxAir_Main, "O ItemBoxAir" },
 	{ 0, 0, 0, 0, 0, nullptr, NULL },

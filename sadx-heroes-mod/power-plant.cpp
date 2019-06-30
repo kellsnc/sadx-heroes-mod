@@ -5,11 +5,33 @@
 #include "power-plant-deathzones.h"
 #include "power-plant.h"
 
+void PowerPlantSkybox(ObjectMaster *a1) {
+	if (!MissedFrames) {
+		if (a1->Data1->Action == 0) {
+			a1->Data1->Action = 1;
+			a1->DisplaySub = a1->MainSub;
+			HeroesSkybox_Main(a1);
+		}
+		
+		DisableFog();
+		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		njPushMatrix(0);
+		NJS_VECTOR * pos = &EntityData1Ptrs[0]->Position;
+		njTranslate(nullptr, pos->x, 1000, pos->z);
+		DrawQueueDepthBias = -6000;
+		njDrawModel_SADX(PP_SKYMDLS->getmodel()->basicdxmodel);
+		njDrawModel_SADX(PP_SKYMDLS->getmodel()->child->basicdxmodel);
+		DrawQueueDepthBias = 0;
+		njPopMatrix(1u);
+		ToggleStageFog();
+	}
+}
+
 void PowerPlant_InitObjects() {
 	PP_ELEVATR = LoadMDL("PP_ELEVATR");
 	PP_FLDPATH = LoadMDL("PP_FLDPATH");
 	PP_LGTSIGN = LoadMDL("PP_LGTSIGN");
-	PP_MCLOUDS = LoadMDL("PP_MCLOUDS");
+	PP_SKYMDLS = LoadMDL("PP_SKYMDLS");
 	PP_MTRUCKS = LoadMDL("PP_MTRUCKS");
 	PP_PLTFRMS = LoadMDL("PP_PLTFRMS");
 	PP_PPCRANE = LoadMDL("PP_PPCRANE");
@@ -32,7 +54,6 @@ void PowerPlant_InitObjects() {
 	LoadObject(LoadObj_Data1, 3, PPSolarpnls);
 	LoadObject(LoadObj_Data1, 3, PPCranes);
 	LoadObject(LoadObj_Data1, 3, PPLights);
-	LoadObject(LoadObj_Data1, 3, PPSky);
 	LoadObject(LoadObj_Data1, 3, PPTankHandler);
 	LoadObject(LoadObj_Data1, 3, PPTrucks);
 }
@@ -41,7 +62,7 @@ void PowerPlant_Delete(ObjectMaster * a1) {
 	FreeMDL(PP_ELEVATR);
 	FreeMDL(PP_FLDPATH);
 	FreeMDL(PP_LGTSIGN);
-	FreeMDL(PP_MCLOUDS);
+	FreeMDL(PP_SKYMDLS);
 	FreeMDL(PP_MTRUCKS);
 	FreeMDL(PP_PLTFRMS);
 	FreeMDL(PP_PPCRANE);
@@ -73,27 +94,15 @@ void PowerPlantHandler(ObjectMaster * a1) {
 
 		if (IsLantern) set_shader_flags_ptr(ShaderFlags_Blend, true);
 
-		if (CurrentAct == 0) {
-			CurrentLevelTexlist = &ICECAP01_TEXLIST;
-			CurrentLandAddress = (LandTable**)0x97DB08;
-
-			if (entity->Position.z > -2081) LoadLevelFile("PP", 01);
-		}
+		CurrentLevelTexlist = &ICECAP01_TEXLIST;
+		CurrentLandAddress = (LandTable**)0x97DB08;
 	}
 	else {
-		switch (CurrentAct) {
-		case 0:
-			ChunkHandler("PP", PowerPlantChunks, LengthOfArray(PowerPlantChunks), entity->Position);
-			AnimateTextures(PowerPlantAnimTexs, LengthOfArray(PowerPlantAnimTexs));
-			AnimateObjectsTextures(PPOBJLIST, LengthOfArray(PPOBJLIST), PowerPlantAnimTexs, LengthOfArray(PowerPlantAnimTexs));
-			AnimateUV(PowerPlant_UVSHIFT, LengthOfArray(PowerPlant_UVSHIFT));
-			PPPathsHandler();
-
-			CurrentLandTable->Col[0].Model->pos[0] = entity->Position.x;
-			CurrentLandTable->Col[0].Model->pos[2] = entity->Position.z;
-
-			break;
-		}
+		ChunkHandler("PP", PowerPlantChunks, LengthOfArray(PowerPlantChunks), entity->Position);
+		AnimateTextures(PowerPlantAnimTexs, LengthOfArray(PowerPlantAnimTexs));
+		AnimateObjectsTextures(PPOBJLIST, LengthOfArray(PPOBJLIST), PowerPlantAnimTexs, LengthOfArray(PowerPlantAnimTexs));
+		AnimateUV(PowerPlant_UVSHIFT, LengthOfArray(PowerPlant_UVSHIFT));
+		PPPathsHandler();
 	}
 }
 
@@ -111,7 +120,7 @@ void PowerPlant_Init(const char *path, const HelperFunctions &helperFunctions) {
 	IceCapDeathZones[0] = PowerPlantDeathZones;
 
 	LevelObjects[HeroesLevelID_PowerPlant] = PowerPlantHandler;
-	SkyboxObjects[HeroesLevelID_PowerPlant] = HeroesSkybox_Main;
+	SkyboxObjects[HeroesLevelID_PowerPlant] = PowerPlantSkybox;
 
 	PowerPlantObjects_Init(path);
 }
