@@ -2,12 +2,12 @@
 #include "mod.h"
 #include "objects.h"
 
-void _cdecl FLIPPERS(ObjectMaster *a1);
-void _cdecl CPDICE(ObjectMaster *a1);
-void _cdecl CPBOBINAIR(ObjectMaster *a1);
-void _cdecl CPSLOTS(ObjectMaster *a1);
-void _cdecl CPSLOTL(ObjectMaster *a1);
-void _cdecl CPDOOR(ObjectMaster *a1);
+void _cdecl HeroesFlippers(ObjectMaster *a1);
+void _cdecl CPDice(ObjectMaster *a1);
+void _cdecl CPBobInAir(ObjectMaster *a1);
+void _cdecl CPSlotS(ObjectMaster *a1);
+void _cdecl CPSlotL(ObjectMaster *a1);
+void _cdecl CPDoor(ObjectMaster *a1);
 void __cdecl CPRoulette(ObjectMaster *a1);
 
 ModelInfo * BH_BIGCHIP;
@@ -492,9 +492,9 @@ ObjectListEntry BingoHighwayObjectList_list[] = {
 { 2, 3, 5, 250000, 0, (ObjectFuncPtr)0x4AF860, "E UNI C" } /* "E UNI C" */,
 { 2, 3, 5, 360000, 0, (ObjectFuncPtr)0x4B3210, "E POLICE" } /* "E POLICE" */,
 { 2, 3, 0, 0, 0, (ObjectFuncPtr)0x5DCCE0, "StartShot" } /* "StartShot" */,
-{ 6, 3, 1, 1360000, 0, &FLIPPERS, "FlipperL" } /* "FlipperL" */,
+{ 6, 3, 1, 1360000, 0, &HeroesFlippers, "FlipperL" } /* "FlipperL" */,
 { 6, 3, 0, 0, 0, (ObjectFuncPtr)0x5DCBE0, "FlipperLx" } /* "FlipperLx" */,
-{ 6, 3, 1, 1360000, 0, &FLIPPERS, "FlipperR" } /* "FlipperR" */,
+{ 6, 3, 1, 1360000, 0, &HeroesFlippers, "FlipperR" } /* "FlipperR" */,
 { 6, 3, 0, 0, 0, (ObjectFuncPtr)0x5DCC00, "FlipperRx" } /* "FlipperRx" */,
 { 2, 3, 1, 1360000, 0, (ObjectFuncPtr)0x5DC000, "Bumper1" } /* "Bumper1" */,
 { 2, 3, 0, 0, 0, (ObjectFuncPtr)0x5DC040, "Bumper2" } /* "Bumper2" */,
@@ -511,11 +511,11 @@ ObjectListEntry BingoHighwayObjectList_list[] = {
 { 6, 3, 0, 0, 0, (ObjectFuncPtr)0x5D98A0, "RollUpR" } /* "RollUpR" */,
 { 6, 3, 0, 0, 0, (ObjectFuncPtr)0x5D98F0, "RollUpL" } /* "RollUpL" */,
 { 6, 3, 0, 0, 0, (ObjectFuncPtr)0x5D9940, "RollDownL" } /* "RollDownL" */,
-{ 2, 3, 1, 1660000, 0, (ObjectFuncPtr)&CPDICE, "CPDICE" } /* "Moving Dice" */,
-{ 2, 3, 1, 1360000, 0, (ObjectFuncPtr)&CPBOBINAIR, "CPBOBINAIR" } /* "Round bumpers" */,
-{ 2, 3, 1, 1360000, 0, (ObjectFuncPtr)&CPSLOTS, "CPSLOTS" } /* "Small slot machine" */,
-{ 2, 3, 1, 1360000, 0, (ObjectFuncPtr)&CPSLOTL, "CPSLOTL" } /* "Large slot machine" */,
-{ 2, 3, 1, 1360000, 0, (ObjectFuncPtr)&CPDOOR, "CPDOOR" } /* "Sliding X door" */, //65
+{ 2, 3, 1, 1660000, 0, (ObjectFuncPtr)&CPDice, "CPDice" } /* "Moving Dice" */,
+{ 2, 3, 1, 1360000, 0, (ObjectFuncPtr)&CPBobInAir, "CPBobInAir" } /* "Round bumpers" */,
+{ 2, 3, 1, 1360000, 0, (ObjectFuncPtr)&CPSlotS, "CPSlotS" } /* "Small slot machine" */,
+{ 2, 3, 1, 1360000, 0, (ObjectFuncPtr)&CPSlotL, "CPSlotL" } /* "Large slot machine" */,
+{ 2, 3, 1, 1360000, 0, (ObjectFuncPtr)&CPDoor, "CPDoor" } /* "Sliding X door" */, //65
 { 2, 3, 1, 1360000, 0, (ObjectFuncPtr)&ObjCannon, "CANNON" } /* "SH Cannon" */,
 { 2, 3, 1, 360000, 0, (ObjectFuncPtr)&SHCameraSwitch, "SH CAM SW" } /* "Camera flag switcher" */,
 { 2, 3, 1, 1360000, 0, (ObjectFuncPtr)&BHBingoCard, "BING CARD" } /* "Giant Bingo Card" */,

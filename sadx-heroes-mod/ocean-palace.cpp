@@ -17,7 +17,7 @@ void OceanPalaceSkybox(ObjectMaster *a1) {
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
 		njPushMatrix(0);
 		NJS_VECTOR * pos = &EntityData1Ptrs[0]->Position;
-		njTranslate(nullptr, pos->x, 0, pos->z);
+		njTranslate(nullptr, pos->x, 1.8f, pos->z);
 		DrawQueueDepthBias = -6000;
 		njDrawModel_SADX(OP_SKYMDLS->getmodel()->basicdxmodel);
 		njDrawModel_SADX(OP_SKYMDLS->getmodel()->child->basicdxmodel);

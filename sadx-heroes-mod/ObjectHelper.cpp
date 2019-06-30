@@ -53,11 +53,8 @@ void displaySub_Global(ObjectMaster *a1) {
 
 //Global mainsub for object that just display their model
 void mainSub_Global(ObjectMaster *a1) {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 2500.0f)) {
+	if (!ClipSetObject(a1)) {
 		displaySub_Global(a1);
-	}
-	else {
-		deleteSub_Global(a1);
 	}
 }
 

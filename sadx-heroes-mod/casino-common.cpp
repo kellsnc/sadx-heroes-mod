@@ -10,6 +10,29 @@ extern bool inSlot;
 bool IsRolling = false;
 bool IsPinRolling = false;
 
+ModelInfo * CP_SKYMDLS;
+
+void CasinoSkybox(ObjectMaster *a1) {
+	if (!MissedFrames) {
+		if (a1->Data1->Action == 0) {
+			a1->Data1->Action = 1;
+			a1->DisplaySub = a1->MainSub;
+			HeroesSkybox_Main(a1);
+		}
+		
+		DisableFog();
+		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		njPushMatrix(0);
+		njTranslateV(nullptr, &EntityData1Ptrs[0]->Position);
+		njScale(0, 0.83f, 0.83f, 0.83f);
+		DrawQueueDepthBias = -6000;
+		njDrawModel_SADX(CP_SKYMDLS->getmodel()->basicdxmodel);
+		DrawQueueDepthBias = 0;
+		njPopMatrix(1u);
+		ToggleStageFog();
+	}
+}
+
 void PinTableCamera(EntityData1 *entity) {
 	if (!inSlot && !IsRolling) {
 		camera_flags = 6;

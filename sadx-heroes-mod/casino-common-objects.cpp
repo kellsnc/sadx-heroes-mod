@@ -6,13 +6,6 @@
 
 extern bool inSlot = false;
 
-SOI_LIST2 Casino_Glass[] = {
-	{ 0,{ -8820.0674f, 3360, -2320.059f },{ 0, 16384, 0 },{ 1, 1, 1 }, -6000.0f, 0, 1500.0f },
-	{ 0,{ -15350.516f, 1550.1f, -860.4109f },{ 0, 32768, 0 },{ 1, 1, 1 }, -6000.0f, 0, 1500.0f },
-	{ 0,{ -14480.477f, 2400, 2770.116f },{ 0, 32768, 0 },{ 1, 1, 1 }, -6000.0f, 0, 1500.0f },
-	{ 1,{ 11050.07f, -4464.9f, -14880 },{ 0, -16384, 0 },{ 1, 1, 1 }, -6000.0f, 0, 3000.0f }
-};
-
 ModelInfo * CP_FLIPPER;
 ModelInfo * CP_MOVDICE;
 ModelInfo * CP_SLDDOOR;
@@ -21,13 +14,17 @@ ModelInfo * CP_CSNOBOB;
 ModelInfo * CP_DSHPANL;
 ModelInfo * CP_RURETTO;
 
-#pragma region FlipperL
 ObjectFunc(FlipperL_Main, 0x5DC890);
 ObjectFunc(FlipperL, 0x5DCB40);
 ObjectFunc(FlipperR_Main, 0x5DC9E0);
 ObjectFunc(FlipperR, 0x5DCB90);
 
-void FLIPPERS_display(ObjectMaster *a1)
+int slotmin;
+int slotmin2;
+int slotmax;
+int slotmax2;
+
+void HeroesFlippers_display(ObjectMaster *a1)
 {
 	EntityData1 *v1 = a1->Data1;
 	njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
@@ -55,25 +52,23 @@ void FLIPPERS_display(ObjectMaster *a1)
 	njPopMatrix(1u);
 }
 
-void FLIPPERS_main(ObjectMaster *a1) {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 1400.0f)) {
+void HeroesFlippers_main(ObjectMaster *a1) {
+	if (!ClipSetObject(a1)) {
 		CharObj2 *co2 = CharObj2Ptrs[0];
 		if (co2->SurfaceFlags == 0x81 && IsPlayerInsideSphere(&a1->Data1->Position, 300)) {
 			if (a1->SETData.SETData->SETEntry->ObjectType == 42)  FlipperL_Main(a1);
 			else FlipperR_Main(a1);
 		}
 		else {
-			FLIPPERS_display(a1);
+			a1->DisplaySub(a1);
 		}
-	}
-	else {
-		deleteSub_Global(a1);
 	}
 }
 
-void _cdecl FLIPPERS(ObjectMaster *a1) {
+void HeroesFlippers(ObjectMaster *a1) {
 	NJS_MATERIAL * material = CP_FLIPPER->getmodel()->basicdxmodel->mats;
 	NJS_MATERIAL * material2 = CP_FLIPPER->getmodel()->child->basicdxmodel->mats;
+
 	if (CurrentLevel == 3) {
 		material[0].attr_texId = 287;
 		material[1].attr_texId = 293;
@@ -101,30 +96,31 @@ void _cdecl FLIPPERS(ObjectMaster *a1) {
 
 	if (a1->SETData.SETData->SETEntry->ObjectType == 42) FlipperL(a1);
 	else FlipperR(a1);
-	a1->MainSub = FLIPPERS_main;
-	a1->DisplaySub = FLIPPERS_display;
+
+	a1->MainSub = HeroesFlippers_main;
+	a1->DisplaySub = HeroesFlippers_display;
 	a1->DeleteSub = deleteSub_Global;
 }
 
-static  void __cdecl sub_5DC0D0_h(ObjectMaster *a1);
+//Hook sadx flippers display
+static  void sub_5DC0D0_h(ObjectMaster *a1);
 static Trampoline sub_5DC0D0_t(0x5DC0D0, 0x5DC158, sub_5DC0D0_h);
-static  void __cdecl sub_5DC0D0_h(ObjectMaster *a1) {
+static  void sub_5DC0D0_h(ObjectMaster *a1) {
 	if (CurrentLevel != 9) {
-		FLIPPERS_display(a1);
+		HeroesFlippers_display(a1);
 	}
 	else {
 		auto original = reinterpret_cast<decltype(sub_5DC0D0_h)*>(sub_5DC0D0_t.Target());
 		original(a1);
 	}
 }
-#pragma endregion
 
-#pragma region Pintable Bumper
-void __cdecl sub_5DBCD0_h(ObjectMaster *a2);
+//Hook sadx bumpers display
+void sub_5DBCD0_h(ObjectMaster *a2);
 static Trampoline sub_5DBCD0_t(0x5DBCD0, 0x5DBD61, sub_5DBCD0_h);
-void __cdecl sub_5DBCD0_h(ObjectMaster *a2)
+void sub_5DBCD0_h(ObjectMaster *a2)
 {
-	if (IsPlayerInsideSphere(&a2->Data1->Position, 1400.0f)) {
+	if (!ClipSetObject(a2)) {
 		if (CurrentLevel != 9) {
 			NJS_MATERIAL * material = CP_CSNOBOB->getmodel()->child->basicdxmodel->mats;
 			if (CurrentLevel == 3) {
@@ -155,15 +151,10 @@ void __cdecl sub_5DBCD0_h(ObjectMaster *a2)
 			original(a2);
 		}
 	}
-	else {
-		deleteSub_Global(a2);
-	}
 }
-#pragma endregion
 
-#pragma region Dice
-void CPDICE_Display(ObjectMaster *a1) {
-	if (!DroppedFrames && IsPlayerInsideSphere(&a1->Data1->Position, 2000.0f)) {
+void CPDice_Display(ObjectMaster *a1) {
+	if (!DroppedFrames) {
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
@@ -176,19 +167,26 @@ void CPDICE_Display(ObjectMaster *a1) {
 	}
 }
 
-void CPDICE_Main(ObjectMaster *a1) {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 2000.0f)) {
-		uint8_t type = (uint8_t)a1->Data1->Action;
-
-		if (type > 9) {
+void CPDice_Main(ObjectMaster *a1) {
+	if (!ClipSetObject(a1)) {
+		if (a1->Data1->Action > 9) {
 			a1->Data1->Scale.x = 1;
-			if (IsSwitchPressed(type)) {
+			if (IsSwitchPressed(a1->Data1->Action)) {
 				a1->Data1->Action = 1;
 			}
+			return;
 		}
 
-		if (type == 1) {
-			char timer = a1->Data1->NextAction;
+		NJS_OBJECT * col;
+		char timer = a1->Data1->NextAction;
+
+		switch (a1->Data1->Action) {
+		case 0:
+			DynColRadius(a1, 100, 0);
+			break;
+		case 1:
+			DynColRadius(a1, 100, 1);
+
 			if (timer == 0) {
 				float state = a1->Data1->Rotation.z;
 				float min = a1->Data1->Scale.y;
@@ -225,25 +223,31 @@ void CPDICE_Main(ObjectMaster *a1) {
 				}
 			}
 			else a1->Data1->NextAction--;
-		}
-		else if (type == 2) {
+
+			col = (NJS_OBJECT*)a1->Data1->LoopData;
+			if (col) {
+				col->scl[1] = a1->Data1->Scale.x;
+				col->pos[1] = a1->Data1->Position.y;
+			}
+			
+			break;
+		case 2:
+			DynColRadius(a1, 100, 1);
 			a1->Data1->Rotation.y += 100;
-			a1->Data1->Object->ang[1] = a1->Data1->Rotation.y;
+
+			col = (NJS_OBJECT*)a1->Data1->LoopData;
+			if (col) col->ang[1] = a1->Data1->Rotation.y;
+			break;
 		}
-
-		a1->Data1->Object->scl[1] = a1->Data1->Scale.x;
-		a1->Data1->Object->pos[1] = a1->Data1->Position.y;
-
-		CPDICE_Display(a1);
-	}
-	else {
-		deleteSub_Global(a1);
+		
+		a1->DisplaySub(a1);
 	}
 }
 
-void __cdecl CPDICE(ObjectMaster *a1)
+void CPDice(ObjectMaster *a1)
 {
 	NJS_MATERIAL * material = CP_MOVDICE->getmodel()->basicdxmodel->mats;
+
 	if (CurrentLevel == 3) {
 		material[0].attr_texId = 167;
 		material[1].attr_texId = 315;
@@ -260,31 +264,31 @@ void __cdecl CPDICE(ObjectMaster *a1)
 
 	if (a1->Data1->Action == 0) {
 		a1->Data1->Scale.x = 1;
-		AddToCollision(a1, 0);
 	}
 	else {
 		if (a1->Data1->Action == 2) {
 			a1->Data1->Object = CP_MOVDICE->getmodel()->child;
-			AddToCollision(a1, 1);
 			a1->Data1->Scale.x = 1;
 		}
 		else {
-			AddToCollision(a1, 1);
 			a1->Data1->Scale.x = 0;
 			if (a1->Data1->Rotation.x == 0) a1->Data1->Position.y == a1->Data1->Scale.y;
 			else a1->Data1->Position.y == a1->Data1->Scale.z;
 		}
 	}
 
-	a1->MainSub = &CPDICE_Main;
-	a1->DisplaySub = &CPDICE_Display;
+	a1->MainSub = &CPDice_Main;
+	a1->DisplaySub = &CPDice_Display;
 	a1->DeleteSub = &deleteSub_Global;
 }
-#pragma endregion
 
-#pragma region Glass
-void CPGlass_Display(ObjectMaster *a1) {
+void CPGlass(ObjectMaster *a1) {
 	if (!DroppedFrames) {
+		if (a1->Data1->Action == 0) {
+			a1->DisplaySub = a1->MainSub;
+			a1->Data1->Action = 1;
+		}
+
 		for (int i = 0; i < LengthOfArray(Casino_Glass); ++i) {
 			if (CurrentLevel == HeroesLevelID_CasinoPark && Casino_Glass[i].Model != 0) continue;
 			if (CurrentLevel == HeroesLevelID_BingoHighway && Casino_Glass[i].Model != 1) continue;
@@ -311,25 +315,12 @@ void CPGlass_Display(ObjectMaster *a1) {
 	}
 }
 
-void CPGlass(ObjectMaster *a1) {
-	a1->DisplaySub = CPGlass_Display;
-	a1->MainSub = CPGlass_Display;
-}
-#pragma endregion
-
-#pragma region Round bumpers
-CollisionData Bumpers_col{
-	0, 0, 0x77, 0, 0x800400,{ 0, 0, 0 },{ 1, 1, 1 }, 0, 0
-};
-
-void CPBOBINAIR_Main(ObjectMaster *a1) {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 2000.0f)) {
-
+void CPBobInAir_Main(ObjectMaster *a1) {
+	if (!ClipSetObject(a1)) {
 		a1->Data1->Rotation.y += 10;
 		a1->Data1->CharIndex = IsPlayerInsideSphere(&a1->Data1->Position, 12);
 
 		if (a1->Data1->CharIndex) {
-
 			EntityData1 *entity = EntityData1Ptrs[a1->Data1->CharIndex - 1];
 			CharObj2 *co2 = CharObj2Ptrs[a1->Data1->CharIndex - 1];
 
@@ -355,16 +346,14 @@ void CPBOBINAIR_Main(ObjectMaster *a1) {
 		}
 		else AddToCollisionList(a1->Data1);
 
-		displaySub_Global(a1);
-	}
-	else {
-		deleteSub_Global(a1);
+		a1->DisplaySub(a1);
 	}
 }
 
-void __cdecl CPBOBINAIR(ObjectMaster *a1)
+void CPBobInAir(ObjectMaster *a1)
 {
 	NJS_MATERIAL * material = CP_CSNOBOB->getmodel()->basicdxmodel->mats;
+
 	if (CurrentLevel == 3) {
 		material[0].attr_texId = 293;
 		material[1].attr_texId = 300;
@@ -379,13 +368,11 @@ void __cdecl CPBOBINAIR(ObjectMaster *a1)
 	a1->Data1->Object = CP_CSNOBOB->getmodel();
 	Collision_Init(a1, &Bumpers_col, 1, 2u);
 
-	a1->MainSub = &CPBOBINAIR_Main;
-	a1->DisplaySub = &displaySub_Global;
-	a1->DeleteSub = &deleteSub_Global;
+	a1->MainSub = CPBobInAir_Main;
+	a1->DisplaySub = displaySub_Global;
+	a1->DeleteSub = deleteSub_Global;
 }
-#pragma endregion
 
-#pragma region Alt Dashpanel
 void CPDashPanel(ObjectMaster *a1) {
 	if (!MissedFrames) {
 		NJS_MATERIAL * mat = CP_DSHPANL->getmodel()->basicdxmodel->mats;
@@ -395,23 +382,11 @@ void CPDashPanel(ObjectMaster *a1) {
 		njSetTexture(CurrentLevelTexlist);
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
-		EntityData1 *v1 = a1->Data1;
-		int v2;
-		int v3;
-		v2 = v1->Rotation.z;
-		if (v2)
-		{
-			njRotateZ(0, v2);
-		}
-		v3 = v1->Rotation.x;
-		if (v3)
-		{
-			njRotateX(0, v3);
-		}
-		if (v1->Rotation.y != -32768)
-		{
-			njRotateY(0, (LOWORD(v1->Rotation.y) + -32768));
-		}
+
+		Rotation3 rot = a1->Data1->Rotation;
+		if (rot.z) njRotateZ(0, rot.z);
+		if (rot.x) njRotateX(0, rot.x);
+		if (rot.y != -32768) njRotateY(0, (LOWORD(rot.y) + -32768));
 
 		DrawQueueDepthBias = -6000.0f;
 		njDrawModel_SADX(CP_DSHPANL->getmodel()->basicdxmodel);
@@ -419,13 +394,6 @@ void CPDashPanel(ObjectMaster *a1) {
 		njPopMatrix(1u);
 	}
 }
-#pragma endregion
-
-#pragma region Small Slot
-int slotmin;
-int slotmin2;
-int slotmax;
-int slotmax2;
 
 void SlotCamera(ObjectMaster *a1) {
 	EntityData1 *entity = EntityData1Ptrs[0];
@@ -443,7 +411,7 @@ void TakeRings(char nb) {
 	else Rings -= nb;
 }
 
-void CPSLOTS_Display(ObjectMaster *a1) {
+void CPSlotS_Display(ObjectMaster *a1) {
 	if (!MissedFrames) {
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
 		njPushMatrix(0);
@@ -456,8 +424,8 @@ void CPSLOTS_Display(ObjectMaster *a1) {
 	}
 }
 
-void CPSLOTS_Main(ObjectMaster *a1) {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 2000.0f)) {
+void CPSlotS_Main(ObjectMaster *a1) {
+	if (!ClipSetObject(a1)) {
 		NJS_MATERIAL * material = CP_SLOTMCS->getmodel()->basicdxmodel->mats;
 
 		if (a1->Data1->Scale.y == 0 && IsPlayerInsideSphere(&a1->Data1->Position, 20)) {
@@ -519,14 +487,11 @@ void CPSLOTS_Main(ObjectMaster *a1) {
 
 		if (a1->Data1->Scale.y == 1) if (anim % 320 == 0) a1->Data1->Scale.y = 0;
 
-		CPSLOTS_Display(a1);
-	}
-	else {
-		deleteSub_Global(a1);
+		CPSlotS_Display(a1);
 	}
 }
 
-void __cdecl CPSLOTS(ObjectMaster *a1)
+void CPSlotS(ObjectMaster *a1)
 {
 	NJS_MATERIAL * material = CP_SLOTMCS->getmodel()->basicdxmodel->mats;
 	if (CurrentLevel == HeroesLevelID_CasinoPark) {
@@ -580,14 +545,12 @@ void __cdecl CPSLOTS(ObjectMaster *a1)
 	material[8].attr_texId = v2;
 	material[9].attr_texId = v3;
 
-	a1->MainSub = &CPSLOTS_Main;
-	a1->DisplaySub = &CPSLOTS_Display;
-	a1->DeleteSub = &deleteSub_Global;
+	a1->MainSub = CPSlotS_Main;
+	a1->DisplaySub = CPSlotS_Display;
+	a1->DeleteSub = deleteSub_Global;
 }
-#pragma endregion
 
-#pragma region Large Slot
-void CPSLOTL_Display(ObjectMaster *a1) {
+void CPSlotL_Display(ObjectMaster *a1) {
 	if (!MissedFrames) {
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
 		njPushMatrix(0);
@@ -600,8 +563,8 @@ void CPSLOTL_Display(ObjectMaster *a1) {
 	}
 }
 
-void CPSLOTL_Main(ObjectMaster *a1) {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 2000.0f)) {
+void CPSlotL_Main(ObjectMaster *a1) {
+	if (!ClipSetObject(a1)) {
 		NJS_MATERIAL * material = CP_SLOTMCS->getmodel()->child->basicdxmodel->mats;
 
 		if (a1->Data1->Action == 0 && IsPlayerInsideSphere(&a1->Data1->Position, 20)) {
@@ -762,14 +725,11 @@ void CPSLOTL_Main(ObjectMaster *a1) {
 
 		if (a1->Data1->Action == 3) if (anim % 320 == 0) a1->Data1->Action = 0;
 
-		CPSLOTL_Display(a1);
-	}
-	else {
-		deleteSub_Global(a1);
+		CPSlotL_Display(a1);
 	}
 }
 
-void __cdecl CPSLOTL(ObjectMaster *a1)
+void CPSlotL(ObjectMaster *a1)
 {
 	NJS_MATERIAL * material = CP_SLOTMCS->getmodel()->child->basicdxmodel->mats;
 	if (CurrentLevel == HeroesLevelID_CasinoPark) {
@@ -856,14 +816,12 @@ void __cdecl CPSLOTL(ObjectMaster *a1)
 	material[12].attr_texId = v2;
 	material[13].attr_texId = v3;
 
-	a1->MainSub = &CPSLOTL_Main;
-	a1->DisplaySub = &CPSLOTL_Display;
+	a1->MainSub = &CPSlotL_Main;
+	a1->DisplaySub = &CPSlotL_Display;
 	a1->DeleteSub = &deleteSub_Global;
 }
-#pragma endregion
 
-#pragma region Door
-void CPDOOR_Display(ObjectMaster *a1) {
+void CPDoor_Display(ObjectMaster *a1) {
 	if (!MissedFrames) {
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
 		njPushMatrix(0);
@@ -892,36 +850,30 @@ void CPDOOR_Display(ObjectMaster *a1) {
 	}
 }
 
-void CPDOOR_Main(ObjectMaster *a1) {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 2000.0f)) {
-
+void CPDoor_Main(ObjectMaster *a1) {
+	if (!ClipSetObject(a1)) {
 		if (IsSwitchPressed(a1->Data1->Scale.x)) {
-
 			if (a1->Data1->Action == 0) PlaySound(42, 0, 0, 0);
-
 			a1->Data1->Action = 1;
-			a1->Data1->Object->pos[1] = a1->Data1->Position.y + 200;
-
+			
+			deleteSub_Global(a1);
 
 			if (a1->Data1->Scale.z != 60) a1->Data1->Scale.z += 2;
 		}
 		else {
 			if (a1->Data1->Action == 1) PlaySound(42, 0, 0, 0);
-
 			a1->Data1->Action = 0;
-			a1->Data1->Object->pos[1] = a1->Data1->Position.y;
+
+			DynColRadius(a1, 200, 0);
 
 			if (a1->Data1->Scale.z != 0) a1->Data1->Scale.z -= 3;
 		}
 
-		CPDOOR_Display(a1);
-	}
-	else {
-		deleteSub_Global(a1);
+		CPDoor_Display(a1);
 	}
 }
 
-void __cdecl CPDOOR(ObjectMaster *a1)
+void CPDoor(ObjectMaster *a1)
 {
 	NJS_MATERIAL * material_left = CP_SLDDOOR->getmodel()->basicdxmodel->mats;
 	NJS_MATERIAL * material_bottom = CP_SLDDOOR->getmodel()->child->basicdxmodel->mats;
@@ -971,15 +923,12 @@ void __cdecl CPDOOR(ObjectMaster *a1)
 		material_right[3].attr_texId = 26;
 	}
 	a1->Data1->Object = &CP_DOORCOL;
-	AddToCollision(a1, 1);
 
-	a1->MainSub = &CPDOOR_Main;
-	a1->DisplaySub = &CPDOOR_Display;
+	a1->MainSub = &CPDoor_Main;
+	a1->DisplaySub = &CPDoor_Display;
 	a1->DeleteSub = &deleteSub_Global;
 }
-#pragma endregion
 
-#pragma region Roulette
 void CPRoulette_Display(ObjectMaster *a1) {
 	if (!MissedFrames) {
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
@@ -995,25 +944,24 @@ void CPRoulette_Display(ObjectMaster *a1) {
 }
 
 void CPRoulette_Main(ObjectMaster *a1) {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 2000.0f)) {
+	if (!ClipSetObject(a1)) {
 		if (CurrentLevel == HeroesLevelID_CasinoPark) a1->Data1->Rotation.y += 60;
-		if (CurrentLevel == HeroesLevelID_BingoHighway) a1->Data1->Scale.z += 60;
-		CPRoulette_Display(a1);
-	}
-	else {
-		deleteSub_Global(a1);
+
+		if (CurrentLevel == HeroesLevelID_BingoHighway) {
+			DynColRadius(a1, 200, 0);
+			a1->Data1->Scale.z += 60;
+		}
+
+		a1->DisplaySub(a1);
 	}
 }
 
-void __cdecl CPRoulette(ObjectMaster *a1)
+void CPRoulette(ObjectMaster *a1)
 {
 	if (CurrentLevel == HeroesLevelID_CasinoPark) a1->Data1->Object = CP_RURETTO->getmodel();
 	else a1->Data1->Object = &BH_ROURETTE;
-	
-	AddToCollision(a1, 0);
 
 	a1->MainSub = &CPRoulette_Main;
 	a1->DisplaySub = &CPRoulette_Display;
 	a1->DeleteSub = &deleteSub_Global;
 }
-#pragma endregion

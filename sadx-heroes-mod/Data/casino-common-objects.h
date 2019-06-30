@@ -623,3 +623,14 @@ NJS_VECTOR normal_8D5FBE8A588937D8408[] = {
 };
 NJS_MODEL_SADX attach_034F4ED9 = { vertex_8D5FBE8A588937D6106, normal_8D5FBE8A588937D8408, LengthOfArray<Sint32>(vertex_8D5FBE8A588937D6106), meshlist_8D5FBE8A588937DDC6E, matlist_8D5FBE8A588937D3597, LengthOfArray<Uint16>(meshlist_8D5FBE8A588937DDC6E), LengthOfArray<Uint16>(matlist_8D5FBE8A588937D3597),{ 0, 25.30769f, 0.5754693f }, 61.62946f, NULL };
 NJS_OBJECT CP_DOORCOL = { NJD_EVAL_UNIT_POS | NJD_EVAL_UNIT_ANG | NJD_EVAL_UNIT_SCL | NJD_EVAL_BREAK | NJD_EVAL_SKIP, &attach_034F4ED9, 0, 0, 0, 0, 0, 0, 1, 1, 1, NULL, NULL };
+
+SOI_LIST2 Casino_Glass[] = {
+	{ 0,{ -8820.0674f, 3360, -2320.059f },{ 0, 16384, 0 },{ 1, 1, 1 }, -6000.0f, 0, 1500.0f },
+	{ 0,{ -15350.516f, 1550.1f, -860.4109f },{ 0, 32768, 0 },{ 1, 1, 1 }, -6000.0f, 0, 1500.0f },
+	{ 0,{ -14480.477f, 2400, 2770.116f },{ 0, 32768, 0 },{ 1, 1, 1 }, -6000.0f, 0, 1500.0f },
+	{ 1,{ 11050.07f, -4464.9f, -14880 },{ 0, -16384, 0 },{ 1, 1, 1 }, -6000.0f, 0, 3000.0f }
+};
+
+CollisionData Bumpers_col{
+	0, 0, 0x77, 0, 0x800400,{ 0, 0, 0 },{ 1, 1, 1 }, 0, 0
+};

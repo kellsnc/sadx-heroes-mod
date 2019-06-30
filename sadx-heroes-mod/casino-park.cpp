@@ -5,6 +5,8 @@
 #include "casino-park-deathzones.h"
 #include "casino-park.h"
 
+void CasinoSkybox(ObjectMaster *a1);
+
 void CasinoPark_InitObjects() {
 	CP_BIGDICE = LoadMDL("CP_BIGDICE");
 	CP_CSNOBOB = LoadMDL("CP_CSNOBOB");
@@ -15,6 +17,7 @@ void CasinoPark_InitObjects() {
 	CP_SLDDOOR = LoadMDL("CP_SLDDOOR");
 	CP_SLOTMCS = LoadMDL("CP_SLOTMCS");
 	CP_DSHPANL = LoadMDL("CP_DSHPANL");
+	CP_SKYMDLS = LoadMDL("CP_SKYMDLS");
 
 	CASINOOBJLIST[0] = CP_FLIPPER->getmodel()->basicdxmodel;
 	CASINOOBJLIST[1] = CP_FLIPPER->getmodel()->child->basicdxmodel;
@@ -42,6 +45,7 @@ void CasinoPark_Delete(ObjectMaster * a1) {
 	FreeMDL(CP_SLDDOOR);
 	FreeMDL(CP_SLOTMCS);
 	FreeMDL(CP_DSHPANL);
+	FreeMDL(CP_SKYMDLS);
 
 	CasinoCommon_Delete(a1);
 	LevelHandler_Delete(a1);
@@ -52,8 +56,6 @@ void CasinoParkHandler(ObjectMaster * a1) {
 	CharObj2 * co2 = CharObj2Ptrs[0];
 
 	if (a1->Data1->Action == 0) {
-		CasinoPark_InitObjects();
-
 		InitializeSoundManager();
 		PlayMusic(MusicIDs_TwinkleParkTwinklePark);
 		SoundManager_Delete2();
@@ -65,7 +67,7 @@ void CasinoParkHandler(ObjectMaster * a1) {
 			CurrentLevelTexlist = &TWINKLE01_TEXLIST;
 			CurrentLandAddress = (LandTable**)0x97DA68;
 
-			if (entity->Position.z > -1697 && entity->Position.x > -8696) LoadLevelFile("CP", 01);
+			CasinoPark_InitObjects();
 		}
 	}
 	else {
@@ -75,11 +77,6 @@ void CasinoParkHandler(ObjectMaster * a1) {
 			AnimateTextures(CasinoParkAnimTexs, LengthOfArray(CasinoParkAnimTexs));
 			AnimateObjectsTextures(CASINOOBJLIST, LengthOfArray(CASINOOBJLIST), CasinoParkAnimTexs, LengthOfArray(CasinoParkAnimTexs));
 			CasinoCommon_OnFrame();
-
-			if (anim % 4 == 0) {
-				CurrentLandTable->Col[0].Model->pos[0] = entity->Position.x;
-				CurrentLandTable->Col[0].Model->pos[2] = entity->Position.z;
-			}
 
 			break;
 		}
@@ -99,7 +96,7 @@ void CasinoPark_Init(const char *path, const HelperFunctions &helperFunctions) {
 	TwinkleParkDeathZones[0] = CasinoParkDeathZones;
 
 	LevelObjects[HeroesLevelID_CasinoPark] = CasinoParkHandler;
-	SkyboxObjects[HeroesLevelID_CasinoPark] = HeroesSkybox_Main;
+	SkyboxObjects[HeroesLevelID_CasinoPark] = CasinoSkybox;
 
 	CasinoParkObjects_Init(path);
 }

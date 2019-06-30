@@ -79,5 +79,6 @@ extern ModelInfo * CP_RURETTO;
 extern ModelInfo * CP_SLDDOOR;
 extern ModelInfo * CP_SLOTMCS;
 extern ModelInfo * CP_DSHPANL;
+extern ModelInfo * CP_SKYMDLS;
 
 NJS_MODEL_SADX * CASINOOBJLIST[12];
