@@ -4,6 +4,8 @@
 #include "bingo-highway-paths.h"
 #include "bingo-highway.h"
 
+void CasinoSkybox(ObjectMaster *a1);
+
 void BingoHighway_InitObjects() {
 	CP_CSNOBOB = LoadMDL("CP_CSNOBOB");
 	CP_FLIPPER = LoadMDL("CP_FLIPPER");
@@ -12,6 +14,7 @@ void BingoHighway_InitObjects() {
 	CP_SLDDOOR = LoadMDL("CP_SLDDOOR");
 	CP_SLOTMCS = LoadMDL("CP_SLOTMCS");
 	CP_DSHPANL = LoadMDL("CP_DSHPANL");
+	CP_SKYMDLS = LoadMDL("CP_SKYMDLS");
 	BH_BIGCHIP = LoadMDL("BH_BIGCHIP");
 	BH_BNGCHIP = LoadMDL("BH_BNGCHIP");
 	BH_BNGCARD = LoadMDL("BH_BNGCARD");
@@ -55,6 +58,7 @@ void BingoHighway_Delete(ObjectMaster * a1) {
 	FreeMDL(BH_BNGCHIP);
 	FreeMDL(BH_BNGCARD);
 	FreeMDL(BH_TBLSIGN);
+	FreeMDL(CP_SKYMDLS);
 
 	CasinoCommon_Delete(a1);
 	LevelHandler_Delete(a1);
@@ -74,29 +78,14 @@ void BingoHighwayHandler(ObjectMaster * a1) {
 		a1->Data1->Action = 1;
 		a1->DeleteSub = BingoHighway_Delete;
 
-		if (CurrentAct == 0) {
-			CurrentLevelTexlist = &HIGHWAY01_TEXLIST;
-			CurrentLandAddress = (LandTable**)0x97DA88;
-
-			if (entity->Position.z > -3440 && entity->Position.y > 370) LoadLevelFile("BH", 01);
-		}
+		CurrentLevelTexlist = &HIGHWAY01_TEXLIST;
+		CurrentLandAddress = (LandTable**)0x97DA88;
 	}
 	else {
-		switch (CurrentAct) {
-		case 0:
-			ChunkHandler("BH", BingoHighwayChunks, LengthOfArray(BingoHighwayChunks), entity->Position);
-			AnimateObjectsTextures(BINGOOBJLIST, LengthOfArray(BINGOOBJLIST), BingoHighwayAnimTexs, LengthOfArray(BingoHighwayAnimTexs));
-			AnimateTextures(BingoHighwayAnimTexs, LengthOfArray(BingoHighwayAnimTexs));
-			CasinoCommon_OnFrame();
-
-			if (anim % 4 == 0) {
-				CurrentLandTable->Col[0].Model->pos[0] = entity->Position.x;
-				CurrentLandTable->Col[0].Model->pos[1] = entity->Position.y;
-				CurrentLandTable->Col[0].Model->pos[2] = entity->Position.z;
-			}
-
-			break;
-		}
+		ChunkHandler("BH", BingoHighwayChunks, LengthOfArray(BingoHighwayChunks), entity->Position);
+		AnimateObjectsTextures(BINGOOBJLIST, LengthOfArray(BINGOOBJLIST), BingoHighwayAnimTexs, LengthOfArray(BingoHighwayAnimTexs));
+		AnimateTextures(BingoHighwayAnimTexs, LengthOfArray(BingoHighwayAnimTexs));
+		CasinoCommon_OnFrame();
 	}
 }
 
@@ -114,7 +103,7 @@ void BingoHighway_Init(const char *path, const HelperFunctions &helperFunctions)
 	DeathZoneList[HeroesLevelID_BingoHighway] = nullptr;
 
 	LevelObjects[HeroesLevelID_BingoHighway] = BingoHighwayHandler;
-	SkyboxObjects[HeroesLevelID_BingoHighway] = HeroesSkybox_Main;
+	SkyboxObjects[HeroesLevelID_BingoHighway] = CasinoSkybox;
 
 	BingoHighwayObjects_Init(path);
 }

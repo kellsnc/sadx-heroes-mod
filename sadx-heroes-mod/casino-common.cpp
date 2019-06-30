@@ -18,15 +18,34 @@ void CasinoSkybox(ObjectMaster *a1) {
 			a1->Data1->Action = 1;
 			a1->DisplaySub = a1->MainSub;
 			HeroesSkybox_Main(a1);
+
+			a1->Data1->Object = CP_SKYMDLS->getmodel();
+
+			NJS_MATERIAL * material = a1->Data1->Object->basicdxmodel->mats;
+
+			if (CurrentLevel == HeroesLevelID_CasinoPark) {
+				material[0].attr_texId = 317;
+				material[1].attr_texId = 37;
+				material[2].attr_texId = 39;
+				material[3].attr_texId = 40;
+				material[4].attr_texId = 38;
+			}
+			else {
+				material[0].attr_texId = 291;
+				material[1].attr_texId = 3;
+				material[2].attr_texId = 5;
+				material[3].attr_texId = 6;
+				material[4].attr_texId = 4;
+			}
 		}
-		
+
 		DisableFog();
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
 		njPushMatrix(0);
 		njTranslateV(nullptr, &EntityData1Ptrs[0]->Position);
 		njScale(0, 0.83f, 0.83f, 0.83f);
 		DrawQueueDepthBias = -6000;
-		njDrawModel_SADX(CP_SKYMDLS->getmodel()->basicdxmodel);
+		njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 		ToggleStageFog();
