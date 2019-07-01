@@ -51,10 +51,12 @@ extern ModelInfo * PP_SOLARPN;
 extern ModelInfo * PP_TNKDOOR;
 extern ModelInfo * PP_TNKSTEP;
 extern ModelInfo * PP_SKYMDLS;
+extern ModelInfo * PP_ENERGYT;
+extern ModelInfo * PP_SHAFTST;
 
 SH_UVSHIFT PowerPlant_UVSHIFT[]{
 	{ nullptr,0,{ 0, -1 }, 4 }, //2
 	{ nullptr,0,{ 0, -12 } }, //5
 };
 
-NJS_MODEL_SADX * PPOBJLIST[6];
+NJS_MODEL_SADX * PPOBJLIST[8];

@@ -14,6 +14,8 @@ ModelInfo * PP_SOLARPN;
 ModelInfo * PP_TNKDOOR;
 ModelInfo * PP_TNKSTEP;
 ModelInfo * PP_SKYMDLS;
+ModelInfo * PP_ENERGYT;
+ModelInfo * PP_SHAFTST;
 
 static bool alternate;
 
@@ -108,79 +110,139 @@ void PPLights(ObjectMaster *a1) {
 	}
 }
 
-void PPTankHandler_Display(ObjectMaster *a1) {
-	if (CurrentChunk == 11) {
-		if (!DroppedFrames) {
-			njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
-			njPushMatrix(0);
-			njTranslate(nullptr, a1->Data1->Position.x, 10979.9f, -12388);
+void PPStep_Display(ObjectMaster *a1) {
+	if (CurrentChunk != 11) return;
 
-			DrawQueueDepthBias = -6000;
-			njDrawModel_SADX(PP_TNKDOOR->getmodel()->basicdxmodel);
+	njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+	njPushMatrix(0);
+	njTranslateV(nullptr, &a1->Data1->Position);
+	njRotateXYZ(0, 0, a1->Data1->Rotation.y, 0);
+	DrawQueueDepthBias = -6000;
+	njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
+	DrawQueueDepthBias = 0;
+	njPopMatrix(1u);
+}
 
-			njPopMatrix(1u);
-			njPushMatrix(0);
+void PPStep(ObjectMaster *a1) {
+	if (CurrentChunk != 11) {
+		deleteSub_Global(a1);
+		return;
+	}
 
-			njTranslate(nullptr, a1->Data1->Position.y, 10979.9f, -12388);
-			njDrawModel_SADX(PP_TNKDOOR->getmodel()->child->basicdxmodel);
+	if (a1->Data1->Action < 3) DynColRadius(a1, 200, 1);
+	NJS_OBJECT * col = (NJS_OBJECT*)a1->Data1->LoopData;
+	float height = a1->Parent->Data1->Position.y;
 
-			njPopMatrix(1u);
-
-			for (int i = 0; i < LengthOfArray(PP_Steps); ++i) {
-				if (CheckModelDisplay2(PP_Steps[i])) {
-					SOI_LIST2 item = PP_Steps[i];
-
-					njPushMatrix(0);
-					njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
-					njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);
-					
-
-					switch (item.Model) {
-					case 0: njDrawModel_SADX(PP_TNKSTEP->getmodel()->basicdxmodel); break;
-					case 1: njDrawModel_SADX(PP_TNKSTEP->getmodel()->child->basicdxmodel); break;
-					}
-
-					njPopMatrix(1u);
-				}
-			}
-
-			DrawQueueDepthBias = 0;
+	switch (a1->Data1->Action) {
+	case 0:
+		a1->DisplaySub = PPStep_Display;
+		a1->Data1->Action = 1;
+		break;
+	case 1:
+		if (a1->Data1->Position.y - 30 < height) {
+			a1->Data1->Action = 2;
 		}
+		a1->DisplaySub(a1);
+		break;
+	case 2:
+		a1->Data1->Scale.x += 1;
+		if (a1->Data1->Scale.x == 10) a1->Data1->Action = 3;
+
+		if (col) col->pos[1] = a1->Data1->Position.y;
+
+		a1->Data1->Position.y -= 2;
+		a1->DisplaySub(a1);
+		break;
+	case 3:
+		deleteSub_Global;
+		a1->Data1->Action = 4;
+		break;
+	}
+}
+
+void PPTankHandler_Display(ObjectMaster *a1) {
+	if (CurrentChunk != 11) return;
+
+	if (!DroppedFrames) {
+		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		njPushMatrix(0);
+		njTranslate(nullptr, 22930, 10979.9f, -12388);
+		DrawQueueDepthBias = -6000;
+		njTranslate(0, a1->Data1->Scale.x, 0, 0);
+		njDrawModel_SADX(PP_TNKDOOR->getmodel()->basicdxmodel);
+		njTranslate(0, -(a1->Data1->Scale.x*2), 0, 0);
+		njDrawModel_SADX(PP_TNKDOOR->getmodel()->child->basicdxmodel);
+		
+		njPopMatrix(1u);
+		njPushMatrix(0);
+
+		njTranslate(nullptr, 22715, 8796 - a1->Data1->Scale.z, -12387.5f);
+		njDrawModel_SADX(PP_SHAFTST->getmodel()->basicdxmodel);
+
+		njPopMatrix(1u);
+		njPushMatrix(0);
+
+		njTranslateV(nullptr, &a1->Data1->Position);
+		njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
+		njDrawModel_SADX(a1->Data1->Object->child->basicdxmodel);
+
+		DrawQueueDepthBias = 0;
+		njPopMatrix(1u);
 	}
 }
 
 void PPTankHandler_Main(ObjectMaster *a1) {
-	if (CurrentChunk == 11) {
-		EntityData1 *entity = EntityData1Ptrs[0];
-		if (entity->Position.x > 22754) {
-			if (CurrentLandTable->Col[20].Model->pos[1] < 10723) {
-				CurrentLandTable->Col[20].Model->pos[1] += 0.3f;
-				if (entity->Position.y > 9517) CurrentLandTable->Col[20].Model->pos[1] += 0.3f;
-				if (entity->Position.y > 10207) CurrentLandTable->Col[20].Model->pos[1] += 0.1f;
-			}
-			if (entity->Position.y < CurrentLandTable->Col[20].Model->pos[1]) GameState = 7;
-		}
-		else {
-			CurrentLandTable->Col[20].Model->pos[1] = 8621;
-		}
-	
-		if (entity->Position.y > 10979) {
-			if (a1->Data1->Position.x != 22930) {
-				a1->Data1->Position.x -= 1;
-			}
-			if (a1->Data1->Position.y != 22930) {
-				a1->Data1->Position.y += 1;
-			}
+	if (CurrentChunk != 11) {
+		deleteSub_Global(a1);
+		return;
+	}
+
+	if (GameState == 6) deleteSub_Global(a1); 
+	else DynColRadius(a1, 200, 6);
+
+	EntityData1 *entity = EntityData1Ptrs[0];
+
+	if (entity->Position.x > 22751) {
+		if (a1->Data1->Scale.z != 101) 
+			a1->Data1->Scale.z += 1;
+
+		if (a1->Data1->Position.y < 10723) {
+			a1->Data1->Position.y += 0.2;
+
+			if (entity->Position.y - a1->Data1->Position.y > 50)
+				a1->Data1->Position.y += ((entity->Position.y - a1->Data1->Position.y) / 500);
 		}
 
-		PPTankHandler_Display(a1);
+		NJS_OBJECT * col = (NJS_OBJECT*)a1->Data1->LoopData;
+		if (col) col->pos[1] = a1->Data1->Position.y;
 	}
+	
+	if (entity->Position.y > 10979 && a1->Data1->Scale.x != 0)
+		a1->Data1->Scale.x -= 1;
+
+	a1->DisplaySub(a1);
 }
 
 void PPTankHandler(ObjectMaster *a1) {
-	a1->Data1->Scale = { 22930.4f, 11011.5f, -12387.49f };
-	a1->Data1->Position = { 22979, 22879, 0 };
+	a1->Data1->Position = { 22930, 8621, -12387.5f };
+	a1->Data1->Object = PP_ENERGYT->getmodel();
 
+	a1->Data1->Scale.x = 49;
+
+	for (int i = 0; i < LengthOfArray(PP_Steps); ++i) {
+		SOI_LIST2 item = PP_Steps[i];
+
+		ObjectMaster* obj = LoadObject(LoadObj_Data1, 3, PPStep);
+		obj->Data1->Position = item.Position;
+		obj->Data1->Rotation.y = item.Rotation[1];
+		obj->Parent = a1;
+
+		switch (item.Model) {
+		case 0: obj->Data1->Object = PP_TNKSTEP->getmodel(); break;
+		case 1: obj->Data1->Object = PP_TNKSTEP->getmodel()->child; break;
+		}
+	}
+	
 	a1->DisplaySub = PPTankHandler_Display;
 	a1->MainSub = PPTankHandler_Main;
 }
@@ -584,8 +646,8 @@ ObjectListEntry PowerPlantObjectList_list[] = {
 	{ 0, 0, 0, 0, 0, nullptr, NULL },
 	{ 0, 0, 0, 0, 0, nullptr, NULL },
 	{ 0, 0, 0, 0, 0, nullptr, NULL },
-	{ LoadObj_Data1 | LoadObj_UnknownA, ObjIndex_Stage, DistObj_UseDist, 360000, 0, OJump, "O JUMP   " },
 	{ 0, 0, 0, 0, 0, nullptr, NULL },
+	{ LoadObj_Data1 | LoadObj_UnknownA, ObjIndex_Stage, DistObj_UseDist, 360000, 0, OJump, "O JUMP   " },
 	{ 0, 0, 0, 0, 0, nullptr, NULL },
 	{ 0, 0, 0, 0, 0, nullptr, NULL },
 	{ 0, 0, 0, 0, 0, nullptr, NULL },

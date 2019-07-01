@@ -38,6 +38,8 @@ void PowerPlant_InitObjects() {
 	PP_SOLARPN = LoadMDL("PP_SOLARPN");
 	PP_TNKDOOR = LoadMDL("PP_TNKDOOR");
 	PP_TNKSTEP = LoadMDL("PP_TNKSTEP");
+	PP_ENERGYT = LoadMDL("PP_ENERGYT");
+	PP_SHAFTST = LoadMDL("PP_SHAFTST");
 
 	PowerPlant_UVSHIFT[0].List = PP_SOLARPN->getmodel()->child->basicdxmodel->meshsets[2].vertuv;
 	PowerPlant_UVSHIFT[1].List = PP_ELEVATR->getmodel()->basicdxmodel->meshsets[5].vertuv;
@@ -50,6 +52,8 @@ void PowerPlant_InitObjects() {
 	PPOBJLIST[3] = PP_PLTFRMS->getmodel()->basicdxmodel;
 	PPOBJLIST[4] = PP_PLTFRMS->getmodel()->child->basicdxmodel;
 	PPOBJLIST[5] = PP_SOLARPN->getmodel()->basicdxmodel;
+	PPOBJLIST[6] = PP_ENERGYT->getmodel()->basicdxmodel;
+	PPOBJLIST[7] = PP_ENERGYT->getmodel()->child->basicdxmodel;
 
 	LoadObject(LoadObj_Data1, 3, PPSolarpnls);
 	LoadObject(LoadObj_Data1, 3, PPCranes);
@@ -69,6 +73,8 @@ void PowerPlant_Delete(ObjectMaster * a1) {
 	FreeMDL(PP_SOLARPN);
 	FreeMDL(PP_TNKDOOR);
 	FreeMDL(PP_TNKSTEP);
+	FreeMDL(PP_ENERGYT);
+	FreeMDL(PP_SHAFTST);
 
 	if (IsLantern) {
 		set_shader_flags_ptr(ShaderFlags_Blend, false);
