@@ -5,6 +5,65 @@
 #include "hang-castle-deathzones.h"
 #include "hang-castle.h"
 
+void HangCastleSkybox(ObjectMaster *a1) {
+	if (!MissedFrames) {
+		if (a1->Data1->Action == 0) {
+			a1->Data1->Action = 1;
+			a1->DisplaySub = a1->MainSub;
+			HeroesSkybox_Main(a1);
+		}
+		
+		if (!CurrentChunk) return;
+
+		DisableFog();
+		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		njPushMatrix(0);
+		NJS_VECTOR * pos = &EntityData1Ptrs[0]->Position;
+		
+		switch (CurrentChunk) {
+		case 1: case 3: case 4: case 5: case 7: case 9: case 12:
+			a1->Data1->Object = HC_SKYMDLS->getmodel(); break;
+			njTranslate(nullptr, pos->x, 4000, pos->z + 8500);
+		case 2: case 6: case 8: case 10:
+			a1->Data1->Object = HC_SKYMDLS->getmodel()->child; break;
+			njTranslate(nullptr, pos->x + 8500, 4000, pos->z);
+		case 11:
+			njTranslate(nullptr, 4000, 4000, 0);
+			a1->Data1->Object = HC_SKYMDLS->getmodel()->child->child; break;
+		}
+
+		DrawQueueDepthBias = -6000;
+		njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
+		DrawQueueDepthBias = 0;
+		njPopMatrix(1u);
+
+		for (int i = 0; i < LengthOfArray(HangCastle_Clouds); ++i) {
+			SOI_LIST item = HangCastle_Clouds[i];
+
+			if (CurrentChunk == item.Chunk) {
+				njPushMatrix(0);
+				njTranslate(nullptr, 4000, 4000, 0);
+				njTranslateV(0, &item.Position);
+				if (item.Position.x > 8000) njRotateZ(0, 0x8000);
+
+				switch (item.Chunk) {
+				case 1: a1->Data1->Object = HC_MCLOUDS->getmodel(); break;
+				case 2: case 3: a1->Data1->Object = HC_MCLOUDS->getmodel()->child; break;
+				case 4: a1->Data1->Object = HC_MCLOUDS->getmodel()->child->child; break;
+				case 5: case 6: a1->Data1->Object = HC_MCLOUDS->getmodel()->child->child->child; break;
+				case 7: case 8: a1->Data1->Object = HC_MCLOUDS->getmodel()->child->child->child->child; break;
+				case 9: case 10: a1->Data1->Object = HC_MCLOUDS->getmodel()->child->child->child->child->child; break;
+				}
+
+				DrawModel_Queue(a1->Data1->Object->basicdxmodel, QueuedModelFlagsB_EnableZWrite);
+				njPopMatrix(1u);
+			}
+		}
+
+		ToggleStageFog();
+	}
+}
+
 void HangCastle_InitObjects() {
 	HC_SPKWARP = LoadMDL("HC_SPKWARP");
 	HC_HFLAMES = LoadMDL("HC_HFLAMES");
@@ -13,8 +72,8 @@ void HangCastle_InitObjects() {
 	HC_HPLANTB = LoadMDL("HC_HPLANTB");
 	HC_POLFLAG = LoadMDL("HC_POLFLAG");
 	HC_SPDSIGN = LoadMDL("HC_SPDSIGN");
-	HC_SPKDOOR = LoadMDL("HC_SPKDOOR");
-	HC_SPKTREE = LoadMDL("HC_SPKTREE");
+	HC_SKYMDLS = LoadMDL("HC_SKYMDLS");
+	HC_MCLOUDS = LoadMDL("HC_MCLOUDS");
 
 	HCMODELLIST[0] = HC_HFLAMES->getmodel()->basicdxmodel;
 	HCMODELLIST[1] = HC_HFLAMES->getmodel()->child->basicdxmodel;
@@ -34,6 +93,8 @@ void HangCastle_Delete(ObjectMaster * a1) {
 	FreeMDL(HC_SPKDOOR);
 	FreeMDL(HC_SPKTREE);
 	FreeMDL(HC_SPKWARP);
+	FreeMDL(HC_SKYMDLS);
+	FreeMDL(HC_MCLOUDS);
 
 	if (IsLantern) {
 		set_shader_flags_ptr(ShaderFlags_Blend, false);
@@ -57,24 +118,43 @@ void HangCastleHandler(ObjectMaster * a1) {
 		a1->Data1->Action = 1;
 		a1->DeleteSub = HangCastle_Delete;
 
+		HangCastle_InitObjects();
+		HCFlags_Reset();
+
 		if (CurrentAct == 0) {
 			CurrentLevelTexlist = &RUIN01_TEXLIST;
 			CurrentLandAddress = (LandTable**)0x97DAE8;
 
-			HangCastle_InitObjects();
-			HCFlags_Reset();
+			HC_SPKDOOR = LoadMDL("HC_SPKDOOR");
+			HC_SPKTREE = LoadMDL("HC_SPKTREE");
 
-			if (IsLantern) set_shader_flags_ptr(ShaderFlags_Blend, true);
+			HangCastle_UVShift[0].List = HC_MCLOUDS->getmodel()->basicdxmodel->meshsets[0].vertuv;
+			HangCastle_UVShift[1].List = HC_MCLOUDS->getmodel()->child->basicdxmodel->meshsets[0].vertuv;
+			HangCastle_UVShift[2].List = HC_MCLOUDS->getmodel()->child->child->basicdxmodel->meshsets[0].vertuv;
+			HangCastle_UVShift[3].List = HC_MCLOUDS->getmodel()->child->child->child->basicdxmodel->meshsets[0].vertuv;
+			HangCastle_UVShift[4].List = HC_MCLOUDS->getmodel()->child->child->child->child->basicdxmodel->meshsets[0].vertuv;
+			HangCastle_UVShift[5].List = HC_MCLOUDS->getmodel()->child->child->child->child->child->basicdxmodel->meshsets[0].vertuv;
 
-			if (entity->Position.z > -3111 && entity->Position.x < 8000) LoadLevelFile("HC", 01);
+			HangCastle_UVShift[0].Size = HC_MCLOUDS->getmodel()->basicdxmodel->meshsets[0].nbMesh * 3;
+			HangCastle_UVShift[1].Size = HC_MCLOUDS->getmodel()->child->basicdxmodel->meshsets[0].nbMesh * 3;
+			HangCastle_UVShift[2].Size = HC_MCLOUDS->getmodel()->child->child->basicdxmodel->meshsets[0].nbMesh * 3;
+			HangCastle_UVShift[3].Size = HC_MCLOUDS->getmodel()->child->child->child->basicdxmodel->meshsets[0].nbMesh * 3;
+			HangCastle_UVShift[4].Size = HC_MCLOUDS->getmodel()->child->child->child->child->basicdxmodel->meshsets[0].nbMesh * 3;
+			HangCastle_UVShift[5].Size = HC_MCLOUDS->getmodel()->child->child->child->child->child->basicdxmodel->meshsets[0].nbMesh * 3;
+
+			if (IsLantern) 
+				set_shader_flags_ptr(ShaderFlags_Blend, true);
 		}
 	}
 	else {
+		HCFlags_Animate();
+
 		switch (CurrentAct) {
 		case 0:
 			ChunkHandler("HC", HangCastleChunks, LengthOfArray(HangCastleChunks), entity->Position);
 			AnimateTextures(HangCastleAnimTexs, LengthOfArray(HangCastleAnimTexs));
 			AnimateObjectsTextures(HCMODELLIST, 2, HangCastleAnimTexs, LengthOfArray(HangCastleAnimTexs));
+			AnimateUV(HangCastle_UVShift, LengthOfArray(HangCastle_UVShift));
 
 			if (chunkswapped) {
 				if (CurrentChunk == 2 || CurrentChunk == 6 || CurrentChunk == 8 || CurrentChunk == 10 || CurrentChunk == 11) {
@@ -88,14 +168,6 @@ void HangCastleHandler(ObjectMaster * a1) {
 					LastSong = MusicIDs_lstwrld1;
 				}
 			}
-
-			if (CurrentChunk != 11) {
-				CurrentLandTable->Col[0].Model->pos[0] = entity->Position.x;
-				CurrentLandTable->Col[0].Model->pos[1] = entity->Position.y;
-				CurrentLandTable->Col[0].Model->pos[2] = entity->Position.z + 8500;
-			}
-
-			HCFlags_Animate();
 
 			chunkswapped = false;
 
@@ -122,7 +194,7 @@ void HangCastle_Init(const char *path, const HelperFunctions &helperFunctions) {
 	LostWorldDeathZones[0] = HangCastleDeathZones;
 
 	LevelObjects[HeroesLevelID_HangCastle] = HangCastleHandler;
-	SkyboxObjects[HeroesLevelID_HangCastle] = HeroesSkybox_Main;
+	SkyboxObjects[HeroesLevelID_HangCastle] = HangCastleSkybox;
 
 	HangCastleObjects_Init(path);
 }

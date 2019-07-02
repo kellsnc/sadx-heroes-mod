@@ -2,10 +2,10 @@
 #include "mod.h"
 #include "objects.h"
 
-void _cdecl HCWARP(ObjectMaster *a1);
-void __cdecl HCDOOR(ObjectMaster *a1);
-void __cdecl HCWALL(ObjectMaster *a1);
-void __cdecl HCPLATFORM(ObjectMaster *a1);
+void _cdecl HCWarp(ObjectMaster *a1);
+void __cdecl HCDoor(ObjectMaster *a1);
+void __cdecl HCWall(ObjectMaster *a1);
+void __cdecl HCPlatform(ObjectMaster *a1);
 
 ModelInfo * MM_SPHERE1;
 ModelInfo * MM_SPHERE2;
@@ -397,10 +397,10 @@ ObjectListEntry MysticMansionObjectList_list[] = {
 { 2, 3, 5, 250000, 0, (ObjectFuncPtr)0x4AF860, "E UNI C" } /* "E UNI C" */,
 { 2, 3, 5, 360000, 0, (ObjectFuncPtr)0x4B3210, "E POLICE" } /* "E POLICE" */,
 { 2, 3, 1, 1000000, 0, (ObjectFuncPtr)&ObjBoxW, "OBJ BOWX" } /* "Wooden Box" 41*/,
-{ 2, 3, 1, 1000000, 0, (ObjectFuncPtr)&HCWARP, "HC WARP" } /* "HC Warp" */,
-{ 2, 3, 1, 2400000, 0, (ObjectFuncPtr)&HCDOOR, "HC DOOR" } /* "HC Door" */,
-{ 2, 3, 1, 2400000, 0, (ObjectFuncPtr)&HCWALL, "HC WALL" } /* "HC Wall" */,
-{ 2, 3, 1, 2400000, 0, (ObjectFuncPtr)&HCPLATFORM, "HC PLAT" } /* "HC Moving Platform" 45*/,
+{ 2, 3, 1, 1000000, 0, (ObjectFuncPtr)&HCWarp, "HC WARP" } /* "HC Warp" */,
+{ 2, 3, 1, 2400000, 0, (ObjectFuncPtr)&HCDoor, "HC DOOR" } /* "HC Door" */,
+{ 2, 3, 1, 2400000, 0, (ObjectFuncPtr)&HCWall, "HC WALL" } /* "HC Wall" */,
+{ 2, 3, 1, 2400000, 0, (ObjectFuncPtr)&HCPlatform, "HC PLAT" } /* "HC Moving Platform" 45*/,
 { 2, 3, 1, 1360000, 0, (ObjectFuncPtr)&ObjCannon, "CANNON" } /* "SH Cannon" */,
 { 2, 3, 1, 360000, 0, (ObjectFuncPtr)&SHCameraSwitch, "SH CAM SW" } /* "Camera flag switcher" */,
 { 2, 3, 1, 1560000, 0, (ObjectFuncPtr)&OBJCASE, "OBJ CASE" } /* "Heroes switch case" */,

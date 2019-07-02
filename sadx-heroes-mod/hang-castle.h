@@ -50,5 +50,29 @@ extern ModelInfo * HC_SPDSIGN;
 extern ModelInfo * HC_SPKDOOR;
 extern ModelInfo * HC_SPKTREE;
 extern ModelInfo * HC_SPKWARP;
+extern ModelInfo * HC_SKYMDLS;
+extern ModelInfo * HC_MCLOUDS;
 
 NJS_MODEL_SADX * HCMODELLIST[2];
+
+SOI_LIST HangCastle_Clouds[] = {
+	{ { 0, -1300, -1500 }, { 0, 0, 0 }, 1 },
+	{ { 9000, 100.0002, -5500 }, { 0, 0, 0 }, 2 },
+	{ { 1000, -3104, -5500 }, { 0, 0, 0 }, 3 },
+	{ { 0, -2400, -8000 }, { 0, 0, 0 }, 4 },
+	{ { 1000, -5000, -11000 }, { 0, 0, 0 }, 5 },
+	{ { 9000, 2000, -11000 }, { 0, 0, 0 }, 6 },
+	{ { -700, -2300, -14500 }, { 0, 0, 0 }, 7 },
+	{ { 9300, -600, -14500 }, { 0, 0, 0 }, 8 },
+	{ { -700, -1800, -18000 }, { 0, 0, 0 }, 9 },
+	{ { 10700, -1200, -18000 }, { 0, 0, 0 }, 10 },
+};
+
+SH_UVSHIFT HangCastle_UVShift[]{
+	{ nullptr,0,{ 1, 2 } },
+	{ nullptr,0,{ 1, 2 } },
+	{ nullptr,0,{ 1, 2 } },
+	{ nullptr,0,{ 1, 2 } },
+	{ nullptr,0,{ 1, 2 } },
+	{ nullptr,0,{ 1, 2 } },
+};

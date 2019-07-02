@@ -11,16 +11,10 @@ ModelInfo * HC_HFLAMES;
 ModelInfo * HC_SPKWARP;
 ModelInfo * HC_SPKDOOR;
 
-#pragma region Warps
 float hclight = 0;
 
-CollisionData Warps_col[]{
-	{ 0, 0, 0x77, 0, 0x800400,{ 0, 0, 0 },{ 10, 10, 10 }, 0, 0 },
-	{ 0, 0, 0x77, 0, 0x800400,{ 0, 10, 0 },{ 10, 10, 10 }, 0, 0 },
-};
-
-void HCWARP_Display(ObjectMaster *a1) {
-	if (!MissedFrames && IsPlayerInsideSphere(&a1->Data1->Position, 2000.0f)) {
+void HCWarp_Display(ObjectMaster *a1) {
+	if (!MissedFrames) {
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
@@ -43,8 +37,8 @@ void HCWARP_Display(ObjectMaster *a1) {
 	}
 }
 
-void HCWARP_Main(ObjectMaster *a1) {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 1500.0f)) {
+void HCWarp_Main(ObjectMaster *a1) {
+	if (!ClipSetObject(a1)) {
 		ObjectData2 *od2 = (ObjectData2*)a1->Data2;
 		if (a1->Data1->Action == 0) {
 			a1->Data1->Rotation.y += 100;
@@ -122,14 +116,11 @@ void HCWARP_Main(ObjectMaster *a1) {
 		}
 
 		AddToCollisionList(a1->Data1);
-		HCWARP_Display(a1);
-	}
-	else {
-		deleteSub_Global(a1);
+		HCWarp_Display(a1);
 	}
 }
 
-void __cdecl HCWARP(ObjectMaster *a1)
+void HCWarp(ObjectMaster *a1)
 {
 	if (CurrentLevel == 10) {
 		HC_SPKWARP->getmodel()->basicdxmodel->mats[0].attr_texId = 154;
@@ -146,17 +137,13 @@ void __cdecl HCWARP(ObjectMaster *a1)
 	if (a1->Data1->Rotation.y == 1) a1->Data1->Action = 2;
 	AllocateObjectData2(a1, a1->Data1);
 
-	a1->MainSub = &HCWARP_Main;
-	a1->DisplaySub = &HCWARP_Display;
+	a1->MainSub = &HCWarp_Main;
+	a1->DisplaySub = &HCWarp_Display;
 	a1->DeleteSub = &deleteSub_Global;
 }
-#pragma endregion
 
-#pragma region Doors
-extern NJS_OBJECT CP_DOORCOL;
-
-void HCDOOR_Display(ObjectMaster *a1) {
-	if (!MissedFrames && IsPlayerInsideSphere(&a1->Data1->Position, 2000.0f)) {
+void HCDoor_Display(ObjectMaster *a1) {
+	if (!MissedFrames) {
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
@@ -174,12 +161,12 @@ void HCDOOR_Display(ObjectMaster *a1) {
 		if (a1->Data1->Action == 0) {
 			njDrawModel_SADX(object->basicdxmodel);
 		}
-		else if (a1->Data1->Action == 1) {
+		else if (a1->Data1->Action == 2) {
 			njRotateY(0, (a1->Data1->NextAction * 130));
 			njDrawModel_SADX(object->basicdxmodel);
 			njRotateY(0, -(a1->Data1->NextAction * 130));
 		}
-		else if (a1->Data1->Action == 2) {
+		else if (a1->Data1->Action == 3) {
 			njRotateY(0, 13000);
 			njDrawModel_SADX(object->basicdxmodel);
 			njRotateY(0, -13000);
@@ -191,12 +178,12 @@ void HCDOOR_Display(ObjectMaster *a1) {
 		if (a1->Data1->Action == 0) {
 			njDrawModel_SADX(object->child->basicdxmodel);
 		}
-		else if (a1->Data1->Action == 1) {
+		else if (a1->Data1->Action == 2) {
 			njRotateY(0, -(a1->Data1->NextAction * 130));
 			njDrawModel_SADX(object->child->basicdxmodel);
 			njRotateY(0, (a1->Data1->NextAction * 130));
 		}
-		else if (a1->Data1->Action == 2) {
+		else if (a1->Data1->Action == 3) {
 			njRotateY(0, -13000);
 			njDrawModel_SADX(object->child->basicdxmodel);
 			njRotateY(0, 13000);
@@ -207,55 +194,50 @@ void HCDOOR_Display(ObjectMaster *a1) {
 	}
 }
 
-void HCDOOR_Main(ObjectMaster *a1) {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 3500.0f)) {
+void HCDoor_Main(ObjectMaster *a1) {
+	if (!ClipSetObject(a1)) {
 		if (a1->Data1->Action == 0) {
+			DynColRadius(a1, 100, 0);
+
 			if (a1->Data1->Scale.y == 0) {
-				if (IsSwitchPressed(a1->Data1->Scale.x)) {
+				if (IsSwitchPressed(a1->Data1->Scale.x))
 					a1->Data1->Action = 1;
-					a1->Data1->Object->pos[1] = 0;
-					PlaySound(44, 0, 0, 0);
-				}
 			}
 			else {
-				if (IsPlayerInsideSphere(&a1->Data1->Scale, 100)) {
+				if (IsPlayerInsideSphere(&a1->Data1->Scale, 100))
 					a1->Data1->Action = 1;
-					a1->Data1->Object->pos[1] = 1000;
-					PlaySound(44, 0, 0, 0);
-				}
 			}
-
 		}
 
 		if (a1->Data1->Action == 1) {
+			a1->Data1->Action = 2;
+			deleteSub_Global(a1);
+			PlaySound(44, 0, 0, 0);
+		}
+
+		if (a1->Data1->Action == 2) {
 			if (a1->Data1->NextAction < 100) a1->Data1->NextAction += 2;
 			else {
-				a1->Data1->Action = 2;
+				a1->Data1->Action = 3;
 				PlaySound(45, 0, 0, 0);
 			}
 		}
 
-		HCDOOR_Display(a1);
-	}
-	else {
-		deleteSub_Global(a1);
+		a1->DisplaySub(a1);
 	}
 }
 
-void __cdecl HCDOOR(ObjectMaster *a1)
+void HCDoor(ObjectMaster *a1)
 {
 	a1->Data1->Object = &CP_DOORCOL;
 	if (a1->Data1->Scale.z == 1) a1->Data1->Action = 2;
-	else AddToCollision(a1, 1);
 
-	a1->MainSub = &HCDOOR_Main;
-	a1->DisplaySub = &HCDOOR_Display;
+	a1->MainSub = &HCDoor_Main;
+	a1->DisplaySub = &HCDoor_Display;
 	a1->DeleteSub = &deleteSub_Global;
 }
-#pragma endregion
 
-#pragma region Torch/fire
-void HCTORCH_Display(ObjectMaster *a1) {
+void HCTorch_Display(ObjectMaster *a1) {
 	if (a1->Data1->Action != 0 && a1->Data1->Action != 3 && a1->Data1->Action != 4) DrawObjModel(a1, a1->Data1->Object->basicdxmodel, false);
 
 	if (a1->Data1->Action < 5) {
@@ -280,8 +262,10 @@ void HCTORCH_Display(ObjectMaster *a1) {
 	}
 }
 
-void HCTORCH_Main(ObjectMaster *a1) {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 2000.0f)) {
+void HCTorch_Main(ObjectMaster *a1) {
+	if (!ClipSetObject(a1)) {
+		if (a1->Data1->Action != 0 && a1->Data1->Action != 3 && a1->Data1->Action != 4)
+			DynColRadius(a1, 30, 0);
 
 		if (a1->Data1->Action == 0 || a1->Data1->Action == 3) {
 			if (IsPlayerInsideSphere(&a1->Data1->Position, 150)) {
@@ -292,14 +276,11 @@ void HCTORCH_Main(ObjectMaster *a1) {
 			}
 		}
 
-		HCTORCH_Display(a1);
-	}
-	else {
-		deleteSub_Global(a1);
+		HCTorch_Display(a1);
 	}
 }
 
-void __cdecl HCTORCH(ObjectMaster *a1)
+void HCTorch(ObjectMaster *a1)
 {
 	HC_HFLAMES->getmodel()->basicdxmodel->mats[0].attr_texId = 55;
 	HC_HFLAMES->getmodel()->child->basicdxmodel->mats[0].attr_texId = 71;
@@ -314,23 +295,15 @@ void __cdecl HCTORCH(ObjectMaster *a1)
 	}
 	else {
 		a1->Data1->Object = &HC_TORCH;
-		AddToCollision(a1, 0);
 		a1->Data1->Scale.z = 2;
 	}
 
-	a1->MainSub = &HCTORCH_Main;
-	a1->DisplaySub = &HCTORCH_Display;
+	a1->MainSub = &HCTorch_Main;
+	a1->DisplaySub = &HCTorch_Display;
 	a1->DeleteSub = &deleteSub_Global;
 }
 
-#pragma endregion
-
-#pragma region Walls
-CollisionData HCWALL_col{
-	0, 0, 0x77, 0, 0x800400,{ 0, 40, 20 },{ 38, 40, 1 }, 0, 0
-};
-
-void HCWALL_Display(ObjectMaster *a1)
+void HCWall_Display(ObjectMaster *a1)
 {
 	if (!MissedFrames && a1->SETData.SETData->SETEntry->Properties.z != 1) {
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
@@ -390,16 +363,20 @@ void HCWALL_Display(ObjectMaster *a1)
 	}
 }
 
-void HCWALL_Main(ObjectMaster *a1)
+void HCWall_Main(ObjectMaster *a1)
 {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 3500.0f)) {
+	if (!ClipSetObject(a1)) {
 		if (a1->Data1->Action == 0) {
 			if (OhNoImDead(a1->Data1, (ObjectData2*)a1->Data2)) {
+				deleteSub_Global(a1);
 				PlaySound(86, 0, 0, 0);
 				a1->Data1->Action = 1;
 				a1->Data1->Object->pos[1] = 0;
 			}
-			else AddToCollisionList(a1->Data1);
+			else {
+				DynColRadius(a1, 100, 0);
+				AddToCollisionList(a1->Data1);
+			}
 		}
 
 		if (a1->Data1->Action == 1) {
@@ -408,20 +385,16 @@ void HCWALL_Main(ObjectMaster *a1)
 
 			if (a1->Data1->Scale.z != 0) SetSwitchPressedState(a1->Data1->Scale.z, 1);
 		}
-		HCWALL_Display(a1);
-	}
-	else {
-		deleteSub_Global(a1);
+		HCWall_Display(a1);
 	}
 }
 
-void __cdecl HCWALL(ObjectMaster *a1)
+void HCWall(ObjectMaster *a1)
 {
 	a1->Data1->Object = &CP_DOORCOL;
 	if (a1->Data1->Scale.z == 0) {
 		AllocateObjectData2(a1, a1->Data1);
-		Collision_Init(a1, &HCWALL_col, 1, 5u);
-		AddToCollision(a1, 1);
+		Collision_Init(a1, &HCWall_col, 1, 5u);
 	}
 	else {
 		if (a1->Data1->Scale.z == 255 || IsSwitchPressed(a1->Data1->Scale.z)) {
@@ -429,20 +402,17 @@ void __cdecl HCWALL(ObjectMaster *a1)
 		}
 		else {
 			AllocateObjectData2(a1, a1->Data1);
-			Collision_Init(a1, &HCWALL_col, 1, 2u);
-			AddToCollision(a1, 1);
+			Collision_Init(a1, &HCWall_col, 1, 2u);
 		}
 	}
 
-	a1->MainSub = &HCWALL_Main;
-	a1->DisplaySub = &HCWALL_Display;
+	a1->MainSub = &HCWall_Main;
+	a1->DisplaySub = &HCWall_Display;
 	a1->DeleteSub = &deleteSub_Global;
 }
-#pragma endregion
 
-#pragma region Moving Platform
-void HCPLATFORM_Display(ObjectMaster *a1) {
-	if (!DroppedFrames && IsPlayerInsideSphere(&a1->Data1->Position, 2000.0f)) {
+void HCPlatform_Display(ObjectMaster *a1) {
+	if (!DroppedFrames) {
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
@@ -455,11 +425,13 @@ void HCPLATFORM_Display(ObjectMaster *a1) {
 	}
 }
 
-void HCPLATFORM_Main(ObjectMaster *a1) {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, 2000.0f)) {
+void HCPlatform_Main(ObjectMaster *a1) {
+	if (!ClipSetObject(a1)) {
 		uint8_t type = (uint8_t)a1->Data1->Action;
 
 		if (type != 0) {
+			DynColRadiusAuto(a1, 1);
+
 			if (anim % 80 == 0) if (EnableSounds) if (GetPlayerDistance(a1->Data1, 0) < 307600.0) PlaySound(46, 0, 0, 0);
 			if (type == 1) {
 				char timer = a1->Data1->NextAction;
@@ -530,20 +502,24 @@ void HCPLATFORM_Main(ObjectMaster *a1) {
 				}
 			}
 		}
+		else {
+			DynColRadiusAuto(a1, 0);
+		}
 
 		//Dynamic collision position
-		a1->Data1->Object->pos[0] = a1->Data1->Position.x;
-		a1->Data1->Object->pos[1] = a1->Data1->Position.y;
-		a1->Data1->Object->pos[2] = a1->Data1->Position.z;
+		NJS_OBJECT * col = (NJS_OBJECT*)a1->Data1->LoopData;
 
-		HCPLATFORM_Display(a1);
-	}
-	else {
-		deleteSub_Global(a1);
+		if (col) {
+			col->pos[0] = a1->Data1->Position.x;
+			col->pos[1] = a1->Data1->Position.y;
+			col->pos[2] = a1->Data1->Position.z;
+		}
+		
+		a1->DisplaySub(a1);
 	}
 }
 
-void __cdecl HCPLATFORM(ObjectMaster *a1)
+void HCPlatform(ObjectMaster *a1)
 {
 	a1->Data1->Object = &HC_PLATFORM;
 	if (a1->Data1->Rotation.y == 1) a1->Data1->Object = MM_MOVPLAT->getmodel();
@@ -577,11 +553,7 @@ void __cdecl HCPLATFORM(ObjectMaster *a1)
 		od2->vector_b = a1->Data1->Scale; //dest
 	}
 
-	if (a1->Data1->Action > 0) AddToCollision(a1, 1); //moving collision
-	else AddToCollision(a1, 0); //static collision
-
-	a1->MainSub = &HCPLATFORM_Main;
-	a1->DisplaySub = &HCPLATFORM_Display;
+	a1->MainSub = &HCPlatform_Main;
+	a1->DisplaySub = &HCPlatform_Display;
 	a1->DeleteSub = &deleteSub_Global;
 }
-#pragma endregion
