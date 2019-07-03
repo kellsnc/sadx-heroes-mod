@@ -145,6 +145,11 @@ void ObjReel_Display(ObjectMaster *a1)
 void ObjReel_Main(ObjectMaster *a1)
 {
 	if (!ClipSetObject(a1)) {
+		if (DynColRadius(a1, 30, 0) == 2) {
+			NJS_OBJECT* obj = (NJS_OBJECT*)a1->Data1->LoopData;
+			obj->pos[1] = a1->Data1->Scale.x;
+		}
+
 		float max = a1->Data1->Scale.x;
 		float min = a1->Data1->Scale.z;
 		NJS_VECTOR * pos = &a1->Data1->Position;
@@ -243,20 +248,6 @@ void ObjReel_Main(ObjectMaster *a1)
 void ObjReel(ObjectMaster *a1)
 {
 	a1->Data1->Object = CO_CMNREEL->getmodel();
-
-	EntityData1 * v1 = a1->Data1;
-	NJS_OBJECT * v3 = v1->Object;
-	v3->evalflags = NJD_EVAL_UNIT_SCL | NJD_EVAL_BREAK | NJD_EVAL_SKIP | NJD_EVAL_HIDE; //ignore scale
-	v3->scl[0] = 1.0;
-	v3->scl[1] = 1.0;
-	v3->scl[2] = 1.0;
-	v3->ang[0] = v1->Rotation.x;
-	v3->ang[1] = v1->Rotation.y;
-	v3->ang[2] = v1->Rotation.z;
-	v3->pos[0] = v1->Position.x;
-	v3->pos[1] = a1->Data1->Scale.x;
-	v3->pos[2] = v1->Position.z;
-	DynamicCOL_Add((ColFlags)1, a1, v3);
 
 	a1->Data1->Scale.z = a1->Data1->Position.y;
 	a1->Data1->Scale.y = 0;

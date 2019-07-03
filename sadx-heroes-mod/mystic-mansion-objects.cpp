@@ -101,7 +101,7 @@ void MysticSphere_Display(ObjectMaster *a1)
 		if (a1->Data1->Scale.x == 0) njScale(nullptr, 1.2f, 1.2f, 1.2f);
 		else njScale(nullptr, 0.3f, 0.3f, 0.3f);
 
-		DrawQueueDepthBias = -6000.0f;
+		DrawQueueDepthBias = -20000.0f;
 		DrawModel_Queue(MM_SPHERE2->getmodel()->basicdxmodel, QueuedModelFlagsB_EnableZWrite);
 		DrawModel_Queue(MM_SPHERE1->getmodel()->basicdxmodel, QueuedModelFlagsB_EnableZWrite);
 		DrawQueueDepthBias = 0;

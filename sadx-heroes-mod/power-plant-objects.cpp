@@ -124,6 +124,7 @@ void PPStep_Display(ObjectMaster *a1) {
 }
 
 void PPStep(ObjectMaster *a1) {
+	return;
 	if (CurrentChunk != 11) {
 		DynCol_Delete(a1);
 		return;
@@ -291,16 +292,16 @@ void PPTrucks(ObjectMaster *a1) {
 
 void PathsFunction() {
 	if (anim % 5 == 0) {
-		if (CurrentChunk == 2 && (IsSwitchPressed(2) || GetCharacterID(0) == 2)) CurrentLandTable->Col[17].Flags = 0xA81;
+		if (CurrentChunk == 2 && (IsSwitchPressed(2) || GetCharacterID(0) == 2)) CurrentLandTable->Col[16].Flags = 0xA81;
 
 		if (IsSwitchPressed(6) || GetCharacterID(0) == 2) {
-			if (CurrentChunk == 5) CurrentLandTable->Col[14].Flags = 0xA81;
-			else if (CurrentChunk == 6) CurrentLandTable->Col[7].Flags = 0xA81;
+			if (CurrentChunk == 5) CurrentLandTable->Col[13].Flags = 0xA81;
+			else if (CurrentChunk == 6) CurrentLandTable->Col[6].Flags = 0xA81;
 		}
 
 		if (IsSwitchPressed(43)) {
-			if (CurrentChunk == 9) CurrentLandTable->Col[13].Flags = 0xA81;
-			else if (CurrentChunk == 10) CurrentLandTable->Col[22].Flags = 0xA81;
+			if (CurrentChunk == 9) CurrentLandTable->Col[12].Flags = 0xA81;
+			else if (CurrentChunk == 10) CurrentLandTable->Col[21].Flags = 0xA81;
 		}
 
 		EntityData1 ** players = EntityData1Ptrs;

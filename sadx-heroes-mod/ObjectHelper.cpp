@@ -104,7 +104,10 @@ void DynCol_Delete(ObjectMaster *a1) {
 //Only allocate dynamic collision within radius
 bool DynColRadius(ObjectMaster *a1, float radius, uint8_t col) {
 	if (IsPlayerInsideSphere(&a1->Data1->Position, radius)) {
-		if (!a1->Data1->LoopData) DynCol_Add(a1, col);
+		if (!a1->Data1->LoopData) {
+			DynCol_Add(a1, col);
+			return 2;
+		}
 		return true;
 	} else if (a1->Data1->LoopData) {
 		DynamicCOL_Remove(a1, (NJS_OBJECT*)a1->Data1->LoopData);

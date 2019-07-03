@@ -319,7 +319,7 @@ void GM_EnergyPaths_Display(ObjectMaster *a1) {
 void GM_EnergyPaths_Main(ObjectMaster *a1) {
 	if (!ClipSetObject(a1)) {
 		if (IsSwitchPressed(a1->Data1->Scale.y)) {
-			DynColRadiusAuto(a1, 4);
+			DynColRadius(a1, 800, 4);
 
 			if (a1->Data1->Scale.z <= 1)
 				a1->Data1->Scale.z += 0.1f;

@@ -278,8 +278,7 @@ void AutoLoop_Main(ObjectMaster * a1) {
 			}
 			else {
 				if (loopdata->LoopList[a1->Data1->InvulnerableTime].Dist == 0) {
-					player->Rotation.y = loopdata->LoopList[a1->Data1->InvulnerableTime].Ang_Y;
-					if (player->Rotation.y = loopdata->LoopList[a1->Data1->InvulnerableTime].Ang_X == 0) {
+					if (player->Rotation.y = loopdata->LoopList[a1->Data1->InvulnerableTime].Ang_Y != 0) {
 						co2->Speed.x = 4;
 						co2->Speed.y = 1;
 					}

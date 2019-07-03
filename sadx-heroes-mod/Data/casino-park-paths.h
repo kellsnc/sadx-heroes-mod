@@ -629,7 +629,7 @@ Loop CP_SlopePath8_Entries[] = {
 	{ 0, 0, 39.78559f,{ -15223.2f, -330.599f, 4170.891f } },
 	{ 0, 0, 42.15568f,{ -15223.14f, -331.321f, 4210.67f } },
 	{ 0, 0, 14.45221f,{ -15223.13f, -329.563f, 4252.789f } },
-	{ 1, 0, 0,{ -15223.12f, -328.052f, 4267.162f } }
+	{ 1, 0xBFFF, 0,{ -15223.12f, -328.052f, 4267.162f } }
 };
 
 LoopHead CP_SlopePath8 = { 0, LengthOfArray<int16_t>(CP_SlopePath8_Entries), 4251.335f, CP_SlopePath8_Entries, (ObjectFuncPtr)&SlopePath };
