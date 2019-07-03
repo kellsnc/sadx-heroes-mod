@@ -99,7 +99,7 @@ void HeroesFlippers(ObjectMaster *a1) {
 
 	a1->MainSub = HeroesFlippers_main;
 	a1->DisplaySub = HeroesFlippers_display;
-	a1->DeleteSub = deleteSub_Global;
+	a1->DeleteSub = DynCol_Delete;
 }
 
 //Hook sadx flippers display
@@ -279,7 +279,7 @@ void CPDice(ObjectMaster *a1)
 
 	a1->MainSub = &CPDice_Main;
 	a1->DisplaySub = &CPDice_Display;
-	a1->DeleteSub = &deleteSub_Global;
+	a1->DeleteSub = &DynCol_Delete;
 }
 
 void CPGlass(ObjectMaster *a1) {
@@ -370,7 +370,7 @@ void CPBobInAir(ObjectMaster *a1)
 
 	a1->MainSub = CPBobInAir_Main;
 	a1->DisplaySub = displaySub_Global;
-	a1->DeleteSub = deleteSub_Global;
+	a1->DeleteSub = DynCol_Delete;
 }
 
 void CPDashPanel(ObjectMaster *a1) {
@@ -547,7 +547,7 @@ void CPSlotS(ObjectMaster *a1)
 
 	a1->MainSub = CPSlotS_Main;
 	a1->DisplaySub = CPSlotS_Display;
-	a1->DeleteSub = deleteSub_Global;
+	a1->DeleteSub = DynCol_Delete;
 }
 
 void CPSlotL_Display(ObjectMaster *a1) {
@@ -818,7 +818,7 @@ void CPSlotL(ObjectMaster *a1)
 
 	a1->MainSub = &CPSlotL_Main;
 	a1->DisplaySub = &CPSlotL_Display;
-	a1->DeleteSub = &deleteSub_Global;
+	a1->DeleteSub = &DynCol_Delete;
 }
 
 void CPDoor_Display(ObjectMaster *a1) {
@@ -856,7 +856,7 @@ void CPDoor_Main(ObjectMaster *a1) {
 			if (a1->Data1->Action == 0) PlaySound(42, 0, 0, 0);
 			a1->Data1->Action = 1;
 			
-			deleteSub_Global(a1);
+			DynCol_Delete(a1);
 
 			if (a1->Data1->Scale.z != 60) a1->Data1->Scale.z += 2;
 		}
@@ -926,7 +926,7 @@ void CPDoor(ObjectMaster *a1)
 
 	a1->MainSub = &CPDoor_Main;
 	a1->DisplaySub = &CPDoor_Display;
-	a1->DeleteSub = &deleteSub_Global;
+	a1->DeleteSub = &DynCol_Delete;
 }
 
 void CPRoulette_Display(ObjectMaster *a1) {
@@ -963,5 +963,5 @@ void CPRoulette(ObjectMaster *a1)
 
 	a1->MainSub = &CPRoulette_Main;
 	a1->DisplaySub = &CPRoulette_Display;
-	a1->DeleteSub = &deleteSub_Global;
+	a1->DeleteSub = &DynCol_Delete;
 }

@@ -116,7 +116,7 @@ void ObjFan(ObjectMaster *a1)
 
 	a1->MainSub = &ObjFan_Main;
 	a1->DisplaySub = &ObjFan_Display;
-	a1->DeleteSub = &deleteSub_Global;
+	a1->DeleteSub = &DynCol_Delete;
 }
 
 void ObjReel_Display(ObjectMaster *a1)
@@ -264,7 +264,7 @@ void ObjReel(ObjectMaster *a1)
 
 	a1->MainSub = &ObjReel_Main;
 	a1->DisplaySub = &ObjReel_Display;
-	a1->DeleteSub = &deleteSub_Global;
+	a1->DeleteSub = &DynCol_Delete;
 }
 
 void WaterfallObject(ObjectMaster *a1) {
@@ -591,7 +591,7 @@ void __cdecl ObjCannon(ObjectMaster *a1)
 
 	a1->MainSub = &ObjCannon_Main;
 	a1->DisplaySub = &ObjCannon_Display;
-	a1->DeleteSub = &deleteSub_Global;
+	a1->DeleteSub = &DynCol_Delete;
 }
 
 void __cdecl SHLaunchRamp(ObjectMaster *a1)
@@ -671,7 +671,7 @@ void __cdecl OBJCASE(ObjectMaster *a1)
 
 	a1->MainSub = &OBJCASE_Main;
 	a1->DisplaySub = &OBJCASE_Display;
-	a1->DeleteSub = &deleteSub_Global;
+	a1->DeleteSub = &DynCol_Delete;
 }
 
 void Capsule_Display_r(ObjectMaster *a1) {
@@ -803,7 +803,7 @@ void __cdecl ObjBoxW(ObjectMaster *a1)
 		Collision_Init(a1, &ObjBoxW_col, 1, 2u);
 
 		a1->DisplaySub = ObjBox_Display;
-		a1->DeleteSub = deleteSub_Global;
+		a1->DeleteSub = DynCol_Delete;
 
 		a1->Data1->NextAction = 1;
 	}

@@ -37,15 +37,6 @@ void DrawObjModel(ObjectMaster *a1, NJS_MODEL_SADX *m, bool scalable) {
 	}
 }
 
-//Global delete sub, deletes the object itself and any dynamic collision
-void deleteSub_Global(ObjectMaster *a1) {
-	if (a1->Data1->Object)
-	{
-		DynamicCOL_Remove(a1, (NJS_OBJECT*)a1->Data1->LoopData);
-		ObjectArray_Remove((NJS_OBJECT*)a1->Data1->LoopData);
-	}
-}
-
 //Global display sub calling a generic drawing call
 void displaySub_Global(ObjectMaster *a1) {
 	DrawObjModel(a1, a1->Data1->Object->basicdxmodel, false);
@@ -59,13 +50,13 @@ void mainSub_Global(ObjectMaster *a1) {
 }
 
 /*	Add complex/dynamic collisions to an object, limited to 255 collisions at a time
-Delete itself if the global delete sub is used	*/
-void AddToCollision(ObjectMaster *a1, uint8_t col) {
+	Delete itself if the global delete sub is used	*/
+void DynCol_Add(ObjectMaster *a1, uint8_t col) {
 	/*	0 is static
 	1 is moving (refresh the colision every frame)
 	2 is static, scalable
 	3 is moving, scalable	*/
-
+	
 	EntityData1 * original = a1->Data1;
 	NJS_OBJECT *colobject;
 
@@ -73,13 +64,11 @@ void AddToCollision(ObjectMaster *a1, uint8_t col) {
 
 	//if scalable
 	if (col == 2 || col == 3) {
-		colobject->evalflags = NJD_EVAL_BREAK | NJD_EVAL_SKIP | NJD_EVAL_HIDE;
 		colobject->scl[0] = original->Scale.x;
 		colobject->scl[1] = original->Scale.y;
 		colobject->scl[2] = original->Scale.z;
 	}
 	else {
-		colobject->evalflags = NJD_EVAL_UNIT_SCL | NJD_EVAL_BREAK | NJD_EVAL_SKIP | NJD_EVAL_HIDE; //ignore scale
 		colobject->scl[0] = 1.0;
 		colobject->scl[1] = 1.0;
 		colobject->scl[2] = 1.0;
@@ -103,10 +92,19 @@ void AddToCollision(ObjectMaster *a1, uint8_t col) {
 	else if (col == 6) DynamicCOL_Add((ColFlags)(0x8000000 | ColFlags_Solid | ColFlags_Hurt), a1, colobject);
 }
 
+//Clean dynamic collisions
+void DynCol_Delete(ObjectMaster *a1) {
+	if (a1->Data1->LoopData)
+	{
+		DynamicCOL_Remove(a1, (NJS_OBJECT*)a1->Data1->LoopData);
+		ObjectArray_Remove((NJS_OBJECT*)a1->Data1->LoopData);
+	}
+}
+
 //Only allocate dynamic collision within radius
 bool DynColRadius(ObjectMaster *a1, float radius, uint8_t col) {
 	if (IsPlayerInsideSphere(&a1->Data1->Position, radius)) {
-		if (!a1->Data1->LoopData) AddToCollision(a1, col);
+		if (!a1->Data1->LoopData) DynCol_Add(a1, col);
 		return true;
 	} else if (a1->Data1->LoopData) {
 		DynamicCOL_Remove(a1, (NJS_OBJECT*)a1->Data1->LoopData);

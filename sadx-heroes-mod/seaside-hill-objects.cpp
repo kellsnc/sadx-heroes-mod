@@ -144,7 +144,7 @@ void __cdecl SHMovingPltfrms(ObjectMaster *a1)
 
 	a1->MainSub = &SHMovingPltfrms_Main;
 	a1->DisplaySub = &SHMovingPltfrms_Display;
-	a1->DeleteSub = &deleteSub_Global;
+	a1->DeleteSub = &DynCol_Delete;
 }
 
 void __cdecl SHRuinTrigger(ObjectMaster *a1)
@@ -173,7 +173,7 @@ void __cdecl SHPlatforms(ObjectMaster *a1)
 
 	a1->MainSub = &SHPlatforms_Main;
 	a1->DisplaySub = &SHPlatforms_Main;
-	a1->DeleteSub = &deleteSub_Global;
+	a1->DeleteSub = &DynCol_Delete;
 }
 
 void Flags_Reset() {
@@ -264,7 +264,7 @@ void __cdecl SHSpikes(ObjectMaster *a1)
 
 	a1->MainSub = &SHSpikes_Main;
 	a1->DisplaySub = &SHSpikes_Display;
-	a1->DeleteSub = &deleteSub_Global;
+	a1->DeleteSub = &DynCol_Delete;
 }
 
 PVMEntry SeasideHillObjectTextures[] = {

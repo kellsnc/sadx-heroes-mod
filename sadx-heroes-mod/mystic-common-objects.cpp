@@ -139,7 +139,7 @@ void HCWarp(ObjectMaster *a1)
 
 	a1->MainSub = &HCWarp_Main;
 	a1->DisplaySub = &HCWarp_Display;
-	a1->DeleteSub = &deleteSub_Global;
+	a1->DeleteSub = &DynCol_Delete;
 }
 
 void HCDoor_Display(ObjectMaster *a1) {
@@ -174,7 +174,7 @@ void HCDoor_Display(ObjectMaster *a1) {
 
 		njTranslate(0, 80, 0, 0);
 		if (CurrentLevel == HeroesLevelID_HangCastle) njTranslate(0, -20.4f, 0, 0);
-
+		
 		if (a1->Data1->Action == 0) {
 			njDrawModel_SADX(object->child->basicdxmodel);
 		}
@@ -211,7 +211,7 @@ void HCDoor_Main(ObjectMaster *a1) {
 
 		if (a1->Data1->Action == 1) {
 			a1->Data1->Action = 2;
-			deleteSub_Global(a1);
+			DynCol_Delete(a1);
 			PlaySound(44, 0, 0, 0);
 		}
 
@@ -234,7 +234,7 @@ void HCDoor(ObjectMaster *a1)
 
 	a1->MainSub = &HCDoor_Main;
 	a1->DisplaySub = &HCDoor_Display;
-	a1->DeleteSub = &deleteSub_Global;
+	a1->DeleteSub = &DynCol_Delete;
 }
 
 void HCTorch_Display(ObjectMaster *a1) {
@@ -300,7 +300,7 @@ void HCTorch(ObjectMaster *a1)
 
 	a1->MainSub = &HCTorch_Main;
 	a1->DisplaySub = &HCTorch_Display;
-	a1->DeleteSub = &deleteSub_Global;
+	a1->DeleteSub = &DynCol_Delete;
 }
 
 void HCWall_Display(ObjectMaster *a1)
@@ -368,7 +368,7 @@ void HCWall_Main(ObjectMaster *a1)
 	if (!ClipSetObject(a1)) {
 		if (a1->Data1->Action == 0) {
 			if (OhNoImDead(a1->Data1, (ObjectData2*)a1->Data2)) {
-				deleteSub_Global(a1);
+				DynCol_Delete(a1);
 				PlaySound(86, 0, 0, 0);
 				a1->Data1->Action = 1;
 				a1->Data1->Object->pos[1] = 0;
@@ -408,7 +408,7 @@ void HCWall(ObjectMaster *a1)
 
 	a1->MainSub = &HCWall_Main;
 	a1->DisplaySub = &HCWall_Display;
-	a1->DeleteSub = &deleteSub_Global;
+	a1->DeleteSub = &DynCol_Delete;
 }
 
 void HCPlatform_Display(ObjectMaster *a1) {
@@ -431,7 +431,7 @@ void HCPlatform_Main(ObjectMaster *a1) {
 
 		if (type != 0) {
 			DynColRadiusAuto(a1, 1);
-
+			
 			if (anim % 80 == 0) if (EnableSounds) if (GetPlayerDistance(a1->Data1, 0) < 307600.0) PlaySound(46, 0, 0, 0);
 			if (type == 1) {
 				char timer = a1->Data1->NextAction;
@@ -555,5 +555,5 @@ void HCPlatform(ObjectMaster *a1)
 
 	a1->MainSub = &HCPlatform_Main;
 	a1->DisplaySub = &HCPlatform_Display;
-	a1->DeleteSub = &deleteSub_Global;
+	a1->DeleteSub = &DynCol_Delete;
 }

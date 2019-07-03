@@ -215,7 +215,7 @@ void BHBingoHandler_Main(ObjectMaster *a1)
 void BHBingoHandler(ObjectMaster *a1)
 {
 	if (BingoHandlerPointer) {
-		deleteSub_Global(BingoHandlerPointer);
+		DynCol_Delete(BingoHandlerPointer);
 		BingoHandlerPointer = nullptr;
 	}
 
@@ -459,7 +459,7 @@ ObjectListEntry BingoHighwayObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, 0, SpinnerA_Main, "SPINA A" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, 0, SpinnerB_Main, "SPINA B" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, 0, SpinnerC_Main, "SPINA C" },
-	{ LoadObj_Data1, 3, 1, 1000000, 0, ObjReel, "Reel" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1000000, 0, ObjReel, "Reel" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Default, 0, 0, SpringH_Load, "O SPRING H" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 360000, 0, UnidusA_Main, "E UNI A" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 360000, 0, UnidusB_Main, "E UNI B" },

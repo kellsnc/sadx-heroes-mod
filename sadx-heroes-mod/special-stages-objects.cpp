@@ -14,7 +14,6 @@ SOI_LIST2 FluidWaves[]{
 
 void SSWaves_Main(ObjectMaster *a1) {
 	if (!DroppedFrames) {
-
 		for (int i = 0; i < LengthOfArray(FluidWaves); ++i) {
 			if (CheckModelDisplay2(FluidWaves[i])) {
 				SOI_LIST2 item = FluidWaves[i];

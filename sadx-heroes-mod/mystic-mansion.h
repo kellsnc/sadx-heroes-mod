@@ -50,6 +50,7 @@ DeathZone MysticMansionDeathZones[] = {
 	{ CharacterFlags_Sonic | CharacterFlags_Tails | CharacterFlags_Knuckles | CharacterFlags_Amy | CharacterFlags_Gamma | CharacterFlags_Big, &MM_DZ8 },
 	{ CharacterFlags_Sonic | CharacterFlags_Tails | CharacterFlags_Knuckles | CharacterFlags_Amy | CharacterFlags_Gamma | CharacterFlags_Big, &MM_DZ9 },
 	{ CharacterFlags_Sonic | CharacterFlags_Tails | CharacterFlags_Knuckles | CharacterFlags_Amy | CharacterFlags_Gamma | CharacterFlags_Big, &MM_DZ10 },
+	{ CharacterFlags_Knuckles, &MM_DZK },
 	{ 0 }
 };
 
@@ -57,8 +58,8 @@ void MysticMansionObjects_Init();
 void __cdecl MysticTorches(ObjectMaster *a1);
 
 SH_UVSHIFT MysticMansion_UVShift[]{
-	{ nullptr, 0,{ 5, -5 } },
-	{ nullptr, 0,{ -5, 5 } }
+	{ nullptr, 0,{ 3, -3 } },
+	{ nullptr, 0,{ -2, 2 } }
 };
 
 NJS_MODEL_SADX * MMMODELLIST[4];

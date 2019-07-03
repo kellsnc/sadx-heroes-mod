@@ -299,7 +299,7 @@ void GM_EnergyDoors(ObjectMaster *a1)
 
 	a1->MainSub = &GM_EnergyDoors_Main;
 	a1->DisplaySub = &GM_EnergyDoors_Display;
-	a1->DeleteSub = &deleteSub_Global;
+	a1->DeleteSub = &DynCol_Delete;
 }
 
 void GM_EnergyPaths_Display(ObjectMaster *a1) {
@@ -338,7 +338,7 @@ void GM_EnergyPaths(ObjectMaster *a1)
 
 	a1->MainSub = &GM_EnergyPaths_Main;
 	a1->DisplaySub = &GM_EnergyPaths_Display;
-	a1->DeleteSub = &deleteSub_Global;
+	a1->DeleteSub = &DynCol_Delete;
 }
 
 PVMEntry GrandMetropolisObjectTextures[] = {

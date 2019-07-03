@@ -125,7 +125,7 @@ void PPStep_Display(ObjectMaster *a1) {
 
 void PPStep(ObjectMaster *a1) {
 	if (CurrentChunk != 11) {
-		deleteSub_Global(a1);
+		DynCol_Delete(a1);
 		return;
 	}
 
@@ -154,7 +154,7 @@ void PPStep(ObjectMaster *a1) {
 		a1->DisplaySub(a1);
 		break;
 	case 3:
-		deleteSub_Global;
+		DynCol_Delete;
 		a1->Data1->Action = 4;
 		break;
 	}
@@ -193,11 +193,11 @@ void PPTankHandler_Display(ObjectMaster *a1) {
 
 void PPTankHandler_Main(ObjectMaster *a1) {
 	if (CurrentChunk != 11) {
-		deleteSub_Global(a1);
+		DynCol_Delete(a1);
 		return;
 	}
 
-	if (GameState == 6) deleteSub_Global(a1); 
+	if (GameState == 6) DynCol_Delete(a1); 
 	else DynColRadius(a1, 200, 6);
 
 	EntityData1 *entity = EntityData1Ptrs[0];
@@ -375,7 +375,7 @@ void PPEnergyPaths(ObjectMaster *a1)
 
 	a1->MainSub = &PPEnergyPaths_Main;
 	a1->DisplaySub = &PPEnergyPaths_Display;
-	a1->DeleteSub = &deleteSub_Global;
+	a1->DeleteSub = &DynCol_Delete;
 }
 
 void PPPlatformsV_Display(ObjectMaster *a1)
@@ -419,7 +419,7 @@ void PPPlatformsV(ObjectMaster *a1)
 
 	a1->MainSub = &PPPlatformsV_Main;
 	a1->DisplaySub = &PPPlatformsV_Display;
-	a1->DeleteSub = &deleteSub_Global;
+	a1->DeleteSub = &DynCol_Delete;
 }
 
 void PPPlatformsH_Display(ObjectMaster *a1)
@@ -488,7 +488,7 @@ void PPPlatformsH(ObjectMaster *a1)
 
 	a1->MainSub = &PPPlatformsH_Main;
 	a1->DisplaySub = &PPPlatformsH_Display;
-	a1->DeleteSub = &deleteSub_Global;
+	a1->DeleteSub = &DynCol_Delete;
 }
 
 void PPElevator_Display(ObjectMaster *a1)
@@ -533,7 +533,7 @@ void PPElevator(ObjectMaster *a1)
 
 	a1->MainSub = &PPElevator_Main;
 	a1->DisplaySub = &PPElevator_Display;
-	a1->DeleteSub = &deleteSub_Global;
+	a1->DeleteSub = &DynCol_Delete;
 }
 
 void PPStopper_Display(ObjectMaster *a1)
@@ -700,9 +700,9 @@ ObjectListEntry PowerPlantObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 360000, 0, UnidusB_Main, "E UNI B" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 250000, 0, UnidusC_Main, "E UNI C" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 360000, 0, EPolice, "E POLICE" },
-	{ LoadObj_Data1, 3, 1, 1000000, 0, PPElevator, "PPElevator" },
-	{ LoadObj_Data1, 3, 1, 1000000, 0, ObjReel, "Reel" },
-	{ LoadObj_Data1, 3, 1, 1000000, 0, PPStopper, "PPSTOPPER" }
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1000000, 0, PPElevator, "PPElevator" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1360000, 0, ObjReel, "OBJREEL" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1000000, 0, PPStopper, "PPSTOPPER" }
 };
 ObjectList PowerPlantObjectList = { arraylengthandptrT(PowerPlantObjectList_list, int) };
 

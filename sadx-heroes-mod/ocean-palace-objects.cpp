@@ -199,7 +199,7 @@ void OPPOLE(ObjectMaster *a1)
 
 	a1->MainSub = &OPPOLE_Main;
 	a1->DisplaySub = &OPPOLE_Main;
-	a1->DeleteSub = &deleteSub_Global;
+	a1->DeleteSub = &DynCol_Delete;
 }
 
 void OP_AnimFix() {

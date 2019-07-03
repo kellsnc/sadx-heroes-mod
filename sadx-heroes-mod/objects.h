@@ -2,9 +2,9 @@
 
 extern uint8_t killcount;
 
-void AddToCollision(ObjectMaster *a1, uint8_t col);
+void DynCol_Add(ObjectMaster *a1, uint8_t col);
 void DrawObjModel(ObjectMaster *a1, NJS_MODEL_SADX *m, bool scalable);
-void deleteSub_Global(ObjectMaster *a1);
+void DynCol_Delete(ObjectMaster *a1);
 void displaySub_Global(ObjectMaster *a1);
 void mainSub_Global(ObjectMaster *a1);
 void AnimateUV(SH_UVSHIFT *uvshift, int size);

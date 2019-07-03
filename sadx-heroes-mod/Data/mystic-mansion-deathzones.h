@@ -279,3 +279,36 @@ NJS_VECTOR normal_8D6AE222A988BE27435[] = {
 };
 NJS_MODEL_SADX attach_8D6AE222A988BE2926C = { vertex_8D6AE222A988BE217DA, normal_8D6AE222A988BE27435, LengthOfArray<Sint32>(vertex_8D6AE222A988BE217DA), meshlist_8D6AE222A988BE20592, matlist_8D6AE222A988BE2011F, LengthOfArray<Uint16>(meshlist_8D6AE222A988BE20592), LengthOfArray<Uint16>(matlist_8D6AE222A988BE2011F), { 14263.82f, -6612.739f, -36350.07f }, 2146.313f, NULL };
 NJS_OBJECT MM_DZ10 = { NJD_EVAL_UNIT_POS | NJD_EVAL_UNIT_ANG | NJD_EVAL_UNIT_SCL | NJD_EVAL_BREAK | NJD_EVAL_SKIP | NJD_EVAL_SHAPE_SKIP, &attach_8D6AE222A988BE2926C, 0, 0, 0, 0, 0, 0, 1, 1, 1, NULL, NULL };
+
+NJS_MATERIAL matlist_DZK[] = {
+	{ { 0x00000000 },{ 0x00000000 }, 0, 0, 0 }
+};
+Sint16 poly_DZK[] = {
+	0, 1, 2,
+	2, 1, 3
+};
+NJS_TEX uv_DZK[] = {
+	{ 2524, 173 },
+	{ 2091, 304 },
+	{ 2457, 1134 },
+	{ 2457, 1134 },
+	{ 2091, 304 },
+	{ 2054, 1189 }
+};
+NJS_MESHSET_SADX meshlist_DZK[] = {
+	{ NJD_MESHSET_3 | 0, 2, poly_DZK, NULL, NULL, NULL, uv_DZK, NULL }
+};
+NJS_VECTOR vertex_DZK[] = {
+	{ 100000, -20000, -100000 },
+	{ -100000, -20000, -100000 },
+	{ 100000, -20000, 100000 },
+	{ -100000, -20000, 100000 }
+};
+NJS_VECTOR normal_DZK[] = {
+	{ 0, 1, 0 },
+	{ 0, 1, 0 },
+	{ 0, 1, 0 },
+	{ 0, 1, 0 }
+};
+NJS_MODEL_SADX attach_DZK = { vertex_DZK, normal_DZK, LengthOfArray<Sint32>(vertex_DZK), meshlist_DZK, matlist_DZK, LengthOfArray<Uint16>(meshlist_DZK), LengthOfArray<Uint16>(matlist_DZK),{ 0, 0, 0 }, 150, NULL };
+NJS_OBJECT MM_DZK = { NJD_EVAL_BREAK | NJD_EVAL_SKIP, &attach_DZK, 0, 0, 0, 0, 0, 0, 1, 1, 1, NULL, NULL };

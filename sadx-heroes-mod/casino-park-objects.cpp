@@ -23,11 +23,11 @@ void CPARROWS(ObjectMaster *a1)
 {
 	if (a1->Data1->Scale.x == 1) a1->Data1->Object = CP_DIRSIGN->getmodel()->child;
 	else a1->Data1->Object = CP_DIRSIGN->getmodel();
-	AddToCollision(a1, 0);
+	DynCol_Add(a1, 0);
 
 	a1->MainSub = mainSub_Global;
 	a1->DisplaySub = displaySub_Global;
-	a1->DeleteSub = deleteSub_Global;
+	a1->DeleteSub = DynCol_Delete;
 }
 
 void CPSLOT_Display(ObjectMaster *a1) {
@@ -86,7 +86,7 @@ void CPSLOT(ObjectMaster *a1)
 
 	a1->MainSub = &CPSLOT_Main;
 	a1->DisplaySub = &CPSLOT_Display;
-	a1->DeleteSub = &deleteSub_Global;
+	a1->DeleteSub = &DynCol_Delete;
 }
 
 void CPGiantDice_Display(ObjectMaster *a1) {
@@ -128,7 +128,7 @@ void CPGiantDice(ObjectMaster *a1)
 
 	a1->MainSub = &CPGiantDice_Main;
 	a1->DisplaySub = &CPGiantDice_Display;
-	a1->DeleteSub = &deleteSub_Global;
+	a1->DeleteSub = &DynCol_Delete;
 }
 
 PVMEntry CasinoParkObjectTextures[] = {
@@ -188,7 +188,7 @@ ObjectListEntry CasinoParkObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, 0, SpinnerA_Main, "SPINA A" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, 0, SpinnerB_Main, "SPINA B" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown4, 0, 0, SpinnerC_Main, "SPINA C" },
-	{ LoadObj_Data1, 3, 1, 1000000, 0, ObjReel, "Reel" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1000000, 0, ObjReel, "Reel" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Default, 0, 0, SpringH_Load, "O SPRING H" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 360000, 0, UnidusA_Main, "E UNI A" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_Unknown5, 360000, 0, UnidusB_Main, "E UNI B" },
