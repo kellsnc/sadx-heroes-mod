@@ -84,6 +84,7 @@
     <ClCompile Include="casino-common.cpp" />
     <ClCompile Include="casino-park-objects.cpp" />
     <ClCompile Include="casino-park.cpp" />
+    <ClCompile Include="egg-fleet-objects.cpp" />
     <ClCompile Include="egg-fleet.cpp" />
     <ClCompile Include="grand-metropolis-objects.cpp" />
     <ClCompile Include="grand-metropolis.cpp" />
@@ -155,6 +156,6 @@
   </ImportGroup>
   <Target Name="AfterBuild">
     <Copy SourceFiles="..\bin\sadx-heroes-mod.dll" DestinationFolder="D:\Kell\SADX\mods\sadx-heroes-mod-dev" />
-    <Copy SourceFiles="D:\Kell\SADX Modding\SA TOOLS MANAGER\SADXPC\Projects\test\system\SET0302S.bin; D:\Kell\SADX Modding\SA TOOLS MANAGER\SADXPC\Projects\test\system\SET0302M.bin; D:\Kell\SADX Modding\SA TOOLS MANAGER\SADXPC\Projects\test\system\CAM0302S.bin" DestinationFiles="D:\Kell\SADX\mods\sadx-heroes-mod-dev\system\egg-fleet-set.bin; D:\Kell\SADX\mods\sadx-heroes-mod-dev\system\egg-fleet-set-tails.bin; D:\Kell\SADX\mods\sadx-heroes-mod-dev\system\egg-fleet-cam.bin" />
+    <Copy SourceFiles="D:\Kell\SADX Modding\SA TOOLS BACKUP\SADXPC\system\SET0302S.bin; D:\Kell\SADX Modding\SA TOOLS BACKUP\SADXPC\system\SET0302M.bin; D:\Kell\SADX Modding\SA TOOLS BACKUP\SADXPC\system\CAM0302S.bin" DestinationFiles="D:\Kell\SADX\mods\sadx-heroes-mod-dev\system\egg-fleet-set.bin; D:\Kell\SADX\mods\sadx-heroes-mod-dev\system\egg-fleet-set-tails.bin; D:\Kell\SADX\mods\sadx-heroes-mod-dev\system\egg-fleet-cam.bin" />
   </Target>
 </Project>

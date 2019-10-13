@@ -124,7 +124,6 @@ void PPStep_Display(ObjectMaster *a1) {
 }
 
 void PPStep(ObjectMaster *a1) {
-	return;
 	if (CurrentChunk != 11) {
 		DynCol_Delete(a1);
 		return;
@@ -171,9 +170,9 @@ void PPTankHandler_Display(ObjectMaster *a1) {
 		DrawQueueDepthBias = -6000;
 		njTranslate(0, a1->Data1->Scale.x, 0, 0);
 		njDrawModel_SADX(PP_TNKDOOR->getmodel()->basicdxmodel);
-		njTranslate(0, -(a1->Data1->Scale.x*2), 0, 0);
+		njTranslate(0, -(a1->Data1->Scale.x * 2), 0, 0);
 		njDrawModel_SADX(PP_TNKDOOR->getmodel()->child->basicdxmodel);
-		
+
 		njPopMatrix(1u);
 		njPushMatrix(0);
 
@@ -198,13 +197,13 @@ void PPTankHandler_Main(ObjectMaster *a1) {
 		return;
 	}
 
-	if (GameState == 6) DynCol_Delete(a1); 
+	if (GameState == 6) DynCol_Delete(a1);
 	else DynColRadius(a1, 200, 6);
 
 	EntityData1 *entity = EntityData1Ptrs[0];
 
 	if (entity->Position.x > 22751) {
-		if (a1->Data1->Scale.z != 101) 
+		if (a1->Data1->Scale.z != 101)
 			a1->Data1->Scale.z += 1;
 
 		if (a1->Data1->Position.y < 10723) {
@@ -217,7 +216,7 @@ void PPTankHandler_Main(ObjectMaster *a1) {
 		NJS_OBJECT * col = (NJS_OBJECT*)a1->Data1->LoopData;
 		if (col) col->pos[1] = a1->Data1->Position.y;
 	}
-	
+
 	if (entity->Position.y > 10979 && a1->Data1->Scale.x != 0)
 		a1->Data1->Scale.x -= 1;
 
@@ -243,7 +242,7 @@ void PPTankHandler(ObjectMaster *a1) {
 		case 1: obj->Data1->Object = PP_TNKSTEP->getmodel()->child; break;
 		}
 	}
-	
+
 	a1->DisplaySub = PPTankHandler_Display;
 	a1->MainSub = PPTankHandler_Main;
 }

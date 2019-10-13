@@ -177,7 +177,6 @@ void MysticFan(ObjectMaster *a1)
 
 void DoBall(uint8_t id);
 void TransformSpline(ObjectMaster * a1, NJS_VECTOR orig, NJS_VECTOR dest, float state);
-Rotation3 fPositionToRotation(NJS_VECTOR orig, NJS_VECTOR point);
 
 void CartActions(ObjectMaster * a1) {
 	EntityData1 * entity = a1->Data1;
@@ -280,7 +279,7 @@ void MysticCart(ObjectMaster * a1) {
 
 		entity->Scale.x = entity->Scale.x + (loopdata->TotalDist / loopdata->LoopList[entity->InvulnerableTime].Dist) / loopdata->TotalDist * speed;
 		TransformSpline(a1, loopdata->LoopList[entity->InvulnerableTime].Position, loopdata->LoopList[entity->InvulnerableTime + 1].Position, a1->Data1->Scale.x);
-		a1->Data1->Rotation = fPositionToRotation(loopdata->LoopList[entity->InvulnerableTime].Position, loopdata->LoopList[entity->InvulnerableTime + 1].Position);
+		a1->Data1->Rotation = fPositionToRotation(&loopdata->LoopList[entity->InvulnerableTime].Position, &loopdata->LoopList[entity->InvulnerableTime + 1].Position);
 		a1->Data1->Rotation.z = 0;
 
 		player->Position = entity->Position;

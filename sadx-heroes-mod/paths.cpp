@@ -12,22 +12,16 @@ void TransformSpline(ObjectMaster * a1, NJS_VECTOR orig, NJS_VECTOR dest, float 
 	entity->Position.z = (dest.z - orig.z) * state + orig.z;
 }
 
-Rotation3 fPositionToRotation(NJS_VECTOR orig, NJS_VECTOR point) {
+Rotation3 fPositionToRotation(NJS_VECTOR* orig, NJS_VECTOR* point) {
 	NJS_VECTOR dist;
 	Rotation3 result;
 
-	dist.x = orig.x - point.x;
-	dist.y = orig.y - point.y;
-	dist.z = orig.z - point.z;
+	dist.x = orig->x - point->x;
+	dist.y = orig->y - point->y;
+	dist.z = orig->z - point->z;
 
 	result.x = atan2(dist.y, dist.z) * 65536.0 * -0.1591549762031479;
-	float len = dist.z * dist.z + dist.y * dist.y;
-	result.y = atan2(dist.x, squareroot(len)) * 65536.0 * 0.1591549762031479;
-
-	if (dist.x < 0 && dist.z < 0) { result.y = result.y; result.x = result.x; }
-	if (dist.z < 0 && dist.x > 0) { result.y = result.y; result.x = result.x; }
-	if (dist.x < 0 || dist.z < 0) { result.y += 0x8000; result.x += 0x8000; }
-	if (dist.x < 0 && dist.z > 0) { result.y += 0x8000; result.x += 0x8000; }
+	result.y = atan2(dist.x, dist.z) * 65536.0 * 0.1591549762031479;
 
 	result.y = -result.y - 0x4000;
 	return result;
@@ -206,8 +200,8 @@ void RailPath_Main(ObjectMaster * a1) {
 			player->Position.y += 5;
 			if (CurrentLevel == 7) player->Position.y += 5;
 			
-			if (web) player->Rotation.y = fPositionToRotation(loopdata->LoopList[a1->Data1->InvulnerableTime].Position, loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position).y;
-			else player->Rotation = fPositionToRotation(loopdata->LoopList[a1->Data1->InvulnerableTime].Position, loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position);
+			if (web) player->Rotation.y = fPositionToRotation(&loopdata->LoopList[a1->Data1->InvulnerableTime].Position, &loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position).y;
+			else player->Rotation = fPositionToRotation(&loopdata->LoopList[a1->Data1->InvulnerableTime].Position, &loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position);
 			player->Rotation.z = 0;
 
 			if (loopdata->LoopList[a1->Data1->InvulnerableTime].Ang_X != 0) player->Rotation.x = loopdata->LoopList[a1->Data1->InvulnerableTime].Ang_X;
@@ -313,7 +307,7 @@ void AutoLoop_Main(ObjectMaster * a1) {
 			}
 
 			TransformSpline(GetCharacterObject(a1->Data1->NextAction), loopdata->LoopList[a1->Data1->InvulnerableTime].Position, loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position, a1->Data1->Scale.x);
-			player->Rotation.y = fPositionToRotation(loopdata->LoopList[a1->Data1->InvulnerableTime].Position, loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position).y;
+			player->Rotation.y = fPositionToRotation(&loopdata->LoopList[a1->Data1->InvulnerableTime].Position, &loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position).y;
 
 			//go to next point
 			if (a1->Data1->Scale.x > 1) { a1->Data1->Scale.x = 0; a1->Data1->InvulnerableTime++; }
@@ -439,7 +433,7 @@ void Path_Main(ObjectMaster * a1) {
 								if (co2) tempobj->Data1->Scale.y = co2->Speed.x * 2; //store horizontal speed
 								if (tempobj->Data1->Scale.y == 0) RailValues[RailPhysics_MaxSpeed];
 
-								float ang = fPositionToRotation(loopdata->LoopList[point].Position, loopdata->LoopList[point + 1].Position).y;
+								float ang = fPositionToRotation(&loopdata->LoopList[point].Position, &loopdata->LoopList[point + 1].Position).y;
 								float min = ang - 0x4000;
 								if (min < 0) min += 0x10000;
 								float max = ang + 0x4000;
