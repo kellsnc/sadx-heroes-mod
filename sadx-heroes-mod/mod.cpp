@@ -17,6 +17,7 @@ HelperFunctions HelperFunctionsGlobal;
 
 bool EnableModels = true;
 bool EnableSounds = true;
+bool EnableGamePlay = false;
 bool IsLoaded = false;
 bool ChunkSwapped = false;
 
@@ -29,6 +30,7 @@ static const Uint8 FREECAM_FIX[] = { 0x81, 0x0D, /*0xA8, 0xCB, 0xB2, 0x03, 0x0C,
 void Levels_Init(const char *path, const HelperFunctions &helperFunctions);
 void Objects_Init(const char *path, const HelperFunctions &helperFunctions);
 void CommonObjects_OnFrame();
+void GamePlay_OnFrame();
 
 extern "C"
 {
@@ -38,6 +40,7 @@ extern "C"
 		const IniFile *config = new IniFile(std::string(path) + "\\config.ini");
 		EnableSounds = config->getBool("General", "EnableSounds", true);
 		EnableModels = config->getBool("General", "EnableModels", true);
+		EnableGamePlay = config->getBool("General", "EnableGamePlay", false);
 		delete config;
 
 		//Set up function pointers for Lantern API (borrowed from PkR)
@@ -71,6 +74,9 @@ extern "C"
 
 		if ((GameState == 15 || GameState == 4)) {
 			if (EnableModels) CommonObjects_OnFrame();
+			
+			EnableGamePlay = true;
+			if (EnableGamePlay) GamePlay_OnFrame();
 			if (!IsLoaded) IsLoaded = true;
 		}
 

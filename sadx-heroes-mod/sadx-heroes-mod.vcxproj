@@ -86,6 +86,7 @@
     <ClCompile Include="casino-park.cpp" />
     <ClCompile Include="egg-fleet-objects.cpp" />
     <ClCompile Include="egg-fleet.cpp" />
+    <ClCompile Include="gameplay.cpp" />
     <ClCompile Include="grand-metropolis-objects.cpp" />
     <ClCompile Include="grand-metropolis.cpp" />
     <ClCompile Include="hang-castle-objects.cpp" />
