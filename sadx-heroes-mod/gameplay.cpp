@@ -88,7 +88,6 @@ void SideKickAI(ObjectMaster* obj) {
 		EntityData1* childdata = childobj->Data1;
 		
 		childdata->CharIndex = 6 + data->CharIndex;
-		childdata->Position = { 500, 4230, 5320 };
 	}
 	else {
 		ObjectMaster* childobj = (ObjectMaster*)obj->field_30;
@@ -106,6 +105,12 @@ void SideKickAI(ObjectMaster* obj) {
 			}
 			break;
 		case 2: //run the AI
+			if (data->Status == 0) {
+				childdata->Position = data->Scale;
+				childdata->Rotation = EntityData1Ptrs[0]->Rotation;
+				data->Status = 1;
+			}
+
 			if (Team_SwapCharacter(obj, GetCharacterObject(childdata->CharIndex))) {
 				if (IsPlayerInsideSphere(&childdata->Position, 50)) {
 					childdata->Position = data->Scale;
