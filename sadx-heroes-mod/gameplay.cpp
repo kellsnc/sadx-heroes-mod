@@ -67,6 +67,7 @@ void AI_Movement(EntityData1* data, EntityData1* playerdata, EntityData1* botdat
 			botco2->AnimationThing.Index = 19;
 		}
 
+		data->field_A = 0;
 		botco2->Speed = { 0, 0, 0 };
 		botdata->Action = 1;
 		botco2->AnimationThing.Index = 0;
@@ -144,6 +145,26 @@ void AI_Obstacles(EntityData1* data, EntityData1* playerdata, EntityData1* botda
 
 	if (dist > 200) {
 		AI_PerformJump(data, botdata, botco2, height, dist);
+	}
+
+	if (FrameCounterUnpaused % 100 == 0 && dist > 30) {
+ 		if (IsPointInsideSphere(&data->Position, &botdata->Position, 5)) {
+			AI_PerformJump(data, botdata, botco2, 10, 30);
+			data->field_A += 1;
+		}
+		
+		if (data->field_A > 3) {
+			data->field_A = 0;
+			botdata->Position = data->Scale;
+			botdata->Position.y += 50;
+		}
+
+		data->Position = botdata->Position;
+	}
+
+	if (dist > 600) {
+		botdata->Position = data->Scale;
+		botdata->Position.y += 50;
 	}
 }
 
