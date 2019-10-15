@@ -11,22 +11,187 @@ ObjectFuncPtr TeamSonic[]{
 	Knuckles_Main
 };
 
+enum AIStates {
+	AIState_Ground,
+	AIState_Jumping,
+	AIState_AirAction,
+	AIState_Falling,
+	AIState_Stop
+};
+
 Rotation3 fPositionToRotation(NJS_VECTOR* orig, NJS_VECTOR* point);
 float GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest);
 
-void AI_Main(ObjectMaster* obj) {
-	//the Team Handler gives each AI a point which it must try to reach
-	EntityData1* data = obj->Data1;
-	ObjectMaster* childobj = (ObjectMaster*)obj->field_30;
-	EntityData1* botdata = childobj->Data1;
-	EntityData2* botdata2 = (EntityData2*)childobj->Data2;
-	CharObj2* botco2 = botdata2->CharacterData;
-	EntityData1* playerdata = EntityData1Ptrs[0];
+bool IsPointInsideSphere(NJS_VECTOR *center, NJS_VECTOR *pos, float radius) {
+	return (powf(pos->x - center->x, 2) + pow(pos->y - center->y, 2) + pow(pos->z - center->z, 2)) <= pow(radius, 2);
+}
 
-	float dist = GetDistance(&botdata->Position, &data->Scale);
-	if (dist > 10) {
+bool IsPointInsideBox(NJS_VECTOR *p1, NJS_VECTOR *p2, NJS_VECTOR *pos) {
+	return (pos->x > p1->x && pos->x < p2->x &&
+		pos->y > p1->y && pos->y < p2->y &&
+		pos->z > p1->z && pos->z < p2->z);
+}
+
+inline void AI_PerformJump(EntityData1* data, EntityData1* botdata, CharObj2* botco2, float height, float dist) {
+	botco2->Speed.y = fmax(2, height / 5);
+	botco2->Speed.x = fmax(1, dist / 20);
+	data->NextAction = AIState_Jumping;
+}
+
+void AI_Movement(EntityData1* data, EntityData1* playerdata, EntityData1* botdata, CharObj2* botco2, float dist, float distplayer) {
+	//the Team Handler gives each AI a point which it must try to reach
+
+	//collision box
+	NJS_VECTOR p1 = { data->Scale.x - 5, data->Scale.y - 50, data->Scale.z - 5 };
+	NJS_VECTOR p2 = { data->Scale.x + 5, data->Scale.y + 50, data->Scale.z + 5 };
+
+	if (IsPointInsideBox(&p1, &p2, &botdata->Position)) {
+		if (data->NextAction == AIState_AirAction) {
+			botdata->Rotation.y = fPositionToRotation(&botdata->Position, &playerdata->Position).y;
+			
+			if (botdata->CharID == Characters_Tails) {
+				botco2->AnimationThing.Index = 42;
+				botco2->Speed.x = 0;
+			}
+			else if (botdata->CharID == Characters_Knuckles) {
+				botdata->Action = 9;
+ 				data->NextAction = AIState_Falling;
+				botco2->AnimationThing.Index = 19;
+				botco2->PhysicsData.Gravity = PhysicsArray[Characters_Knuckles].Gravity;
+			}
+			
+			return;
+		}
+
+		if (data->NextAction == AIState_Falling) {
+			botco2->AnimationThing.Index = 19;
+		}
+
+		botco2->Speed = { 0, 0, 0 };
+		botdata->Action = 1;
+		botco2->AnimationThing.Index = 0;
+	}
+	else {
+		//rotate player towards point to follow
+		botdata->Rotation.y = fPositionToRotation(&botdata->Position, &data->Scale).y; 
+
+		//calculate speed roughly
+		float speed; float speedmax;
+		switch (botdata->CharID) {
+		case Characters_Sonic:
+			speed = 8, speedmax = 14;
+			break;
+		case Characters_Tails:
+			speed = 10, speedmax = 12;
+			break;
+		default:
+			speed = 14, speedmax = 10;
+			break;
+		}
+
+		botco2->Speed.x = dist / speed < speedmax ? dist / speed : speedmax;
+
+		if (botco2->Speed.x >= speedmax) {
+			if (botco2->Speed.x < botco2->PhysicsData.HSpeedCap) {
+				botco2->TailsFlightTime += 0.01f;
+				botco2->Speed.x += botco2->TailsFlightTime;
+			}
+		}
+		else {
+			botco2->TailsFlightTime = 0;
+		}
+
+		//running animations
+		if (data->NextAction == AIState_AirAction) return;
+
+		if (botco2->Speed.x > 0.2f) {
+			//animation run 1
+			botdata->Action = 2;
+			switch (botdata->CharID) {
+			case Characters_Sonic:
+			case Characters_Tails:
+				botco2->AnimationThing.Index = 12;
+				break;
+			case Characters_Knuckles:
+				botco2->AnimationThing.Index = 10;
+				break;
+			}
+		}
+		else if (botco2->Speed.x > 1) {
+			//animation run 2
+			botdata->Action = 2;
+			switch (botdata->CharID) {
+			case Characters_Sonic:
+			case Characters_Tails:
+				botco2->AnimationThing.Index = 13;
+				break;
+			case Characters_Knuckles:
+				botco2->AnimationThing.Index = 12;
+				break;
+			}
+		}
+	}
+}
+
+void AI_Obstacles(EntityData1* data, EntityData1* playerdata, EntityData1* botdata, CharObj2* botco2, float dist, float distplayer) {
+	//check the conditions to jump, go around objects
+	float height = botdata->Position.y - data->Scale.y;
+	float test = fPositionToRotation(&botdata->Position, &data->Scale).y;
+	if (dist > 20 && dist < 40 && height < -8 && height > - 20 && 
+		test == botdata->Rotation.y && playerdata->Rotation.x == 0 && playerdata->Action < 5) {
+		AI_PerformJump(data, botdata, botco2, height, dist);
+	}
+
+	if (dist > 200) {
+		AI_PerformJump(data, botdata, botco2, height, dist);
+	}
+}
+
+void AI_InAir(EntityData1* data, EntityData1* playerdata, EntityData1* botdata, CharObj2* botco2, float dist, float distplayer) {
+	if (data->NextAction == AIState_Jumping) {
+		botco2->AnimationThing.Index = 14;
+		botdata->Status |= Status_Ball;
+		botdata->Status |= Status_Attack;
 		botdata->Rotation.y = fPositionToRotation(&botdata->Position, &data->Scale).y;
-		botco2->Speed.x = fmax(dist / 10, CharObj2Ptrs[0]->Speed.x);
+
+		switch (botdata->CharID) {
+		case Characters_Sonic:
+			botdata->Action = 8;
+			break;
+		case Characters_Tails:
+		case Characters_Knuckles:
+			botdata->Action = 6;
+			break;
+		}
+
+		float test = botco2->_struct_a3.DistanceMax - botdata->Position.y;
+		if (dist > 200 && botco2->_struct_a3.DistanceMax - botdata->Position.y < -10) {
+			data->NextAction = AIState_AirAction;
+
+			if (botdata->CharID == Characters_Tails) {
+				botdata->Status &= ~Status_Attack;
+			}
+
+			botdata->Status &= ~Status_Ball;
+			botdata->Action = 15;
+		}
+	}
+	else if (data->NextAction == AIState_AirAction) {
+		
+
+		//Fly
+		if (botdata->CharID == Characters_Tails) {
+			botco2->PhysicsData.Gravity = 0.02;
+			botco2->AnimationThing.Index = 37;
+		}
+		//Glide
+		else if (botdata->CharID == Characters_Knuckles) {
+			botco2->Speed.y *= 0.9f;
+			botco2->PhysicsData.Gravity = 0.02;
+			botco2->AnimationThing.Index = 51;
+		}
+
+		AI_Movement(data, playerdata, botdata, botco2, dist, distplayer);
 	}
 }
 
@@ -117,9 +282,33 @@ void SideKickAI(ObjectMaster* obj) {
 					childdata->Rotation = EntityData1Ptrs[0]->Rotation;
 				}
 			}
-			
-			AI_Main(obj);
+			else {
+				EntityData1* playerdata = EntityData1Ptrs[0];
+				EntityData2* botdata2 = (EntityData2*)childobj->Data2;
+				CharObj2* botco2 = botdata2->CharacterData;
 
+				float distplayer = GetDistance(&childdata->Position, &playerdata->Position);
+				float dist = GetDistance(&childdata->Position, &data->Scale);
+
+				if (childdata->Status & Status_Ground) {
+					if (data->NextAction != AIState_Ground) {
+						childdata->Status &= ~Status_Ball;
+						childdata->Status &= ~Status_Attack;
+						data->NextAction = AIState_Ground;
+
+						if (data->NextAction == AIState_AirAction) {
+							botco2->PhysicsData.Gravity = PhysicsArray[Characters_Knuckles].Gravity;
+						}
+					}
+
+					AI_Movement(data, playerdata, childdata, botco2, dist, distplayer);
+					AI_Obstacles(data, playerdata, childdata, botco2, dist, distplayer);
+				}
+				else {
+					AI_InAir(data, playerdata, childdata, botco2, dist, distplayer);
+				}
+			}
+			
 			break;
 		}
 	}
@@ -145,6 +334,7 @@ void Team_GetPoints(ObjectMaster* obj) {
 
 	if (formation == 0) {
 		childdata->Scale = point;
+		dir.x -= CharObj2Ptrs[0]->Speed.x;
 		dir.x = -20;
 		njCalcPoint(0, &dir, &child2data->Scale);
 	}
@@ -153,9 +343,12 @@ void Team_GetPoints(ObjectMaster* obj) {
 		dir.x = -8; dir.z = -2.5f;
 		njCalcPoint(0, &dir, &point);
 		childdata->Scale = point;
+		dir.x -= CharObj2Ptrs[0]->Speed.x;
 		dir.x = -16; dir.z = 2.5f;
 		njCalcPoint(0, &dir, &child2data->Scale);
 	}
+
+	
 
 	if (formation == 2) {
 		dir.x = -5; dir.z = -8;
