@@ -28,7 +28,9 @@ static const Uint8 FREECAM_FIX[] = { 0x81, 0x0D, /*0xA8, 0xCB, 0xB2, 0x03, 0x0C,
 
 void Levels_Init(const char *path, const HelperFunctions &helperFunctions);
 void Objects_Init(const char *path, const HelperFunctions &helperFunctions);
+void Characters_Init(const char *path, const HelperFunctions &helperFunctions);
 void CommonObjects_OnFrame();
+void Characters_OnFrame();
 
 extern "C"
 {
@@ -63,15 +65,22 @@ extern "C"
 		
 		Levels_Init(path, helperFunctions);
 		Objects_Init(path, helperFunctions);
+		Characters_Init(path, helperFunctions);
 	}
 
 	__declspec(dllexport) void __cdecl OnFrame()
 	{
 		if (GameState != 16) ++anim;
 
-		if ((GameState == 15 || GameState == 4)) {
-			if (EnableModels) CommonObjects_OnFrame();
-			if (!IsLoaded) IsLoaded = true;
+		if (GameState == 15 || GameState == 4 || GameMode == 12) {
+			Characters_OnFrame();
+
+			if (GameMode != 12) {
+				if (EnableModels) {
+					CommonObjects_OnFrame();
+				}
+				if (!IsLoaded) IsLoaded = true;
+			}
 		}
 
 		ChunkSwapped = false;

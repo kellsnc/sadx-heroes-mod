@@ -84,6 +84,7 @@
     <ClCompile Include="casino-common.cpp" />
     <ClCompile Include="casino-park-objects.cpp" />
     <ClCompile Include="casino-park.cpp" />
+    <ClCompile Include="characters.cpp" />
     <ClCompile Include="egg-fleet-objects.cpp" />
     <ClCompile Include="egg-fleet.cpp" />
     <ClCompile Include="grand-metropolis-objects.cpp" />
@@ -115,6 +116,7 @@
   <ItemGroup>
     <ClInclude Include="bingo-highway.h" />
     <ClInclude Include="casino-park.h" />
+    <ClInclude Include="cream.h" />
     <ClInclude Include="Data\bingo-highway-paths.h" />
     <ClInclude Include="Data\casino-common-objects.h" />
     <ClInclude Include="Data\casino-park-deathzones.h" />
