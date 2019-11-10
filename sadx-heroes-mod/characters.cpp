@@ -4,6 +4,8 @@
 #include "cream.h"
 
 bool CreamEnabled = false;
+bool CreamLoaded;
+bool Creams[8];
 
 enum CharactersHeroes
 {
@@ -54,10 +56,6 @@ void SetupWorldMatrix()
 }
 #pragma endregion
 
-FunctionPointer(void*, sub_44BB60, (EntityData1*, EntityData2*, CharObj2*), 0x44BB60);
-FunctionPointer(void*, sub_44C270, (EntityData1*, EntityData2*, CharObj2*), 0x44C270);
-FunctionPointer(void*, PlayerFunc_AnalogToDirection, (EntityData1*, EntityData2*, CharObj2*), 0x443F50);
-FunctionPointer(void*, PlayerFunc_DetectCollisionAndSetFlags, (EntityData1*, EntityData2*, CharObj2*), 0x44CDF0);
 #define LOWORD(l) ((WORD)(l))
 
 void CreamHeroes_Delete(ObjectMaster *obj) {
@@ -75,14 +73,21 @@ void CreamHeroes_Display(ObjectMaster *obj) {
 	EntityData1* entity1 = obj->Data1;
 
 	njTranslateV(0, &entity1->Position);
-	njRotateXYZ(0, entity1->Rotation.x, -LOWORD(entity1->Rotation.y) - 0x4000, entity1->Rotation.z);
+	njRotateZ(0, entity1->Rotation.z);
+	njRotateX(0, entity1->Rotation.x);
+	njRotateY(0, -LOWORD(entity1->Rotation.y) - 0x4000);
 
 	SetupWorldMatrix();
 	Direct3D_SetChunkModelRenderState();
 
 	CharObj2* co2 = CharObj2Ptrs[obj->Data1->CharIndex];
-	DrawChunkObject(&Dummy002);
-	
+	DrawChunkObject(&Cream002);
+
+	njTranslate(0, 3, 8, 2);
+	DrawChunkObject(&Cheese002);
+	njTranslate(0, 0, 5, 0);
+	DrawChunkObject(&ChaoBall016);
+
 	Direct3D_UnsetChunkModelRenderState();
 	njPopMatrix(1);
 
@@ -91,62 +96,52 @@ void CreamHeroes_Display(ObjectMaster *obj) {
 	Direct3D_ResetZFunc();
 }
 
+void Tails_Display_(ObjectMaster* obj) {
+	if (Creams[obj->Data1->CharIndex]) {
+		CreamHeroes_Display(obj);
+	}
+	else {
+		Tails_Display(obj);
+	}
+}
+
 void CreamHeroes_Main(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1;
 	CharObj2* co2 = CharObj2Ptrs[data->CharIndex];
-	
-	EntityData1* entity1 = obj->Data1;
-	EntityData2* entity2 = (EntityData2*)obj->Data2;
-	CharObj2* charobj2 = entity2->CharacterData;
-	Current_CharObj1 = entity1;
-	Current_CharObj2 = charobj2;
-	
-	switch (entity1->Action) {
+
+	switch (data->Action) {
 	case 0:
 		obj->DeleteSub = CreamHeroes_Delete;
-
-		entity2->CharacterData = new CharObj2;
-		charobj2 = entity2->CharacterData;
-
-		EntityData1Ptrs[entity1->CharIndex] = obj->Data1;
-		EntityData2Ptrs[entity1->CharIndex] = (EntityData2*)obj->Data2;
-		InitCharacterVars(entity1->CharIndex, obj);
-		memcpy(&charobj2->PhysicsData, &PhysicsArray[2], sizeof(charobj2->PhysicsData));
-		entity1->CharID = Characters_Cream;
-
 		LoadPVM("cream", &CREAM_TEXLIST);
+		data->Action = 1;
 
-		Collision_Init(obj, (CollisionData*)0x91A9E8, 5, 0);
-		entity1->CollisionInfo->CollisionArray->scale.x = charobj2->PhysicsData.RippleSize;
-		
-		entity1->Position = { 0, 20, -120 };
-		entity1->Action = 1;
 		break;
 	case 1:
-		sub_44BB60(entity1, entity2, charobj2);
-		sub_44C270(entity1, entity2, charobj2);
-		PlayerFunc_AnalogToDirection(entity1, entity2, charobj2);
-		PlayerFunc_DetectCollisionAndSetFlags(entity1, entity2, charobj2);
+		PlayerPtrs[data->CharIndex]->DisplaySub = CreamHeroes_Display;
+
 		break;
 	}
-
-	RunEntityIntersections(entity1, &charobj2->_struct_a3);
-	AddToCollisionList(entity1);
-	RunUnderwaterStuff(entity1, entity2, charobj2);
-
-	obj->DisplaySub(obj);
 }
 
 void Characters_Init(const char *path, const HelperFunctions &helperFunctions) {
 	const IniFile *config = new IniFile(std::string(path) + "\\config.ini");
 	CreamEnabled = config->getBool("Characters", "EnableCream", false);
 	delete config;
+
+	CreamEnabled = true;
+
+	if (CreamEnabled) {
+		WriteCall((void*)0x462456, Tails_Display_);
+	}
 }
 
 void Characters_OnFrame() {
-	if (GetCharacterID(1) == Characters_Tails) {
-		DeleteObject_(GetCharacterObject(1));
+	for (uint8_t player = 0; player < 8; ++player) {
+		if (GetCharacterID(player) == Characters_Tails && CreamEnabled) {
+			if (Creams[player] == false) {
+				LoadObject(LoadObj_Data1, 1, CreamHeroes_Main)->Data1->CharIndex = player;
+				Creams[player] = true;
+			}
+		}
 	}
-
-	if (FrameCounterUnpaused == 30) LoadObject((LoadObj)(LoadObj_UnknownA | LoadObj_Data1 | LoadObj_Data2), 1, CreamHeroes_Main)->Data1->CharIndex = 1;
 }
