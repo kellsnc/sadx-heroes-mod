@@ -14,3 +14,4 @@
 #include "IniFile.hpp"
 #include "LandTableInfo.h"
 #include "ModelInfo.h"
+#include "AnimationFile.h"
