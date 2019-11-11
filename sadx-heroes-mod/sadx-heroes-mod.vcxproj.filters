@@ -25,6 +25,9 @@
     <Filter Include="Header Files\Objects">
       <UniqueIdentifier>{c0f977d0-225c-4183-b144-abcca274d6e7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Characters">
+      <UniqueIdentifier>{d65071f3-c5de-49f3-9fb2-4ab60d1710b4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="mod.cpp">
@@ -119,6 +122,9 @@
     </ClCompile>
     <ClCompile Include="characters.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cream.cpp">
+      <Filter>Source Files\Characters</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -232,6 +238,9 @@
     </ClInclude>
     <ClInclude Include="egg-fleet.h">
       <Filter>Header Files\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="characters.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
