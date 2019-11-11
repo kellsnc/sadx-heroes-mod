@@ -16,6 +16,8 @@ bool CheckModelDisplay2(SOI_LIST2 item);
 bool DynColRadius(ObjectMaster *a1, float radius, uint8_t col);
 bool DynColRadiusAuto(ObjectMaster *a1, uint8_t col);
 Rotation3 fPositionToRotation(NJS_VECTOR* orig, NJS_VECTOR* point);
+NJS_VECTOR GetPathPosition(NJS_VECTOR* orig, NJS_VECTOR* dest, float state);
+float GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest);
 
 void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions);
 void CommonObjects_OnFrame();

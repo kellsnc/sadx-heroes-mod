@@ -16,4 +16,5 @@ void PlayHeroesAnimation(ObjectMaster *obj, uint8_t ID, AnimData* animdata, floa
 extern ObjectMaster* Creams[];
 void CreamHeroes_Display(ObjectMaster *obj);
 void CreamHeroes_Main(ObjectMaster *obj);
+void Cheese_Main(ObjectMaster *obj);
 void LoadCreamFiles(const char *path, const HelperFunctions &helperFunctions);

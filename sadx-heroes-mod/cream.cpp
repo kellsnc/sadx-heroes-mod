@@ -1,15 +1,192 @@
 #include "stdafx.h"
 #include "mod.h"
 #include "characters.h"
+#include "objects.h"
 
 ModelInfo* CreamMdls[4];
-AnimationFile* CreamAnms[63];
+AnimationFile* CreamAnms[76];
 AnimData CreamAnimData[63];
+AnimData CheeseAnimData[13];
 
 ObjectMaster* Creams[8];
 
 NJS_TEXNAME CREAM_TEXNAMES[4];
 NJS_TEXLIST CREAM_TEXLIST = { arrayptrandlength(CREAM_TEXNAMES) };
+
+CollisionData Cheese_Col = { 0, 0, 0, 0, 0, { 0.0f, 0.0f, 0.0f }, { 4.5, 0.0f, 0.0f }, 0, 0 };
+
+NJS_VECTOR GetCheesePoint(NJS_VECTOR* pos, Rotation3* rot) {
+	NJS_VECTOR point;
+
+	NJS_VECTOR dir = { -2, 10, 2 };
+	njPushMatrix(_nj_unit_matrix_);
+	njTranslateV(0, pos);
+	njRotateY(0, -rot->y);
+	njCalcPoint(0, &dir, &point);
+	njPopMatrix(1u);
+	return point;
+}
+
+ObjectMaster* Cheese_GetClosestEnemy(NJS_VECTOR* pos) {
+	ObjectMaster * current = ObjectListThing[3];
+	while (1) {
+		if (current->MainSub == Kiki_Main || current->MainSub == RhinoTank_Main || current->MainSub == Sweep_Main) {
+			float dist = GetDistance(pos, &current->Data1->Position);
+			if (GetDistance(pos, &current->Data1->Position) < 200) return current;
+			else {
+				if (current->Next) {
+					current = current->Next;
+					continue;
+				}
+				else break;
+			}
+		}
+		else {
+			if (current->Next) current = current->Next;
+			else break;
+		}
+	}
+	return nullptr;
+}
+
+void Cheese_Display(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1;
+	EntityData2* data2 = (EntityData2*)obj->Data2;
+	EntityData1* playerdata = EntityData1Ptrs[obj->Parent->Data1->CharIndex];
+
+	Direct3D_SetZFunc(1u);
+	Direct3D_PerformLighting(2);
+
+	njSetTexture(&CREAM_TEXLIST);
+
+	njPushMatrix(0);
+
+	njTranslateV(0, &data->Position);
+	njRotateZ(0, data->Rotation.z);
+	njRotateX(0, data->Rotation.x);
+
+	if (data->Index == 0) {
+		njRotateY(0, data2->Forward.y += 0x100);
+		njTranslate(0, 2, 0, 0);
+	}
+	else {
+		njRotateY(0, -data->Rotation.y - 0x4000);
+	}
+
+	SetupWorldMatrix();
+	Direct3D_SetChunkModelRenderState();
+
+	njCnkAction(CheeseAnimData[data->Index].Animation, data->Scale.x);
+
+	Direct3D_UnsetChunkModelRenderState();
+	njPopMatrix(1);
+
+	Direct3D_PerformLighting(0);
+	ClampGlobalColorThing_Thing();
+	Direct3D_ResetZFunc();
+}
+
+void Cheese_Main(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1;
+	EntityData2* data2 = (EntityData2*)obj->Data2;
+	EntityData1* playerdata = EntityData1Ptrs[obj->Parent->Data1->CharIndex];
+
+	float dist = GetDistance(&data2->VelocityDirection, &data->Position);
+	uint8_t anim = data->Index;
+
+	switch (data->Action) {
+	case 0:
+		obj->DisplaySub = Cheese_Display;
+		data->Position = GetCheesePoint(&playerdata->Position, &playerdata->Rotation);
+		Collision_Init(obj, &Cheese_Col, 1, 3u);
+		data->Action = 1;
+		break;
+	case 1:
+		data2->VelocityDirection = GetCheesePoint(&playerdata->Position, &playerdata->Rotation);
+		data->Rotation = playerdata->Rotation;
+
+		if (dist < 5) {
+			data->Position = GetPathPosition(&data->Position, &data2->VelocityDirection, dist / (100 + (400 - dist)));
+			anim = 0;
+			if (GetDistance(&data2->VelocityDirection, &data->Position) < 1) {
+				data->Position = data2->VelocityDirection;
+				data->Action = 1;
+			}
+		}
+		else if (dist < 30) {
+			data->Position = GetPathPosition(&data->Position, &data2->VelocityDirection, dist / 400);
+			data->Rotation.y = fPositionToRotation(&data->Position, &data2->VelocityDirection).y;
+			anim = 5;
+		}
+		else {
+			data->Position = GetPathPosition(&data->Position, &data2->VelocityDirection, dist / 300);
+			data->Rotation.y = fPositionToRotation(&data->Position, &data2->VelocityDirection).y;
+			anim = 5;
+		}
+
+		switch (CharObj2Ptrs[obj->Parent->Data1->CharIndex]->AnimationThing.Index) {
+		case 6:
+			if (obj->Parent->Data1->Index == 8) anim = 1;
+			else anim = 2;
+			break;
+		case 33:
+			if (dist < 30) anim = 3;
+			break;
+		case 54:
+		case 55:
+			anim = 8;
+			break;
+		case 150:
+			anim = 12;
+			break;
+		}
+
+		break;
+	case 2: //cheese special attack, get the closest enemy
+		data->LoopData = (Loop*)Cheese_GetClosestEnemy(&playerdata->Position);
+		
+		if (data->LoopData) {
+			data->NextAction = 0;
+			data->Action = 3;
+		}
+		else {
+			data->Action = 1;
+		}
+
+		break;
+	case 3: //attack enemy
+		ObjectMaster* enemy = (ObjectMaster*)data->LoopData;
+		EntityData1* enemydata = enemy->Data1;
+
+		if (data->InvulnerableTime < 50) {
+			anim = 6;
+			++data->InvulnerableTime;
+			break;
+		}
+
+		if (!enemydata) {
+			data->InvulnerableTime = 0;
+			data->LoopData = (Loop*)Cheese_GetClosestEnemy(&playerdata->Position);
+			if (data->LoopData) {
+				data->NextAction = 0;
+				break;
+			}
+			else {
+				data->Action = 1;
+			}
+		}
+		else {
+			data->Position = GetPathPosition(&data->Position, &enemydata->Position, dist / 500);
+		}
+		
+		break;
+	}
+	
+	AddToCollisionList(data);
+	PlayHeroesAnimation(obj, anim, CheeseAnimData, 0, 0);
+
+	obj->DisplaySub(obj);
+}
 
 void CreamHeroes_Delete(ObjectMaster *obj) {
 	bool IsThereCream = false;
@@ -42,6 +219,11 @@ void CreamHeroes_Display(ObjectMaster *obj) {
 			else creamobj->Data1->NextAction = 0;
 		}
 	}
+	else {
+		creamobj->Data1->NextAction = 0;
+	}
+
+	if (creamobj->Data1->NextAction) return;
 
 	Direct3D_SetZFunc(1u);
 	Direct3D_PerformLighting(2);
@@ -58,14 +240,7 @@ void CreamHeroes_Display(ObjectMaster *obj) {
 	SetupWorldMatrix();
 	Direct3D_SetChunkModelRenderState();
 
-	if (!creamobj->Data1->NextAction) {
-		njCnkAction(CreamAnimData[creamobj->Data1->Index].Animation, creamobj->Data1->Scale.x);
-	}
-
-	njTranslate(0, 3, 8, 2);
-	DrawChunkObject(CreamMdls[2]->getmodel());
-	njTranslate(0, 0, 5, 0);
-	DrawChunkObject(CreamMdls[3]->getmodel());
+	njCnkAction(CreamAnimData[creamobj->Data1->Index].Animation, creamobj->Data1->Scale.x);
 
 	Direct3D_UnsetChunkModelRenderState();
 	njPopMatrix(1);
@@ -91,25 +266,33 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 		return;
 	}
 	else if (data->Action == 1) {
+		LoadChildObject((LoadObj)(LoadObj_Data1 | LoadObj_Data2), Cheese_Main, obj);
 		data->Action = 2;
 		return;
 	}
 
 	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
 	if (!playerobj || playerobj->Data1->CharID != Characters_Tails) DeleteObject_(obj);
+	if (!obj->Child) LoadChildObject((LoadObj)(LoadObj_Data1 | LoadObj_Data2), Cheese_Main, obj);
 
 	EntityData1* playerdata = playerobj->Data1;
 	EntityData2* playerdata2 = (EntityData2*)playerobj->Data2;
 	CharObj2* playerco2 = playerdata2->CharacterData;
 
+	int anim = data->Index;
+	float speed = 0;
+	float state = 0;
+	float frame = data->Scale.x;
+
 	switch (data->Action) {
 	case 2:
 		PlayerPtrs[data->CharIndex]->DisplaySub = CreamHeroes_Display;
 
-		int anim = data->Index;
-		float speed = 0;
-		float state = 0;
-		float frame = data->Scale.x;
+		if (playerco2->Speed.x < 1 && PressedButtons[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
+			playerdata->Action = 100;
+			data->Action = 3;
+			break;
+		}
 
 		if (anim == 19 && playerco2->AnimationThing.Index < 6) {
 			anim = 20; //just stopped rolling
@@ -334,7 +517,33 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 		PlayHeroesAnimation(obj, anim, CreamAnimData, speed, state);
 
 		break;
+	case 3:
+		if (data->field_A == 0) {
+			data->field_A = 1;
+			data->Scale.x = 0;
+		}
+		else if (data->field_A < 30) {
+			if (data->field_A < 20) {
+				++data->field_A;
+			}
+			else {
+				obj->Child->Data1->Action = 2;
+				data->field_A = 30;
+			}
+		}
+		else {
+			if (++data->field_A == 120) {
+				data->Action = 2;
+				playerdata->Action = 1;
+				data->field_A = 0;
+			}
+		}
+
+		PlayHeroesAnimation(obj, 61, CreamAnimData, 0, 0);
+		break;
 	}
+
+	RunObjectChildren(obj);
 }
 
 void LoadCreamFiles(const char *path, const HelperFunctions &helperFunctions) {
@@ -407,6 +616,20 @@ void LoadCreamFiles(const char *path, const HelperFunctions &helperFunctions) {
 	CreamAnms[61] = new AnimationFile(HelperFunctionsGlobal.GetReplaceablePath("system\\characters\\CR_ATC_CHAO.saanim"));
 	CreamAnms[62] = new AnimationFile(HelperFunctionsGlobal.GetReplaceablePath("system\\characters\\ROSE_CR.saanim"));
 
+	CreamAnms[63] = new AnimationFile(HelperFunctionsGlobal.GetReplaceablePath("system\\characters\\CH_IDLE.saanim"));
+	CreamAnms[64] = new AnimationFile(HelperFunctionsGlobal.GetReplaceablePath("system\\characters\\CH_IDLE_B.saanim"));
+	CreamAnms[65] = new AnimationFile(HelperFunctionsGlobal.GetReplaceablePath("system\\characters\\CH_IDLE_B_OPT.saanim"));
+	CreamAnms[66] = new AnimationFile(HelperFunctionsGlobal.GetReplaceablePath("system\\characters\\CH_IDLE_C.saanim"));
+	CreamAnms[67] = new AnimationFile(HelperFunctionsGlobal.GetReplaceablePath("system\\characters\\CH_IDLE_C_OPT.saanim"));
+	CreamAnms[68] = new AnimationFile(HelperFunctionsGlobal.GetReplaceablePath("system\\characters\\CH_FLY.saanim"));
+	CreamAnms[69] = new AnimationFile(HelperFunctionsGlobal.GetReplaceablePath("system\\characters\\CH_ATC_CHAO_A.saanim"));
+	CreamAnms[70] = new AnimationFile(HelperFunctionsGlobal.GetReplaceablePath("system\\characters\\CH_ATC_CHAO_B.saanim"));
+	CreamAnms[71] = new AnimationFile(HelperFunctionsGlobal.GetReplaceablePath("system\\characters\\CH_WIN.saanim"));
+	CreamAnms[72] = new AnimationFile(HelperFunctionsGlobal.GetReplaceablePath("system\\characters\\CH_CHARANGE_IDLE.saanim"));
+	CreamAnms[73] = new AnimationFile(HelperFunctionsGlobal.GetReplaceablePath("system\\characters\\CH_CHARANGE_SELECT.saanim"));
+	CreamAnms[74] = new AnimationFile(HelperFunctionsGlobal.GetReplaceablePath("system\\characters\\CH_STORY_IDLE.saanim"));
+	CreamAnms[75] = new AnimationFile(HelperFunctionsGlobal.GetReplaceablePath("system\\characters\\CH_STORY_SELECT.saanim"));
+
 	for (uint8_t i = 0; i < LengthOfArray(CreamAnimData); ++i) {
 		CreamAnimData[i].Animation = new NJS_ACTION;
 		CreamAnimData[i].Animation->object = CreamMdls[0]->getmodel();
@@ -432,5 +655,19 @@ void LoadCreamFiles(const char *path, const HelperFunctions &helperFunctions) {
 	CreamAnimData[31].Property = 1;
 	CreamAnimData[33].Property = 1;
 	CreamAnimData[56].NextAnim = 11;
+	CreamAnimData[61].Property = 1;
 	CreamAnimData[23].AnimationSpeed = 0.25f;
+
+	for (uint8_t i = 0; i < LengthOfArray(CheeseAnimData); ++i) {
+		CheeseAnimData[i].Animation = new NJS_ACTION;
+		CheeseAnimData[i].Animation->object = CreamMdls[2]->getmodel();
+		CheeseAnimData[i].Animation->motion = CreamAnms[i + 63]->getmotion();
+		CheeseAnimData[i].Instance = 68;
+		CheeseAnimData[i].NextAnim = i;
+		CheeseAnimData[i].Property = 3;
+		CheeseAnimData[i].TransitionSpeed = 0.25f;
+		CheeseAnimData[i].AnimationSpeed = 0.5f;
+	}
+
+	CheeseAnimData[6].NextAnim = 7;
 }

@@ -5,19 +5,6 @@
 ModelInfo * EF_CANNON1;
 ModelInfo * EF_BULLETS;
 
-NJS_VECTOR GetPathPosition(NJS_VECTOR* orig, NJS_VECTOR* dest, float state) {
-	NJS_VECTOR result;
-	result.x = (dest->x - orig->x) * state + orig->x;
-	result.y = (dest->y - orig->y) * state + orig->y;
-	result.z = (dest->z - orig->z) * state + orig->z;
-
-	return result;
-}
-
-float GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest) {
-	return sqrtf(powf(dest->x - orig->x, 2) + powf(dest->y - orig->y, 2) + powf(dest->z - orig->z, 2));
-}
-
 void EFBullet_Display(ObjectMaster *a1) {
 	if (!MissedFrames) {
 		if (a1->Data1->Action == 1) {

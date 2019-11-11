@@ -9,6 +9,17 @@ FastcallFunctionPointer(void, DrawChunkModel_, (Sint32* a1, Sint16* a2), 0x7917F
 
 D3DMATRIX WorldMatrixBackup;
 
+bool OhNoImDead2(EntityData1 *a1, ObjectData2 *a2);
+Trampoline OhNoImDead2_t(0x004CE030, 0x004CE036, OhNoImDead2);
+bool OhNoImDead2(EntityData1 *a1, ObjectData2 *a2) {
+	if (a1->CollisionInfo->CollidingObject) {
+		if (a1->CollisionInfo->CollidingObject->Object->MainSub == Cheese_Main) return 1;
+	}
+
+	FunctionPointer(bool, original, (EntityData1 *a1, ObjectData2 *a2), OhNoImDead2_t.Target());
+	return original(a1, a2);
+}
+
 void DrawChunkModel(NJS_CNK_MODEL* model)
 {
 	DrawChunkModel_(model->vlist, model->plist);
