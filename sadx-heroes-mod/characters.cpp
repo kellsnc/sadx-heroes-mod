@@ -96,8 +96,6 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions) {
 	CreamEnabled = config->getBool("Characters", "EnableCream", false);
 	delete config;
 
-	CreamEnabled = true;
-
 	if (CreamEnabled) {
 		LoadCreamFiles(path, helperFunctions);
 		WriteCall((void*)0x462456, Tails_Display_);

@@ -197,7 +197,6 @@ void Cheese_Main(ObjectMaster* obj) {
 	obj->DisplaySub(obj);
 }
 
-void(__cdecl** NodeCallbackFuncPtr)(NJS_OBJECT* obj) = (decltype(NodeCallbackFuncPtr))0x3AB9908;
 NJS_MATRIX EyeLashesMatrix;
 void CreamCallback(NJS_OBJECT* object) {
 	if (object == (NJS_OBJECT*)CreamMdls[0]->getdata("Dummy019")) {
@@ -360,14 +359,15 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 				break;
 			case 10:
 				anim = 0;
-				speed = 0.9f;
+				speed = 0.9f + playerco2->Speed.x * 0.2f;
 				break;
 			case 11:
 				anim = 0;
-				speed = 1.5f;
+				speed = 0.9f + playerco2->Speed.x * 0.2f;
 				break;
 			case 12:
 				anim = 5;
+				speed = 1.5f + playerco2->Speed.x * 0.1f;
 				break;
 			case 13:
 				anim = 6;

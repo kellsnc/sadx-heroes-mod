@@ -18,3 +18,5 @@ void CreamHeroes_Display(ObjectMaster *obj);
 void CreamHeroes_Main(ObjectMaster *obj);
 void Cheese_Main(ObjectMaster *obj);
 void LoadCreamFiles(const char *path, const HelperFunctions &helperFunctions);
+
+static void(__cdecl** NodeCallbackFuncPtr)(NJS_OBJECT* obj) = (decltype(NodeCallbackFuncPtr))0x3AB9908;
