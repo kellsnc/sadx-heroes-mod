@@ -78,6 +78,11 @@ void Cheese_Display(ObjectMaster* obj) {
 
 	njCnkAction(CheeseAnimData[data->Index].Animation, data->Scale.x);
 
+	njTranslate(0, -data->Position.x, -data->Position.y, -data->Position.z);
+	njTranslateV(0, &data2->SomeCollisionVector);
+	njTranslate(0, 0, 5, -1);
+	DrawChunkModel(CreamMdls[3]->getmodel()->child->chunkmodel);
+
 	Direct3D_UnsetChunkModelRenderState();
 	njPopMatrix(1);
 
@@ -107,6 +112,7 @@ void Cheese_Main(ObjectMaster* obj) {
 
 		if (dist < 5) {
 			data->Position = GetPathPosition(&data->Position, &data2->VelocityDirection, dist / (100 + (400 - dist)));
+			data2->SomeCollisionVector = data->Position;
 			anim = 0;
 			if (GetDistance(&data2->VelocityDirection, &data->Position) < 1) {
 				data->Position = data2->VelocityDirection;
@@ -115,11 +121,13 @@ void Cheese_Main(ObjectMaster* obj) {
 		}
 		else if (dist < 30) {
 			data->Position = GetPathPosition(&data->Position, &data2->VelocityDirection, dist / 400);
+			data2->SomeCollisionVector = GetPathPosition(&data->Position, &data2->VelocityDirection, (dist / 400) - 0.1f);
 			data->Rotation.y = fPositionToRotation(&data->Position, &data2->VelocityDirection).y;
 			anim = 5;
 		}
 		else {
 			data->Position = GetPathPosition(&data->Position, &data2->VelocityDirection, dist / 300);
+			data2->SomeCollisionVector = GetPathPosition(&data->Position, &data2->VelocityDirection, (dist / 300) - 0.1f);
 			data->Rotation.y = fPositionToRotation(&data->Position, &data2->VelocityDirection).y;
 			anim = 5;
 		}
@@ -177,6 +185,7 @@ void Cheese_Main(ObjectMaster* obj) {
 		}
 		else {
 			data->Position = GetPathPosition(&data->Position, &enemydata->Position, dist / 500);
+			data2->SomeCollisionVector = GetPathPosition(&data->Position, &enemydata->Position, (dist / 500) - 0.1f);
 		}
 		
 		break;
@@ -186,6 +195,14 @@ void Cheese_Main(ObjectMaster* obj) {
 	PlayHeroesAnimation(obj, anim, CheeseAnimData, 0, 0);
 
 	obj->DisplaySub(obj);
+}
+
+void(__cdecl** NodeCallbackFuncPtr)(NJS_OBJECT* obj) = (decltype(NodeCallbackFuncPtr))0x3AB9908;
+NJS_MATRIX EyeLashesMatrix;
+void CreamCallback(NJS_OBJECT* object) {
+	if (object == (NJS_OBJECT*)CreamMdls[0]->getdata("Dummy019")) {
+		memcpy(EyeLashesMatrix, _nj_current_matrix_ptr_, sizeof(NJS_MATRIX));
+	}
 }
 
 void CreamHeroes_Delete(ObjectMaster *obj) {
@@ -240,7 +257,29 @@ void CreamHeroes_Display(ObjectMaster *obj) {
 	SetupWorldMatrix();
 	Direct3D_SetChunkModelRenderState();
 
+	*NodeCallbackFuncPtr = CreamCallback;
 	njCnkAction(CreamAnimData[creamobj->Data1->Index].Animation, creamobj->Data1->Scale.x);
+	*NodeCallbackFuncPtr = nullptr;
+
+	memcpy(_nj_current_matrix_ptr_, EyeLashesMatrix, sizeof(NJS_MATRIX));
+
+	switch (creamobj->Data1->InvulnerableTime) {
+	case 1:
+		DrawChunkModel(CreamMdls[1]->getmodel()->child->chunkmodel);
+		break;
+	case 2:
+		DrawChunkModel(CreamMdls[1]->getmodel()->child->child->chunkmodel);
+		break;
+	case 3:
+		DrawChunkModel(CreamMdls[1]->getmodel()->child->child->child->chunkmodel);
+		break;
+	case 4:
+		DrawChunkModel(CreamMdls[1]->getmodel()->child->child->child->child->chunkmodel);
+		break;
+	default:
+		DrawChunkModel(CreamMdls[1]->getmodel()->chunkmodel);
+		break;
+	}
 
 	Direct3D_UnsetChunkModelRenderState();
 	njPopMatrix(1);
@@ -541,6 +580,14 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 
 		PlayHeroesAnimation(obj, 61, CreamAnimData, 0, 0);
 		break;
+	}
+
+	if (FrameCounterUnpaused % 200 == 0) {
+		data->InvulnerableTime = 1;
+	}
+
+	if (data->InvulnerableTime != 0 && FrameCounterUnpaused % 2 == 0) {
+		if (++data->InvulnerableTime > 4) data->InvulnerableTime = 0;
 	}
 
 	RunObjectChildren(obj);
