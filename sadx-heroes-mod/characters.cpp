@@ -9,6 +9,8 @@ FastcallFunctionPointer(void, DrawChunkModel_, (Sint32* a1, Sint16* a2), 0x7917F
 
 D3DMATRIX WorldMatrixBackup;
 
+int CurrentPlayer;
+
 bool OhNoImDead2(EntityData1 *a1, ObjectData2 *a2);
 Trampoline OhNoImDead2_t(0x004CE030, 0x004CE036, OhNoImDead2);
 bool OhNoImDead2(EntityData1 *a1, ObjectData2 *a2) {
@@ -91,6 +93,15 @@ void Tails_Display_(ObjectMaster* obj) {
 	}
 }
 
+void Tails_Main_r(ObjectMaster* a1);
+Trampoline Tails_Main_t(0x00461700, 0x00461712, Tails_Main_r);
+void Tails_Main_r(ObjectMaster* obj) {
+	CurrentPlayer = obj->Data1->CharIndex;
+
+	ObjectFunc(original, Tails_Main_t.Target());
+	original(obj);
+}
+
 void Characters_Init(const char *path, const HelperFunctions &helperFunctions) {
 	const IniFile *config = new IniFile(std::string(path) + "\\config.ini");
 	CreamEnabled = config->getBool("Characters", "EnableCream", false);
@@ -99,6 +110,11 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions) {
 	if (CreamEnabled) {
 		LoadCreamFiles(path, helperFunctions);
 		WriteCall((void*)0x462456, Tails_Display_);
+		WriteCall((void*)0x45C037, PlaySound_Tails); //jump
+		WriteCall((void*)0x45BE01, PlaySound_Tails); //fly
+		WriteCall((void*)0x45BF8D, PlaySound_Tails); //hurt
+		WriteCall((void*)0x446A49, PlaySound_Tails); //death
+		WriteCall((void*)0x45BE57, PlayVoice_Tails); //death
 	}
 }
 

@@ -15,6 +15,67 @@ NJS_TEXLIST CREAM_TEXLIST = { arrayptrandlength(CREAM_TEXNAMES) };
 
 CollisionData Cheese_Col = { 0, 0, 0, 0, 0, { 0.0f, 0.0f, 0.0f }, { 4.5, 0.0f, 0.0f }, 0, 0 };
 
+enum CreamSounds {
+	CreamSound_Attack = 10900,
+	CreamSound_FlyBegin,
+	CreamSound_FlyAttack,
+	CreamSound_FlyUp,
+	CreamSound_TeamSwap,
+	CreamSound_ThatHurts,
+	CreamSound_Hurt1,
+	CreamSound_Hurt2,
+	CreamSound_Trick,
+	CreamSound_CheeseGetHim,
+	CreamSound_Death,
+	CreamSound_LevelUp,
+	CreamSound_Win,
+	CreamSound_Lose,
+	CreamSound_Idle1,
+	CreamSound_Idle2,
+	CreamSound_Fall
+};
+
+void PlayVoice_Tails(int ID) {
+	switch (ID) {
+	case 1803:
+		PlayVoice(CreamSound_Win);
+		break;
+	default:
+		PlayVoice(ID);
+		break;
+	}
+}
+
+int PlaySound_Tails(int ID, void *a2, int a3, void *a4) {
+	if (Creams[CurrentPlayer] == nullptr) {
+		return PlaySound(ID, a2, a3, a4);
+	}
+
+	int random = rand() % 10;
+	
+	switch (ID) {
+	case 17:
+		PlayVoice(CreamSound_Trick);
+		break;
+	case 1243:
+		PlayVoice(CreamSound_FlyBegin);
+		break;
+	case 1249:
+		if (random < 4) PlayVoice(CreamSound_ThatHurts);
+		else if (random < 8) PlayVoice(CreamSound_Hurt1);
+		else PlayVoice(CreamSound_Hurt2);
+		break;
+	case 1465:
+		PlayVoice(CreamSound_Death);
+		break;
+	case 1453:
+		PlaySound(ID, a2, a3, a4);
+		break;
+	}
+
+	return 1;
+}
+
 NJS_VECTOR GetCheesePoint(NJS_VECTOR* pos, Rotation3* rot) {
 	NJS_VECTOR point;
 
@@ -53,6 +114,7 @@ void Cheese_Display(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1;
 	EntityData2* data2 = (EntityData2*)obj->Data2;
 	EntityData1* playerdata = EntityData1Ptrs[obj->Parent->Data1->CharIndex];
+	CharObj2* playerco2 = CharObj2Ptrs[obj->Parent->Data1->CharIndex];
 
 	Direct3D_SetZFunc(1u);
 	Direct3D_PerformLighting(2);
@@ -61,18 +123,27 @@ void Cheese_Display(ObjectMaster* obj) {
 
 	njPushMatrix(0);
 
-	njTranslateV(0, &data->Position);
-	njRotateZ(0, data->Rotation.z);
-	njRotateX(0, data->Rotation.x);
-
-	if (data->Index == 0) {
-		njRotateY(0, data2->Forward.y += 0x100);
-		njTranslate(0, 2, 0, 0);
+	if (playerco2->AnimationThing.Index == 54 || playerco2->AnimationThing.Index == 55) {
+		njTranslateV(0, &playerdata->Position);
+		njTranslate(0, 10, 12, 0);
+		njRotateZ(0, playerdata->Rotation.z);
+		njRotateX(0, playerdata->Rotation.x);
+		njRotateY(0, -playerdata->Rotation.y - 0x4000);
 	}
 	else {
-		njRotateY(0, -data->Rotation.y - 0x4000);
-	}
+		njTranslateV(0, &data->Position);
+		njRotateZ(0, data->Rotation.z);
+		njRotateX(0, data->Rotation.x);
 
+		if (data->Index == 0) {
+			njRotateY(0, data2->Forward.y += 0x100);
+			njTranslate(0, 2, 0, 0);
+		}
+		else {
+			njRotateY(0, -data->Rotation.y - 0x4000);
+		}
+	}
+	
 	SetupWorldMatrix();
 	Direct3D_SetChunkModelRenderState();
 
@@ -98,6 +169,9 @@ void Cheese_Main(ObjectMaster* obj) {
 
 	float dist = GetDistance(&data2->VelocityDirection, &data->Position);
 	uint8_t anim = data->Index;
+
+	float state = 0;
+	float frame = data->Scale.x;
 
 	switch (data->Action) {
 	case 0:
@@ -143,6 +217,19 @@ void Cheese_Main(ObjectMaster* obj) {
 		case 54:
 		case 55:
 			anim = 8;
+			if (data->Unknown > 1) {
+				if (frame > 154) data->Unknown = 20;
+				if (frame < 114) data->Unknown = 40;
+
+				if (data->Unknown > 20 && data->Unknown < 40) {
+					++data->Unknown;
+					state = 154 - (data->Unknown - 20);
+				}
+				else if (data->Unknown > 40) {
+					++data->Unknown;
+					state = 114 + (data->Unknown - 40);
+				}
+			}
 			break;
 		case 150:
 			anim = 12;
@@ -192,12 +279,13 @@ void Cheese_Main(ObjectMaster* obj) {
 	}
 	
 	AddToCollisionList(data);
-	PlayHeroesAnimation(obj, anim, CheeseAnimData, 0, 0);
+	PlayHeroesAnimation(obj, anim, CheeseAnimData, 0, state);
 
 	obj->DisplaySub(obj);
 }
 
 NJS_MATRIX EyeLashesMatrix;
+
 void CreamCallback(NJS_OBJECT* object) {
 	if (object == (NJS_OBJECT*)CreamMdls[0]->getdata("Dummy019")) {
 		memcpy(EyeLashesMatrix, _nj_current_matrix_ptr_, sizeof(NJS_MATRIX));
@@ -219,6 +307,18 @@ void CreamHeroes_Delete(ObjectMaster *obj) {
 	}
 
 	Creams[obj->Data1->CharIndex] = nullptr;
+
+	ObjectMaster* playerobj = PlayerPtrs[obj->Data1->CharIndex];
+	if (playerobj) {
+		EntityData2* playerdata2 = (EntityData2*)playerobj->Data2;
+		CharObj2* playerco2 = playerdata2->CharacterData;
+
+		playerobj->DisplaySub = Tails_Display;
+
+		playerco2->PhysicsData.MaxAccel = PhysicsArray[2].MaxAccel;
+		playerco2->PhysicsData.field_14 = PhysicsArray[2].field_14;
+		playerco2->PhysicsData.AirAccel = PhysicsArray[2].AirAccel;
+	}
 }
 
 void CreamHeroes_Display(ObjectMaster *obj) {
@@ -252,6 +352,10 @@ void CreamHeroes_Display(ObjectMaster *obj) {
 	njRotateZ(0, entity1->Rotation.z);
 	njRotateX(0, entity1->Rotation.x);
 	njRotateY(0, -entity1->Rotation.y - 0x4000 + creamobj->Data1->Rotation.y);
+
+	if (co2->AnimationThing.Index == 54 || co2->AnimationThing.Index == 55) {
+		njTranslate(0, 10, 2, 0);
+	}
 
 	SetupWorldMatrix();
 	Direct3D_SetChunkModelRenderState();
@@ -317,6 +421,10 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 	EntityData2* playerdata2 = (EntityData2*)playerobj->Data2;
 	CharObj2* playerco2 = playerdata2->CharacterData;
 
+	playerco2->PhysicsData.MaxAccel = 2.5f;
+	playerco2->PhysicsData.field_14 = 0.8f;
+	playerco2->PhysicsData.AirAccel = 0.035999999f;
+
 	int anim = data->Index;
 	float speed = 0;
 	float state = 0;
@@ -326,34 +434,59 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 	case 2:
 		PlayerPtrs[data->CharIndex]->DisplaySub = CreamHeroes_Display;
 
-		if (playerco2->Speed.x < 1 && PressedButtons[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
+		if (playerco2->Speed.x < 2 && PressedButtons[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
 			playerdata->Action = 100;
 			data->Action = 3;
 			break;
 		}
 
+		if (anim == 34 && PressedButtons[data->CharIndex] & Buttons_X) {
+			PlayVoice(CreamSound_FlyAttack);
+			data->field_A = 0;
+			data->Action = 4;
+		}
+
+		if (anim == 34 && PressedButtons[data->CharIndex] & Buttons_A) {
+			if (++data->field_A == 2) {
+				PlayVoice(CreamSound_FlyUp);
+				data->field_A = 0;
+				playerco2->Speed.y = 2;
+			}
+		}
+
+		if (FrameCounterUnpaused % 20 == 0) data->field_A = 0;
+
 		if (anim == 19 && playerco2->AnimationThing.Index < 6) {
 			anim = 20; //just stopped rolling
 		}
 
+		if (playerco2->IdleTime > 1000) {
+			if (rand() % 2 == 0) {
+				PlayVoice(CreamSound_Idle1);
+				playerco2->AnimationThing.Index = 4;
+			}
+			else {
+				PlayVoice(CreamSound_Idle2);
+				playerco2->AnimationThing.Index = 4;
+			}
+			playerco2->IdleTime = 0;
+		}
+
 		if (anim != 20) {
 			switch (playerco2->AnimationThing.Index) {
-			case 0: anim = 11; break;
-			case 2: anim = 8; break;
+			case 0: anim = 11; data->Status = 0; break;
+			case 2: anim = 8; data->Status = 0; break;
 			case 4:
 			case 5:
 			case 6:
-				if (data->Index > 8 && frame == 0.5f && !data->Status) {
-					data->Status = rand() % 2;
-				}
-				anim = 9 + data->Status;
-
-				if (data->Index > 8 && frame > 58) {
+				anim = 10;
+				if (++data->Status == 100) {
 					playerco2->AnimationThing.Index = 0;
 					data->Status = 0;
 				}
 				break;
 			case 9:
+				data->Status = 0;
 				anim = 0;
 				if (playerco2->Speed.x < 0.02f) anim = 11;
 				break;
@@ -558,6 +691,7 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 		break;
 	case 3:
 		if (data->field_A == 0) {
+			PlayVoice(CreamSound_CheeseGetHim);
 			data->field_A = 1;
 			data->Scale.x = 0;
 		}
@@ -579,6 +713,18 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 		}
 
 		PlayHeroesAnimation(obj, 61, CreamAnimData, 0, 0);
+		break;
+	case 4:
+		if (++data->field_A == 100) {
+			data->Action = 2;
+			data->field_A = 0;
+			playerco2->Powerups &= ~Powerups_Invincibility;
+		}
+		else {
+			playerco2->Powerups |= Powerups_Invincibility;
+		}
+		
+		PlayHeroesAnimation(obj, 39, CreamAnimData, 0, 0);
 		break;
 	}
 
@@ -717,4 +863,5 @@ void LoadCreamFiles(const char *path, const HelperFunctions &helperFunctions) {
 	}
 
 	CheeseAnimData[6].NextAnim = 7;
+	CheeseAnimData[8].Property = 1;
 }
