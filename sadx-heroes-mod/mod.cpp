@@ -38,8 +38,8 @@ extern "C"
 	{
 		//Get the config.ini information
 		const IniFile *config = new IniFile(std::string(path) + "\\config.ini");
-		EnableSounds = config->getBool("General", "EnableSounds", true);
-		EnableModels = config->getBool("General", "EnableModels", true);
+		EnableSounds = config->getBool("0- General", "EnableSounds", true);
+		EnableModels = config->getBool("0- General", "EnableModels", true);
 		delete config;
 
 		//Set up function pointers for Lantern API (borrowed from PkR)

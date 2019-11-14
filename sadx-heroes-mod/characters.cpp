@@ -104,7 +104,7 @@ void Tails_Main_r(ObjectMaster* obj) {
 
 void Characters_Init(const char *path, const HelperFunctions &helperFunctions) {
 	const IniFile *config = new IniFile(std::string(path) + "\\config.ini");
-	CreamEnabled = config->getBool("Characters", "EnableCream", false);
+	CreamEnabled = config->getBool("2- Characters", "EnableCream", false);
 	delete config;
 
 	if (CreamEnabled) {

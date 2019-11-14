@@ -123,7 +123,7 @@ void Cheese_Display(ObjectMaster* obj) {
 
 	njPushMatrix(0);
 
-	if (playerco2->AnimationThing.Index == 54 || playerco2->AnimationThing.Index == 55) {
+	if (playerco2 && (playerco2->AnimationThing.Index == 54 || playerco2->AnimationThing.Index == 55)) {
 		njTranslateV(0, &playerdata->Position);
 		njTranslate(0, 10, 12, 0);
 		njRotateZ(0, playerdata->Rotation.z);
@@ -408,13 +408,13 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 		return;
 	}
 	else if (data->Action == 1) {
-		LoadChildObject((LoadObj)(LoadObj_Data1 | LoadObj_Data2), Cheese_Main, obj);
+		if (GameState == 4 || GameState == 15) LoadChildObject((LoadObj)(LoadObj_Data1 | LoadObj_Data2), Cheese_Main, obj);
 		data->Action = 2;
 		return;
 	}
 
 	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
-	if (!playerobj || playerobj->Data1->CharID != Characters_Tails) DeleteObject_(obj);
+	if (!playerobj || playerobj->Data1->CharID != Characters_Tails) {DeleteObject_(obj); return; }
 	if (!obj->Child) LoadChildObject((LoadObj)(LoadObj_Data1 | LoadObj_Data2), Cheese_Main, obj);
 
 	EntityData1* playerdata = playerobj->Data1;

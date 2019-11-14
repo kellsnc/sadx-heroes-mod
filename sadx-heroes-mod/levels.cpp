@@ -326,19 +326,19 @@ void Levels_Init(const char *path, const HelperFunctions &helperFunctions)
 
 	//Get the config.ini information
 	const IniFile *config = new IniFile(modpath + "\\config.ini");
-	EnableSeasideHill = config->getBool("Levels", "EnableSeasideHill", true);
-	EnableOceanPalace = config->getBool("Levels", "EnableOceanPalace", true);
-	EnableGrandMetropolis = config->getBool("Levels", "EnableGrandMetropolis", true);
-	EnablePowerPlant = config->getBool("Levels", "EnablePowerPlant", true);
-	EnableCasinoPark = config->getBool("Levels", "EnableCasinoPark", true);
-	EnableBingoHighway = config->getBool("Levels", "EnableBingoHighway", true);
-	EnableHangCastle = config->getBool("Levels", "EnableHangCastle", true);
-	EnableMysticMansion = config->getBool("Levels", "EnableMysticMansion", true);
-	EnableEggFleet = config->getBool("Levels", "EnableEggFleet", true);
-	EnableSpecialStages = config->getBool("Levels", "EnableSpecialStages", true);
-	NoMysticMusic = config->getBool("General", "NoMysticMusic", false);
-	NoPinball = config->getBool("General", "NoPinball", false);
-	EnableFog = config->getBool("General", "EnableFog", true);
+	EnableSeasideHill = config->getBool("1- Levels", "EnableSeasideHill", true);
+	EnableOceanPalace = config->getBool("1- Levels", "EnableOceanPalace", true);
+	EnableGrandMetropolis = config->getBool("1- Levels", "EnableGrandMetropolis", true);
+	EnablePowerPlant = config->getBool("1- Levels", "EnablePowerPlant", true);
+	EnableCasinoPark = config->getBool("1- Levels", "EnableCasinoPark", true);
+	EnableBingoHighway = config->getBool("1- Levels", "EnableBingoHighway", true);
+	EnableHangCastle = config->getBool("1- Levels", "EnableHangCastle", true);
+	EnableMysticMansion = config->getBool("1- Levels", "EnableMysticMansion", true);
+	EnableEggFleet = config->getBool("1- Levels", "EnableEggFleet", true);
+	EnableSpecialStages = config->getBool("1- Levels", "EnableSpecialStages", true);
+	NoMysticMusic = config->getBool("0- General", "NoMysticMusic", false);
+	NoPinball = config->getBool("0- General", "NoPinball", false);
+	EnableFog = config->getBool("0- General", "EnableFog", true);
 	delete config;
 
 	WriteJump((void*)0x406F00, ForceAct); //njReleaseTextureAll_

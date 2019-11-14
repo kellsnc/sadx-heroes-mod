@@ -843,19 +843,19 @@ void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions
 
 	const IniFile *config = new IniFile(std::string(path) + "\\config.ini");
 
-	if (config->getBool("Objects", "GoalRing", true)) {
+	if (config->getBool("3- Objects", "GoalRing", true)) {
 		WriteJump((void*)0x46B170, Capsule_Load_r);
 		CO_GOALRNG = LoadMDL("CO_GOALRNG");
 	}
 
-	if (config->getBool("Objects", "DashPanel", true)) {
+	if (config->getBool("3- Objects", "DashPanel", true)) {
 		WriteJump((void*)0x7A4360, SHDashPanel);
 		CO_DSHPANL = LoadMDL("CO_DSHPANL");
 		Objects_UVSHIFT[0].List = CO_DSHPANL->getmodel()->basicdxmodel->meshsets[0].vertuv;
 		Objects_UVSHIFT[0].Size = CO_DSHPANL->getmodel()->basicdxmodel->meshsets[0].nbMesh * 3;
 	}
 
-	if (config->getBool("Objects", "DashHoop", true)) {
+	if (config->getBool("3- Objects", "DashHoop", true)) {
 		WriteJump((void*)0x7A2470, SHDashHoop);
 		CO_DSHHOOP = LoadMDL("CO_DSHHOOP");
 		COMMONOBJLIST[0] = CO_DSHHOOP->getmodel()->basicdxmodel;
@@ -863,7 +863,7 @@ void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions
 		Objects_UVSHIFT[1].Size = CO_DSHHOOP->getmodel()->basicdxmodel->meshsets[2].nbMesh * 3;
 	}
 
-	if (config->getBool("Objects", "LaunchRamp", true)) {
+	if (config->getBool("3- Objects", "LaunchRamp", true)) {
 		WriteJump((void*)0x500020, SHLaunchRamp);
 		CO_LCHRAMP = LoadMDL("CO_LCHRAMP");
 		Objects_UVSHIFT[2].List = CO_LCHRAMP->getmodel()->basicdxmodel->meshsets[15].vertuv;
