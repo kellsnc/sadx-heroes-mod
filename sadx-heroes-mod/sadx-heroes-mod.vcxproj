@@ -103,6 +103,7 @@
     <ClCompile Include="ocean-palace.cpp" />
     <ClCompile Include="power-plant-objects.cpp" />
     <ClCompile Include="power-plant.cpp" />
+    <ClCompile Include="rouge.cpp" />
     <ClCompile Include="seaside-hill.cpp" />
     <ClCompile Include="mod.cpp" />
     <ClCompile Include="seaside-hill-objects.cpp" />

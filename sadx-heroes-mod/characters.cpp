@@ -3,13 +3,16 @@
 #include "characters.h"
 
 bool CreamEnabled = false;
-bool CharTexsLoaded[1];
+bool RougeEnabled = false;
+bool CharTexsLoaded[2];
 
 FastcallFunctionPointer(void, DrawChunkModel_, (Sint32* a1, Sint16* a2), 0x7917F0);
 
 D3DMATRIX WorldMatrixBackup;
 
 int CurrentPlayer;
+
+using std::string;
 
 bool OhNoImDead2(EntityData1 *a1, ObjectData2 *a2);
 Trampoline OhNoImDead2_t(0x004CE030, 0x004CE036, OhNoImDead2);
@@ -88,6 +91,9 @@ void Tails_Display_(ObjectMaster* obj) {
 	if (Creams[obj->Data1->CharIndex]) {
 		CreamHeroes_Display(obj);
 	}
+	else if (Rouges[obj->Data1->CharIndex]) {
+		RougeHeroes_Display(obj);
+	}
 	else {
 		Tails_Display(obj);
 	}
@@ -102,29 +108,71 @@ void Tails_Main_r(ObjectMaster* obj) {
 	original(obj);
 }
 
+void PlayVoice_FlyChar(int ID) {
+	switch (ID) {
+	case 1803:
+		if (Creams[CurrentPlayer]) {
+			PlayVoice_Cream(ID);
+		}
+		else if (Rouges[CurrentPlayer]) {
+			PlayVoice_Rouge(ID);
+		}
+		else {
+			PlayVoice(1803);
+		}
+		break;
+	default:
+		PlayVoice(ID);
+		break;
+	}
+}
+
+int PlaySound_FlyChar(int ID, void *a2, int a3, void *a4) {
+	if (Creams[CurrentPlayer]) {
+		return PlaySound_Cream(ID, a2, a3, a4);
+	}
+	else if (Rouges[CurrentPlayer]) {
+		return PlaySound_Rouge(ID, a2, a3, a4);
+	}
+	else {
+		return PlaySound(ID, a2, a3, a4);
+	}
+}
+
 void Characters_Init(const char *path, const HelperFunctions &helperFunctions) {
 	const IniFile *config = new IniFile(std::string(path) + "\\config.ini");
-	CreamEnabled = config->getBool("2- Characters", "EnableCream", false);
-	delete config;
-
-	if (CreamEnabled) {
+	const string FlyCharacter = config->getString("2- Characters", "FlyCharacter", "None");
+	
+	if (!FlyCharacter.compare("Cream")) {
 		LoadCreamFiles(path, helperFunctions);
-		WriteCall((void*)0x462456, Tails_Display_);
-		WriteCall((void*)0x45C037, PlaySound_Tails); //jump
-		WriteCall((void*)0x45BE01, PlaySound_Tails); //fly
-		WriteCall((void*)0x45BF8D, PlaySound_Tails); //hurt
-		WriteCall((void*)0x446A49, PlaySound_Tails); //death
-		WriteCall((void*)0x45BE57, PlayVoice_Tails); //death
+		CreamEnabled = true;
 	}
+	else if (!FlyCharacter.compare("Rouge")) {
+		LoadRougeFiles(path, helperFunctions);
+		RougeEnabled = true;
+	}
+
+	WriteCall((void*)0x462456, Tails_Display_);
+	WriteCall((void*)0x45C037, PlaySound_FlyChar); //jump
+	WriteCall((void*)0x45BE01, PlaySound_FlyChar); //fly
+	WriteCall((void*)0x45BF8D, PlaySound_FlyChar); //hurt
+	WriteCall((void*)0x446A49, PlaySound_FlyChar); //death
+	WriteCall((void*)0x45BE57, PlayVoice_FlyChar); //death
+
+	delete config;
 }
 
 void Characters_OnFrame() {
 	for (uint8_t player = 0; player < 8; ++player) {
 		if (!EntityData1Ptrs[player]) continue;
-		if (EntityData1Ptrs[player]->CharID == Characters_Tails && CreamEnabled) {
-			if (!Creams[player]) {
+		if (EntityData1Ptrs[player]->CharID == Characters_Tails) {
+			if (CreamEnabled && !Creams[player]) {
 				Creams[player] = LoadObject(LoadObj_Data1, 1, CreamHeroes_Main);
 				Creams[player]->Data1->CharIndex = player;
+			}
+			else if (RougeEnabled && !Rouges[player]) {
+				Rouges[player] = LoadObject(LoadObj_Data1, 1, RougeHeroes_Main);
+				Rouges[player]->Data1->CharIndex = player;
 			}
 		}
 	}

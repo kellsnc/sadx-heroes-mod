@@ -35,22 +35,15 @@ enum CreamSounds {
 	CreamSound_Fall
 };
 
-void PlayVoice_Tails(int ID) {
+void PlayVoice_Cream(int ID) {
 	switch (ID) {
 	case 1803:
 		PlayVoice(CreamSound_Win);
 		break;
-	default:
-		PlayVoice(ID);
-		break;
 	}
 }
 
-int PlaySound_Tails(int ID, void *a2, int a3, void *a4) {
-	if (Creams[CurrentPlayer] == nullptr) {
-		return PlaySound(ID, a2, a3, a4);
-	}
-
+int PlaySound_Cream(int ID, void *a2, int a3, void *a4) {
 	int random = rand() % 10;
 	
 	switch (ID) {
