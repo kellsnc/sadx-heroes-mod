@@ -15,6 +15,25 @@ NJS_TEXLIST ROUGE_TEXLIST = { arrayptrandlength(ROUGE_TEXNAMES) };
 
 NJS_MATRIX RougeMatrices[2];
 
+enum RougeSounds {
+	RougeSound_Attack = 11000,
+	RougeSound_FlyBegin,
+	RougeSound_FlyAttack,
+	RougeSound_FlyUp,
+	RougeSound_TeamSwap,
+	RougeSound_ThatHurts,
+	RougeSound_Hurt1,
+	RougeSound_Hurt2,
+	RougeSound_Trick,
+	RougeSound_BombAttack,
+	RougeSound_Death,
+	RougeSound_LevelUp,
+	RougeSound_Win,
+	RougeSound_Lose,
+	RougeSound_Idle1,
+	RougeSound_Idle2
+};
+
 void RougeWings_Main(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1;
 	EntityData1* rougedata = obj->Parent->Data1;
@@ -177,9 +196,9 @@ void RougeHeroes_Main(ObjectMaster *obj) {
 	EntityData2* playerdata2 = (EntityData2*)playerobj->Data2;
 	CharObj2* playerco2 = playerdata2->CharacterData;
 
-	playerco2->PhysicsData.MaxAccel = 2.5f;
-	playerco2->PhysicsData.field_14 = 0.8f;
-	playerco2->PhysicsData.AirAccel = 0.035999999f;
+	playerco2->PhysicsData.MaxAccel = 2.7f;
+	playerco2->PhysicsData.field_14 = 0.85f;
+	playerco2->PhysicsData.AirAccel = 0.038999999f;
 
 	int anim = data->Index;
 	float speed = 0;
@@ -197,14 +216,14 @@ void RougeHeroes_Main(ObjectMaster *obj) {
 		}
 
 		if (anim == 34 && PressedButtons[data->CharIndex] & Buttons_X) {
-			//PlayVoice(CreamSound_FlyAttack);
+			PlayVoice(RougeSound_FlyAttack);
 			data->field_A = 0;
 			data->Action = 4;
 		}
 
 		if (anim == 34 && PressedButtons[data->CharIndex] & Buttons_A) {
 			if (++data->field_A == 2) {
-				//PlayVoice(CreamSound_FlyUp);
+				PlayVoice(RougeSound_FlyUp);
 				obj->Child->Data1->field_A = 1;
 				data->field_A = 0;
 				playerco2->Speed.y = 2;
@@ -219,11 +238,11 @@ void RougeHeroes_Main(ObjectMaster *obj) {
 
 		if (playerco2->IdleTime > 1000) {
 			if (rand() % 2 == 0) {
-				//PlayVoice(CreamSound_Idle1);
+				PlayVoice(RougeSound_Idle1);
 				playerco2->AnimationThing.Index = 4;
 			}
 			else {
-				//PlayVoice(CreamSound_Idle2);
+				PlayVoice(RougeSound_Idle2);
 				playerco2->AnimationThing.Index = 4;
 			}
 			playerco2->IdleTime = 0;
@@ -243,6 +262,9 @@ void RougeHeroes_Main(ObjectMaster *obj) {
 					data->Status = 0;
 				}
 				break;
+			case 7:
+			case 8: 
+				anim = 9; data->Status = 0; break;
 			case 9:
 				data->Status = 0;
 				anim = 0;
@@ -450,6 +472,7 @@ void RougeHeroes_Main(ObjectMaster *obj) {
 	case 3:
 		if (data->field_A == 0) {
 			data->field_A = 1;
+			PlayVoice(RougeSound_BombAttack);
 			data->Scale.x = 0;
 		}
 		else if (data->field_A < 30) {
@@ -458,10 +481,15 @@ void RougeHeroes_Main(ObjectMaster *obj) {
 			}
 			else {
 				data->field_A = 30;
+				ObjectMaster* temp = LoadObject(LoadObj_Data1, 3, (ObjectFuncPtr)0x4AC920);
+				temp->Data1->Rotation.y = -playerdata->Rotation.y;
+				temp->Data1->Position = playerdata->Position;
+				temp->Data1->Position.y += 5;
+				temp->Parent = obj;
 			}
 		}
 		else {
-			if (++data->field_A == 120) {
+			if (++data->field_A == 88) {
 				data->Action = 2;
 				playerdata->Action = 1;
 				data->field_A = 0;
@@ -471,7 +499,7 @@ void RougeHeroes_Main(ObjectMaster *obj) {
 		PlayHeroesAnimation(obj, 13, RougeAnimData, 0, 0);
 		break;
 	case 4:
-		if (++data->field_A == 100) {
+		if (++data->field_A == 48) {
 			data->Action = 2;
 			data->field_A = 0;
 			playerco2->Powerups &= ~Powerups_Invincibility;
@@ -498,7 +526,7 @@ void RougeHeroes_Main(ObjectMaster *obj) {
 void PlayVoice_Rouge(int ID) {
 	switch (ID) {
 	case 1803:
-		
+		PlayVoice(RougeSound_Win);
 		break;
 	}
 }
@@ -508,16 +536,18 @@ int PlaySound_Rouge(int ID, void *a2, int a3, void *a4) {
 
 	switch (ID) {
 	case 17:
-		
+		PlayVoice(RougeSound_Trick);
 		break;
 	case 1243:
-		
+		PlayVoice(RougeSound_FlyBegin);
 		break;
 	case 1249:
-		
+		if (random < 4) PlayVoice(RougeSound_ThatHurts);
+		else if (random < 8) PlayVoice(RougeSound_Hurt1);
+		else PlayVoice(RougeSound_Hurt2);
 		break;
 	case 1465:
-		
+		PlayVoice(RougeSound_Death);
 		break;
 	case 1453:
 		PlaySound(ID, a2, a3, a4);

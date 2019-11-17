@@ -31,8 +31,7 @@ enum CreamSounds {
 	CreamSound_Win,
 	CreamSound_Lose,
 	CreamSound_Idle1,
-	CreamSound_Idle2,
-	CreamSound_Fall
+	CreamSound_Idle2
 };
 
 void PlayVoice_Cream(int ID) {
