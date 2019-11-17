@@ -83,7 +83,10 @@ NJS_VECTOR GetCheesePoint(NJS_VECTOR* pos, Rotation3* rot) {
 ObjectMaster* Cheese_GetClosestEnemy(NJS_VECTOR* pos) {
 	ObjectMaster * current = ObjectListThing[3];
 	while (1) {
-		if (current->MainSub == Kiki_Main || current->MainSub == RhinoTank_Main || current->MainSub == Sweep_Main) {
+		if (current->MainSub == Kiki_Main || current->MainSub == RhinoTank_Main || current->MainSub == Sweep_Main
+			|| current->MainSub == SpinnerA_Main || current->MainSub == SpinnerB_Main || current->MainSub == SpinnerC_Main
+			|| current->MainSub == UnidusA_Main || current->MainSub == UnidusB_Main || current->MainSub == UnidusC_Main
+			|| current->MainSub == Leon_Main || current->MainSub == BoaBoa_Main || current->MainSub == ESman) {
 			float dist = GetDistance(pos, &current->Data1->Position);
 			if (GetDistance(pos, &current->Data1->Position) < 200) return current;
 			else {
