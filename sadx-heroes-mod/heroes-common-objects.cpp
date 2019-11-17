@@ -290,10 +290,9 @@ void ObjBalloon_Display(ObjectMaster *a1)
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
 		njScale(nullptr, a1->Data1->Scale.y, a1->Data1->Scale.y, a1->Data1->Scale.y);
 
-		if (a1->Data1->Scale.y != 1) {
-			float a = a1->Data1->Scale.y - 5;
-			a = -a;
-			SetMaterialAndSpriteColor_Float(a, 1.0f, 1.0f, 1.0f);
+		if (a1->Data1->Scale.y != 3) {
+			a1->Data1->Scale.z -= 0.1f;
+     		SetMaterialAndSpriteColor_Float(a1->Data1->Scale.z, 1.0f, 1.0f, 1.0f);
 		}
 		DrawQueueDepthBias = -6000.0f;
 		njDrawModel_SADX(CO_BALLOON->getmodel()->basicdxmodel);
@@ -305,18 +304,16 @@ void ObjBalloon_Display(ObjectMaster *a1)
 
 void ObjBalloon_Main(ObjectMaster *a1)
 {
-	if (!ClipSetObject(a1)) {
+	if (a1->Data1->NextAction || !ClipSetObject(a1)) {
 		float item = a1->Data1->Scale.x;
 
-		if (a1->Data1->Scale.z != 4 && a1->Data1->NextAction != 2) {
+		if (!a1->Data1->NextAction) {
 			a1->Data1->CharIndex = IsPlayerInsideSphere(&a1->Data1->Position, 50);
 
-			if (a1->Data1->CharIndex) a1->Data1->NextAction = 1;
+			if (a1->Data1->CharIndex) {
+				a1->Data1->Scale.y += 0.2f;
 
-			if (a1->Data1->NextAction == 1) {
-				a1->Data1->Scale.y += 0.1f;
-
-				if (a1->Data1->Scale.y == 3.1f) {
+				if (a1->Data1->Scale.y == 3.2f) {
 					if (item == 12) {
 						if (GetCharacterID(a1->Data1->CharIndex - 1) == Characters_Tails) {
 							CharObj2 *co2 = CharObj2Ptrs[a1->Data1->CharIndex - 1];
@@ -325,18 +322,21 @@ void ObjBalloon_Main(ObjectMaster *a1)
 					}
 				}
 			}
-		}
-		else if (a1->Data1->Scale.z > 4 && a1->Data1->NextAction == 1) {
-			a1->Data1->NextAction == 2;
-		}
 
-		ObjBalloon_Display(a1);
+			if (a1->Data1->Scale.y > 7.f) {
+				a1->Data1->NextAction = 1;
+			}
+			else {
+				ObjBalloon_Display(a1);
+			}
+		}
 	}
 }
 
 void __cdecl ObjBalloon(ObjectMaster *a1)
 {
 	a1->Data1->Scale.y = 3;
+	a1->Data1->Scale.z = 1;
 
 	a1->MainSub = &ObjBalloon_Main;
 	a1->DisplaySub = &ObjBalloon_Display;
