@@ -620,10 +620,7 @@ void LoadRougeFiles(const char *path, const HelperFunctions &helperFunctions) {
 		RougeAnimData[i].Animation = new NJS_ACTION;
 		RougeAnimData[i].Animation->object = RougeMdls[0]->getmodel();
 		RougeAnimData[i].Animation->motion = RougeAnms[i]->getmotion();
-		RougeAnimData[i].Instance = 68;
 		RougeAnimData[i].NextAnim = i;
-		RougeAnimData[i].Property = 3;
-		RougeAnimData[i].TransitionSpeed = 0.25f;
 		RougeAnimData[i].AnimationSpeed = 0.5f;
 	}
 

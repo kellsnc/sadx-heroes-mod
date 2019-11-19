@@ -808,10 +808,7 @@ void LoadCreamFiles(const char *path, const HelperFunctions &helperFunctions) {
 		CreamAnimData[i].Animation = new NJS_ACTION;
 		CreamAnimData[i].Animation->object = CreamMdls[0]->getmodel();
 		CreamAnimData[i].Animation->motion = CreamAnms[i]->getmotion();
-		CreamAnimData[i].Instance = 68;
 		CreamAnimData[i].NextAnim = i;
-		CreamAnimData[i].Property = 3;
-		CreamAnimData[i].TransitionSpeed = 0.25f;
 		CreamAnimData[i].AnimationSpeed = 0.5f;
 	}
 
@@ -836,10 +833,7 @@ void LoadCreamFiles(const char *path, const HelperFunctions &helperFunctions) {
 		CheeseAnimData[i].Animation = new NJS_ACTION;
 		CheeseAnimData[i].Animation->object = CreamMdls[2]->getmodel();
 		CheeseAnimData[i].Animation->motion = CreamAnms[i + 63]->getmotion();
-		CheeseAnimData[i].Instance = 68;
 		CheeseAnimData[i].NextAnim = i;
-		CheeseAnimData[i].Property = 3;
-		CheeseAnimData[i].TransitionSpeed = 0.25f;
 		CheeseAnimData[i].AnimationSpeed = 0.5f;
 	}
 

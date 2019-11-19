@@ -601,10 +601,7 @@ void LoadCharmyFiles(const char *path, const HelperFunctions &helperFunctions) {
 		CharmyAnimData[i].Animation = new NJS_ACTION;
 		CharmyAnimData[i].Animation->object = CharmyMdls[0]->getmodel();
 		CharmyAnimData[i].Animation->motion = CharmyAnms[i]->getmotion();
-		CharmyAnimData[i].Instance = 68;
 		CharmyAnimData[i].NextAnim = i;
-		CharmyAnimData[i].Property = 3;
-		CharmyAnimData[i].TransitionSpeed = 0.25f;
 		CharmyAnimData[i].AnimationSpeed = 0.5f;
 	}
 	
@@ -635,9 +632,5 @@ void LoadCharmyFiles(const char *path, const HelperFunctions &helperFunctions) {
 	CWingsAnimData.Animation = new NJS_ACTION;
 	CWingsAnimData.Animation->object = CharmyMdls[2]->getmodel();
 	CWingsAnimData.Animation->motion = CharmyAnms[0]->getmotion();
-	CWingsAnimData.Instance = 68;
 	CWingsAnimData.NextAnim = 0;
-	CWingsAnimData.Property = 3;
-	CWingsAnimData.TransitionSpeed = 0.25f;
-	CWingsAnimData.AnimationSpeed = 0.5f;
 }
