@@ -8,8 +8,6 @@ AnimationFile* RougeAnms[66];
 AnimData RougeAnimData[60];
 AnimData RWingsAnimData[6];
 
-ObjectMaster* Rouges[8];
-
 NJS_TEXNAME ROUGE_TEXNAMES[7];
 NJS_TEXLIST ROUGE_TEXLIST = { arrayptrandlength(ROUGE_TEXNAMES) };
 
@@ -34,6 +32,40 @@ enum RougeSounds {
 	RougeSound_Idle2
 };
 
+void PlayVoice_Rouge(int ID) {
+	switch (ID) {
+	case 1803:
+		PlayVoice(RougeSound_Win);
+		break;
+	}
+}
+
+int PlaySound_Rouge(int ID, void *a2, int a3, void *a4) {
+	int random = rand() % 10;
+
+	switch (ID) {
+	case 17:
+		PlayVoice(RougeSound_Trick);
+		break;
+	case 1243:
+		PlayVoice(RougeSound_FlyBegin);
+		break;
+	case 1249:
+		if (random < 4) PlayVoice(RougeSound_ThatHurts);
+		else if (random < 8) PlayVoice(RougeSound_Hurt1);
+		else PlayVoice(RougeSound_Hurt2);
+		break;
+	case 1465:
+		PlayVoice(RougeSound_Death);
+		break;
+	case 1453:
+		PlaySound(ID, a2, a3, a4);
+		break;
+	}
+
+	return 1;
+}
+
 void RougeWings_Main(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1;
 	EntityData1* rougedata = obj->Parent->Data1;
@@ -54,35 +86,6 @@ void RougeWings_Main(ObjectMaster* obj) {
 	PlayHeroesAnimation(obj, anim, RWingsAnimData, 0, 0);
 }
 
-void RougeHeroes_Delete(ObjectMaster *obj) {
-	bool IsThereRouge = false;
-
-	for (uint8_t player = 0; player < 8; ++player) {
-		if (player != obj->Data1->CharIndex && PlayerPtrs[player]) {
-			if (Rouges[player]) IsThereRouge = true;
-		}
-	}
-
-	if (!IsThereRouge) {
-		njReleaseTexture(&ROUGE_TEXLIST);
-		CharTexsLoaded[9 - Characters_Rouge] = false;
-	}
-
-	Rouges[obj->Data1->CharIndex] = nullptr;
-
-	ObjectMaster* playerobj = PlayerPtrs[obj->Data1->CharIndex];
-	if (playerobj) {
-		EntityData2* playerdata2 = (EntityData2*)playerobj->Data2;
-		CharObj2* playerco2 = playerdata2->CharacterData;
-
-		playerobj->DisplaySub = Tails_Display;
-
-		playerco2->PhysicsData.MaxAccel = PhysicsArray[2].MaxAccel;
-		playerco2->PhysicsData.field_14 = PhysicsArray[2].field_14;
-		playerco2->PhysicsData.AirAccel = PhysicsArray[2].AirAccel;
-	}
-}
-
 void RougeCallback(NJS_OBJECT* object) {
 	if (object == (NJS_OBJECT*)RougeMdls[0]->getdata("Rouge031")) {
 		memcpy(RougeMatrices[0], _nj_current_matrix_ptr_, sizeof(NJS_MATRIX)); //eyelashes
@@ -92,8 +95,25 @@ void RougeCallback(NJS_OBJECT* object) {
 	}
 }
 
+void RougeHeroes_Delete(ObjectMaster *obj) {
+	bool IsThereRouge = false;
+
+	for (uint8_t player = 0; player < 8; ++player) {
+		if (player != obj->Data1->CharIndex && PlayerPtrs[player]) {
+			if (HeroesChars[obj->Data1->CharIndex]->Data1->CharID == Characters_Rouge) IsThereRouge = true;
+		}
+	}
+
+	if (!IsThereRouge) {
+		njReleaseTexture(&ROUGE_TEXLIST);
+		CharTexsLoaded[Characters_Rouge - 9] = false;
+	}
+
+	CharactersCommon_Delete(obj);
+}
+
 void RougeHeroes_Display(ObjectMaster *obj) {
-	ObjectMaster* rougeobj = Rouges[obj->Data1->CharIndex];
+	ObjectMaster* rougeobj = HeroesChars[obj->Data1->CharIndex];
 	if (!rougeobj) return;
 
 	EntityData1* entity1 = obj->Data1;
@@ -175,8 +195,8 @@ void RougeHeroes_Main(ObjectMaster *obj) {
 		data->CharID = Characters_Rouge;
 		data->Action = 1;
 
-		if (!CharTexsLoaded[9 - Characters_Rouge]) {
-			CharTexsLoaded[9 - Characters_Rouge] = true;
+		if (!CharTexsLoaded[Characters_Rouge - 9]) {
+			CharTexsLoaded[Characters_Rouge - 9] = true;
 			LoadPVM("rouge", &ROUGE_TEXLIST);
 		}
 
@@ -207,7 +227,7 @@ void RougeHeroes_Main(ObjectMaster *obj) {
 
 	switch (data->Action) {
 	case 2:
-		PlayerPtrs[data->CharIndex]->DisplaySub = CreamHeroes_Display;
+		PlayerPtrs[data->CharIndex]->DisplaySub = RougeHeroes_Display;
 
 		if (playerco2->Speed.x < 2 && PressedButtons[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
 			playerdata->Action = 100;
@@ -523,40 +543,6 @@ void RougeHeroes_Main(ObjectMaster *obj) {
 	RunObjectChildren(obj);
 }
 
-void PlayVoice_Rouge(int ID) {
-	switch (ID) {
-	case 1803:
-		PlayVoice(RougeSound_Win);
-		break;
-	}
-}
-
-int PlaySound_Rouge(int ID, void *a2, int a3, void *a4) {
-	int random = rand() % 10;
-
-	switch (ID) {
-	case 17:
-		PlayVoice(RougeSound_Trick);
-		break;
-	case 1243:
-		PlayVoice(RougeSound_FlyBegin);
-		break;
-	case 1249:
-		if (random < 4) PlayVoice(RougeSound_ThatHurts);
-		else if (random < 8) PlayVoice(RougeSound_Hurt1);
-		else PlayVoice(RougeSound_Hurt2);
-		break;
-	case 1465:
-		PlayVoice(RougeSound_Death);
-		break;
-	case 1453:
-		PlaySound(ID, a2, a3, a4);
-		break;
-	}
-
-	return 1;
-}
-
 void LoadRougeFiles(const char *path, const HelperFunctions &helperFunctions) {
 	RougeMdls[0] = new ModelInfo(HelperFunctionsGlobal.GetReplaceablePath("system\\characters\\rouge_main.sa2mdl"));
 	RougeMdls[1] = new ModelInfo(HelperFunctionsGlobal.GetReplaceablePath("system\\characters\\rouge_eyelashes.sa2mdl"));
@@ -648,14 +634,12 @@ void LoadRougeFiles(const char *path, const HelperFunctions &helperFunctions) {
 	RougeAnimData[22].NextAnim = 23;
 	RougeAnimData[54].Property = 1;
 	RougeAnimData[55].Property = 1;
-	RougeAnimData[60].Property = 1;
 	RougeAnimData[32].Property = 1;
 	RougeAnimData[25].Property = 1;
 	RougeAnimData[30].Property = 1;
 	RougeAnimData[31].Property = 1;
 	RougeAnimData[33].Property = 1;
 	RougeAnimData[56].NextAnim = 11;
-	RougeAnimData[61].Property = 1;
 	RougeAnimData[23].AnimationSpeed = 0.25f;
 
 	for (uint8_t i = 0; i < LengthOfArray(RWingsAnimData); ++i) {

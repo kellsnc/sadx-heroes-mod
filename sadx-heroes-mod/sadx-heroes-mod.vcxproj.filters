@@ -129,6 +129,9 @@
     <ClCompile Include="rouge.cpp">
       <Filter>Source Files\Characters</Filter>
     </ClCompile>
+    <ClCompile Include="charmy.cpp">
+      <Filter>Source Files\Characters</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">

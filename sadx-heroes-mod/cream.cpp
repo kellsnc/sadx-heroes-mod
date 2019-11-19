@@ -8,8 +8,6 @@ AnimationFile* CreamAnms[76];
 AnimData CreamAnimData[63];
 AnimData CheeseAnimData[13];
 
-ObjectMaster* Creams[8];
-
 NJS_TEXNAME CREAM_TEXNAMES[4];
 NJS_TEXLIST CREAM_TEXLIST = { arrayptrandlength(CREAM_TEXNAMES) };
 
@@ -292,32 +290,20 @@ void CreamHeroes_Delete(ObjectMaster *obj) {
 
 	for (uint8_t player = 0; player < 8; ++player) {
 		if (player != obj->Data1->CharIndex && PlayerPtrs[player]) {
-			if (Creams[player]) IsThereCream = true;
+			if (HeroesChars[obj->Data1->CharIndex]->Data1->CharID == Characters_Cream) IsThereCream = true;
 		}
 	}
 
 	if (!IsThereCream) {
 		njReleaseTexture(&CREAM_TEXLIST);
-		CharTexsLoaded[9 - Characters_Cream] = false;
+		CharTexsLoaded[Characters_Cream - 9] = false;
 	}
 
-	Creams[obj->Data1->CharIndex] = nullptr;
-
-	ObjectMaster* playerobj = PlayerPtrs[obj->Data1->CharIndex];
-	if (playerobj) {
-		EntityData2* playerdata2 = (EntityData2*)playerobj->Data2;
-		CharObj2* playerco2 = playerdata2->CharacterData;
-
-		playerobj->DisplaySub = Tails_Display;
-
-		playerco2->PhysicsData.MaxAccel = PhysicsArray[2].MaxAccel;
-		playerco2->PhysicsData.field_14 = PhysicsArray[2].field_14;
-		playerco2->PhysicsData.AirAccel = PhysicsArray[2].AirAccel;
-	}
+	CharactersCommon_Delete(obj);
 }
 
 void CreamHeroes_Display(ObjectMaster *obj) {
-	ObjectMaster* creamobj = Creams[obj->Data1->CharIndex];
+	ObjectMaster* creamobj = HeroesChars[obj->Data1->CharIndex];
 	if (!creamobj) return;
 
 	EntityData1* entity1 = obj->Data1;
@@ -395,8 +381,8 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 		data->CharID = Characters_Cream;
 		data->Action = 1;
 
-		if (!CharTexsLoaded[9 - Characters_Cream]) {
-			CharTexsLoaded[9 - Characters_Cream] = true;
+		if (!CharTexsLoaded[Characters_Cream - 9]) {
+			CharTexsLoaded[Characters_Cream - 9] = true;
 			LoadPVM("cream", &CREAM_TEXLIST);
 		}
 
