@@ -47,7 +47,7 @@ void ElevatePlayer(uint8_t slot) {
 }
 
 void Objects_Init(const char *path, const HelperFunctions &helperFunctions) {
-	if (EnableModels) CommonObjects_Init(path, helperFunctions);
+	CommonObjects_Init(path, helperFunctions);
 	WriteJump((void*)0x004CD370, ObjectData2_SetStartPosition_r);
 
 	WriteData((SETObjData**)0x0046B817, &set_table[0]);

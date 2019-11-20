@@ -15,7 +15,7 @@ set_blend* set_blend_ptr;
 std::string modpath;
 HelperFunctions HelperFunctionsGlobal;
 
-bool EnableModels = true;
+bool EnableModels = false;
 bool EnableSounds = true;
 bool IsLoaded = false;
 bool ChunkSwapped = false;
@@ -39,7 +39,6 @@ extern "C"
 		//Get the config.ini information
 		const IniFile *config = new IniFile(std::string(path) + "\\config.ini");
 		EnableSounds = config->getBool("0- General", "EnableSounds", true);
-		EnableModels = config->getBool("0- General", "EnableModels", true);
 		delete config;
 
 		//Set up function pointers for Lantern API (borrowed from PkR)

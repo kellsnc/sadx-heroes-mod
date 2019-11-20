@@ -844,6 +844,7 @@ void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions
 	if (config->getBool("3- Objects", "GoalRing", true)) {
 		WriteJump((void*)0x46B170, Capsule_Load_r);
 		CO_GOALRNG = LoadObjectModel("CO_GOALRNG");
+		EnableModels = true;
 	}
 
 	if (config->getBool("3- Objects", "DashPanel", true)) {
@@ -851,6 +852,7 @@ void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions
 		CO_DSHPANL = LoadObjectModel("CO_DSHPANL");
 		Objects_UVSHIFT[0].List = CO_DSHPANL->getmodel()->basicdxmodel->meshsets[0].vertuv;
 		Objects_UVSHIFT[0].Size = CO_DSHPANL->getmodel()->basicdxmodel->meshsets[0].nbMesh * 3;
+		EnableModels = true;
 	}
 
 	if (config->getBool("3- Objects", "DashHoop", true)) {
@@ -859,6 +861,7 @@ void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions
 		COMMONOBJLIST[0] = CO_DSHHOOP->getmodel()->basicdxmodel;
 		Objects_UVSHIFT[1].List = CO_DSHHOOP->getmodel()->basicdxmodel->meshsets[2].vertuv;
 		Objects_UVSHIFT[1].Size = CO_DSHHOOP->getmodel()->basicdxmodel->meshsets[2].nbMesh * 3;
+		EnableModels = true;
 	}
 
 	if (config->getBool("3- Objects", "LaunchRamp", true)) {
@@ -866,6 +869,7 @@ void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions
 		CO_LCHRAMP = LoadObjectModel("CO_LCHRAMP");
 		Objects_UVSHIFT[2].List = CO_LCHRAMP->getmodel()->basicdxmodel->meshsets[15].vertuv;
 		Objects_UVSHIFT[2].Size = CO_LCHRAMP->getmodel()->basicdxmodel->meshsets[15].nbMesh * 3;
+		EnableModels = true;
 	}
 
 	delete config;
