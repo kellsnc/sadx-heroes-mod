@@ -1,6 +1,4 @@
 #include "stdafx.h"
-#include "mod.h"
-#include "levels.h"
 
 void SpecialStagesObjects_Init();
 void __cdecl SSWaves(ObjectMaster *a1);

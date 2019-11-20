@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "mod.h"
 
 bool IsLantern = false;
 set_shader_flags* set_shader_flags_ptr;
@@ -13,6 +12,7 @@ set_diffuse_blend_factor* set_diffuse_blend_factor_ptr;
 set_specular_blend_factor* set_specular_blend_factor_ptr;
 set_blend* set_blend_ptr;
 
+std::string modpath;
 HelperFunctions HelperFunctionsGlobal;
 
 bool EnableModels = true;
@@ -59,6 +59,7 @@ extern "C"
 			set_blend_ptr = (void(*)(int32_t, int32_t))GetProcAddress(LanternDLL, "set_blend");
 		}
 
+		modpath = std::string(path);
 		HelperFunctionsGlobal = helperFunctions;
 
 		WriteData((Uint8*)0x438330, FREECAM_FIX); //freecam fix by SonicFreak94

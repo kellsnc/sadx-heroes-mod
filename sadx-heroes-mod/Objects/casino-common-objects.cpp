@@ -1,7 +1,4 @@
 #include "stdafx.h"
-#include "mod.h"
-#include "objects.h"
-
 #include "casino-common-objects.h"
 
 extern bool inSlot = false;

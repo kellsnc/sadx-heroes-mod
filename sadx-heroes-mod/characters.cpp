@@ -1,6 +1,4 @@
 #include "stdafx.h"
-#include "mod.h"
-#include "characters.h"
 
 uint8_t FlyCharEnabled;
 bool CharTexsLoaded[3];

@@ -1,7 +1,4 @@
 #include "stdafx.h"
-#include "mod.h"
-#include "objects.h"
-
 #include "grand-metropolis-objects.h"
 
 ModelInfo * GM_ADVERTS;

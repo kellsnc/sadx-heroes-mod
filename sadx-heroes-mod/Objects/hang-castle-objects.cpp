@@ -1,7 +1,4 @@
 #include "stdafx.h"
-#include "mod.h"
-#include "objects.h"
-
 #include "hang-castle-objects.h"
 
 static int hcflagtimer = 0;

@@ -1,7 +1,4 @@
 #include "stdafx.h"
-#include "mod.h"
-#include "objects.h"
-
 #include "mystic-common-objects.h"
 
 ModelInfo * MM_MOVPLAT;

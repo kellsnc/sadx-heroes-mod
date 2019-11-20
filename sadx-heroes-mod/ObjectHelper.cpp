@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "mod.h"
 
 //Load Object File
 ModelInfo* LoadMDL(const char *type, const char *name) {

@@ -1,7 +1,4 @@
 #include "stdafx.h"
-#include "mod.h"
-
-#include "objects.h"
 
 NJS_MATERIAL matlist_col[] = {
 	{ { 0xFFFFFFFF },{ 0xFFFFFFFF }, 0, 0, NJD_DA_INV_SRC | NJD_SA_SRC }

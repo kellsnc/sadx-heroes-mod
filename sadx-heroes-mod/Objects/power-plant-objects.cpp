@@ -1,7 +1,4 @@
 #include "stdafx.h"
-#include "mod.h"
-#include "objects.h"
-
 #include "power-plant-objects.h"
 
 ModelInfo * PP_ELEVATR;

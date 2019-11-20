@@ -1,6 +1,4 @@
 #include "stdafx.h"
-#include "mod.h"
-#include "levels.h"
 
 extern uint8_t SlotState = 0;
 

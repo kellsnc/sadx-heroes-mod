@@ -1,6 +1,4 @@
 #include "stdafx.h"
-#include "mod.h"
-#include "levels.h"
 #include "ocean-palace-paths.h"
 #include "road-rock-deathzones.h"
 #include "ocean-palace.h"

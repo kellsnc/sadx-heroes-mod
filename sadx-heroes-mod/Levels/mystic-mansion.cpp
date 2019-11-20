@@ -1,6 +1,4 @@
 #include "stdafx.h"
-#include "mod.h"
-#include "levels.h"
 #include "mystic-mansion-paths.h"
 #include "mystic-mansion-deathzones.h"
 #include "mystic-mansion.h"

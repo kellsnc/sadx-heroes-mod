@@ -1,6 +1,4 @@
 #include "stdafx.h"
-#include "mod.h"
-#include "objects.h"
 
 void HCWarp(ObjectMaster *a1);
 void HCDoor(ObjectMaster *a1);

@@ -1,6 +1,4 @@
 #include "stdafx.h"
-#include "mod.h"
-#include "objects.h"
 
 NJS_TEXNAME SHTexNames[40];
 NJS_TEXLIST SHCommonTextures = { arrayptrandlength(SHTexNames) };

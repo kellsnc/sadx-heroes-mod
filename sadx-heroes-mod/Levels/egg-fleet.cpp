@@ -1,7 +1,4 @@
 #include "stdafx.h"
-#include "mod.h"
-#include "levels.h"
-
 #include "egg-fleet.h"
 
 ModelInfo * EF_SKYMDLS;

@@ -1,7 +1,4 @@
 #include "stdafx.h"
-#include "mod.h"
-
-#include "levels.h"
 
 static bool EnableSeasideHill = true;
 static bool EnableSeaGate = true;
@@ -24,9 +21,12 @@ bool IsHeroesLevel = false;
 
 LandTable** CurrentLandAddress;
 
-std::string modpath;
 LandTableInfo *info = nullptr;
 LandTableInfo *oldinfo = nullptr;
+
+VoidFunc(sub_40D3B0, 0x40D3B0);
+FunctionPointer(void, DrawModelBlend_IsVisible, (NJS_MODEL_SADX *model, QueuedModelFlagsB blend, float radius_scale), 0x4094D0);
+FunctionPointer(void, DrawSimpleModel_IsVisible, (NJS_MODEL_SADX *model, float scale), 0x407A00);
 
 StartPosition Heroes_StartPositions[]{
 	{ HeroesLevelID_SeasideHill, 0,{ 0, 6.800581f, 5.217285f }, 0xBFFF },
@@ -322,8 +322,6 @@ void __cdecl DrawLandTableFog(NJS_MODEL_SADX *a1)
 //Initialize levels
 void Levels_Init(const char *path, const HelperFunctions &helperFunctions)
 {
-	modpath = std::string(path);
-
 	//Get the config.ini information
 	const IniFile *config = new IniFile(modpath + "\\config.ini");
 	EnableSeasideHill = config->getBool("1- Levels", "EnableSeasideHill", true);

@@ -1,7 +1,4 @@
 #include "stdafx.h"
-#include "mod.h"
-#include "characters.h"
-#include "objects.h"
 
 ModelInfo* RougeMdls[3];
 AnimationFile* RougeAnms[66];

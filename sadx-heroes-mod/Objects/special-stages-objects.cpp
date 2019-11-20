@@ -1,6 +1,4 @@
 #include "stdafx.h"
-#include "mod.h"
-#include "objects.h"
 
 ModelInfo * SS_SSWAVES;
 

@@ -1,7 +1,4 @@
 #include "stdafx.h"
-#include "mod.h"
-#include "objects.h"
-
 #include "seaside-hill-objects.h"
 
 ModelInfo * SH_PLATFOR;

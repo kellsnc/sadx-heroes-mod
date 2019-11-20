@@ -1,6 +1,4 @@
 #include "stdafx.h"
-#include "mod.h"
-#include <math.h>
 
 ObjectMaster * railcam;
 extern LoopHead *MysticMansionPathList[70];

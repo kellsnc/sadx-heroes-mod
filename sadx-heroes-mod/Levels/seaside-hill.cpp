@@ -1,6 +1,4 @@
 #include "stdafx.h"
-#include "mod.h"
-#include "levels.h"
 #include "seaside-hill-paths.h"
 #include "seaside-hill-deathzones.h"
 #include "seaside-hill.h"
