@@ -44,7 +44,7 @@ ModelInfo* LoadCharacterModel(const char *name) {
 //Free Object File
 void FreeMDL(ModelInfo * pointer) {
 	if (pointer) {
-		PrintDebug("[SHM] Freeing model: %s... \n", pointer->getdescription());
+		PrintDebug("[SHM] Freeing model: %s... \n", pointer->getdescription().c_str());
 		delete(pointer);
 	}
 }
@@ -80,7 +80,7 @@ AnimationFile* LoadCharacterAnim(const char *name) {
 //Free Object File
 void FreeANM(AnimationFile * pointer) {
 	if (pointer) {
-		PrintDebug("[SHM] Freeing animation: %s... \n", pointer->getlabel());
+		PrintDebug("[SHM] Freeing animation: %s... \n", pointer->getlabel().c_str());
 		delete(pointer);
 	}
 }
