@@ -16,6 +16,7 @@ ModelInfo* LoadMDL(const char *type, const char *name) {
 		temp = new ModelInfo(HelperFunctionsGlobal.GetReplaceablePath(fullPath.c_str()));
 
 		if (temp->getformat() == ModelFormat_Invalid) {
+			PrintDebug("Failed.\n");
 			delete temp;
 			return nullptr;
 		}
@@ -31,18 +32,57 @@ ModelInfo* LoadMDL(const char *type, const char *name) {
 }
 
 ModelInfo* LoadObjectModel(const char *name) {
-	PrintDebug("[SHM] Loading object model %s...", name);
+	PrintDebug("[SHM] Loading object model: %s... ", name);
 	return LoadMDL("objects", name);
 }
 
 ModelInfo* LoadCharacterModel(const char *name) {
-	PrintDebug("[SHM] Loading character model %s...", name);
+	PrintDebug("[SHM] Loading character model: %s... ", name);
 	return LoadMDL("characters", name);
 }
 
 //Free Object File
 void FreeMDL(ModelInfo * pointer) {
-	if (pointer) delete(pointer);
+	if (pointer) {
+		PrintDebug("[SHM] Freeing model: %s... \n", pointer->getdescription());
+		delete(pointer);
+	}
+}
+
+//Load Animation File
+AnimationFile* LoadANM(const char *type, const char *name) {
+	std::string fullPath = "system\\";
+	fullPath = fullPath + type + "\\" + name + ".saanim";
+
+	AnimationFile * temp = new AnimationFile(HelperFunctionsGlobal.GetReplaceablePath(fullPath.c_str()));
+
+	if (temp->getmodelcount()) {
+		PrintDebug("Done.\n");
+		return temp;
+	}
+	else {
+		PrintDebug("Failed.\n");
+		delete temp;
+		return nullptr;
+	}
+}
+
+AnimationFile* LoadObjectAnim(const char *name) {
+	PrintDebug("[SHM] Loading object animation: %s... ", name);
+	return LoadANM("objects", name);
+}
+
+AnimationFile* LoadCharacterAnim(const char *name) {
+	PrintDebug("[SHM] Loading character animation: %s... ", name);
+	return LoadANM("characters", name);
+}
+
+//Free Object File
+void FreeANM(AnimationFile * pointer) {
+	if (pointer) {
+		PrintDebug("[SHM] Freeing animation: %s... \n", pointer->getlabel());
+		delete(pointer);
+	}
 }
 
 //Basic drawing call

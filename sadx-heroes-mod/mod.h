@@ -35,6 +35,8 @@ DataArray(DeathZone*, FinalEggDeathZones, 0x1A49218, 4);
 
 ModelInfo* LoadObjectModel(const char *name);
 ModelInfo* LoadCharacterModel(const char *name);
+AnimationFile* LoadObjectAnim(const char *name);
+AnimationFile* LoadCharacterAnim(const char *name);
 void FreeMDL(ModelInfo * pointer);
 
 extern unsigned int anim;
