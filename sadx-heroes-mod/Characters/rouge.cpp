@@ -544,9 +544,9 @@ void RougeHeroes_Main(ObjectMaster *obj) {
 }
 
 void LoadRougeFiles(const char *path, const HelperFunctions &helperFunctions) {
-	RougeMdls[0] = new ModelInfo(HelperFunctionsGlobal.GetReplaceablePath("system\\characters\\rouge_main.sa2mdl"));
-	RougeMdls[1] = new ModelInfo(HelperFunctionsGlobal.GetReplaceablePath("system\\characters\\rouge_eyelashes.sa2mdl"));
-	RougeMdls[2] = new ModelInfo(HelperFunctionsGlobal.GetReplaceablePath("system\\characters\\rouge_wings.sa2mdl"));
+	RougeMdls[0] = LoadCharacterModel("rouge_main");
+	RougeMdls[1] = LoadCharacterModel("rouge_eyelashes");
+	RougeMdls[2] = LoadCharacterModel("rouge_wings");
 
 	RougeAnms[0] = new AnimationFile(HelperFunctionsGlobal.GetReplaceablePath("system\\characters\\RO_WALK.saanim"));
 	RougeAnms[1] = new AnimationFile(HelperFunctionsGlobal.GetReplaceablePath("system\\characters\\RO_WALK_PULL.saanim"));

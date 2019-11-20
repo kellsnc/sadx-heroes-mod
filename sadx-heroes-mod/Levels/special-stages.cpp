@@ -9,7 +9,7 @@ DataArray(LandTable*, dword_97DBE8, 0x97DBE8, 193);
 extern ModelInfo * SS_SSWAVES;
 
 void SpecialStage_InitObjects() {
-	SS_SSWAVES = LoadMDL("SS_SSWAVES");
+	SS_SSWAVES = LoadObjectModel("SS_SSWAVES");
 
 	LoadObject(LoadObj_Data1, 3, SSWaves);
 }

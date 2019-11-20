@@ -28,18 +28,18 @@ void PowerPlantSkybox(ObjectMaster *a1) {
 }
 
 void PowerPlant_InitObjects() {
-	PP_ELEVATR = LoadMDL("PP_ELEVATR");
-	PP_FLDPATH = LoadMDL("PP_FLDPATH");
-	PP_LGTSIGN = LoadMDL("PP_LGTSIGN");
-	PP_SKYMDLS = LoadMDL("PP_SKYMDLS");
-	PP_MTRUCKS = LoadMDL("PP_MTRUCKS");
-	PP_PLTFRMS = LoadMDL("PP_PLTFRMS");
-	PP_PPCRANE = LoadMDL("PP_PPCRANE");
-	PP_SOLARPN = LoadMDL("PP_SOLARPN");
-	PP_TNKDOOR = LoadMDL("PP_TNKDOOR");
-	PP_TNKSTEP = LoadMDL("PP_TNKSTEP");
-	PP_ENERGYT = LoadMDL("PP_ENERGYT");
-	PP_SHAFTST = LoadMDL("PP_SHAFTST");
+	PP_ELEVATR = LoadObjectModel("PP_ELEVATR");
+	PP_FLDPATH = LoadObjectModel("PP_FLDPATH");
+	PP_LGTSIGN = LoadObjectModel("PP_LGTSIGN");
+	PP_SKYMDLS = LoadObjectModel("PP_SKYMDLS");
+	PP_MTRUCKS = LoadObjectModel("PP_MTRUCKS");
+	PP_PLTFRMS = LoadObjectModel("PP_PLTFRMS");
+	PP_PPCRANE = LoadObjectModel("PP_PPCRANE");
+	PP_SOLARPN = LoadObjectModel("PP_SOLARPN");
+	PP_TNKDOOR = LoadObjectModel("PP_TNKDOOR");
+	PP_TNKSTEP = LoadObjectModel("PP_TNKSTEP");
+	PP_ENERGYT = LoadObjectModel("PP_ENERGYT");
+	PP_SHAFTST = LoadObjectModel("PP_SHAFTST");
 
 	PowerPlant_UVSHIFT[0].List = PP_SOLARPN->getmodel()->child->basicdxmodel->meshsets[2].vertuv;
 	PowerPlant_UVSHIFT[1].List = PP_ELEVATR->getmodel()->basicdxmodel->meshsets[5].vertuv;

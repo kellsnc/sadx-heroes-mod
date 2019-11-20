@@ -8,16 +8,16 @@
 void CasinoSkybox(ObjectMaster *a1);
 
 void CasinoPark_InitObjects() {
-	CP_BIGDICE = LoadMDL("CP_BIGDICE");
-	CP_CSNOBOB = LoadMDL("CP_CSNOBOB");
-	CP_DIRSIGN = LoadMDL("CP_DIRSIGN");
-	CP_FLIPPER = LoadMDL("CP_FLIPPER");
-	CP_MOVDICE = LoadMDL("CP_MOVDICE");
-	CP_RURETTO = LoadMDL("CP_RURETTO");
-	CP_SLDDOOR = LoadMDL("CP_SLDDOOR");
-	CP_SLOTMCS = LoadMDL("CP_SLOTMCS");
-	CP_DSHPANL = LoadMDL("CP_DSHPANL");
-	CP_SKYMDLS = LoadMDL("CP_SKYMDLS");
+	CP_BIGDICE = LoadObjectModel("CP_BIGDICE");
+	CP_CSNOBOB = LoadObjectModel("CP_CSNOBOB");
+	CP_DIRSIGN = LoadObjectModel("CP_DIRSIGN");
+	CP_FLIPPER = LoadObjectModel("CP_FLIPPER");
+	CP_MOVDICE = LoadObjectModel("CP_MOVDICE");
+	CP_RURETTO = LoadObjectModel("CP_RURETTO");
+	CP_SLDDOOR = LoadObjectModel("CP_SLDDOOR");
+	CP_SLOTMCS = LoadObjectModel("CP_SLOTMCS");
+	CP_DSHPANL = LoadObjectModel("CP_DSHPANL");
+	CP_SKYMDLS = LoadObjectModel("CP_SKYMDLS");
 
 	CASINOOBJLIST[0] = CP_FLIPPER->getmodel()->basicdxmodel;
 	CASINOOBJLIST[1] = CP_FLIPPER->getmodel()->child->basicdxmodel;

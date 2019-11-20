@@ -61,9 +61,9 @@ void SeasideHill_OnFrame(EntityData1 * entity, CharObj2 * co2) {
 }
 
 void SeasideHill_InitObjects() {
-	SH_PLATFOR = LoadMDL("SH_PLATFOR");
-	SH_WATERFS = LoadMDL("SH_WATERFS");
-	SH_MORUINS = LoadMDL("SH_MORUINS");
+	SH_PLATFOR = LoadObjectModel("SH_PLATFOR");
+	SH_WATERFS = LoadObjectModel("SH_WATERFS");
+	SH_MORUINS = LoadObjectModel("SH_MORUINS");
 	
 	SeasideHill_UVShift[0].List = SH_WATERFS->getmodel()->basicdxmodel->meshsets[0].vertuv;
 	SeasideHill_UVShift[1].List = SH_WATERFS->getmodel()->child->basicdxmodel->meshsets[0].vertuv;
@@ -107,8 +107,8 @@ void SeasideHillHandler(ObjectMaster * a1) {
 			PlayMusic(MusicIDs_EmeraldCoastAzureBlueWorld);
 			SoundManager_Delete2();
 
-			SH_FLOWERS = LoadMDL("SH_FLOWERS");
-			SH_POLFLAG = LoadMDL("SH_POLFLAG");
+			SH_FLOWERS = LoadObjectModel("SH_FLOWERS");
+			SH_POLFLAG = LoadObjectModel("SH_POLFLAG");
 			LoadObject(LoadObj_Data1, 3, SHFlowers);
 
 			CurrentLevelTexlist = &BEACH01_TEXLIST;

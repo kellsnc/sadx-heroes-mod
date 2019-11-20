@@ -721,10 +721,10 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 }
 
 void LoadCreamFiles(const char *path, const HelperFunctions &helperFunctions) {
-	CreamMdls[0] = new ModelInfo(HelperFunctionsGlobal.GetReplaceablePath("system\\characters\\cream_main.sa2mdl"));
-	CreamMdls[1] = new ModelInfo(HelperFunctionsGlobal.GetReplaceablePath("system\\characters\\cream_eyelashes.sa2mdl"));
-	CreamMdls[2] = new ModelInfo(HelperFunctionsGlobal.GetReplaceablePath("system\\characters\\cheese_main.sa2mdl"));
-	CreamMdls[3] = new ModelInfo(HelperFunctionsGlobal.GetReplaceablePath("system\\characters\\cheese_ball.sa2mdl"));
+	CreamMdls[0] = LoadCharacterModel("cream_main");
+	CreamMdls[1] = LoadCharacterModel("cream_eyelashes");
+	CreamMdls[2] = LoadCharacterModel("cheese_main");
+	CreamMdls[3] = LoadCharacterModel("cheese_ball");
 
 	CreamAnms[0] = new AnimationFile(HelperFunctionsGlobal.GetReplaceablePath("system\\characters\\CR_WALK.saanim"));
 	CreamAnms[1] = new AnimationFile(HelperFunctionsGlobal.GetReplaceablePath("system\\characters\\CR_WALK_PULL.saanim"));

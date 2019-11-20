@@ -67,7 +67,7 @@ void OceanPalaceHandler(ObjectMaster * a1) {
 		a1->Data1->Action = 1;
 		a1->DeleteSub = OceanPalace_delete;
 
-		OP_WATERFS = LoadMDL("OP_WATERFS");
+		OP_WATERFS = LoadObjectModel("OP_WATERFS");
 		LoadObject(LoadObj_Data1, 3, OPWaterfalls);
 
 		if (CurrentAct == 0) {
@@ -85,11 +85,11 @@ void OceanPalaceHandler(ObjectMaster * a1) {
 			LoadObject(LoadObj_Data1, 3, OPFins_Main);
 			LoadObject(LoadObj_Data1, 3, OPBoulders);
 
-			OP_FLOWERS = LoadMDL("OP_FLOWERS");
-			OP_TURFINS = LoadMDL("OP_TURFINS");
-			OP_BOULDER = LoadMDL("OP_BOULDER");
-			OP_POLFLAG = LoadMDL("OP_POLFLAG");
-			OP_SKYMDLS = LoadMDL("OP_SKYMDLS");
+			OP_FLOWERS = LoadObjectModel("OP_FLOWERS");
+			OP_TURFINS = LoadObjectModel("OP_TURFINS");
+			OP_BOULDER = LoadObjectModel("OP_BOULDER");
+			OP_POLFLAG = LoadObjectModel("OP_POLFLAG");
+			OP_SKYMDLS = LoadObjectModel("OP_SKYMDLS");
 
 			OceanPalace_UVShift[0].List = OP_WATERFS->getmodel()->basicdxmodel->meshsets[0].vertuv;
 			OceanPalace_UVShift[1].List = OP_WATERFS->getmodel()->child->basicdxmodel->meshsets[0].vertuv;

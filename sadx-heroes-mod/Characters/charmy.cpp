@@ -533,10 +533,10 @@ void CharmyHeroes_Main(ObjectMaster *obj) {
 }
 
 void LoadCharmyFiles(const char *path, const HelperFunctions &helperFunctions) {
-	CharmyMdls[0] = new ModelInfo(HelperFunctionsGlobal.GetReplaceablePath("system\\characters\\charmy_main.sa2mdl"));
-	CharmyMdls[1] = new ModelInfo(HelperFunctionsGlobal.GetReplaceablePath("system\\characters\\charmy_eyelashes.sa2mdl"));
-	CharmyMdls[2] = new ModelInfo(HelperFunctionsGlobal.GetReplaceablePath("system\\characters\\charmy_wings.sa2mdl"));
-	CharmyMdls[3] = new ModelInfo(HelperFunctionsGlobal.GetReplaceablePath("system\\characters\\charmy_objs.sa2mdl"));
+	CharmyMdls[0] = LoadCharacterModel("charmy_main");
+	CharmyMdls[1] = LoadCharacterModel("charmy_eyelashes");
+	CharmyMdls[2] = LoadCharacterModel("charmy_wings");
+	CharmyMdls[3] = LoadCharacterModel("charmy_objs");
 
 	CharmyAnms[0] = new AnimationFile(HelperFunctionsGlobal.GetReplaceablePath("system\\characters\\BEE_HANE_LOCATOR.saanim"));
 

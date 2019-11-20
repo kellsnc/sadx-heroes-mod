@@ -17,12 +17,12 @@ void GrandMetropolisSkybox(ObjectMaster *a1) {
 }
 
 void GrandMetropolis_InitObjects() {
-	GM_ADVERTS = LoadMDL("GM_ADVERTS");
-	GM_GPISTON = LoadMDL("GM_GPISTON");
-	GM_GRFLUID = LoadMDL("GM_GRFLUID");
-	GM_GRPLANE = LoadMDL("GM_GRPLANE");
-	GM_MCLOUDS = LoadMDL("GM_MCLOUDS");
-	GM_ZEPPLIN = LoadMDL("GM_ZEPPLIN");
+	GM_ADVERTS = LoadObjectModel("GM_ADVERTS");
+	GM_GPISTON = LoadObjectModel("GM_GPISTON");
+	GM_GRFLUID = LoadObjectModel("GM_GRFLUID");
+	GM_GRPLANE = LoadObjectModel("GM_GRPLANE");
+	GM_MCLOUDS = LoadObjectModel("GM_MCLOUDS");
+	GM_ZEPPLIN = LoadObjectModel("GM_ZEPPLIN");
 
 	LoadObject(LoadObj_Data1, 3, GMPistons);
 	LoadObject(LoadObj_Data1, 3, GMCars);
@@ -71,7 +71,7 @@ void GrandMetropolisHandler(ObjectMaster * a1) {
 		a1->Data1->Action = 1;
 		a1->DeleteSub = GrandMetropolis_Delete;
 
-		GM_FLYCARS = LoadMDL("GM_FLYCARS");
+		GM_FLYCARS = LoadObjectModel("GM_FLYCARS");
 
 		if (CurrentAct == 0) {
 			CurrentLevelTexlist = &CASINO01_TEXLIST;

@@ -832,12 +832,12 @@ void __cdecl ObjBoxW(ObjectMaster *a1)
 void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions) {
 	helperFunctions.RegisterCommonObjectPVM(shobjpvm);
 
-	CO_BALLOON = LoadMDL("CO_BALLOON");
-	CO_CMNREEL = LoadMDL("CO_CMNREEL");
-	CO_COMNFAN = LoadMDL("CO_COMNFAN");
-	CO_LCKCASE = LoadMDL("CO_LCKCASE");
-	CO_OCANNON = LoadMDL("CO_OCANNON");
-	CO_WOODBOX = LoadMDL("CO_WOODBOX");
+	CO_BALLOON = LoadObjectModel("CO_BALLOON");
+	CO_CMNREEL = LoadObjectModel("CO_CMNREEL");
+	CO_COMNFAN = LoadObjectModel("CO_COMNFAN");
+	CO_LCKCASE = LoadObjectModel("CO_LCKCASE");
+	CO_OCANNON = LoadObjectModel("CO_OCANNON");
+	CO_WOODBOX = LoadObjectModel("CO_WOODBOX");
 
 	COMMONOBJLIST[0] = CO_CMNREEL->getmodel()->child->child->basicdxmodel;
 
@@ -845,19 +845,19 @@ void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions
 
 	if (config->getBool("3- Objects", "GoalRing", true)) {
 		WriteJump((void*)0x46B170, Capsule_Load_r);
-		CO_GOALRNG = LoadMDL("CO_GOALRNG");
+		CO_GOALRNG = LoadObjectModel("CO_GOALRNG");
 	}
 
 	if (config->getBool("3- Objects", "DashPanel", true)) {
 		WriteJump((void*)0x7A4360, SHDashPanel);
-		CO_DSHPANL = LoadMDL("CO_DSHPANL");
+		CO_DSHPANL = LoadObjectModel("CO_DSHPANL");
 		Objects_UVSHIFT[0].List = CO_DSHPANL->getmodel()->basicdxmodel->meshsets[0].vertuv;
 		Objects_UVSHIFT[0].Size = CO_DSHPANL->getmodel()->basicdxmodel->meshsets[0].nbMesh * 3;
 	}
 
 	if (config->getBool("3- Objects", "DashHoop", true)) {
 		WriteJump((void*)0x7A2470, SHDashHoop);
-		CO_DSHHOOP = LoadMDL("CO_DSHHOOP");
+		CO_DSHHOOP = LoadObjectModel("CO_DSHHOOP");
 		COMMONOBJLIST[0] = CO_DSHHOOP->getmodel()->basicdxmodel;
 		Objects_UVSHIFT[1].List = CO_DSHHOOP->getmodel()->basicdxmodel->meshsets[2].vertuv;
 		Objects_UVSHIFT[1].Size = CO_DSHHOOP->getmodel()->basicdxmodel->meshsets[2].nbMesh * 3;
@@ -865,7 +865,7 @@ void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions
 
 	if (config->getBool("3- Objects", "LaunchRamp", true)) {
 		WriteJump((void*)0x500020, SHLaunchRamp);
-		CO_LCHRAMP = LoadMDL("CO_LCHRAMP");
+		CO_LCHRAMP = LoadObjectModel("CO_LCHRAMP");
 		Objects_UVSHIFT[2].List = CO_LCHRAMP->getmodel()->basicdxmodel->meshsets[15].vertuv;
 		Objects_UVSHIFT[2].Size = CO_LCHRAMP->getmodel()->basicdxmodel->meshsets[15].nbMesh * 3;
 	}

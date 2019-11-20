@@ -51,86 +51,86 @@
     <ClCompile Include="characters.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Objects\bingo-highway-objects.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Levels\bingo-highway.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Levels</Filter>
     </ClCompile>
-    <ClCompile Include="Objects\casino-common-objects.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Objects\bingo-highway-objects.cpp">
+      <Filter>Source Files\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Levels\casino-common.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Levels</Filter>
     </ClCompile>
-    <ClCompile Include="Objects\casino-park-objects.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Objects\casino-common-objects.cpp">
+      <Filter>Source Files\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Levels\casino-park.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Levels</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\casino-park-objects.cpp">
+      <Filter>Source Files\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Characters\charmy.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Characters</Filter>
     </ClCompile>
     <ClCompile Include="Characters\cream.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Characters</Filter>
     </ClCompile>
     <ClCompile Include="Objects\egg-fleet-objects.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Levels\egg-fleet.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Objects\grand-metropolis-objects.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Levels\grand-metropolis.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Objects\hang-castle-objects.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Levels\hang-castle.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Objects\heroes-common-objects.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Objects\mystic-common-objects.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Objects\mystic-mansion-objects.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Levels\mystic-mansion.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Objects\ocean-palace-objects.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Levels\ocean-palace.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Objects\power-plant-objects.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Levels\power-plant.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Characters\rouge.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Levels\seaside-hill.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Objects\seaside-hill-objects.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Objects\special-stages-objects.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Levels\grand-metropolis.cpp">
+      <Filter>Source Files\Levels</Filter>
+    </ClCompile>
+    <ClCompile Include="Levels\hang-castle.cpp">
+      <Filter>Source Files\Levels</Filter>
+    </ClCompile>
+    <ClCompile Include="Levels\mystic-mansion.cpp">
+      <Filter>Source Files\Levels</Filter>
+    </ClCompile>
+    <ClCompile Include="Levels\ocean-palace.cpp">
+      <Filter>Source Files\Levels</Filter>
+    </ClCompile>
+    <ClCompile Include="Levels\power-plant.cpp">
+      <Filter>Source Files\Levels</Filter>
+    </ClCompile>
+    <ClCompile Include="Levels\seaside-hill.cpp">
+      <Filter>Source Files\Levels</Filter>
+    </ClCompile>
+    <ClCompile Include="Characters\rouge.cpp">
+      <Filter>Source Files\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="Levels\egg-fleet.cpp">
+      <Filter>Source Files\Levels</Filter>
     </ClCompile>
     <ClCompile Include="Levels\special-stages.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Levels</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -156,97 +156,97 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Levels\bingo-highway.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Levels\casino-park.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Levels</Filter>
     </ClInclude>
     <ClInclude Include="Levels\bingo-highway-paths.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Levels</Filter>
     </ClInclude>
-    <ClInclude Include="Objects\casino-common-objects.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Levels\casino-park-deathzones.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Levels\casino-park-paths.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Levels\grand-metropolis-deathzones.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Objects\grand-metropolis-objects.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Levels\grand-metropolis-paths.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Levels\hang-castle-deathzones.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Objects\hang-castle-objects.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Levels\hang-castle-paths.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Objects\mystic-common-objects.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Levels\mystic-mansion-deathzones.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Levels\mystic-mansion-paths.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Objects\ocean-palace-objects.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Levels\ocean-palace-paths.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Levels\power-plant-deathzones.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Objects\power-plant-objects.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Levels\power-plant-paths.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Levels\road-rock-deathzones.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Levels\casino-park.h">
+      <Filter>Header Files\Levels</Filter>
     </ClInclude>
     <ClInclude Include="Levels\egg-fleet.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Levels\casino-park-paths.h">
+      <Filter>Header Files\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Levels\casino-park-deathzones.h">
+      <Filter>Header Files\Levels</Filter>
     </ClInclude>
     <ClInclude Include="Levels\grand-metropolis.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Levels\grand-metropolis-deathzones.h">
+      <Filter>Header Files\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Levels\grand-metropolis-paths.h">
+      <Filter>Header Files\Levels</Filter>
     </ClInclude>
     <ClInclude Include="Levels\hang-castle.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Levels\hang-castle-deathzones.h">
+      <Filter>Header Files\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Levels\hang-castle-paths.h">
+      <Filter>Header Files\Levels</Filter>
     </ClInclude>
     <ClInclude Include="Levels\mystic-mansion.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Levels</Filter>
     </ClInclude>
-    <ClInclude Include="Levels\seaside-hill-deathzones.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Levels\mystic-mansion-deathzones.h">
+      <Filter>Header Files\Levels</Filter>
     </ClInclude>
-    <ClInclude Include="Levels\seaside-hill-objects.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Levels\mystic-mansion-paths.h">
+      <Filter>Header Files\Levels</Filter>
     </ClInclude>
     <ClInclude Include="Levels\ocean-palace.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Levels\ocean-palace-paths.h">
+      <Filter>Header Files\Levels</Filter>
     </ClInclude>
     <ClInclude Include="Levels\power-plant.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Levels\power-plant-deathzones.h">
+      <Filter>Header Files\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Levels\power-plant-paths.h">
+      <Filter>Header Files\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Levels\road-rock-deathzones.h">
+      <Filter>Header Files\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Levels\seaside-hill-deathzones.h">
+      <Filter>Header Files\Levels</Filter>
     </ClInclude>
     <ClInclude Include="Levels\seaside-hill.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Levels</Filter>
     </ClInclude>
     <ClInclude Include="Levels\seaside-hill-paths.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Objects\casino-common-objects.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Objects\grand-metropolis-objects.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Objects\hang-castle-objects.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Objects\mystic-common-objects.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Objects\ocean-palace-objects.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Objects\power-plant-objects.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Levels\seaside-hill-objects.h">
+      <Filter>Header Files\Objects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

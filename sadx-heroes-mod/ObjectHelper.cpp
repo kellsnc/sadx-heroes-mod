@@ -2,19 +2,42 @@
 #include "mod.h"
 
 //Load Object File
-ModelInfo* LoadMDL(const char *name) {
-	PrintDebug("[SHM] Loading model "); PrintDebug(name); PrintDebug("... ");
+ModelInfo* LoadMDL(const char *type, const char *name) {
+	std::string fullPath = "system\\";
+	fullPath = fullPath + type + "\\" + name + ".sa1mdl";
 
-	std::string fullPath = "system\\objects\\";
-	fullPath = fullPath + name + ".sa1mdl";
-	const char *foo = fullPath.c_str();
+	ModelInfo * temp = new ModelInfo(HelperFunctionsGlobal.GetReplaceablePath(fullPath.c_str()));
 
-	ModelInfo * temp = new ModelInfo(HelperFunctionsGlobal.GetReplaceablePath(foo));
+	if (temp->getformat() == ModelFormat_Invalid) {
+		delete temp;
+		fullPath = "system\\";
+		fullPath = fullPath + type + "\\" + name + ".cnkmdl";
 
-	if (temp->getformat() == ModelFormat_Basic) PrintDebug("Done.\n");
-	else PrintDebug("Error.\n");
+		temp = new ModelInfo(HelperFunctionsGlobal.GetReplaceablePath(fullPath.c_str()));
 
-	return temp;
+		if (temp->getformat() == ModelFormat_Invalid) {
+			delete temp;
+			return nullptr;
+		}
+		else {
+			PrintDebug("Done.\n");
+			return temp;
+		}
+	}
+	else {
+		PrintDebug("Done.\n");
+		return temp;
+	}
+}
+
+ModelInfo* LoadObjectModel(const char *name) {
+	PrintDebug("[SHM] Loading object model %s...", name);
+	return LoadMDL("objects", name);
+}
+
+ModelInfo* LoadCharacterModel(const char *name) {
+	PrintDebug("[SHM] Loading character model %s...", name);
+	return LoadMDL("characters", name);
 }
 
 //Free Object File

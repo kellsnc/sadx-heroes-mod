@@ -7,18 +7,18 @@
 void CasinoSkybox(ObjectMaster *a1);
 
 void BingoHighway_InitObjects() {
-	CP_CSNOBOB = LoadMDL("CP_CSNOBOB");
-	CP_FLIPPER = LoadMDL("CP_FLIPPER");
-	CP_MOVDICE = LoadMDL("CP_MOVDICE");
-	CP_RURETTO = LoadMDL("CP_RURETTO");
-	CP_SLDDOOR = LoadMDL("CP_SLDDOOR");
-	CP_SLOTMCS = LoadMDL("CP_SLOTMCS");
-	CP_DSHPANL = LoadMDL("CP_DSHPANL");
-	CP_SKYMDLS = LoadMDL("CP_SKYMDLS");
-	BH_BIGCHIP = LoadMDL("BH_BIGCHIP");
-	BH_BNGCHIP = LoadMDL("BH_BNGCHIP");
-	BH_BNGCARD = LoadMDL("BH_BNGCARD");
-	BH_TBLSIGN = LoadMDL("BH_TBLSIGN");
+	CP_CSNOBOB = LoadObjectModel("CP_CSNOBOB");
+	CP_FLIPPER = LoadObjectModel("CP_FLIPPER");
+	CP_MOVDICE = LoadObjectModel("CP_MOVDICE");
+	CP_RURETTO = LoadObjectModel("CP_RURETTO");
+	CP_SLDDOOR = LoadObjectModel("CP_SLDDOOR");
+	CP_SLOTMCS = LoadObjectModel("CP_SLOTMCS");
+	CP_DSHPANL = LoadObjectModel("CP_DSHPANL");
+	CP_SKYMDLS = LoadObjectModel("CP_SKYMDLS");
+	BH_BIGCHIP = LoadObjectModel("BH_BIGCHIP");
+	BH_BNGCHIP = LoadObjectModel("BH_BNGCHIP");
+	BH_BNGCARD = LoadObjectModel("BH_BNGCARD");
+	BH_TBLSIGN = LoadObjectModel("BH_TBLSIGN");
 
 	BINGONB[0] = BH_BNGCHIP->getmodel()->basicdxmodel;
 	BINGONB[1] = BH_BNGCHIP->getmodel()->child->basicdxmodel;

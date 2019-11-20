@@ -9,9 +9,9 @@ ModelInfo * EF_SKYMDLS;
 void EggFleetObjects_Init();
 
 void EggFleet_InitObjects() {
-	EF_SKYMDLS = LoadMDL("EF_SKYMDLS");
-	EF_CANNON1 = LoadMDL("EF_CANNON1");
-	EF_BULLETS = LoadMDL("EF_BULLETS");
+	EF_SKYMDLS = LoadObjectModel("EF_SKYMDLS");
+	EF_CANNON1 = LoadObjectModel("EF_CANNON1");
+	EF_BULLETS = LoadObjectModel("EF_BULLETS");
 }
 
 void EggFleet_Delete(ObjectMaster *a1) {

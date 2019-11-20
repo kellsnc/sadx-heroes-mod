@@ -33,7 +33,8 @@ DataArray(DeathZone*, CasinopolisDeathZones, 0x1D7E374, 4);
 DataArray(DeathZone*, LostWorldDeathZones, 0x2032108, 3);
 DataArray(DeathZone*, FinalEggDeathZones, 0x1A49218, 4);
 
-ModelInfo* LoadMDL(const char *shortname);
+ModelInfo* LoadObjectModel(const char *name);
+ModelInfo* LoadCharacterModel(const char *name);
 void FreeMDL(ModelInfo * pointer);
 
 extern unsigned int anim;

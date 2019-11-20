@@ -37,16 +37,16 @@ void MysticMansion_MusicHandler() {
 }
 
 void MysticMansion_InitObjects() {
-	MM_SKELFAN = LoadMDL("MM_SKELFAN");
-	MM_SPHERE1 = LoadMDL("MM_SPHERE1");
-	MM_SPHERE2 = LoadMDL("MM_SPHERE2");
-	MM_MYSTCAR = LoadMDL("MM_MYSTCAR");
-	MM_MOVPLAT = LoadMDL("MM_MOVPLAT");
-	MM_MYSDOOR = LoadMDL("MM_MYSDOOR");
-	MM_MYSWALL = LoadMDL("MM_MYSWALL");
-	MM_TORCHES = LoadMDL("MM_TORCHES");
-	HC_SPKWARP = LoadMDL("HC_SPKWARP");
-	HC_HFLAMES = LoadMDL("HC_HFLAMES");
+	MM_SKELFAN = LoadObjectModel("MM_SKELFAN");
+	MM_SPHERE1 = LoadObjectModel("MM_SPHERE1");
+	MM_SPHERE2 = LoadObjectModel("MM_SPHERE2");
+	MM_MYSTCAR = LoadObjectModel("MM_MYSTCAR");
+	MM_MOVPLAT = LoadObjectModel("MM_MOVPLAT");
+	MM_MYSDOOR = LoadObjectModel("MM_MYSDOOR");
+	MM_MYSWALL = LoadObjectModel("MM_MYSWALL");
+	MM_TORCHES = LoadObjectModel("MM_TORCHES");
+	HC_SPKWARP = LoadObjectModel("HC_SPKWARP");
+	HC_HFLAMES = LoadObjectModel("HC_HFLAMES");
 	
 	MMMODELLIST[0] = MM_SPHERE1->getmodel()->basicdxmodel;
 	MMMODELLIST[1] = MM_SPHERE2->getmodel()->basicdxmodel;
