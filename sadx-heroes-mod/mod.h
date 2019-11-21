@@ -27,9 +27,3 @@ extern bool EnableModels;
 extern bool EnableSounds;
 extern bool IsLoaded;
 extern bool ChunkSwapped;
-
-typedef struct {
-	int			texid;
-	int			count;
-	int			duration[40];
-} SH_ANIMTEXS;

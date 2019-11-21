@@ -54,5 +54,4 @@ SH_UVSHIFT GrandMetropolis_UVSHIFT[]{
 	{ nullptr,0,{ 1, 1 }, 3 },
 };
 
-NJS_MODEL_SADX * GMOBJLIST[3];
 extern NJS_MODEL_SADX s03_door_energy;

@@ -58,5 +58,3 @@ SH_UVSHIFT PowerPlant_UVSHIFT[]{
 	{ nullptr,0,{ 0, -1 }, 4 }, //2
 	{ nullptr,0,{ 0, -12 } }, //5
 };
-
-NJS_MODEL_SADX * PPOBJLIST[8];

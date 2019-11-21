@@ -175,33 +175,32 @@ void LevelHandler_Delete(ObjectMaster * a1) {
 }
 
 //Animate textures of the current landtable in a similar way to Sonic Heroes
-void AnimateTextures(SH_ANIMTEXS *list, Int listcount) {
-	if (!DroppedFrames) {
-		for (Int j = 0; j < CurrentLandTable->COLCount; ++j) {
-			if ((CurrentLandTable->Col[j].Flags & ColFlags_Visible) == ColFlags_Visible) {
-				for (Int k = 0; k < CurrentLandTable->Col[j].Model->basicdxmodel->nbMat; ++k) {
+void AnimateTexlist(SH_ANIMTEXS *list, Int listcount, NJS_TEXLIST* texlist) {
+	if (!DroppedFrames && texlist) {
+		for (uint8_t count = 0; count < listcount; ++count) {
+			SH_ANIMTEXS * clist = &list[count];
+			int base = clist->texid;
+			NJS_TEXNAME * texname = &texlist->textures[base];
+			
+			Int CurrentTex = base + clist->cache;
 
-					for (int l = 0; l < listcount; ++l) {
-						Int last = list[l].texid + list[l].count;
-
-						if (CurrentLandTable->Col[j].Model->basicdxmodel->mats[k].attr_texId >= list[l].texid &&
-							CurrentLandTable->Col[j].Model->basicdxmodel->mats[k].attr_texId <= last) {
-
-							Int Currenttex = CurrentLandTable->Col[j].Model->basicdxmodel->mats[k].attr_texId - list[l].texid;
-							if (anim % (list[l].duration[Currenttex]) == 0) {
-								if (Currenttex == last - list[l].texid) {
-									CurrentLandTable->Col[j].Model->basicdxmodel->mats[k].attr_texId = list[l].texid;
-								}
-								else {
-									CurrentLandTable->Col[j].Model->basicdxmodel->mats[k].attr_texId += 1;
-								}
-							}
-						}
-					}
+			if (anim % clist->duration[clist->cache] == 0) {
+				if (CurrentTex == base + clist->count) {
+					clist->cache = 0;
+					texname->texaddr = clist->address;
+				}
+				else {
+					if (clist->cache == 0) clist->address = texname->texaddr;
+					texname->texaddr = CurrentLevelTexlist->textures[CurrentTex + 1].texaddr;
+					clist->cache += 1;
 				}
 			}
 		}
 	}
+}
+
+void AnimateTextures(SH_ANIMTEXS *list, Int listcount) {
+	AnimateTexlist(list, listcount, CurrentLevelTexlist);
 }
 
 //Set start positions and trial menu entries for every character

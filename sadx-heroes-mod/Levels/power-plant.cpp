@@ -44,15 +44,6 @@ void PowerPlant_InitObjects() {
 	PowerPlant_UVSHIFT[0].Size = PP_SOLARPN->getmodel()->child->basicdxmodel->meshsets[2].nbMesh * 3;
 	PowerPlant_UVSHIFT[1].Size = PP_ELEVATR->getmodel()->basicdxmodel->meshsets[5].nbMesh * 3;
 
-	PPOBJLIST[0] = PP_FLDPATH->getmodel()->basicdxmodel;
-	PPOBJLIST[1] = PP_FLDPATH->getmodel()->child->basicdxmodel;
-	PPOBJLIST[2] = PP_FLDPATH->getmodel()->child->child->basicdxmodel;
-	PPOBJLIST[3] = PP_PLTFRMS->getmodel()->basicdxmodel;
-	PPOBJLIST[4] = PP_PLTFRMS->getmodel()->child->basicdxmodel;
-	PPOBJLIST[5] = PP_SOLARPN->getmodel()->basicdxmodel;
-	PPOBJLIST[6] = PP_ENERGYT->getmodel()->basicdxmodel;
-	PPOBJLIST[7] = PP_ENERGYT->getmodel()->child->basicdxmodel;
-
 	LoadObject(LoadObj_Data1, 3, PPSolarpnls);
 	LoadObject(LoadObj_Data1, 3, PPCranes);
 	LoadObject(LoadObj_Data1, 3, PPLights);
@@ -104,7 +95,6 @@ void PowerPlantHandler(ObjectMaster * a1) {
 	else {
 		ChunkHandler("PP", PowerPlantChunks, LengthOfArray(PowerPlantChunks), entity->Position);
 		AnimateTextures(PowerPlantAnimTexs, LengthOfArray(PowerPlantAnimTexs));
-		AnimateObjectsTextures(PPOBJLIST, LengthOfArray(PPOBJLIST), PowerPlantAnimTexs, LengthOfArray(PowerPlantAnimTexs));
 		AnimateUV(PowerPlant_UVSHIFT, LengthOfArray(PowerPlant_UVSHIFT));
 		PPPathsHandler();
 	}

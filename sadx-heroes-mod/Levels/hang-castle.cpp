@@ -151,7 +151,6 @@ void HangCastleHandler(ObjectMaster * a1) {
 		case 0:
 			ChunkHandler("HC", HangCastleChunks, LengthOfArray(HangCastleChunks), entity->Position);
 			AnimateTextures(HangCastleAnimTexs, LengthOfArray(HangCastleAnimTexs));
-			AnimateObjectsTextures(HCMODELLIST, 2, HangCastleAnimTexs, LengthOfArray(HangCastleAnimTexs));
 			AnimateUV(HangCastle_UVShift, LengthOfArray(HangCastle_UVShift));
 
 			if (chunkswapped) {

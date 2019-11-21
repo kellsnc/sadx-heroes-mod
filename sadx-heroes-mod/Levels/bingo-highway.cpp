@@ -28,18 +28,6 @@ void BingoHighway_InitObjects() {
 	BINGONB[7] = BH_BNGCHIP->getmodel()->child->child->child->child->child->child->child->basicdxmodel;
 	BINGONB[8] = BH_BNGCHIP->getmodel()->child->child->child->child->child->child->child->child->basicdxmodel;
 
-	BINGOOBJLIST[0] = CP_FLIPPER->getmodel()->basicdxmodel;
-	BINGOOBJLIST[1] = CP_FLIPPER->getmodel()->child->basicdxmodel;
-	BINGOOBJLIST[2] = CP_CSNOBOB->getmodel()->basicdxmodel;
-	BINGOOBJLIST[3] = CP_CSNOBOB->getmodel()->child->basicdxmodel;
-	BINGOOBJLIST[4] = CP_SLOTMCS->getmodel()->basicdxmodel;
-	BINGOOBJLIST[5] = CP_SLOTMCS->getmodel()->child->basicdxmodel;
-	BINGOOBJLIST[6] = CP_SLDDOOR->getmodel()->basicdxmodel;
-	BINGOOBJLIST[7] = CP_SLDDOOR->getmodel()->child->basicdxmodel;
-	BINGOOBJLIST[8] = CP_SLDDOOR->getmodel()->child->child->basicdxmodel;
-	BINGOOBJLIST[9] = CP_SLDDOOR->getmodel()->child->child->child->basicdxmodel;
-	BINGOOBJLIST[10] = BH_BNGCARD->getmodel()->basicdxmodel;
-
 	LoadObject(LoadObj_Data1, 3, CPGlass);
 	LoadObject(LoadObj_Data1, 3, BHSigns);
 }
@@ -81,7 +69,6 @@ void BingoHighwayHandler(ObjectMaster * a1) {
 	}
 	else {
 		ChunkHandler("BH", BingoHighwayChunks, LengthOfArray(BingoHighwayChunks), entity->Position);
-		AnimateObjectsTextures(BINGOOBJLIST, LengthOfArray(BINGOOBJLIST), BingoHighwayAnimTexs, LengthOfArray(BingoHighwayAnimTexs));
 		AnimateTextures(BingoHighwayAnimTexs, LengthOfArray(BingoHighwayAnimTexs));
 		CasinoCommon_OnFrame();
 	}

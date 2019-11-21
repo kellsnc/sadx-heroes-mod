@@ -110,7 +110,6 @@ void MysticMansionHandler(ObjectMaster * a1) {
 		case 0:
 			ChunkHandler("MM", MysticMansionChunks, LengthOfArray(MysticMansionChunks), entity->Position);
 			AnimateTextures(MysticMansionAnimTexs, LengthOfArray(MysticMansionAnimTexs));
-			AnimateObjectsTextures(MMMODELLIST, 4, MysticMansionAnimTexs, LengthOfArray(MysticMansionAnimTexs));
 			AnimateUV(MysticMansion_UVShift, LengthOfArray(MysticMansion_UVShift));
 
 			if (CurrentChunk > 1 && !FreeCam) {

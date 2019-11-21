@@ -17,19 +17,6 @@ void CasinoPark_InitObjects() {
 	CP_DSHPANL = LoadObjectModel("CP_DSHPANL");
 	CP_SKYMDLS = LoadObjectModel("CP_SKYMDLS");
 
-	CASINOOBJLIST[0] = CP_FLIPPER->getmodel()->basicdxmodel;
-	CASINOOBJLIST[1] = CP_FLIPPER->getmodel()->child->basicdxmodel;
-	CASINOOBJLIST[2] = CP_CSNOBOB->getmodel()->basicdxmodel;
-	CASINOOBJLIST[3] = CP_CSNOBOB->getmodel()->child->basicdxmodel;
-	CASINOOBJLIST[4] = CP_SLOTMCS->getmodel()->basicdxmodel;
-	CASINOOBJLIST[5] = CP_SLOTMCS->getmodel()->child->basicdxmodel;
-	CASINOOBJLIST[6] = CP_SLDDOOR->getmodel()->basicdxmodel;
-	CASINOOBJLIST[7] = CP_SLDDOOR->getmodel()->child->basicdxmodel;
-	CASINOOBJLIST[8] = CP_SLDDOOR->getmodel()->child->child->basicdxmodel;
-	CASINOOBJLIST[9] = CP_SLDDOOR->getmodel()->child->child->child->basicdxmodel;
-	CASINOOBJLIST[10] = CP_DIRSIGN->getmodel()->basicdxmodel;
-	CASINOOBJLIST[11] = CP_DIRSIGN->getmodel()->child->basicdxmodel;
-
 	LoadObject(LoadObj_Data1, 3, CPGlass);
 }
 
@@ -73,7 +60,6 @@ void CasinoParkHandler(ObjectMaster * a1) {
 		case 0:
 			ChunkHandler("CP", CasinoParkChunks, LengthOfArray(CasinoParkChunks), entity->Position);
 			AnimateTextures(CasinoParkAnimTexs, LengthOfArray(CasinoParkAnimTexs));
-			AnimateObjectsTextures(CASINOOBJLIST, LengthOfArray(CASINOOBJLIST), CasinoParkAnimTexs, LengthOfArray(CasinoParkAnimTexs));
 			CasinoCommon_OnFrame();
 
 			break;

@@ -208,33 +208,6 @@ void AnimateUV(SH_UVSHIFT *UVSHIFT, int size) {
 	}
 }
 
-//Animate textures of models, requires a SH_ANIMTEXS struct
-void AnimateObjectsTextures(NJS_MODEL_SADX * *objlist, int size, SH_ANIMTEXS *list, Int listcount) {
-	for (Int j = 0; j < size; ++j) {
-		if (objlist[j] == nullptr) continue;
-
-		for (Int k = 0; k < objlist[j]->nbMat; ++k) {
-			for (int l = 0; l < listcount; ++l) {
-				Int last = list[l].texid + list[l].count;
-
-				if (objlist[j]->mats[k].attr_texId >= list[l].texid &&
-					objlist[j]->mats[k].attr_texId <= last) {
-
-					Int Currenttex = objlist[j]->mats[k].attr_texId - list[l].texid;
-					if (anim % (list[l].duration[Currenttex]) == 0) {
-						if (Currenttex == last - list[l].texid) {
-							objlist[j]->mats[k].attr_texId = list[l].texid;
-						}
-						else {
-							objlist[j]->mats[k].attr_texId += 1;
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
 //is player in non-rotated box
 bool IsPlayerInBox(NJS_VECTOR playerpos, NJS_VECTOR pos1, NJS_VECTOR pos2) {
 	if ((playerpos.x > pos1.x) && (playerpos.x < pos2.x)

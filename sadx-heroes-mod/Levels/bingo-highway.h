@@ -78,5 +78,3 @@ extern ModelInfo * BH_BNGCHIP;
 extern ModelInfo * BH_BNGCARD;
 extern ModelInfo * BH_TBLSIGN;
 extern NJS_MODEL_SADX * BINGONB[9];
-
-NJS_MODEL_SADX * BINGOOBJLIST[11];

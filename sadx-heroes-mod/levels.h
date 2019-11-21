@@ -19,6 +19,14 @@ typedef struct {
 	NJS_VECTOR		Position2;
 } CHUNK_LIST;
 
+typedef struct {
+	int			texid;
+	int			count;
+	int			duration[32];
+	int			cache;
+	Uint32		address;
+} SH_ANIMTEXS;
+
 DataArray(Rotation3, LevelGlobalColors, 0x90BFE8, 42);
 DataArray(DeathZone*, EmeraldCoastDeathZones, 0x102F8E8, 4);
 DataArray(DeathZone*, WindyValleyDeathZones, 0xBFD820, 3);
@@ -45,6 +53,7 @@ void AutoLoop(ObjectMaster * a1);
 void RailPath(ObjectMaster * a1);
 void SlopePath(ObjectMaster * a1);
 
+void AnimateTexlist(SH_ANIMTEXS *list, Int listcount, NJS_TEXLIST* texlist);
 void AnimateTextures(SH_ANIMTEXS *list, Int listcount);
 void LoadLevelFile(const char *shortname, int chunknb);
 void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size, NJS_VECTOR pos);

@@ -8,8 +8,6 @@ SH_ANIMTEXS CommonAnimTexs[]{
 	{ 38, 2,{ 25, 25, 10 } }
 };
 
-NJS_MODEL_SADX * COMMONOBJLIST[2];
-
 SH_UVSHIFT Objects_UVSHIFT[]{
 	{ nullptr,0,{ 0, 20 } },
 	{ nullptr,0,{ 0, 20 } },
@@ -837,8 +835,6 @@ void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions
 	CO_OCANNON = LoadObjectModel("CO_OCANNON");
 	CO_WOODBOX = LoadObjectModel("CO_WOODBOX");
 
-	COMMONOBJLIST[0] = CO_CMNREEL->getmodel()->child->child->basicdxmodel;
-
 	const IniFile *config = new IniFile(std::string(path) + "\\config.ini");
 
 	if (config->getBool("3- Objects", "GoalRing", true)) {
@@ -858,7 +854,6 @@ void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions
 	if (config->getBool("3- Objects", "DashHoop", true)) {
 		WriteJump((void*)0x7A2470, SHDashHoop);
 		CO_DSHHOOP = LoadObjectModel("CO_DSHHOOP");
-		COMMONOBJLIST[0] = CO_DSHHOOP->getmodel()->basicdxmodel;
 		Objects_UVSHIFT[1].List = CO_DSHHOOP->getmodel()->basicdxmodel->meshsets[2].vertuv;
 		Objects_UVSHIFT[1].Size = CO_DSHHOOP->getmodel()->basicdxmodel->meshsets[2].nbMesh * 3;
 		EnableModels = true;
@@ -876,6 +871,6 @@ void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions
 }
 
 void CommonObjects_OnFrame() {
-	AnimateObjectsTextures(COMMONOBJLIST, LengthOfArray(COMMONOBJLIST), CommonAnimTexs, LengthOfArray(CommonAnimTexs));
+	AnimateTexlist(CommonAnimTexs, LengthOfArray(CommonAnimTexs), &SHCommonTextures);
 	AnimateUV(Objects_UVSHIFT, LengthOfArray(Objects_UVSHIFT));
 }

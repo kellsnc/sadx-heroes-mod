@@ -31,10 +31,6 @@ void GrandMetropolis_InitObjects() {
 	GrandMetropolis_UVSHIFT[1].List = GM_MCLOUDS->getmodel()->child->basicdxmodel->meshsets[0].vertuv;
 	GrandMetropolis_UVSHIFT[0].Size = GM_MCLOUDS->getmodel()->basicdxmodel->meshsets[0].nbMesh * 3;
 	GrandMetropolis_UVSHIFT[1].Size = GM_MCLOUDS->getmodel()->child->basicdxmodel->meshsets[0].nbMesh * 3;
-
-	GMOBJLIST[0] = GM_GRFLUID->getmodel()->basicdxmodel;
-	GMOBJLIST[1] = GM_GRFLUID->getmodel()->child->basicdxmodel;
-	GMOBJLIST[2] = &s03_door_energy;
 }
 
 void GrandMetropolis_Delete(ObjectMaster * a1) {
@@ -83,7 +79,6 @@ void GrandMetropolisHandler(ObjectMaster * a1) {
 		case 0:
 			ChunkHandler("GM", GrandMetropolisChunks, LengthOfArray(GrandMetropolisChunks), entity->Position);
 			AnimateTextures(GrandMetropolisAnimTexs, LengthOfArray(GrandMetropolisAnimTexs));
-			AnimateObjectsTextures(GMOBJLIST, LengthOfArray(GMOBJLIST), GrandMetropolisAnimTexs, LengthOfArray(GrandMetropolisAnimTexs));
 			AnimateUV(GrandMetropolis_UVSHIFT, LengthOfArray(GrandMetropolis_UVSHIFT));
 			AutoPathsMovs();
 
