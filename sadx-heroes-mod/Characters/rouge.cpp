@@ -640,10 +640,7 @@ void LoadRougeFiles(const char *path, const HelperFunctions &helperFunctions) {
 		RWingsAnimData[i].Animation = new NJS_ACTION;
 		RWingsAnimData[i].Animation->object = RougeMdls[2]->getmodel();
 		RWingsAnimData[i].Animation->motion = RougeAnms[i + 60]->getmotion();
-		RWingsAnimData[i].Instance = 68;
 		RWingsAnimData[i].NextAnim = i;
-		RWingsAnimData[i].Property = 3;
-		RWingsAnimData[i].TransitionSpeed = 0.25f;
 		RWingsAnimData[i].AnimationSpeed = 0.5f;
 	}
 

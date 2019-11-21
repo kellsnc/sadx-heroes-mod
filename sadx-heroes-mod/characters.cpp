@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 uint8_t FlyCharEnabled;
-bool CharTexsLoaded[3];
+bool CharTexsLoaded[4];
 
 FastcallFunctionPointer(void, DrawChunkModel_, (Sint32* a1, Sint16* a2), 0x7917F0);
 
@@ -112,6 +112,9 @@ void Tails_Display_(ObjectMaster* obj) {
 	case Characters_Charmy:
 		CharmyHeroes_Display(obj);
 		break;
+	case Characters_HeroesTails:
+		TailsHeroes_Display(obj);
+		break;
 	default:
 		Tails_Display(obj);
 		break;
@@ -140,6 +143,9 @@ void PlayVoice_FlyChar(int ID) {
 		case Characters_Charmy:
 			PlayVoice_Cream(ID);
 			break;
+		case Characters_HeroesTails:
+			PlayVoice_Tails(ID);
+			break;
 		default:
 			PlayVoice(ID);
 			break;
@@ -162,6 +168,9 @@ int PlaySound_FlyChar(int ID, void *a2, int a3, void *a4) {
 	case Characters_Charmy:
 		return PlaySound_Charmy(ID, a2, a3, a4);
 		break;
+	case Characters_HeroesTails:
+		return PlaySound_Tails(ID, a2, a3, a4);
+		break;
 	default:
 		return PlaySound(ID, a2, a3, a4);
 		break;
@@ -183,6 +192,10 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions) {
 	else if (!FlyCharacter.compare("Charmy")) {
 		LoadCharmyFiles(path, helperFunctions);
 		FlyCharEnabled = Characters_Charmy;
+	}
+	else if (!FlyCharacter.compare("Tails")) {
+		LoadTailsFiles(path, helperFunctions);
+		FlyCharEnabled = Characters_HeroesTails;
 	}
 
 	WriteCall((void*)0x462456, Tails_Display_);
@@ -209,6 +222,10 @@ void Characters_OnFrame() {
 			}
 			else if (FlyCharEnabled == Characters_Charmy) {
 				HeroesChars[player] = LoadObject(LoadObj_Data1, 1, CharmyHeroes_Main);
+				HeroesChars[player]->Data1->CharIndex = player;
+			}
+			else if (FlyCharEnabled == Characters_HeroesTails) {
+				HeroesChars[player] = LoadObject(LoadObj_Data1, 1, TailsHeroes_Main);
 				HeroesChars[player]->Data1->CharIndex = player;
 			}
 		}
