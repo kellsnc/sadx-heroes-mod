@@ -13,7 +13,7 @@ NJS_MATRIX TailsMatrices[2];
 extern CollisionData Cheese_Col;
 
 enum TailsSounds {
-	TailsSound_Attack = 12000,
+	TailsSound_Attack = 11200,
 	TailsSound_FlyBegin,
 	TailsSound_FlyAttack,
 	TailsSound_FlyUp,
@@ -44,7 +44,7 @@ int PlaySound_Tails(int ID, void *a2, int a3, void *a4) {
 
 	switch (ID) {
 	case 17:
-		PlayVoice(TailsSound_Trick);
+		PlayVoice(TailsSound_Attack);
 		break;
 	case 1243:
 		PlayVoice(TailsSound_FlyBegin);
