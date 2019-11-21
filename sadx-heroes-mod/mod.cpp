@@ -15,8 +15,6 @@ set_blend* set_blend_ptr;
 std::string modpath;
 HelperFunctions HelperFunctionsGlobal;
 
-bool EnableModels = false;
-bool EnableSounds = true;
 bool IsLoaded = false;
 bool ChunkSwapped = false;
 
@@ -36,11 +34,6 @@ extern "C"
 {
 	__declspec(dllexport) void __cdecl Init(const char *path, const HelperFunctions &helperFunctions)
 	{
-		//Get the config.ini information
-		const IniFile *config = new IniFile(std::string(path) + "\\config.ini");
-		EnableSounds = config->getBool("0- General", "EnableSounds", true);
-		delete config;
-
 		//Set up function pointers for Lantern API (borrowed from PkR)
 		HMODULE LanternDLL = GetModuleHandle(L"sadx-dc-lighting");
 

@@ -43,7 +43,7 @@ void SeasideHill_OnFrame(EntityData1 * entity, CharObj2 * co2) {
 		}
 	}
 
-	if (EnableSounds == 1) {
+	if (envsounds == 1) {
 		if (slowtimer > 0 && slowtimer < 301) slowtimer++;
 		if (slowtimer == 300) { sh_trigger = true; slowtimer = 1; }
 		if (sh_trigger) {

@@ -48,6 +48,7 @@ extern NJS_MATERIAL matlist_waterfall[1];
 
 extern LandTable** CurrentLandAddress;
 extern bool chunkswapped;
+extern bool envsounds;
 
 void AutoLoop(ObjectMaster * a1);
 void RailPath(ObjectMaster * a1);

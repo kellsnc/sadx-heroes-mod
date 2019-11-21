@@ -2,6 +2,9 @@
 
 uint8_t FlyCharEnabled;
 bool CharTexsLoaded[4];
+bool chrsounds = true;
+bool jmpsounds = true;
+bool flysounds = true;
 
 FastcallFunctionPointer(void, DrawChunkModel_, (Sint32* a1, Sint16* a2), 0x7917F0);
 
@@ -131,7 +134,7 @@ void Tails_Main_r(ObjectMaster* obj) {
 	original(obj);
 }
 
-void PlayVoice_FlyChar(int ID) {
+void PlayVoice_HeoresChar(int ID) {
 	switch (ID) {
 	case 1803:
 		switch (HeroesChars[CurrentPlayer]->Data1->CharID) {
@@ -158,7 +161,15 @@ void PlayVoice_FlyChar(int ID) {
 	}
 }
 
-int PlaySound_FlyChar(int ID, void *a2, int a3, void *a4) {
+int PlaySound_HeoresChar(int ID, void *a2, int a3, void *a4) {
+	if (ID == 17 && !jmpsounds) {
+		PlayVoice(CommonSound_Jumping);
+		return 1;
+	}
+	else if (!chrsounds || (!flysounds && ID == 1243)) {
+		return 0;
+	}
+	
 	switch (HeroesChars[CurrentPlayer]->Data1->CharID) {
 	case Characters_Cream:
 		return PlaySound_Cream(ID, a2, a3, a4);
@@ -200,11 +211,15 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions) {
 	}
 
 	WriteCall((void*)0x462456, Tails_Display_);
-	WriteCall((void*)0x45C037, PlaySound_FlyChar); //jump
-	WriteCall((void*)0x45BE01, PlaySound_FlyChar); //fly
-	WriteCall((void*)0x45BF8D, PlaySound_FlyChar); //hurt
-	WriteCall((void*)0x446A49, PlaySound_FlyChar); //death
-	WriteCall((void*)0x45BE57, PlayVoice_FlyChar); //death
+	WriteCall((void*)0x45C037, PlaySound_HeoresChar); //jump
+	WriteCall((void*)0x45BE01, PlaySound_HeoresChar); //fly
+	WriteCall((void*)0x45BF8D, PlaySound_HeoresChar); //hurt
+	WriteCall((void*)0x446A49, PlaySound_HeoresChar); //death
+	WriteCall((void*)0x45BE57, PlayVoice_HeoresChar); //death
+
+	chrsounds = config->getBool("4- Sounds", "chrsounds", true);
+	jmpsounds = config->getBool("4- Sounds", "jmpsounds", true);
+	flysounds = config->getBool("4- Sounds", "flysounds", true);
 
 	delete config;
 }

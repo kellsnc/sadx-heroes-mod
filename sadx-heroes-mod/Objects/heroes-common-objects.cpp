@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+bool EnableModels;
+
 NJS_TEXNAME SHTexNames[40];
 NJS_TEXLIST SHCommonTextures = { arrayptrandlength(SHTexNames) };
 PVMEntry shobjpvm = { "heroes-common", &SHCommonTextures };
@@ -222,7 +224,7 @@ void ObjReel_Main(ObjectMaster *a1)
 
 				if (a1->Data1->Position.y < max - 15) {
 					a1->Data1->Position.y += 1;
-					if (anim % 40) if (EnableSounds) PlaySound(53, 0, 0, 0);
+					if (anim % 40) if (envsounds) PlaySound(53, 0, 0, 0);
 				}
 			}
 		}
@@ -233,7 +235,7 @@ void ObjReel_Main(ObjectMaster *a1)
 
 			if (a1->Data1->Position.y > min) {
 				a1->Data1->Position.y -= 1;
-				if (anim % 40) if (EnableSounds) if (GetPlayerDistance(a1->Data1, 0) < 107600.0) QueueSound(53, a1->Data1, 1, 148, 0, 800.0, a1->Data1);
+				if (anim % 40) if (envsounds) if (GetPlayerDistance(a1->Data1, 0) < 107600.0) QueueSound(53, a1->Data1, 1, 148, 0, 800.0, a1->Data1);
 			}
 		}
 
@@ -710,7 +712,7 @@ void Capsule_Main_r(ObjectMaster *a1)
 		else {
 			v1->Scale.x = 1;
 
-			if (anim % 60 == 0) if (EnableSounds) if (GetPlayerDistance(a1->Data1, 0) < 1007600.0) PlaySound(85, 0, 0, 0);
+			if (anim % 60 == 0) if (envsounds) if (GetPlayerDistance(a1->Data1, 0) < 1007600.0) PlaySound(85, 0, 0, 0);
 		}
 
 		Capsule_Display_r(a1);
@@ -825,6 +827,17 @@ void __cdecl ObjBoxW(ObjectMaster *a1)
 	}
 }
 
+void CommonObjects_Sounds(int ID, void *a2, int a3, void *a4) {
+	switch (ID) {
+	case 738:
+		PlayVoice(CommonSound_DashPanel);
+		break;
+	default:
+		PlaySound(ID, a2, a3, a4);
+		break;
+	}
+}
+
 void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions) {
 	helperFunctions.RegisterCommonObjectPVM(shobjpvm);
 
@@ -865,6 +878,10 @@ void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions
 		Objects_UVSHIFT[2].List = CO_LCHRAMP->getmodel()->basicdxmodel->meshsets[15].vertuv;
 		Objects_UVSHIFT[2].Size = CO_LCHRAMP->getmodel()->basicdxmodel->meshsets[15].nbMesh * 3;
 		EnableModels = true;
+	}
+
+	if (config->getBool("4- Sounds", "cmnsounds", true)) {
+		WriteCall((void*)0x7A461D, CommonObjects_Sounds);
 	}
 
 	delete config;

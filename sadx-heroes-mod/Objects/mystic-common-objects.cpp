@@ -44,7 +44,7 @@ void HCWarp_Main(ObjectMaster *a1) {
 			od2->vector_a.y += 10;
 
 			if (IsPlayerInsideSphere(&od2->vector_a, 15) == 1) {
-				if (EnableSounds) PlaySound(41, 0, 0, 0);
+				if (envsounds) PlaySound(41, 0, 0, 0);
 				EntityData1 *entity = EntityData1Ptrs[0];
 				od2->vector_a = entity->Position;
 				a1->Data1->Action = 1;
@@ -93,7 +93,7 @@ void HCWarp_Main(ObjectMaster *a1) {
 						entity->Position = a1->Data1->Scale;
 					}
 
-					if (EnableSounds) PlaySound(42, 0, 0, 0);
+					if (envsounds) PlaySound(42, 0, 0, 0);
 					if (a1->Data1->Rotation.z == 1) Camera_Data1->Position = entity->Position;
 				}
 				a1->Data1->Action = 2;
@@ -429,7 +429,7 @@ void HCPlatform_Main(ObjectMaster *a1) {
 		if (type != 0) {
 			DynColRadiusAuto(a1, 1);
 			
-			if (anim % 80 == 0) if (EnableSounds) if (GetPlayerDistance(a1->Data1, 0) < 307600.0) PlaySound(46, 0, 0, 0);
+			if (anim % 80 == 0) if (envsounds) if (GetPlayerDistance(a1->Data1, 0) < 307600.0) PlaySound(46, 0, 0, 0);
 			if (type == 1) {
 				char timer = a1->Data1->NextAction;
 				if (timer == 0) {

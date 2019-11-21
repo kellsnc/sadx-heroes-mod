@@ -23,7 +23,5 @@ extern unsigned int anim;
 extern uint8_t CurrentChunk;
 extern NJS_TEXLIST * CurrentLevelTexlist;
 
-extern bool EnableModels;
-extern bool EnableSounds;
 extern bool IsLoaded;
 extern bool ChunkSwapped;
