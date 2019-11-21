@@ -16,7 +16,8 @@ bool OhNoImDead2(EntityData1 *a1, ObjectData2 *a2);
 Trampoline OhNoImDead2_t(0x004CE030, 0x004CE036, OhNoImDead2);
 bool OhNoImDead2(EntityData1 *a1, ObjectData2 *a2) {
 	if (a1->CollisionInfo->CollidingObject) {
-		if (a1->CollisionInfo->CollidingObject->Object->MainSub == Cheese_Main) return 1;
+		if (a1->CollisionInfo->CollidingObject->Object->MainSub == Cheese_Main 
+			|| a1->CollisionInfo->CollidingObject->Object->MainSub == TrapRing_Main) return 1;
 	}
 
 	FunctionPointer(bool, original, (EntityData1 *a1, ObjectData2 *a2), OhNoImDead2_t.Target());

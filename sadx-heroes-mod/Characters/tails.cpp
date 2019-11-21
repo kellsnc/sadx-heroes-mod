@@ -10,6 +10,8 @@ NJS_TEXLIST TAILS_TEXLIST = { arrayptrandlength(TAILS_TEXNAMES) };
 
 NJS_MATRIX TailsMatrices[2];
 
+extern CollisionData Cheese_Col;
+
 enum TailsSounds {
 	TailsSound_Attack = 12000,
 	TailsSound_FlyBegin,
@@ -61,6 +63,36 @@ int PlaySound_Tails(int ID, void *a2, int a3, void *a4) {
 	}
 
 	return 1;
+}
+
+void TrapRing_Main(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1;
+	ObjectMaster* ring;
+
+	switch (data->Action) {
+	case 0:
+		data->LoopData = (Loop*)LoadObject((LoadObj)(LoadObj_UnknownB | LoadObj_Data1), 2, DroppedRing_Main);
+		ring = (ObjectMaster*)data->LoopData;
+		ring->Data1->Position = data->Position;
+		ring->Data1->Rotation = data->Rotation;
+
+		Collision_Init(obj, &Cheese_Col, 1, 3u);
+		data->CollisionInfo->Radius = 2;
+		
+		data->Action = 1;
+		break;
+	case 1:
+		ring = (ObjectMaster*)data->LoopData;
+		if (!ring->Data1) {
+			DeleteObject_(obj);
+			return;
+		}
+
+		data->Position = ring->Data1->Position;
+		AddToCollisionList(data);
+		data->Position.y += 5;
+		break;
+	}
 }
 
 void TailsTails_Main(ObjectMaster* obj) {
@@ -267,7 +299,7 @@ void TailsHeroes_Main(ObjectMaster *obj) {
 	case 2:
 		PlayerPtrs[data->CharIndex]->DisplaySub = TailsHeroes_Display;
 
-		if (playerco2->Speed.x < 2 && PressedButtons[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
+		if (playerco2->Speed.x < 2 && PressedButtons[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground && Rings >= 3) {
 			playerdata->Action = 100;
 			data->Action = 3;
 			break;
@@ -536,7 +568,18 @@ void TailsHeroes_Main(ObjectMaster *obj) {
 			}
 			else {
 				data->field_A = 30;
-				
+				if (Rings >= 3) {
+					AddRings(-3);
+					ObjectMaster* ringbomb = LoadObject(LoadObj_Data1, 2, TrapRing_Main);
+					ringbomb->Data1->Position = playerdata->Position;
+					ringbomb->Data1->Rotation.y = -playerdata->Rotation.y - 0xC000;
+					ringbomb = LoadObject(LoadObj_Data1, 2, TrapRing_Main);
+					ringbomb->Data1->Position = playerdata->Position;
+					ringbomb->Data1->Rotation.y = -playerdata->Rotation.y - 0xE000;
+					ringbomb = LoadObject(LoadObj_Data1, 2, TrapRing_Main);
+					ringbomb->Data1->Position = playerdata->Position;
+					ringbomb->Data1->Rotation.y = -playerdata->Rotation.y - 0xA000;
+				}
 			}
 		}
 		else {

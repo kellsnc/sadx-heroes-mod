@@ -41,6 +41,7 @@ void PlayVoice_Charmy(int ID);
 
 void TailsHeroes_Display(ObjectMaster *obj);
 void TailsHeroes_Main(ObjectMaster *obj);
+void TrapRing_Main(ObjectMaster* obj);
 void LoadTailsFiles(const char *path, const HelperFunctions &helperFunctions);
 int PlaySound_Tails(int ID, void *a2, int a3, void *a4);
 void PlayVoice_Tails(int ID);

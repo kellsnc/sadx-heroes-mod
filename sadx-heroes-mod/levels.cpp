@@ -191,7 +191,7 @@ void AnimateTexlist(SH_ANIMTEXS *list, Int listcount, NJS_TEXLIST* texlist) {
 				}
 				else {
 					if (clist->cache == 0) clist->address = texname->texaddr;
-					texname->texaddr = CurrentLevelTexlist->textures[CurrentTex + 1].texaddr;
+					texname->texaddr = texlist->textures[CurrentTex + 1].texaddr;
 					clist->cache += 1;
 				}
 			}
