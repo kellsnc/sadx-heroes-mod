@@ -55,8 +55,9 @@ void SpecialStagesHandler(ObjectMaster * a1) {
 void SpecialStages_Init(const char *path, const HelperFunctions &helperFunctions) {
 	ReplacePVM("MINI_CART01", "special-stages");
 	ReplaceBIN("SETMCART00S", "special-stages");
-	ReplaceADX("circuit", "special-stages");
 	ReplaceBIN("PL_Z0B", "special-stages-shaders");
+
+	MusicList[MusicIDs_circuit].Name = "special-stages";
 
 	WriteJump((void*)0x4DAA80, SpecialStagesHandler);
 	DeathZoneList[HeroesLevelID_SpecialStages] = nullptr;

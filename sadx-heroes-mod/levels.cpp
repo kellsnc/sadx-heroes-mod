@@ -344,9 +344,9 @@ void Levels_Init(const char *path, const HelperFunctions &helperFunctions)
 
 	//Init sound effects
 	if (config->getBool("4- Sounds", "bgmsounds", true)) {
-		ReplaceADX("invncibl", "invncibl");
-		ReplaceADX("rndclear", "rndclear");
-		ReplaceADX("speedup", "speedup");
+		MusicList[MusicIDs_invncibl].Name = "heroes_invncibl";
+		MusicList[MusicIDs_rndclear].Name = "heroes_rndclear";
+		MusicList[MusicIDs_speedup].Name = "heroes_speedup";
 	}
 
 	delete config;

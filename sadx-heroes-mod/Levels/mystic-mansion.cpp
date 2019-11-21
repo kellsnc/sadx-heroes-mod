@@ -142,17 +142,11 @@ void MysticMansion_Init(const char *path, const HelperFunctions &helperFunctions
 	ReplaceBIN("SET1000K", "mystic-mansion-set-knux");
 	ReplaceBIN("CAM1000S", "mystic-mansion-cam");
 	ReplaceDAT("FINAL_EGG_BANK01", "MYSTIC_BANK");
-	ReplaceADX("finaleg1", "mystic-mansion");
 	ReplaceBIN("PL_A0B", "mystic-mansion-shaders");
 
-	if (helperFunctions.Version >= 9 && !NoMysticMusic) {
-		MoveADX("mystic-mansion-a");
-		MoveADX("mystic-mansion-b");
-		MoveADX("mystic-mansion-c");
-		MoveADX("mystic-mansion-d");
-		MoveADX("mystic-mansion-e");
-		MoveADX("mystic-mansion-f");
+	MusicList[MusicIDs_finaleg1].Name = "mystic-mansion";
 
+	if (helperFunctions.Version >= 9 && !NoMysticMusic) {
 		musicid = helperFunctions.RegisterMusicFile(MysticMansionMusics[0]);
 		helperFunctions.RegisterMusicFile(MysticMansionMusics[1]);
 		helperFunctions.RegisterMusicFile(MysticMansionMusics[2]);

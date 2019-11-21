@@ -94,8 +94,9 @@ void GrandMetropolis_Init(const char *path, const HelperFunctions &helperFunctio
 	ReplaceBIN("SET0900K", "grand-metropolis-set");
 	ReplaceBIN("CAM0900S", "heroes-cam");
 	ReplaceDAT("CASINOPOLIS_BANK01", "HEROES_BANK");
-	ReplaceADX("casino1", "grand-metropolis");
 	ReplaceBIN("PL_90B", "grand-metropolis-shaders");
+
+	MusicList[MusicIDs_casino1].Name = "grand-metropolis";
 
 	helperFunctions.RegisterPathList(GrandMetropolisPaths);
 

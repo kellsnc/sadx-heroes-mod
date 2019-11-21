@@ -156,8 +156,9 @@ void RoadRock_Init(const char *path, const HelperFunctions &helperFunctions) {
 	ReplaceBIN("SET0201S", "road-rock-set-gamma");
 	ReplaceBIN("CAM0201S", "heroes-cam");
 	ReplaceDAT("WINDY_VALLEY_BANK01", "HEROES_BANK");
-	ReplaceADX("wndyvly2", "road-rock");
 	ReplaceBIN("PL_21B", "road-rock-shaders");
+
+	MusicList[MusicIDs_wndyvly2].Name = "road-rock";
 
 	WindyValleyDeathZones[1] = RoadRockDeathZones;
 }
@@ -168,8 +169,9 @@ void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions) 
 	ReplaceBIN("SET0200M", "ocean-palace-set-tails");
 	ReplaceBIN("CAM0200S", "heroes-cam");
 	ReplaceDAT("WINDY_VALLEY_BANK01", "HEROES_BANK");
-	ReplaceADX("wndyvly1", "ocean-palace");
 	ReplaceBIN("PL_20B", "ocean-palace-shaders");
+
+	MusicList[MusicIDs_wndyvly1].Name = "ocean-palace";
 
 	helperFunctions.RegisterPathList(OceanPalacePaths);
 

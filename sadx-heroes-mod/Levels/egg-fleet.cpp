@@ -86,8 +86,9 @@ void EggFleet_Init(const char *path, const HelperFunctions &helperFunctions) {
 	ReplaceBIN("SET0600M", "egg-fleet-set-tails");
 	ReplaceBIN("CAM0600S", "egg-fleet-cam");
 	ReplaceDAT("SKY_DECK_BANK01", "HEROES_BANK");
-	ReplaceADX("skydeck1", "egg-fleet");
 	ReplaceBIN("PL_60B", "egg-fleet-shaders");
+
+	MusicList[MusicIDs_skydeck1].Name = "egg-fleet";
 
 	helperFunctions.RegisterPathList(EggFleetPaths); //splines
 

@@ -178,9 +178,10 @@ void HangCastle_Init(const char *path, const HelperFunctions &helperFunctions) {
 	ReplaceBIN("SET0700S", "hang-castle-set");
 	ReplaceBIN("CAM0700S", "heroes-cam");
 	ReplaceDAT("LOST_WORLD_BANK01", "MYSTIC_BANK");
-	ReplaceADX("lstwrld1", "hang-castle");
-	ReplaceADX("lstwrld2", "hang-castle-alt");
 	ReplaceBIN("PL_70B", "hang-castle-shaders");
+
+	MusicList[MusicIDs_lstwrld1].Name = "hang-castle";
+	MusicList[MusicIDs_lstwrld2].Name = "hang-castle-alt";
 
 	helperFunctions.RegisterPathList(HangCastlePaths);
 

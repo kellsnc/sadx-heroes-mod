@@ -80,8 +80,9 @@ void BingoHighway_Init(const char *path, const HelperFunctions &helperFunctions)
 	ReplaceBIN("SET0400M", "bingo-highway-set");
 	ReplaceBIN("CAM0400S", "heroes-cam");
 	ReplaceDAT("HIGHWAY_BANK01", "CASINO_BANK");
-	ReplaceADX("highway1", "bingo-highway");
 	ReplaceBIN("PL_40B", "bingo-highway-shaders");
+
+	MusicList[MusicIDs_highway1].Name = "bingo-highway";
 
 	helperFunctions.RegisterPathList(BingoHighwayPaths);
 
