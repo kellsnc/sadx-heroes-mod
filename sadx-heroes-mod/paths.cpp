@@ -101,6 +101,7 @@ void RailPath_Main(ObjectMaster * a1) {
 
 	if (a1->Data1->Action == 0) {
 		EntityData1 * player = EntityData1Ptrs[a1->Data1->NextAction];
+		entity->Position = player->Position;
 
 		if (!player) {
 			a1->Data1->Action = 1;
@@ -172,11 +173,6 @@ void RailPath_Main(ObjectMaster * a1) {
 			if (!web) {
 				RailPhysics(a1, player, co2, loopdata);
 				railspeed = a1->Data1->Scale.y;
-
-				if (++a1->field_30 > 125) {
-					a1->field_30 = 0;
-					PlayHeroesSound(CommonSound_Rail);
-				}
 			}
 			
 			//next position in spline
@@ -428,6 +424,8 @@ void Path_Main(ObjectMaster * a1) {
 
 							//rail stuff
 							if (type == 2) {
+								PlayHeroesSoundQueue(CommonSound_Rail, a1, 1000, 1);
+
 								if (co2) tempobj->Data1->Scale.y = co2->Speed.x * 2; //store horizontal speed
 								if (tempobj->Data1->Scale.y == 0) RailValues[RailPhysics_MaxSpeed];
 

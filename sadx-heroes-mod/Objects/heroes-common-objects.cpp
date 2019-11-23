@@ -235,7 +235,7 @@ void ObjReel_Main(ObjectMaster *a1)
 
 			if (a1->Data1->Position.y > min) {
 				a1->Data1->Position.y -= 1;
-				if (anim % 40) PlayHeroesSound3D(CommonSound_Pulley, a1, 300);
+				if (anim % 40) PlayHeroesSoundQueue(CommonSound_Pulley, a1, 300, 0);
 			}
 		}
 
@@ -711,7 +711,7 @@ void Capsule_Main_r(ObjectMaster *a1)
 		else {
 			v1->Scale.x = 1;
 
-			if (anim % 60 == 0) PlayHeroesSound3D(CommonSound_GoalRing, a1, 500);
+			if (anim % 60 == 0) PlayHeroesSoundQueue(CommonSound_GoalRing, a1, 500, 0);
 		}
 
 		Capsule_Display_r(a1);

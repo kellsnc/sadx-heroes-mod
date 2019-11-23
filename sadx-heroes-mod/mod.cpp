@@ -30,6 +30,7 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 void Sounds_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config);
 void CommonObjects_OnFrame();
 void Characters_OnFrame();
+void Sounds_OnFrame();
 
 extern "C"
 {
@@ -69,9 +70,11 @@ extern "C"
 	{
 		if (GameState != 16) ++anim;
 
+		Sounds_OnFrame();
+
 		if (GameState == 15 || GameState == 4 || GameMode == 12) {
 			Characters_OnFrame();
-
+			
 			if (GameMode != 12) {
 				if (EnableModels) {
 					CommonObjects_OnFrame();

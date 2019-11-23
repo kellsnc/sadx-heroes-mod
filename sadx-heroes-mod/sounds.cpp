@@ -7,11 +7,12 @@ bool flysounds = true;
 bool envsounds = true;
 
 typedef struct {
-	int			id;
-	float		frame;
-	float		volume;
-	float		pitch;
-	HSTREAM		stream;
+	int				id;
+	float			dist;
+	float			volume;
+	float			pitch;
+	HSTREAM			stream;
+	ObjectMaster*	obj;
 } NSS_SOUNDENTRY;
 
 NSS_SOUNDENTRY SoundListEntries[24];
@@ -20,7 +21,13 @@ bool SoundDevice;
 
 int GetFreeSoundEntry() {
 	for (int i = 0; i < LengthOfArray(SoundListEntries); ++i) {
-		if (SoundListEntries[i].stream == NULL) return i;
+		if (SoundListEntries[i].stream == NULL) {
+			SoundListEntries[i].dist = 0;
+			SoundListEntries[i].obj = nullptr;
+			SoundListEntries[i].pitch = 0;
+			SoundListEntries[i].volume = 1;
+			return i;
+		}
 	}
 
 	return 0;
@@ -42,6 +49,25 @@ int GetSoundEntryByStream(HCHANNEL channel) {
 	return -1;
 }
 
+float GetVolumeRange(NJS_VECTOR* pos, float dist) {
+	int nb = IsPlayerInsideSphere_(pos, dist) - 1;
+	if (nb > -1) {
+		EntityData1* player = EntityData1Ptrs[nb];
+		if (player) {
+			float playerdist = GetDistance(&player->Position, pos);
+			return 1 - (playerdist / dist);
+		}
+	}
+	
+	return 0;
+}
+
+static void __stdcall FreeSoundStream(HSYNC handle, DWORD channel, DWORD data, void* user)
+{
+	BASS_ChannelStop(channel);
+	BASS_StreamFree(channel);
+}
+
 static void __stdcall FreeSoundStreamQueue(HSYNC handle, DWORD channel, DWORD data, void* user)
 {
 	int entryID = GetSoundEntryByStream(channel);
@@ -50,14 +76,7 @@ static void __stdcall FreeSoundStreamQueue(HSYNC handle, DWORD channel, DWORD da
 		SoundListEntries[entryID].stream = NULL;
 	}
 
-	BASS_ChannelStop(channel);
-	BASS_StreamFree(channel);
-}
-
-static void __stdcall FreeSoundStream(HSYNC handle, DWORD channel, DWORD data, void* user)
-{
-	BASS_ChannelStop(channel);
-	BASS_StreamFree(channel);
+	FreeSoundStream(handle, channel, data, user);
 }
 
 DWORD LoadSoundStream(int ID) {
@@ -81,35 +100,29 @@ DWORD LoadSoundStream(int ID) {
 	}
 }
 
-void PlaySoundChannelQueue(int ID, float volume) {
-	int entryID = GetFreeSoundEntry();
-
-	if (entryID > -1) {
-		HSTREAM channel = LoadSoundStream(ID);
-
-		if (channel != 0)
-		{
-			BASS_ChannelPlay(channel, false);
-			BASS_ChannelSetAttribute(channel, BASS_ATTRIB_VOL, (volume + 10000) / 30000.0f);
-			BASS_ChannelSetSync(channel, BASS_SYNC_END, 0, FreeSoundStream, nullptr);
-		}
-
-		SoundListEntries[entryID].id = ID;
-		SoundListEntries[entryID].volume = volume;
-		SoundListEntries[entryID].stream = channel;
-	}
-}
-
-void PlayHeroesSound(int ID) {
-	PlaySoundChannelQueue(ID, 100);
-	return;
-
+void PlaySoundChannelQueue(int ID, int entryID, bool loop) {
 	HSTREAM channel = LoadSoundStream(ID);
 
 	if (channel != 0)
 	{
 		BASS_ChannelPlay(channel, false);
-		BASS_ChannelSetSync(channel, BASS_SYNC_END, 0, FreeSoundStream, nullptr);
+		BASS_ChannelSetAttribute(channel, BASS_ATTRIB_VOL, SoundListEntries[entryID].volume);
+		if (loop) {
+			BASS_ChannelFlags(channel, BASS_SAMPLE_LOOP, BASS_SAMPLE_LOOP);
+		}
+		else {
+			BASS_ChannelSetSync(channel, BASS_SYNC_END, 0, FreeSoundStreamQueue, nullptr);
+		}
+		SoundListEntries[entryID].stream = channel;
+	}
+}
+
+void PlayHeroesSound(int ID) {
+	int entryID = GetFreeSoundEntry();
+
+	if (entryID > -1) {
+		SoundListEntries[entryID].id = ID;
+		PlaySoundChannelQueue(ID, entryID, 0);
 	}
 }
 
@@ -126,12 +139,22 @@ void PlayDelayedHeroesSound(int ID, int time) {
 	temp->Data1->Scale.y = time;
 }
 
-void PlayHeroesSound3D(int ID, ObjectMaster* obj, float dist) {
-	if (obj && IsPlayerInsideSphere(&obj->Data1->Position, dist) == 1) PlayHeroesSound(ID);
-}
+void PlayHeroesSoundQueue(int ID, ObjectMaster* obj, float dist, bool loop) {
+	if (obj && IsPlayerInsideSphere_(&obj->Data1->Position, dist * 2)) {
+		int entryID = GetFreeSoundEntry();
 
-void PlayHeroesSound3DPitch(int ID, ObjectMaster* obj, float dist, float pitch) {
-	if (obj && IsPlayerInsideSphere(&obj->Data1->Position, dist) == 1) PlayHeroesSound(ID);
+		if (entryID > -1) {
+			SoundListEntries[entryID].id = ID;
+			SoundListEntries[entryID].obj = obj;
+
+			if (dist > 0) {
+				SoundListEntries[entryID].dist = dist * 2;
+				SoundListEntries[entryID].volume = GetVolumeRange(&obj->Data1->Position, dist * 2);
+			}
+
+			PlaySoundChannelQueue(ID, entryID, loop);
+		}
+	}
 }
 
 void Sounds_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config) {
@@ -144,5 +167,32 @@ void Sounds_Init(const char *path, const HelperFunctions &helperFunctions, const
 		MusicList[MusicIDs_invncibl].Name = "heroes_invncibl";
 		MusicList[MusicIDs_rndclear].Name = "heroes_rndclear";
 		MusicList[MusicIDs_speedup].Name = "heroes_speedup";
+	}
+}
+
+void Sounds_OnFrame() {
+	for (int i = 0; i < LengthOfArray(SoundListEntries); ++i) {
+		if (SoundListEntries[i].stream != NULL) {
+			HSTREAM stream = SoundListEntries[i].stream;
+			
+  			if (GameState == 16 && BASS_ChannelIsActive(stream) == BASS_ACTIVE_PLAYING) {
+				BASS_ChannelPause(stream);
+			}
+			
+			if (GameState != 16 && BASS_ChannelIsActive(stream) == BASS_ACTIVE_PAUSED) {
+				BASS_ChannelPlay(stream, false);
+			}
+				
+			if (SoundListEntries[i].obj && !SoundListEntries[i].obj->Data1) {
+				FreeSoundStreamQueue(NULL, stream, NULL, NULL);
+				SoundListEntries[i].stream = NULL;
+				continue;
+			}
+			
+			if (SoundListEntries[i].dist > 0) {
+				SoundListEntries[i].volume = GetVolumeRange(&SoundListEntries[i].obj->Data1->Position, SoundListEntries[i].dist);
+				BASS_ChannelSetAttribute(stream, BASS_ATTRIB_VOL, SoundListEntries[i].volume);
+			}
+		}
 	}
 }

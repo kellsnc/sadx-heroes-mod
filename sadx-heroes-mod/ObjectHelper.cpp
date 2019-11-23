@@ -163,9 +163,26 @@ void DynCol_Delete(ObjectMaster *a1) {
 	}
 }
 
+bool IsPointInsideSphere(NJS_VECTOR *center, NJS_VECTOR *pos, float radius) {
+	return (powf(pos->x - center->x, 2) + pow(pos->y - center->y, 2) + pow(pos->z - center->z, 2)) <= pow(radius, 2);
+}
+
+int IsPlayerInsideSphere_(NJS_VECTOR *center, float radius) {
+	for (uint8_t player = 0; player < 8; ++player) {
+		if (!EntityData1Ptrs[player]) continue;
+
+		NJS_VECTOR *pos = &EntityData1Ptrs[player]->Position;
+		if (IsPointInsideSphere(center, pos, radius)) {
+			return player + 1;
+		}
+	}
+
+	return 0;
+}
+
 //Only allocate dynamic collision within radius
 bool DynColRadius(ObjectMaster *a1, float radius, uint8_t col) {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, radius)) {
+	if (IsPlayerInsideSphere_(&a1->Data1->Position, radius)) {
 		if (!a1->Data1->LoopData) {
 			DynCol_Add(a1, col);
 			return 2;

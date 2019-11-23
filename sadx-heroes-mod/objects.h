@@ -65,6 +65,8 @@ bool IsPlayerInBox(NJS_VECTOR playerpos, NJS_VECTOR pos1, NJS_VECTOR pos2);
 void ElevatePlayer(uint8_t slot);
 bool CheckModelDisplay(SOI_LIST item);
 bool CheckModelDisplay2(SOI_LIST2 item);
+bool IsPointInsideSphere(NJS_VECTOR *center, NJS_VECTOR *pos, float radius);
+int IsPlayerInsideSphere_(NJS_VECTOR *center, float radius);
 bool DynColRadius(ObjectMaster *a1, float radius, uint8_t col);
 bool DynColRadiusAuto(ObjectMaster *a1, uint8_t col);
 
