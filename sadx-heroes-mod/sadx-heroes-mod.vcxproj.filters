@@ -258,4 +258,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\sadx-mod-loader\extlib\bass\bass_vgmstream.lib">
+      <Filter>Source Files</Filter>
+    </Library>
+    <Library Include="..\sadx-mod-loader\extlib\bass\bass.lib">
+      <Filter>Source Files</Filter>
+    </Library>
+  </ItemGroup>
 </Project>
