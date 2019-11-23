@@ -5,10 +5,41 @@ extern bool jmpsounds;
 extern bool flysounds;
 
 void PlayHeroesSound(int ID);
+void PlayDelayedHeroesSound(int ID, int time);
+void PlayHeroesSound3D(int ID, ObjectMaster* obj, float dist);
 
 enum HeroesSounds {
 	CommonSound_DashPanel = 10100,
 	CommonSound_Jumping,
+	CommonSound_BoxBreak,
+	CommonSound_CannonIn,
+	CommonSound_CannonMov,
+	CommonSound_CannonStp,
+	CommonSound_CannonLch,
+	CommonSound_GoalRing,
+	CommonSound_Pulley,
+	CommonSound_Rail,
+	LevelSound_Sea_Seagul = 10200,
+	LevelSound_Sea_RuinStart,
+	LevelSound_Sea_RuinEnd,
+	LevelSound_Cty_FluidPath = 10220,
+	LevelSound_Csn_Bumper1 = 10240,
+	LevelSound_Csn_Bumper2,
+	LevelSound_Csn_Bumper3,
+	LevelSound_Csn_Door,
+	LevelSound_Csn_GlassBreak,
+	LevelSound_Csn_JackPot,
+	LevelSound_Csn_Lost,
+	LevelSound_Csn_Machine,
+	LevelSound_Csn_Slot,
+	LevelSound_Csn_Trigger,
+	LevelSound_Mys_Door1 = 10260,
+	LevelSound_Mys_Door2,
+	LevelSound_Mys_Ghost1,
+	LevelSound_Mys_Ghost2,
+	LevelSound_Mys_MvPltf,
+	LevelSound_Mys_Warp1,
+	LevelSound_Mys_Warp2,
 	CreamSound_Attack = 10900,
 	CreamSound_FlyBegin,
 	CreamSound_FlyAttack,

@@ -3,7 +3,7 @@
 #include "seaside-hill-deathzones.h"
 #include "seaside-hill.h"
 
-static int slowtimer = 1;
+static int slowtimer = 0;
 static bool sh_trigger = true;
 
 void SeasideHillSkybox(ObjectMaster *a1) {
@@ -44,15 +44,16 @@ void SeasideHill_OnFrame(EntityData1 * entity, CharObj2 * co2) {
 	}
 
 	if (envsounds == 1) {
-		if (slowtimer > 0 && slowtimer < 301) slowtimer++;
-		if (slowtimer == 300) { sh_trigger = true; slowtimer = 1; }
+		if (++slowtimer == 400) { sh_trigger = true; slowtimer = 0; }
 		if (sh_trigger) {
 			EntityData1 *entity = EntityData1Ptrs[0];
 			if (entity != nullptr) {
-				if (entity->Position.z < -2676 && entity->Position.z > -4364) { PlaySound(44, 0, 0, 0); sh_trigger = false; }
-				if (entity->Position.z < -7228 && entity->Position.z > -8029 && entity->Position.x > -90) { PlaySound(44, 0, 0, 0); sh_trigger = false; }
-				if (entity->Position.z < -13345 && entity->Position.z > -14023) { PlaySound(44, 0, 0, 0); sh_trigger = false; }
-				if (entity->Position.z < -14704 && entity->Position.z > -15648) { PlaySound(44, 0, 0, 0); sh_trigger = false; }
+				if ((entity->Position.z < -2676 && entity->Position.z > -4364)
+					|| (entity->Position.z < -7228 && entity->Position.z > -8029 && entity->Position.x > -90)
+					|| (entity->Position.z < -13345 && entity->Position.z > -14023) || (entity->Position.z < -14704 && entity->Position.z > -15648)) {
+					PlayHeroesSound(LevelSound_Sea_Seagul); 
+					sh_trigger = false; 
+				}
 			}
 		}
 	}
@@ -96,8 +97,7 @@ void SeasideHillHandler(ObjectMaster * a1) {
 
 		SetFog(&SeasideHill_Fog);
 		SeasideHill_InitObjects();
-
-		PlaySound(44, 0, 0, 0);
+		PlayDelayedHeroesSound(LevelSound_Sea_Seagul, 50);
 
 		if (CurrentAct == 0) {
 			//Seaside Hill

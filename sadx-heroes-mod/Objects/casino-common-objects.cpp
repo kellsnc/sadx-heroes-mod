@@ -96,12 +96,11 @@ void HeroesFlippers(ObjectMaster *a1) {
 
 	a1->MainSub = HeroesFlippers_main;
 	a1->DisplaySub = HeroesFlippers_display;
-	a1->DeleteSub = DynCol_Delete;
 }
 
 //Hook sadx flippers display
 static  void sub_5DC0D0_h(ObjectMaster *a1);
-static Trampoline sub_5DC0D0_t(0x5DC0D0, 0x5DC158, sub_5DC0D0_h);
+static Trampoline sub_5DC0D0_t(0x5DC0D0, 0x5DC0D6, sub_5DC0D0_h);
 static  void sub_5DC0D0_h(ObjectMaster *a1) {
 	if (CurrentLevel != 9) {
 		HeroesFlippers_display(a1);
@@ -339,7 +338,7 @@ void CPBobInAir_Main(ObjectMaster *a1) {
 				}
 			}
 
-			PlaySound(46, 0, 0, 0);
+			PlayHeroesSound(LevelSound_Csn_Bumper3);
 		}
 		else AddToCollisionList(a1->Data1);
 
@@ -430,7 +429,7 @@ void CPSlotS_Main(ObjectMaster *a1) {
 			if (rdmtime < 220) rdmtime = 220;
 			a1->Data1->Scale.y = rdmtime;
 
-			PlaySound(50, 0, 0, 0);
+			PlayHeroesSound(LevelSound_Csn_Machine);
 		}
 
 		if (a1->Data1->Scale.y > 2) {
@@ -467,8 +466,8 @@ void CPSlotS_Main(ObjectMaster *a1) {
 			int v1 = material[8].attr_texId;
 			v1 -= slotmin;
 
-			if (v1 != 6 && v1 != 8) PlaySound(51, 0, 0, 0);
-			else PlaySound(52, 0, 0, 0);
+			if (v1 != 6 && v1 != 8) PlayHeroesSound(LevelSound_Csn_JackPot);
+			else PlayHeroesSound(LevelSound_Csn_Lost);
 
 			switch (v1) {
 			case 1: AddRingsInterval_Delay5(50);
@@ -567,7 +566,7 @@ void CPSlotL_Main(ObjectMaster *a1) {
 		if (a1->Data1->Action == 0 && IsPlayerInsideSphere(&a1->Data1->Position, 20)) {
 			a1->Data1->Action = 1;
 			a1->Data1->Scale.y = 3;
-			PlaySound(50, 0, 0, 0);
+			PlayHeroesSound(LevelSound_Csn_Machine);
 		}
 
 		if (a1->Data1->Action == 1) {
@@ -575,7 +574,7 @@ void CPSlotL_Main(ObjectMaster *a1) {
 			entity->Position = a1->Data1->Position;
 
 			if (ControllerPointers[0]->PressedButtons & Buttons_A) {
-				PlaySound(41, 0, 0, 0);
+				PlayHeroesSound(LevelSound_Csn_Trigger);
 				if (a1->Data1->Scale.y == 3) a1->Data1->Scale.y = 2;
 				else if (a1->Data1->Scale.y == 2) a1->Data1->Scale.y = 1;
 				else if (a1->Data1->Scale.y == 1) {
@@ -661,8 +660,8 @@ void CPSlotL_Main(ObjectMaster *a1) {
 			v3 -= slotmin;
 
 			if (v1 == v2 && v2 == v3) {
-				if (v1 != 6 && v1 != 8) PlaySound(51, 0, 0, 0);
-				else PlaySound(52, 0, 0, 0);
+				if (v1 != 6 && v1 != 8) PlayHeroesSound(LevelSound_Csn_JackPot);
+				else PlayHeroesSound(LevelSound_Csn_Lost);
 
 				switch (v1) {
 				case 1: AddRingsInterval_Delay5(250);
@@ -681,8 +680,8 @@ void CPSlotL_Main(ObjectMaster *a1) {
 				v3 = material[17].attr_texId;
 
 				if (v1 == v2 && v2 == v3) {
-					if (v1 != 6 && v1 != 8) PlaySound(51, 0, 0, 0);
-					else PlaySound(52, 0, 0, 0);
+					if (v1 != 6 && v1 != 8) PlayHeroesSound(LevelSound_Csn_JackPot);
+					else PlayHeroesSound(LevelSound_Csn_Lost);
 
 					switch (v1) {
 					case 1: AddRingsInterval_Delay5(150);
@@ -701,8 +700,8 @@ void CPSlotL_Main(ObjectMaster *a1) {
 					v3 = material[19].attr_texId;
 
 					if (v1 == v2 && v2 == v3) {
-						if (v1 != 6 && v1 != 8) PlaySound(51, 0, 0, 0);
-						else PlaySound(52, 0, 0, 0);
+						if (v1 != 6 && v1 != 8) PlayHeroesSound(LevelSound_Csn_JackPot);
+						else PlayHeroesSound(LevelSound_Csn_Lost);
 						switch (v1) {
 						case 1: AddRingsInterval_Delay5(150);
 						case 2: AddRingsInterval_Delay5(130);
@@ -850,7 +849,7 @@ void CPDoor_Display(ObjectMaster *a1) {
 void CPDoor_Main(ObjectMaster *a1) {
 	if (!ClipSetObject(a1)) {
 		if (IsSwitchPressed(a1->Data1->Scale.x)) {
-			if (a1->Data1->Action == 0) PlaySound(42, 0, 0, 0);
+			if (a1->Data1->Action == 0) PlayHeroesSound3D(LevelSound_Csn_Door, a1, 200);
 			a1->Data1->Action = 1;
 			
 			DynCol_Delete(a1);
@@ -858,7 +857,7 @@ void CPDoor_Main(ObjectMaster *a1) {
 			if (a1->Data1->Scale.z != 60) a1->Data1->Scale.z += 2;
 		}
 		else {
-			if (a1->Data1->Action == 1) PlaySound(42, 0, 0, 0);
+			if (a1->Data1->Action == 1) PlayHeroesSound3D(LevelSound_Csn_Door, a1, 200);
 			a1->Data1->Action = 0;
 
 			DynColRadius(a1, 200, 0);

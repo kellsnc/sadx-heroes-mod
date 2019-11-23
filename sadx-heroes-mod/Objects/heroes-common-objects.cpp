@@ -224,7 +224,7 @@ void ObjReel_Main(ObjectMaster *a1)
 
 				if (a1->Data1->Position.y < max - 15) {
 					a1->Data1->Position.y += 1;
-					if (anim % 40) if (envsounds) PlaySound(53, 0, 0, 0);
+					if (anim % 40) PlayHeroesSound(CommonSound_Pulley);
 				}
 			}
 		}
@@ -235,7 +235,7 @@ void ObjReel_Main(ObjectMaster *a1)
 
 			if (a1->Data1->Position.y > min) {
 				a1->Data1->Position.y -= 1;
-				if (anim % 40) if (envsounds) if (GetPlayerDistance(a1->Data1, 0) < 107600.0) QueueSound(53, a1->Data1, 1, 148, 0, 800.0, a1->Data1);
+				if (anim % 40) PlayHeroesSound3D(CommonSound_Pulley, a1, 300);
 			}
 		}
 
@@ -470,7 +470,7 @@ void ObjCannon_Main(ObjectMaster *a1)
 				if (a1->Data1->NextAction < 21) a1->Data1->NextAction += 1;
 				else {
 					a1->Data1->NextAction = 0;
-					PlaySound(82, 0, 0, 0);
+					PlayHeroesSound(CommonSound_CannonIn);
 					a1->Data1->Action = 2;
 				}
 				float timer = (float)a1->Data1->NextAction / 100;
@@ -505,7 +505,7 @@ void ObjCannon_Main(ObjectMaster *a1)
 				a1->Data1->NextAction = 0;
 				a1->Data1->Action = 3;
 				a1->Data1->Scale.z = 100;
-				PlaySound(83, 0, 0, 0);
+				PlayHeroesSound(CommonSound_CannonMov);
 			}
 
 			float timer = (float)a1->Data1->NextAction / 100;
@@ -546,14 +546,13 @@ void ObjCannon_Main(ObjectMaster *a1)
 				a1->Data1->Action = 5;
 			}
 
-
 			if (a1->Data1->NextAction == 1) {
 				EntityData1 *entity = EntityData1Ptrs[a1->Data1->Status];
 				CharObj2 *co2 = CharObj2Ptrs[a1->Data1->Status];
 				entity->Rotation.y = a1->Data1->Rotation.y - 0x4000;
 				co2->Speed.x = a1->Data1->Scale.x;
 				co2->Speed.y = a1->Data1->Scale.y;
-				PlaySound(84, 0, 0, 0);
+				PlayHeroesSound(CommonSound_CannonLch);
 			}
 
 			DoBall(a1->Data1->Status);
@@ -712,7 +711,7 @@ void Capsule_Main_r(ObjectMaster *a1)
 		else {
 			v1->Scale.x = 1;
 
-			if (anim % 60 == 0) if (envsounds) if (GetPlayerDistance(a1->Data1, 0) < 1007600.0) PlaySound(85, 0, 0, 0);
+			if (anim % 60 == 0) PlayHeroesSound3D(CommonSound_GoalRing, a1, 500);
 		}
 
 		Capsule_Display_r(a1);
@@ -801,8 +800,8 @@ void __cdecl ObjBoxW(ObjectMaster *a1)
 			if (DynColRadius(a1, 100, 0)) {
 				if (a1->Data1->Action == 0 && type < 3) {
 					if (OhNoImDead(a1->Data1, (ObjectData2*)a1->Data2)) {
-						if (type == 0 || type == 2) PlaySound(86, 0, 0, 0);
-						else if (type == 1) PlaySound(86, 0, 0, 0);
+						if (type == 0 || type == 2) PlayHeroesSound(CommonSound_BoxBreak);
+						else if (type == 1) PlayHeroesSound(CommonSound_BoxBreak);
 
 						a1->Data1->Action = 1;
 

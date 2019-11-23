@@ -175,7 +175,7 @@ void RailPath_Main(ObjectMaster * a1) {
 
 				if (++a1->field_30 > 125) {
 					a1->field_30 = 0;
-					PlaySound(49, 0, 0, 0);
+					PlayHeroesSound(CommonSound_Rail);
 				}
 			}
 			

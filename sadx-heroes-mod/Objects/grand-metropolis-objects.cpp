@@ -321,7 +321,7 @@ void GM_EnergyPaths_Main(ObjectMaster *a1) {
 			if (a1->Data1->Scale.z <= 1)
 				a1->Data1->Scale.z += 0.1f;
 			else if (a1->Data1->Scale.z == 0.1f)
-				PlaySound(52, 0, 0, 0);
+				PlayHeroesSound(LevelSound_Cty_FluidPath);
 		}
 
 		a1->DisplaySub(a1);

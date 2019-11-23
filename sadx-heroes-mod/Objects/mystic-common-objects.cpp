@@ -44,7 +44,7 @@ void HCWarp_Main(ObjectMaster *a1) {
 			od2->vector_a.y += 10;
 
 			if (IsPlayerInsideSphere(&od2->vector_a, 15) == 1) {
-				if (envsounds) PlaySound(41, 0, 0, 0);
+				PlayHeroesSound(LevelSound_Mys_Warp1);
 				EntityData1 *entity = EntityData1Ptrs[0];
 				od2->vector_a = entity->Position;
 				a1->Data1->Action = 1;
@@ -93,7 +93,7 @@ void HCWarp_Main(ObjectMaster *a1) {
 						entity->Position = a1->Data1->Scale;
 					}
 
-					if (envsounds) PlaySound(42, 0, 0, 0);
+					PlayHeroesSound(LevelSound_Mys_Warp2);
 					if (a1->Data1->Rotation.z == 1) Camera_Data1->Position = entity->Position;
 				}
 				a1->Data1->Action = 2;
@@ -209,14 +209,14 @@ void HCDoor_Main(ObjectMaster *a1) {
 		if (a1->Data1->Action == 1) {
 			a1->Data1->Action = 2;
 			DynCol_Delete(a1);
-			PlaySound(44, 0, 0, 0);
+			PlayHeroesSound(LevelSound_Mys_Door1);
 		}
 
 		if (a1->Data1->Action == 2) {
 			if (a1->Data1->NextAction < 100) a1->Data1->NextAction += 2;
 			else {
 				a1->Data1->Action = 3;
-				PlaySound(45, 0, 0, 0);
+				PlayHeroesSound(LevelSound_Mys_Door2);
 			}
 		}
 
@@ -366,7 +366,7 @@ void HCWall_Main(ObjectMaster *a1)
 		if (a1->Data1->Action == 0) {
 			if (OhNoImDead(a1->Data1, (ObjectData2*)a1->Data2)) {
 				DynCol_Delete(a1);
-				PlaySound(86, 0, 0, 0);
+				PlayHeroesSound(CommonSound_BoxBreak);
 				a1->Data1->Action = 1;
 				a1->Data1->Object->pos[1] = 0;
 			}
@@ -429,7 +429,7 @@ void HCPlatform_Main(ObjectMaster *a1) {
 		if (type != 0) {
 			DynColRadiusAuto(a1, 1);
 			
-			if (anim % 80 == 0) if (envsounds) if (GetPlayerDistance(a1->Data1, 0) < 307600.0) PlaySound(46, 0, 0, 0);
+			if (anim % 80 == 0) if (envsounds) PlayHeroesSound3D(LevelSound_Mys_MvPltf, a1, 200);
 			if (type == 1) {
 				char timer = a1->Data1->NextAction;
 				if (timer == 0) {

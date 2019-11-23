@@ -4,8 +4,27 @@ bool chrsounds = true;
 bool jmpsounds = true;
 bool flysounds = true;
 
+// temporary stuff before using a custom sound system
+
 void PlayHeroesSound(int ID) {
 	PlayVoice(ID);
+}
+
+void DelayedHeroesSound(ObjectMaster* obj) {
+	if (--obj->Data1->Scale.y <= 0) {
+		PlayHeroesSound(obj->Data1->Scale.x);
+		DeleteObject_(obj);
+	}
+}
+
+void PlayDelayedHeroesSound(int ID, int time) {
+	ObjectMaster* temp = LoadObject(LoadObj_Data1, 1, DelayedHeroesSound);
+	temp->Data1->Scale.x = ID;
+	temp->Data1->Scale.y = time;
+}
+
+void PlayHeroesSound3D(int ID, ObjectMaster* obj, float dist) {
+	if (obj && IsPlayerInsideSphere(&obj->Data1->Position, dist) == 1) PlayHeroesSound(ID);
 }
 
 void Sounds_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config) {

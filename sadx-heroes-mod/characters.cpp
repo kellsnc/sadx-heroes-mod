@@ -163,7 +163,7 @@ void PlayVoice_HeoresChar(int ID) {
 	}
 }
 
-int PlaySound_HeoresChar(int ID, void *a2, int a3, void *a4) {
+int PlaySound_HeroesChar(int ID, void *a2, int a3, void *a4) {
 	if (ID == 17 && !jmpsounds) {
 		PlayHeroesSound(CommonSound_Jumping);
 		return 1;
@@ -212,10 +212,10 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 	}
 
 	WriteCall((void*)0x462456, Tails_Display_);
-	WriteCall((void*)0x45C037, PlaySound_HeoresChar); //jump
-	WriteCall((void*)0x45BE01, PlaySound_HeoresChar); //fly
-	WriteCall((void*)0x45BF8D, PlaySound_HeoresChar); //hurt
-	WriteCall((void*)0x446A49, PlaySound_HeoresChar); //death
+	WriteCall((void*)0x45C037, PlaySound_HeroesChar); //jump
+	WriteCall((void*)0x45BE01, PlaySound_HeroesChar); //fly
+	WriteCall((void*)0x45BF8D, PlaySound_HeroesChar); //hurt
+	WriteCall((void*)0x446A49, PlaySound_HeroesChar); //death
 	WriteCall((void*)0x45BE57, PlayVoice_HeoresChar); //death
 }
 
