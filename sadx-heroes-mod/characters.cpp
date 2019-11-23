@@ -106,7 +106,10 @@ void CharactersCommon_Delete(ObjectMaster* obj) {
 
 //For flying characters
 void Tails_Display_(ObjectMaster* obj) {
-	if (!HeroesChars[CurrentPlayer]) return;
+	if (!HeroesChars[CurrentPlayer]) {
+		Tails_Display(obj);
+		return;
+	}
 
 	switch (HeroesChars[CurrentPlayer]->Data1->CharID) {
 	case Characters_Cream:
