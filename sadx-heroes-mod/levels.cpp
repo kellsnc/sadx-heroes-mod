@@ -13,7 +13,6 @@ static bool EnableMysticMansion = true;
 static bool EnableEggFleet = true;
 static bool EnableSpecialStages = true;
 
-bool envsounds = true;
 bool NoMysticMusic = false;
 bool NoPinball = false;
 bool EnableFog = true;
@@ -335,7 +334,6 @@ void Levels_Init(const char *path, const HelperFunctions &helperFunctions, const
 	NoMysticMusic = config->getBool("0- General", "NoMysticMusic", false);
 	NoPinball = config->getBool("0- General", "NoPinball", false);
 	EnableFog = config->getBool("0- General", "EnableFog", true);
-	envsounds = config->getBool("4- Sounds", "envsounds", true);
 	
 	WriteJump((void*)0x406F00, ForceAct); //njReleaseTextureAll_
 	WriteJump((void*)0x40A140, DrawLandTableFog); //DrawLandTableObject_SimpleModel

@@ -3,10 +3,12 @@
 extern bool chrsounds;
 extern bool jmpsounds;
 extern bool flysounds;
+extern bool envsounds;
 
 void PlayHeroesSound(int ID);
 void PlayDelayedHeroesSound(int ID, int time);
 void PlayHeroesSound3D(int ID, ObjectMaster* obj, float dist);
+void PlayHeroesSound3DPitch(int ID, ObjectMaster* obj, float dist, float pitch);
 
 enum HeroesSounds {
 	CommonSound_DashPanel = 10100,

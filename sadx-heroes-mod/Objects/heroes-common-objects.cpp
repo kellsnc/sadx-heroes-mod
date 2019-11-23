@@ -837,6 +837,22 @@ void CommonObjects_Sounds(int ID, void *a2, int a3, void *a4) {
 	}
 }
 
+void CasinoObjects_Sounds(int ID, void *a2, int a3, void *a4) {
+	if (IsHeroesLevel && CurrentLevel != LevelIDs_Casinopolis) {
+		switch (ID) {
+		case 245:
+			PlayHeroesSound(LevelSound_Csn_Bumper1);
+			break;
+		case 246:
+			PlayHeroesSound(LevelSound_Csn_Trigger);
+			break;
+		}
+	}
+	else {
+		PlaySound(ID, a2, a3, a4);
+	}
+}
+
 void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config) {
 	helperFunctions.RegisterCommonObjectPVM(shobjpvm);
 
@@ -879,7 +895,12 @@ void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions
 
 	if (config->getBool("4- Sounds", "cmnsounds", true)) {
 		WriteCall((void*)0x7A461D, CommonObjects_Sounds);
+		WriteCall((void*)0x5002E0, CommonObjects_Sounds);
 	}
+
+	WriteCall((void*)0x5DC992, CasinoObjects_Sounds);
+	WriteCall((void*)0x5DCAE4, CasinoObjects_Sounds);
+	WriteCall((void*)0x5DBE3C, CasinoObjects_Sounds);
 }
 
 void CommonObjects_OnFrame() {

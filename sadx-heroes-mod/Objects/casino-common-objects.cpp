@@ -102,7 +102,7 @@ void HeroesFlippers(ObjectMaster *a1) {
 static  void sub_5DC0D0_h(ObjectMaster *a1);
 static Trampoline sub_5DC0D0_t(0x5DC0D0, 0x5DC0D6, sub_5DC0D0_h);
 static  void sub_5DC0D0_h(ObjectMaster *a1) {
-	if (CurrentLevel != 9) {
+	if (CurrentLevel != LevelIDs_Casinopolis) {
 		HeroesFlippers_display(a1);
 	}
 	else {
@@ -113,11 +113,11 @@ static  void sub_5DC0D0_h(ObjectMaster *a1) {
 
 //Hook sadx bumpers display
 void sub_5DBCD0_h(ObjectMaster *a2);
-static Trampoline sub_5DBCD0_t(0x5DBCD0, 0x5DBD61, sub_5DBCD0_h);
+static Trampoline sub_5DBCD0_t(0x5DBCD0, 0x5DBCD6, sub_5DBCD0_h);
 void sub_5DBCD0_h(ObjectMaster *a2)
 {
 	if (!ClipSetObject(a2)) {
-		if (CurrentLevel != 9) {
+		if (CurrentLevel != LevelIDs_Casinopolis) {
 			NJS_MATERIAL * material = CP_CSNOBOB->getmodel()->child->basicdxmodel->mats;
 			if (CurrentLevel == 3) {
 				material[0].attr_texId = 287;

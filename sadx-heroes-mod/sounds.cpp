@@ -3,6 +3,7 @@
 bool chrsounds = true;
 bool jmpsounds = true;
 bool flysounds = true;
+bool envsounds = true;
 
 // temporary stuff before using a custom sound system
 
@@ -27,10 +28,15 @@ void PlayHeroesSound3D(int ID, ObjectMaster* obj, float dist) {
 	if (obj && IsPlayerInsideSphere(&obj->Data1->Position, dist) == 1) PlayHeroesSound(ID);
 }
 
+void PlayHeroesSound3DPitch(int ID, ObjectMaster* obj, float dist, float pitch) {
+	if (obj && IsPlayerInsideSphere(&obj->Data1->Position, dist) == 1) PlayHeroesSound(ID);
+}
+
 void Sounds_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config) {
 	chrsounds = config->getBool("4- Sounds", "chrsounds", true);
 	jmpsounds = config->getBool("4- Sounds", "jmpsounds", true);
 	flysounds = config->getBool("4- Sounds", "flysounds", true);
+	envsounds = config->getBool("4- Sounds", "envsounds", true);
 
 	if (config->getBool("4- Sounds", "bgmsounds", true)) {
 		MusicList[MusicIDs_invncibl].Name = "heroes_invncibl";
