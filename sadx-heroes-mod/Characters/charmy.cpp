@@ -10,25 +10,6 @@ NJS_TEXLIST CHARMY_TEXLIST = { arrayptrandlength(CHARMY_TEXNAMES) };
 
 NJS_MATRIX CharmyMatrices[2];
 
-enum CharmySounds {
-	CharmySound_Attack = 11100,
-	CharmySound_FlyBegin,
-	CharmySound_FlyAttack,
-	CharmySound_Trick,
-	CharmySound_TeamSwap,
-	CharmySound_ThatHurts,
-	CharmySound_Hurt1,
-	CharmySound_Hurt2,
-	CharmySound_FlyUp,
-	CharmySound_DardAttack,
-	CharmySound_Death,
-	CharmySound_LevelUp,
-	CharmySound_Win,
-	CharmySound_Lose,
-	CharmySound_Idle1,
-	CharmySound_Idle2
-};
-
 void PlayVoice_Charmy(int ID) {
 	switch (ID) {
 	case 1803:

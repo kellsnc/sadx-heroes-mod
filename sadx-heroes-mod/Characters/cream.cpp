@@ -10,25 +10,6 @@ NJS_TEXLIST CREAM_TEXLIST = { arrayptrandlength(CREAM_TEXNAMES) };
 
 CollisionData Cheese_Col = { 0, 0, 0, 0, 0, { 0.0f, 0.0f, 0.0f }, { 4.5, 0.0f, 0.0f }, 0, 0 };
 
-enum CreamSounds {
-	CreamSound_Attack = 10900,
-	CreamSound_FlyBegin,
-	CreamSound_FlyAttack,
-	CreamSound_FlyUp,
-	CreamSound_TeamSwap,
-	CreamSound_ThatHurts,
-	CreamSound_Hurt1,
-	CreamSound_Hurt2,
-	CreamSound_Trick,
-	CreamSound_CheeseGetHim,
-	CreamSound_Death,
-	CreamSound_LevelUp,
-	CreamSound_Win,
-	CreamSound_Lose,
-	CreamSound_Idle1,
-	CreamSound_Idle2
-};
-
 void PlayVoice_Cream(int ID) {
 	switch (ID) {
 	case 1803:

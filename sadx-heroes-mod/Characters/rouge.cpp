@@ -10,25 +10,6 @@ NJS_TEXLIST ROUGE_TEXLIST = { arrayptrandlength(ROUGE_TEXNAMES) };
 
 NJS_MATRIX RougeMatrices[2];
 
-enum RougeSounds {
-	RougeSound_Attack = 11000,
-	RougeSound_FlyBegin,
-	RougeSound_FlyAttack,
-	RougeSound_FlyUp,
-	RougeSound_TeamSwap,
-	RougeSound_ThatHurts,
-	RougeSound_Hurt1,
-	RougeSound_Hurt2,
-	RougeSound_Trick,
-	RougeSound_BombAttack,
-	RougeSound_Death,
-	RougeSound_LevelUp,
-	RougeSound_Win,
-	RougeSound_Lose,
-	RougeSound_Idle1,
-	RougeSound_Idle2
-};
-
 void PlayVoice_Rouge(int ID) {
 	switch (ID) {
 	case 1803:

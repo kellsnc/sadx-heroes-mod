@@ -12,25 +12,6 @@ NJS_MATRIX TailsMatrices[2];
 
 extern CollisionData Cheese_Col;
 
-enum TailsSounds {
-	TailsSound_Attack = 11200,
-	TailsSound_FlyBegin,
-	TailsSound_FlyAttack,
-	TailsSound_FlyUp,
-	TailsSound_TeamSwap,
-	TailsSound_ThatHurts,
-	TailsSound_Hurt1,
-	TailsSound_Hurt2,
-	TailsSound_Trick,
-	TailsSound_BombAttack,
-	TailsSound_Death,
-	TailsSound_LevelUp,
-	TailsSound_Win,
-	TailsSound_Lose,
-	TailsSound_Idle1,
-	TailsSound_Idle2
-};
-
 void PlayVoice_Tails(int ID) {
 	switch (ID) {
 	case 1803:

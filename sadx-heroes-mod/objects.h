@@ -48,11 +48,6 @@ typedef struct {
 
 extern uint8_t killcount;
 
-enum CommonSounds {
-	CommonSound_DashPanel = 10100,
-	CommonSound_Jumping,
-};
-
 ModelInfo* LoadObjectModel(const char *name);
 ModelInfo* LoadCharacterModel(const char *name);
 AnimationFile* LoadObjectAnim(const char *name);
