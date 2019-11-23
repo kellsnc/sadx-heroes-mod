@@ -97,7 +97,7 @@ void SeasideHillHandler(ObjectMaster * a1) {
 
 		SetFog(&SeasideHill_Fog);
 		SeasideHill_InitObjects();
-		PlayDelayedHeroesSound(LevelSound_Sea_Seagul, 50);
+		PlayHeroesSound(LevelSound_Sea_Seagul);
 
 		if (CurrentAct == 0) {
 			//Seaside Hill
