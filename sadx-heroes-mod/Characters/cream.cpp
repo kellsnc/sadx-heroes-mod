@@ -597,6 +597,9 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 			case 72: //holding hook
 				anim = 51;
 				break;
+			case 89:
+				anim = 11;
+				break;
 			case 107: //snowboard
 			case 108:
 			case 109:
