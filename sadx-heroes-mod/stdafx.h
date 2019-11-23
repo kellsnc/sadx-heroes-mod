@@ -22,3 +22,4 @@
 #include "levels.h"
 #include "objects.h"
 #include "characters.h"
+#include "sounds.h"

@@ -320,10 +320,8 @@ void __cdecl DrawLandTableFog(NJS_MODEL_SADX *a1)
 }
 
 //Initialize levels
-void Levels_Init(const char *path, const HelperFunctions &helperFunctions)
+void Levels_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config)
 {
-	//Get the config.ini information
-	const IniFile *config = new IniFile(modpath + "\\config.ini");
 	EnableSeasideHill = config->getBool("1- Levels", "EnableSeasideHill", true);
 	EnableOceanPalace = config->getBool("1- Levels", "EnableOceanPalace", true);
 	EnableGrandMetropolis = config->getBool("1- Levels", "EnableGrandMetropolis", true);
@@ -341,15 +339,6 @@ void Levels_Init(const char *path, const HelperFunctions &helperFunctions)
 	
 	WriteJump((void*)0x406F00, ForceAct); //njReleaseTextureAll_
 	WriteJump((void*)0x40A140, DrawLandTableFog); //DrawLandTableObject_SimpleModel
-
-	//Init sound effects
-	if (config->getBool("4- Sounds", "bgmsounds", true)) {
-		MusicList[MusicIDs_invncibl].Name = "heroes_invncibl";
-		MusicList[MusicIDs_rndclear].Name = "heroes_rndclear";
-		MusicList[MusicIDs_speedup].Name = "heroes_speedup";
-	}
-
-	delete config;
 
 	if (EnableSeasideHill) SeasideHill_Init(path, helperFunctions);
 	if (EnableOceanPalace) OceanPalace_Init(path, helperFunctions);

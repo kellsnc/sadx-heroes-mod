@@ -77,9 +77,6 @@ Rotation3 fPositionToRotation(NJS_VECTOR* orig, NJS_VECTOR* point);
 NJS_VECTOR GetPathPosition(NJS_VECTOR* orig, NJS_VECTOR* dest, float state);
 float GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest);
 
-void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions);
-void CommonObjects_OnFrame();
-
 void ObjReel(ObjectMaster *a1);
 void ObjFan(ObjectMaster *a1);
 void SHCameraSwitch(ObjectMaster *a1);

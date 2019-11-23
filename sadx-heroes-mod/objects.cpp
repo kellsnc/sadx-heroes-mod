@@ -13,6 +13,9 @@ static SETObjData set_table[SET_COUNT]{};
 
 uint8_t killcount = 0;
 
+void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config);
+void CommonObjects_OnFrame();
+
 void __cdecl ObjectData2_SetStartPosition_r(EntityData1 *a1, ObjectData2 *a2)
 {
 	NJS_VECTOR *v2; // ecx
@@ -46,8 +49,8 @@ void ElevatePlayer(uint8_t slot) {
 	}
 }
 
-void Objects_Init(const char *path, const HelperFunctions &helperFunctions) {
-	CommonObjects_Init(path, helperFunctions);
+void Objects_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config) {
+	CommonObjects_Init(path, helperFunctions, config);
 	WriteJump((void*)0x004CD370, ObjectData2_SetStartPosition_r);
 
 	WriteData((SETObjData**)0x0046B817, &set_table[0]);

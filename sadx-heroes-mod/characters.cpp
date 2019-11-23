@@ -2,9 +2,6 @@
 
 uint8_t FlyCharEnabled;
 bool CharTexsLoaded[4];
-bool chrsounds = true;
-bool jmpsounds = true;
-bool flysounds = true;
 
 FastcallFunctionPointer(void, DrawChunkModel_, (Sint32* a1, Sint16* a2), 0x7917F0);
 
@@ -194,8 +191,7 @@ int PlaySound_HeoresChar(int ID, void *a2, int a3, void *a4) {
 	}
 }
 
-void Characters_Init(const char *path, const HelperFunctions &helperFunctions) {
-	const IniFile *config = new IniFile(std::string(path) + "\\config.ini");
+void Characters_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config) {
 	const string FlyCharacter = config->getString("2- Characters", "FlyCharacter", "None");
 	
 	if (!FlyCharacter.compare("Cream")) {
@@ -221,12 +217,6 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions) {
 	WriteCall((void*)0x45BF8D, PlaySound_HeoresChar); //hurt
 	WriteCall((void*)0x446A49, PlaySound_HeoresChar); //death
 	WriteCall((void*)0x45BE57, PlayVoice_HeoresChar); //death
-
-	chrsounds = config->getBool("4- Sounds", "chrsounds", true);
-	jmpsounds = config->getBool("4- Sounds", "jmpsounds", true);
-	flysounds = config->getBool("4- Sounds", "flysounds", true);
-
-	delete config;
 }
 
 void Characters_OnFrame() {

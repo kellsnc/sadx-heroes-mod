@@ -112,6 +112,7 @@
     <ClCompile Include="paths.cpp" />
     <ClCompile Include="Objects\special-stages-objects.cpp" />
     <ClCompile Include="Levels\special-stages.cpp" />
+    <ClCompile Include="sounds.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -154,6 +155,7 @@
     <ClInclude Include="Levels\seaside-hill.h" />
     <ClInclude Include="mod.h" />
     <ClInclude Include="Levels\seaside-hill-paths.h" />
+    <ClInclude Include="sounds.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>

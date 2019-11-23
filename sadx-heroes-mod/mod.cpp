@@ -24,9 +24,10 @@ NJS_TEXLIST * CurrentLevelTexlist;
 
 static const Uint8 FREECAM_FIX[] = { 0x81, 0x0D, /*0xA8, 0xCB, 0xB2, 0x03, 0x0C, 0x00, 0x00, 0x80*/ };
 
-void Levels_Init(const char *path, const HelperFunctions &helperFunctions);
-void Objects_Init(const char *path, const HelperFunctions &helperFunctions);
-void Characters_Init(const char *path, const HelperFunctions &helperFunctions);
+void Levels_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config);
+void Objects_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config);
+void Characters_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config);
+void Sounds_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config);
 void CommonObjects_OnFrame();
 void Characters_OnFrame();
 
@@ -56,9 +57,12 @@ extern "C"
 
 		WriteData((Uint8*)0x438330, FREECAM_FIX); //freecam fix by SonicFreak94
 		
-		Levels_Init(path, helperFunctions);
-		Objects_Init(path, helperFunctions);
-		Characters_Init(path, helperFunctions);
+		const IniFile *config = new IniFile(std::string(path) + "\\config.ini");
+		Levels_Init(path, helperFunctions, config);
+		Objects_Init(path, helperFunctions, config);
+		Characters_Init(path, helperFunctions, config);
+		Sounds_Init(path, helperFunctions, config);
+		delete config;
 	}
 
 	__declspec(dllexport) void __cdecl OnFrame()

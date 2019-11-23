@@ -838,7 +838,7 @@ void CommonObjects_Sounds(int ID, void *a2, int a3, void *a4) {
 	}
 }
 
-void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions) {
+void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config) {
 	helperFunctions.RegisterCommonObjectPVM(shobjpvm);
 
 	CO_BALLOON = LoadObjectModel("CO_BALLOON");
@@ -847,8 +847,6 @@ void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions
 	CO_LCKCASE = LoadObjectModel("CO_LCKCASE");
 	CO_OCANNON = LoadObjectModel("CO_OCANNON");
 	CO_WOODBOX = LoadObjectModel("CO_WOODBOX");
-
-	const IniFile *config = new IniFile(std::string(path) + "\\config.ini");
 
 	if (config->getBool("3- Objects", "GoalRing", true)) {
 		WriteJump((void*)0x46B170, Capsule_Load_r);
@@ -883,8 +881,6 @@ void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions
 	if (config->getBool("4- Sounds", "cmnsounds", true)) {
 		WriteCall((void*)0x7A461D, CommonObjects_Sounds);
 	}
-
-	delete config;
 }
 
 void CommonObjects_OnFrame() {
