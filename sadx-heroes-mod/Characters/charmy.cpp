@@ -13,7 +13,7 @@ NJS_MATRIX CharmyMatrices[2];
 void PlayVoice_Charmy(int ID) {
 	switch (ID) {
 	case 1803:
-		PlayVoice(CharmySound_Win);
+		PlayHeroesSound(CharmySound_Win);
 		break;
 	}
 }
@@ -23,18 +23,18 @@ int PlaySound_Charmy(int ID, void *a2, int a3, void *a4) {
 
 	switch (ID) {
 	case 17:
-		PlayVoice(CharmySound_Trick);
+		PlayHeroesSound(CharmySound_Trick);
 		break;
 	case 1243:
-		PlayVoice(CharmySound_FlyBegin);
+		PlayHeroesSound(CharmySound_FlyBegin);
 		break;
 	case 1249:
-		if (random < 4) PlayVoice(CharmySound_ThatHurts);
-		else if (random < 8) PlayVoice(CharmySound_Hurt1);
-		else PlayVoice(CharmySound_Hurt2);
+		if (random < 4) PlayHeroesSound(CharmySound_ThatHurts);
+		else if (random < 8) PlayHeroesSound(CharmySound_Hurt1);
+		else PlayHeroesSound(CharmySound_Hurt2);
 		break;
 	case 1465:
-		PlayVoice(CharmySound_Death);
+		PlayHeroesSound(CharmySound_Death);
 		break;
 	case 1453:
 		PlaySound(ID, a2, a3, a4);
@@ -207,14 +207,14 @@ void CharmyHeroes_Main(ObjectMaster *obj) {
 		}
 
 		if (anim == 34 && PressedButtons[data->CharIndex] & Buttons_X) {
-			PlayVoice(CharmySound_FlyAttack);
+			PlayHeroesSound(CharmySound_FlyAttack);
 			data->field_A = 0;
 			data->Action = 4;
 		}
 
 		if (anim == 34 && PressedButtons[data->CharIndex] & Buttons_A) {
 			if (++data->field_A == 2) {
-				PlayVoice(CharmySound_FlyUp);
+				PlayHeroesSound(CharmySound_FlyUp);
 				obj->Child->Data1->field_A = 1;
 				data->field_A = 0;
 				playerco2->Speed.y = 2;
@@ -229,11 +229,11 @@ void CharmyHeroes_Main(ObjectMaster *obj) {
 
 		if (playerco2->IdleTime > 1000) {
 			if (rand() % 2 == 0) {
-				PlayVoice(CharmySound_Idle1);
+				PlayHeroesSound(CharmySound_Idle1);
 				playerco2->AnimationThing.Index = 4;
 			}
 			else {
-				PlayVoice(CharmySound_Idle2);
+				PlayHeroesSound(CharmySound_Idle2);
 				playerco2->AnimationThing.Index = 4;
 			}
 			playerco2->IdleTime = 0;
@@ -463,7 +463,7 @@ void CharmyHeroes_Main(ObjectMaster *obj) {
 	case 3:
 		if (data->field_A == 0) {
 			data->field_A = 1;
-			PlayVoice(CharmySound_DardAttack);
+			PlayHeroesSound(CharmySound_DardAttack);
 			data->Scale.x = 0;
 		}
 		else {

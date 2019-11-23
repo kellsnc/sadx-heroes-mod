@@ -4,6 +4,10 @@ bool chrsounds = true;
 bool jmpsounds = true;
 bool flysounds = true;
 
+void PlayHeroesSound(int ID) {
+	PlayVoice(ID);
+}
+
 void Sounds_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config) {
 	chrsounds = config->getBool("4- Sounds", "chrsounds", true);
 	jmpsounds = config->getBool("4- Sounds", "jmpsounds", true);

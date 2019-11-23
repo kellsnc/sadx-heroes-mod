@@ -15,7 +15,7 @@ extern CollisionData Cheese_Col;
 void PlayVoice_Tails(int ID) {
 	switch (ID) {
 	case 1803:
-		PlayVoice(TailsSound_Win);
+		PlayHeroesSound(TailsSound_Win);
 		break;
 	}
 }
@@ -25,18 +25,18 @@ int PlaySound_Tails(int ID, void *a2, int a3, void *a4) {
 
 	switch (ID) {
 	case 17:
-		PlayVoice(TailsSound_Attack);
+		PlayHeroesSound(TailsSound_Attack);
 		break;
 	case 1243:
-		PlayVoice(TailsSound_FlyBegin);
+		PlayHeroesSound(TailsSound_FlyBegin);
 		break;
 	case 1249:
-		if (random < 4) PlayVoice(TailsSound_ThatHurts);
-		else if (random < 8) PlayVoice(TailsSound_Hurt1);
-		else PlayVoice(TailsSound_Hurt2);
+		if (random < 4) PlayHeroesSound(TailsSound_ThatHurts);
+		else if (random < 8) PlayHeroesSound(TailsSound_Hurt1);
+		else PlayHeroesSound(TailsSound_Hurt2);
 		break;
 	case 1465:
-		PlayVoice(TailsSound_Death);
+		PlayHeroesSound(TailsSound_Death);
 		break;
 	case 1453:
 		PlaySound(ID, a2, a3, a4);
@@ -287,14 +287,14 @@ void TailsHeroes_Main(ObjectMaster *obj) {
 		}
 
 		if (anim == 34 && PressedButtons[data->CharIndex] & Buttons_X) {
-			PlayVoice(TailsSound_FlyAttack);
+			PlayHeroesSound(TailsSound_FlyAttack);
 			data->field_A = 0;
 			data->Action = 4;
 		}
 
 		if (anim == 34 && PressedButtons[data->CharIndex] & Buttons_A) {
 			if (++data->field_A == 2) {
-				PlayVoice(TailsSound_FlyUp);
+				PlayHeroesSound(TailsSound_FlyUp);
 				obj->Child->Data1->field_A = 1;
 				data->field_A = 0;
 				playerco2->Speed.y = 2;
@@ -309,11 +309,11 @@ void TailsHeroes_Main(ObjectMaster *obj) {
 
 		if (playerco2->IdleTime > 1000) {
 			if (rand() % 2 == 0) {
-				PlayVoice(TailsSound_Idle1);
+				PlayHeroesSound(TailsSound_Idle1);
 				playerco2->AnimationThing.Index = 4;
 			}
 			else {
-				PlayVoice(TailsSound_Idle2);
+				PlayHeroesSound(TailsSound_Idle2);
 				playerco2->AnimationThing.Index = 4;
 			}
 			playerco2->IdleTime = 0;
@@ -540,7 +540,7 @@ void TailsHeroes_Main(ObjectMaster *obj) {
 	case 3:
 		if (data->field_A == 0) {
 			data->field_A = 1;
-			PlayVoice(TailsSound_BombAttack);
+			PlayHeroesSound(TailsSound_BombAttack);
 			data->Scale.x = 0;
 		}
 		else if (data->field_A < 30) {

@@ -830,7 +830,7 @@ void __cdecl ObjBoxW(ObjectMaster *a1)
 void CommonObjects_Sounds(int ID, void *a2, int a3, void *a4) {
 	switch (ID) {
 	case 738:
-		PlayVoice(CommonSound_DashPanel);
+		PlayHeroesSound(CommonSound_DashPanel);
 		break;
 	default:
 		PlaySound(ID, a2, a3, a4);

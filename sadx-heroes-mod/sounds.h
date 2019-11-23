@@ -4,6 +4,8 @@ extern bool chrsounds;
 extern bool jmpsounds;
 extern bool flysounds;
 
+void PlayHeroesSound(int ID);
+
 enum HeroesSounds {
 	CommonSound_DashPanel = 10100,
 	CommonSound_Jumping,

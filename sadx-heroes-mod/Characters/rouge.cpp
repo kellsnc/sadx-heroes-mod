@@ -13,7 +13,7 @@ NJS_MATRIX RougeMatrices[2];
 void PlayVoice_Rouge(int ID) {
 	switch (ID) {
 	case 1803:
-		PlayVoice(RougeSound_Win);
+		PlayHeroesSound(RougeSound_Win);
 		break;
 	}
 }
@@ -23,18 +23,18 @@ int PlaySound_Rouge(int ID, void *a2, int a3, void *a4) {
 
 	switch (ID) {
 	case 17:
-		PlayVoice(RougeSound_Trick);
+		PlayHeroesSound(RougeSound_Trick);
 		break;
 	case 1243:
-		PlayVoice(RougeSound_FlyBegin);
+		PlayHeroesSound(RougeSound_FlyBegin);
 		break;
 	case 1249:
-		if (random < 4) PlayVoice(RougeSound_ThatHurts);
-		else if (random < 8) PlayVoice(RougeSound_Hurt1);
-		else PlayVoice(RougeSound_Hurt2);
+		if (random < 4) PlayHeroesSound(RougeSound_ThatHurts);
+		else if (random < 8) PlayHeroesSound(RougeSound_Hurt1);
+		else PlayHeroesSound(RougeSound_Hurt2);
 		break;
 	case 1465:
-		PlayVoice(RougeSound_Death);
+		PlayHeroesSound(RougeSound_Death);
 		break;
 	case 1453:
 		PlaySound(ID, a2, a3, a4);
@@ -214,14 +214,14 @@ void RougeHeroes_Main(ObjectMaster *obj) {
 		}
 
 		if (anim == 34 && PressedButtons[data->CharIndex] & Buttons_X) {
-			PlayVoice(RougeSound_FlyAttack);
+			PlayHeroesSound(RougeSound_FlyAttack);
 			data->field_A = 0;
 			data->Action = 4;
 		}
 
 		if (anim == 34 && PressedButtons[data->CharIndex] & Buttons_A) {
 			if (++data->field_A == 2) {
-				PlayVoice(RougeSound_FlyUp);
+				PlayHeroesSound(RougeSound_FlyUp);
 				obj->Child->Data1->field_A = 1;
 				data->field_A = 0;
 				playerco2->Speed.y = 2;
@@ -236,11 +236,11 @@ void RougeHeroes_Main(ObjectMaster *obj) {
 
 		if (playerco2->IdleTime > 1000) {
 			if (rand() % 2 == 0) {
-				PlayVoice(RougeSound_Idle1);
+				PlayHeroesSound(RougeSound_Idle1);
 				playerco2->AnimationThing.Index = 4;
 			}
 			else {
-				PlayVoice(RougeSound_Idle2);
+				PlayHeroesSound(RougeSound_Idle2);
 				playerco2->AnimationThing.Index = 4;
 			}
 			playerco2->IdleTime = 0;
@@ -470,7 +470,7 @@ void RougeHeroes_Main(ObjectMaster *obj) {
 	case 3:
 		if (data->field_A == 0) {
 			data->field_A = 1;
-			PlayVoice(RougeSound_BombAttack);
+			PlayHeroesSound(RougeSound_BombAttack);
 			data->Scale.x = 0;
 		}
 		else if (data->field_A < 30) {

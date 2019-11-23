@@ -165,7 +165,7 @@ void PlayVoice_HeoresChar(int ID) {
 
 int PlaySound_HeoresChar(int ID, void *a2, int a3, void *a4) {
 	if (ID == 17 && !jmpsounds) {
-		PlayVoice(CommonSound_Jumping);
+		PlayHeroesSound(CommonSound_Jumping);
 		return 1;
 	}
 	else if (!chrsounds || (!flysounds && ID == 1243)) {
