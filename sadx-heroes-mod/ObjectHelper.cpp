@@ -273,3 +273,28 @@ NJS_VECTOR GetPathPosition(NJS_VECTOR* orig, NJS_VECTOR* dest, float state) {
 float GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest) {
 	return sqrtf(powf(dest->x - orig->x, 2) + powf(dest->y - orig->y, 2) + powf(dest->z - orig->z, 2));
 }
+
+D3DMATRIX WorldMatrixBackup;
+
+void DrawChunkModel(NJS_CNK_MODEL* model)
+{
+	DrawChunkModel_(model->vlist, model->plist);
+}
+
+void njCnkAction_Queue(NJS_ACTION* action, float frame, QueuedModelFlagsB flags)
+{
+	DisplayAnimationFrame(action, frame, flags, 0, (void(__cdecl*)(NJS_MODEL_SADX*, int, int))DrawChunkModel);
+}
+
+void njCnkAction(NJS_ACTION* action, float frame)
+{
+	DisplayAnimationFrame(action, frame, (QueuedModelFlagsB)0, 0, (void(__cdecl*)(NJS_MODEL_SADX*, int, int))DrawChunkModel);
+}
+
+void SetupWorldMatrix()
+{
+	ProjectToWorldSpace();
+	WorldMatrixBackup = WorldMatrix;
+	Direct3D_SetWorldTransform();
+	memcpy(_nj_current_matrix_ptr_, &ViewMatrix, sizeof(NJS_MATRIX));
+}

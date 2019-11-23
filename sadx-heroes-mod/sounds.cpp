@@ -25,7 +25,7 @@ int GetFreeSoundEntry() {
 			SoundListEntries[i].dist = 0;
 			SoundListEntries[i].obj = nullptr;
 			SoundListEntries[i].pitch = 0;
-			SoundListEntries[i].volume = 1;
+			SoundListEntries[i].volume = 0.4f;
 			return i;
 		}
 	}
@@ -55,7 +55,7 @@ float GetVolumeRange(NJS_VECTOR* pos, float dist) {
 		EntityData1* player = EntityData1Ptrs[nb];
 		if (player) {
 			float playerdist = GetDistance(&player->Position, pos);
-			return 1 - (playerdist / dist);
+			return 0.4 - (0.4 * playerdist / dist);
 		}
 	}
 	

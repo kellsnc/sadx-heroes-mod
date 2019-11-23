@@ -96,7 +96,7 @@ void SHMovingPltfrms_Main(ObjectMaster *a1) {
 	if (!ClipSetObject(a1)) {
 		DynColRadiusAuto(a1, a1->Data1->NextAction);
 
-		if (ruin != 0 && ruin == a1->Data1->Scale.y) {
+		if (ruin != 0 && ruin == a1->Data1->Scale.y && IsPlayerInsideSphere_(&a1->Data1->Position, 1000)) {
 			if (a1->Data1->Position.y != a1->Data1->Scale.z) {
 				if (a1->Data1->Scale.x >= a1->Data1->Scale.z) {
 					if (a1->Data1->Position.y <= a1->Data1->Scale.z) {
@@ -104,7 +104,7 @@ void SHMovingPltfrms_Main(ObjectMaster *a1) {
 					}
 					else if (a1->Data1->Position.y > a1->Data1->Scale.z) a1->Data1->Position.y -= 2;
 
-					if (a1->Data1->Position.y == a1->Data1->Scale.x - 2) PlayHeroesSound(LevelSound_Sea_RuinEnd);
+					if (a1->Data1->Position.y == a1->Data1->Scale.x - 2) PlayHeroesSoundQueue(LevelSound_Sea_RuinEnd, a1, 1000, 0);
 				}
 				else if (a1->Data1->Scale.x <= a1->Data1->Scale.z) {
 					if (a1->Data1->Position.y >= a1->Data1->Scale.z) {
@@ -112,8 +112,8 @@ void SHMovingPltfrms_Main(ObjectMaster *a1) {
 					}
 					else if (a1->Data1->Position.y < a1->Data1->Scale.z) a1->Data1->Position.y += 2;
 
-					if (a1->Data1->Position.y == a1->Data1->Scale.x + 2) PlayHeroesSound(LevelSound_Sea_RuinEnd);
-					if (a1->Data1->Position.y <= a1->Data1->Scale.z - 1 && a1->Data1->Position.y >= a1->Data1->Scale.z - 3) PlayHeroesSound(LevelSound_Sea_RuinStart);
+					if (a1->Data1->Position.y == a1->Data1->Scale.x + 2) PlayHeroesSoundQueue(LevelSound_Sea_RuinEnd, a1, 1000, 0);
+					if (a1->Data1->Position.y <= a1->Data1->Scale.z - 1 && a1->Data1->Position.y >= a1->Data1->Scale.z - 3) PlayHeroesSoundQueue(LevelSound_Sea_RuinEnd, a1, 1000, 0);
 				}
 
 			}

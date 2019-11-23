@@ -70,6 +70,12 @@ int IsPlayerInsideSphere_(NJS_VECTOR *center, float radius);
 bool DynColRadius(ObjectMaster *a1, float radius, uint8_t col);
 bool DynColRadiusAuto(ObjectMaster *a1, uint8_t col);
 
+FastcallFunctionPointer(void, DrawChunkModel_, (Sint32* a1, Sint16* a2), 0x7917F0);
+void DrawChunkModel(NJS_CNK_MODEL* model);
+void njCnkAction_Queue(NJS_ACTION* action, float frame, QueuedModelFlagsB flags);
+void njCnkAction(NJS_ACTION* action, float frame);
+void SetupWorldMatrix();
+
 Rotation3 fPositionToRotation(NJS_VECTOR* orig, NJS_VECTOR* point);
 NJS_VECTOR GetPathPosition(NJS_VECTOR* orig, NJS_VECTOR* dest, float state);
 float GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest);

@@ -282,8 +282,11 @@ void WaterfallObject(ObjectMaster *a1) {
 void ObjBalloon_Display(ObjectMaster *a1)
 {
 	if (!MissedFrames) {
+		Direct3D_SetZFunc(1u);
+
 		njSetTexture(&SHCommonTextures);
 		njPushMatrix(0);
+
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
 		njScale(nullptr, a1->Data1->Scale.y, a1->Data1->Scale.y, a1->Data1->Scale.y);
@@ -292,11 +295,15 @@ void ObjBalloon_Display(ObjectMaster *a1)
 			a1->Data1->Scale.z -= 0.1f;
      		SetMaterialAndSpriteColor_Float(a1->Data1->Scale.z, 1.0f, 1.0f, 1.0f);
 		}
-		DrawQueueDepthBias = -6000.0f;
-		njDrawModel_SADX(CO_BALLOON->getmodel()->basicdxmodel);
-		DrawQueueDepthBias = 0;
+
+		SetupWorldMatrix();
+		Direct3D_SetChunkModelRenderState();
+		DrawChunkModel(CO_BALLOON->getmodel()->chunkmodel);
+
 		SetMaterialAndSpriteColor_Float(1.0f, 1.0f, 1.0f, 1.0f);
+		Direct3D_UnsetChunkModelRenderState();
 		njPopMatrix(1u);
+		Direct3D_ResetZFunc();
 	}
 }
 
@@ -312,6 +319,8 @@ void ObjBalloon_Main(ObjectMaster *a1)
 				a1->Data1->Scale.y += 0.2f;
 
 				if (a1->Data1->Scale.y == 3.2f) {
+					PlayHeroesSound(CommonSound_ItemBox);
+
 					if (item == 12) {
 						if (GetCharacterID(a1->Data1->CharIndex - 1) == Characters_Tails) {
 							CharObj2 *co2 = CharObj2Ptrs[a1->Data1->CharIndex - 1];

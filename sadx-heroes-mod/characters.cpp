@@ -3,10 +3,6 @@
 uint8_t FlyCharEnabled;
 bool CharTexsLoaded[4];
 
-FastcallFunctionPointer(void, DrawChunkModel_, (Sint32* a1, Sint16* a2), 0x7917F0);
-
-D3DMATRIX WorldMatrixBackup;
-
 ObjectMaster* HeroesChars[8];
 int CurrentPlayer;
 
@@ -22,29 +18,6 @@ bool OhNoImDead2(EntityData1 *a1, ObjectData2 *a2) {
 
 	FunctionPointer(bool, original, (EntityData1 *a1, ObjectData2 *a2), OhNoImDead2_t.Target());
 	return original(a1, a2);
-}
-
-void DrawChunkModel(NJS_CNK_MODEL* model)
-{
-	DrawChunkModel_(model->vlist, model->plist);
-}
-
-void njCnkAction_Queue(NJS_ACTION* action, float frame, QueuedModelFlagsB flags)
-{
-	DisplayAnimationFrame(action, frame, flags, 0, (void(__cdecl*)(NJS_MODEL_SADX*, int, int))DrawChunkModel);
-}
-
-void njCnkAction(NJS_ACTION* action, float frame)
-{
-	DisplayAnimationFrame(action, frame, (QueuedModelFlagsB)0, 0, (void(__cdecl*)(NJS_MODEL_SADX*, int, int))DrawChunkModel);
-}
-
-void SetupWorldMatrix()
-{
-	ProjectToWorldSpace();
-	WorldMatrixBackup = WorldMatrix;
-	Direct3D_SetWorldTransform();
-	memcpy(_nj_current_matrix_ptr_, &ViewMatrix, sizeof(NJS_MATRIX));
 }
 
 void PlayHeroesAnimation(ObjectMaster* obj, uint8_t ID, AnimData* animdata, float forcespeed, float forcestate) {

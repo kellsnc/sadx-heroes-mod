@@ -20,6 +20,7 @@ enum HeroesSounds {
 	CommonSound_GoalRing,
 	CommonSound_Pulley,
 	CommonSound_Rail,
+	CommonSound_ItemBox,
 	LevelSound_Sea_Seagul = 10200,
 	LevelSound_Sea_RuinStart,
 	LevelSound_Sea_RuinEnd,
