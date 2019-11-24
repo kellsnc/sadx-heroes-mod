@@ -110,6 +110,11 @@ void Tails_Main_r(ObjectMaster* obj) {
 }
 
 void PlayVoice_HeoresChar(int ID) {
+	if (!HeroesChars[CurrentPlayer]) {
+		PlayVoice(ID);
+		return;
+	}
+
 	switch (ID) {
 	case 1803:
 		switch (HeroesChars[CurrentPlayer]->Data1->CharID) {
@@ -137,6 +142,10 @@ void PlayVoice_HeoresChar(int ID) {
 }
 
 int PlaySound_HeroesChar(int ID, void *a2, int a3, void *a4) {
+	if (!HeroesChars[CurrentPlayer]) {
+		return PlaySound(ID, a2, a3, a4);
+	}
+	
 	if (ID == 17 && !jmpsounds) {
 		PlayHeroesSound(CommonSound_Jumping);
 		return 1;
