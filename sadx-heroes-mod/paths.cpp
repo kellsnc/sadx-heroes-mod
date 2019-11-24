@@ -302,6 +302,7 @@ void AutoLoop_Main(ObjectMaster * a1) {
 
 			TransformSpline(GetCharacterObject(a1->Data1->NextAction), loopdata->LoopList[a1->Data1->InvulnerableTime].Position, loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position, a1->Data1->Scale.x);
 			player->Rotation.y = fPositionToRotation(&loopdata->LoopList[a1->Data1->InvulnerableTime].Position, &loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position).y;
+			a1->Data1->Position = player->Position;
 
 			//go to next point
 			if (a1->Data1->Scale.x > 1) { a1->Data1->Scale.x = 0; a1->Data1->InvulnerableTime++; }
@@ -421,8 +422,9 @@ void Path_Main(ObjectMaster * a1) {
 
 							//rail stuff
 							if (type == 2) {
-								PlayHeroesSoundQueue(CommonSound_Rail, a1, 1000, 1);
-
+								tempobj->Data1->Position = a1->Data1->Position;
+								PlayHeroesSoundQueue(CommonSound_Rail, tempobj, 1000, 1);
+								
 								if (co2) tempobj->Data1->Scale.y = co2->Speed.x * 2; //store horizontal speed
 								if (tempobj->Data1->Scale.y == 0) RailValues[RailPhysics_MaxSpeed];
 
