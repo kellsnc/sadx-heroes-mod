@@ -383,7 +383,7 @@ void Path_Main(ObjectMaster * a1) {
 				if (CurrentLevel == HeroesLevelID_SeasideHill && players[slot]->Position.z > -900) return;
 				if (a1->Data1->field_A == 2 && CharObj2Ptrs[slot]->Upgrades & Upgrades_SuperSonic) return;
 
-				for (uint8_t point = 0; point < loopdata->Count; ++point) {
+				for (uint8_t point = 0; point < loopdata->Count - 1; ++point) {
 					for (float l = 0; l <= 1; l += 0.01f) {
 						a1->Data1->Position.x = (loopdata->LoopList[point + 1].Position.x - loopdata->LoopList[point].Position.x) * l + loopdata->LoopList[point].Position.x;
 						a1->Data1->Position.y = (loopdata->LoopList[point + 1].Position.y - loopdata->LoopList[point].Position.y) * l + loopdata->LoopList[point].Position.y;
@@ -395,9 +395,6 @@ void Path_Main(ObjectMaster * a1) {
 						if ((a1->Data1->Position.x > (players[slot]->Position.x - range) && a1->Data1->Position.x < (players[slot]->Position.x + range))
 							&& (a1->Data1->Position.y > (players[slot]->Position.y - range) && a1->Data1->Position.y < (players[slot]->Position.y + range))
 							&& (a1->Data1->Position.z > (players[slot]->Position.z - range) && a1->Data1->Position.z < (players[slot]->Position.z + range))) {
-
-							a1->Data1->Scale = { -3, 8, 4 }; //fix weird bug
-							if (IsPlayerInsideSphere(&a1->Data1->Scale, 10)) return;
 
 							players[slot]->Position = a1->Data1->Position;
 							a1->Data1->Action = 1;
