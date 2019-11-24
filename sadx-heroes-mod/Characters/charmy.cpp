@@ -579,6 +579,7 @@ void LoadCharmyFiles(const char *path, const HelperFunctions &helperFunctions) {
 	CharmyAnms[56] = LoadCharacterAnim("BE_EDGE_OTTO_C");
 
 	for (uint8_t i = 1; i < LengthOfArray(CharmyAnimData); ++i) {
+		if (CharmyAnms[i] == nullptr) continue;
 		CharmyAnimData[i].Animation = new NJS_ACTION;
 		CharmyAnimData[i].Animation->object = CharmyMdls[0]->getmodel();
 		CharmyAnimData[i].Animation->motion = CharmyAnms[i]->getmotion();

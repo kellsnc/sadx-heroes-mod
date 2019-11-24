@@ -786,6 +786,7 @@ void LoadCreamFiles(const char *path, const HelperFunctions &helperFunctions) {
 	CreamAnms[75] = LoadCharacterAnim("CH_STORY_SELECT");
 
 	for (uint8_t i = 0; i < LengthOfArray(CreamAnimData); ++i) {
+		if (CreamAnms[i] == nullptr) continue;
 		CreamAnimData[i].Animation = new NJS_ACTION;
 		CreamAnimData[i].Animation->object = CreamMdls[0]->getmodel();
 		CreamAnimData[i].Animation->motion = CreamAnms[i]->getmotion();
@@ -811,6 +812,7 @@ void LoadCreamFiles(const char *path, const HelperFunctions &helperFunctions) {
 	CreamAnimData[23].AnimationSpeed = 0.25f;
 
 	for (uint8_t i = 0; i < LengthOfArray(CheeseAnimData); ++i) {
+		if (CreamAnms[i + 63] == nullptr) continue;
 		CheeseAnimData[i].Animation = new NJS_ACTION;
 		CheeseAnimData[i].Animation->object = CreamMdls[2]->getmodel();
 		CheeseAnimData[i].Animation->motion = CreamAnms[i + 63]->getmotion();

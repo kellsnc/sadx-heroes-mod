@@ -705,6 +705,7 @@ void LoadTailsFiles(const char *path, const HelperFunctions &helperFunctions) {
 	TailsAnms[95] = LoadCharacterAnim("HERO_TA_TA");
 
 	for (uint8_t i = 0; i < LengthOfArray(HTailsAnimData); ++i) {
+		if (TailsAnms[i] == nullptr) continue;
 		HTailsAnimData[i].Animation = new NJS_ACTION;
 		HTailsAnimData[i].Animation->object = TailsMdls[0]->getmodel();
 		HTailsAnimData[i].Animation->motion = TailsAnms[i]->getmotion();
@@ -728,6 +729,7 @@ void LoadTailsFiles(const char *path, const HelperFunctions &helperFunctions) {
 	HTailsAnimData[23].AnimationSpeed = 0.25f;
 
 	for (uint8_t i = 0; i < LengthOfArray(TTailsAnimData); ++i) {
+		if (TailsAnms[i + 62] == nullptr) continue;
 		TTailsAnimData[i].Animation = new NJS_ACTION;
 		TTailsAnimData[i].Animation->object = TailsMdls[2]->getmodel();
 		TTailsAnimData[i].Animation->motion = TailsAnms[i + 62]->getmotion();

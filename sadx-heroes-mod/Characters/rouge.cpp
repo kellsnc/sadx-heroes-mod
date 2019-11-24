@@ -598,6 +598,7 @@ void LoadRougeFiles(const char *path, const HelperFunctions &helperFunctions) {
 	RougeAnms[65] = LoadCharacterAnim("RO_WING_WIN");
 
 	for (uint8_t i = 0; i < LengthOfArray(RougeAnimData); ++i) {
+		if (RougeAnms[i] == nullptr) continue;
 		RougeAnimData[i].Animation = new NJS_ACTION;
 		RougeAnimData[i].Animation->object = RougeMdls[0]->getmodel();
 		RougeAnimData[i].Animation->motion = RougeAnms[i]->getmotion();
@@ -621,6 +622,7 @@ void LoadRougeFiles(const char *path, const HelperFunctions &helperFunctions) {
 	RougeAnimData[23].AnimationSpeed = 0.25f;
 
 	for (uint8_t i = 0; i < LengthOfArray(RWingsAnimData); ++i) {
+		if (RougeAnms[i + 60] == nullptr) continue;
 		RWingsAnimData[i].Animation = new NJS_ACTION;
 		RWingsAnimData[i].Animation->object = RougeMdls[2]->getmodel();
 		RWingsAnimData[i].Animation->motion = RougeAnms[i + 60]->getmotion();
