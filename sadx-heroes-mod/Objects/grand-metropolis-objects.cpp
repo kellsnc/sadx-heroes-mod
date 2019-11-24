@@ -501,7 +501,7 @@ void AutoPathsMovs() {
 					}
 				}
 				else {
-					if (anim % 4 == true) set_diffuse_blend_factor_ptr(0);
+					if (anim % 4 == true && IsLantern) set_diffuse_blend_factor_ptr(0);
 				}
 			}
 		}

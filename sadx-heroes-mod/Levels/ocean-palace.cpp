@@ -155,7 +155,6 @@ void RoadRock_Init(const char *path, const HelperFunctions &helperFunctions) {
 	ReplaceBIN("SET0201A", "road-rock-set-amy");
 	ReplaceBIN("SET0201S", "road-rock-set-gamma");
 	ReplaceBIN("CAM0201S", "heroes-cam");
-	ReplaceDAT("WINDY_VALLEY_BANK01", "HEROES_BANK");
 	ReplaceBIN("PL_21B", "road-rock-shaders");
 
 	MusicList[MusicIDs_wndyvly2].Name = "road-rock";
@@ -168,10 +167,10 @@ void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions) 
 	ReplaceBIN("SET0200S", "ocean-palace-set");
 	ReplaceBIN("SET0200M", "ocean-palace-set-tails");
 	ReplaceBIN("CAM0200S", "heroes-cam");
-	ReplaceDAT("WINDY_VALLEY_BANK01", "HEROES_BANK");
 	ReplaceBIN("PL_20B", "ocean-palace-shaders");
 
 	MusicList[MusicIDs_wndyvly1].Name = "ocean-palace";
+	DefaultLight(HeroesLevelID_OceanPalace);
 
 	helperFunctions.RegisterPathList(OceanPalacePaths);
 

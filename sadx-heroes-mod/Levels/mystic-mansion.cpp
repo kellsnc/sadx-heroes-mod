@@ -141,10 +141,10 @@ void MysticMansion_Init(const char *path, const HelperFunctions &helperFunctions
 	ReplaceBIN("SET1000M", "mystic-mansion-set-tails");
 	ReplaceBIN("SET1000K", "mystic-mansion-set-knux");
 	ReplaceBIN("CAM1000S", "mystic-mansion-cam");
-	ReplaceDAT("FINAL_EGG_BANK01", "MYSTIC_BANK");
 	ReplaceBIN("PL_A0B", "mystic-mansion-shaders");
 
 	MusicList[MusicIDs_finaleg1].Name = "mystic-mansion";
+	DefaultLight(HeroesLevelID_MysticMansion);
 
 	if (helperFunctions.Version >= 9 && !NoMysticMusic) {
 		musicid = helperFunctions.RegisterMusicFile(MysticMansionMusics[0]);

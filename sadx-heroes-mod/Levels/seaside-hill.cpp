@@ -149,7 +149,6 @@ void SeaGate_Init(const char *path, const HelperFunctions &helperFunctions) {
 	ReplaceBIN("SET0101S", "sea-gate-set-gamma");
 	ReplaceBIN("SET0101A", "sea-gate-set-amy");
 	ReplaceBIN("CAM0101S", "heroes-cam");
-	ReplaceDAT("EMERALD_COAST_BANK01", "HEROES_BANK");
 	ReplaceBIN("PL_11B", "sea-gate-shaders");
 
 	MusicList[MusicIDs_ecoast2].Name = "sea-gate";
@@ -165,10 +164,10 @@ void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions) 
 	ReplaceBIN("SET0100S", "seaside-hill-set");
 	ReplaceBIN("SET0100M", "seaside-hill-set-tails");
 	ReplaceBIN("CAM0100S", "heroes-cam");
-	ReplaceDAT("EMERALD_COAST_BANK01", "HEROES_BANK");
 	ReplaceBIN("PL_10B", "seaside-hill-shaders");
 
 	MusicList[MusicIDs_ecoast1].Name = "seaside-hill";
+	DefaultLight(HeroesLevelID_SeasideHill);
 	
 	helperFunctions.RegisterPathList(SeasideHillPaths); //splines
 

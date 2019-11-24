@@ -71,10 +71,10 @@ void CasinoPark_Init(const char *path, const HelperFunctions &helperFunctions) {
 	ReplacePVM("TWINKLE01", "casino-park");
 	ReplaceBIN("SET0300S", "casino-park-set");
 	ReplaceBIN("CAM0300S", "heroes-cam");
-	ReplaceDAT("TWINKLE_PARK_BANK01", "CASINO_BANK");
 	ReplaceBIN("PL_30B", "casino-park-shaders");
 
 	MusicList[MusicIDs_twnklpk1].Name = "casino-park";
+	DefaultLight(HeroesLevelID_CasinoPark);
 
 	helperFunctions.RegisterPathList(CasinoParkPaths);
 

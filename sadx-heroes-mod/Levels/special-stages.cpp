@@ -58,6 +58,7 @@ void SpecialStages_Init(const char *path, const HelperFunctions &helperFunctions
 	ReplaceBIN("PL_Z0B", "special-stages-shaders");
 
 	MusicList[MusicIDs_circuit].Name = "special-stages";
+	DefaultLight(HeroesLevelID_SpecialStages);
 
 	WriteJump((void*)0x4DAA80, SpecialStagesHandler);
 	DeathZoneList[HeroesLevelID_SpecialStages] = nullptr;

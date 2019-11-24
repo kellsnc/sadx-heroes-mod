@@ -39,7 +39,6 @@ DataArray(DeathZone*, FinalEggDeathZones, 0x1A49218, 4);
 
 #define ReplacePVM(a, b) helperFunctions.ReplaceFile("system\\" a ".PVM", "system\\" b ".pvm")
 #define ReplaceBIN(a, b) helperFunctions.ReplaceFile("system\\" a ".BIN", "system\\" b ".bin")
-#define ReplaceDAT(a, b) helperFunctions.ReplaceFile("system\\sounddata\\se\\" a ".DAT", "system\\" b ".dat")
 
 extern NJS_MATERIAL matlist_col[1];
 extern NJS_MATERIAL matlist_waterfall[1];
@@ -57,6 +56,7 @@ void AnimateTextures(SH_ANIMTEXS *list, Int listcount);
 void LoadLevelFile(const char *shortname, int chunknb);
 void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size, NJS_VECTOR pos);
 void SetFog(FogData * fog);
+void DefaultLight(HeroesLevelIDs levelid);
 
 void HeroesSkybox_Main(ObjectMaster *a1);
 void LevelHandler_Delete(ObjectMaster * a1);

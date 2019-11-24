@@ -105,10 +105,10 @@ void PowerPlant_Init(const char *path, const HelperFunctions &helperFunctions) {
 	ReplaceBIN("SET0800S", "power-plant-set");
 	ReplaceBIN("SET0800M", "power-plant-set-tails");
 	ReplaceBIN("CAM0800S", "heroes-cam");
-	ReplaceDAT("ICE_CAP_BANK01", "HEROES_BANK");
 	ReplaceBIN("PL_80B", "power-plant-shaders");
 
 	MusicList[MusicIDs_icecap1].Name = "power-plant";
+	DefaultLight(HeroesLevelID_PowerPlant);
 
 	helperFunctions.RegisterPathList(PowerPlantPaths);
 
