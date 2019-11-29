@@ -18,7 +18,7 @@ void PlayVoice_Charmy(int ID) {
 	}
 }
 
-int PlaySound_Charmy(int ID, void *a2, int a3, void *a4) {
+void PlaySound_Charmy(int ID) {
 	int random = rand() % 10;
 
 	switch (ID) {
@@ -37,11 +37,9 @@ int PlaySound_Charmy(int ID, void *a2, int a3, void *a4) {
 		PlayHeroesSound(CharmySound_Death);
 		break;
 	case 1453:
-		PlaySound(ID, a2, a3, a4);
+		PlaySound(ID, 0, 0, 0);
 		break;
 	}
-
-	return 1;
 }
 
 void CharmyWings_Main(ObjectMaster* obj) {

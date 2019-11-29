@@ -18,7 +18,7 @@ void PlayVoice_Cream(int ID) {
 	}
 }
 
-int PlaySound_Cream(int ID, void *a2, int a3, void *a4) {
+void PlaySound_Cream(int ID) {
 	int random = rand() % 10;
 	
 	switch (ID) {
@@ -37,11 +37,9 @@ int PlaySound_Cream(int ID, void *a2, int a3, void *a4) {
 		PlayHeroesSound(CreamSound_Death);
 		break;
 	case 1453:
-		PlaySound(ID, a2, a3, a4);
+		PlaySound(ID, 0, 0, 0);
 		break;
 	}
-
-	return 1;
 }
 
 NJS_VECTOR GetCheesePoint(NJS_VECTOR* pos, Rotation3* rot) {

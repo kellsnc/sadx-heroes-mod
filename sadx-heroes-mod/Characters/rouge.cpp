@@ -18,7 +18,7 @@ void PlayVoice_Rouge(int ID) {
 	}
 }
 
-int PlaySound_Rouge(int ID, void *a2, int a3, void *a4) {
+void PlaySound_Rouge(int ID) {
 	int random = rand() % 10;
 
 	switch (ID) {
@@ -37,11 +37,9 @@ int PlaySound_Rouge(int ID, void *a2, int a3, void *a4) {
 		PlayHeroesSound(RougeSound_Death);
 		break;
 	case 1453:
-		PlaySound(ID, a2, a3, a4);
+		PlaySound(ID, 0, 0, 0);
 		break;
 	}
-
-	return 1;
 }
 
 void RougeWings_Main(ObjectMaster* obj) {

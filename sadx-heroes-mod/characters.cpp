@@ -1,12 +1,38 @@
 #include "stdafx.h"
 
 uint8_t FlyCharEnabled;
-bool CharTexsLoaded[4];
-
+uint8_t SpeedCharEnabled;
 ObjectMaster* HeroesChars[8];
+bool CharTexsLoaded[5];
 int CurrentPlayer;
 
-using std::string;
+ObjectFuncPtr DisplayFuncs[]{
+	CreamHeroes_Display,
+	RougeHeroes_Display,
+	CharmyHeroes_Display,
+	TailsHeroes_Display
+};
+
+ObjectFuncPtr MainFuncs[]{
+	CreamHeroes_Main,
+	RougeHeroes_Main,
+	CharmyHeroes_Main,
+	TailsHeroes_Main
+};
+
+PlaySoundFuncPtr SoundFuncs[]{
+	PlaySound_Cream,
+	PlaySound_Rouge,
+	PlaySound_Charmy,
+	PlaySound_Tails
+};
+
+PlaySoundFuncPtr VoiceFuncs[]{
+	PlayVoice_Cream,
+	PlayVoice_Rouge,
+	PlayVoice_Charmy,
+	PlayVoice_Tails
+};
 
 bool OhNoImDead2(EntityData1 *a1, ObjectData2 *a2);
 Trampoline OhNoImDead2_t(0x004CE030, 0x004CE036, OhNoImDead2);
@@ -74,30 +100,20 @@ void CharactersCommon_Delete(ObjectMaster* obj) {
 	}
 }
 
-//For flying characters
-void Tails_Display_(ObjectMaster* obj) {
+void Heroes_Display(ObjectMaster* obj) {
 	if (!HeroesChars[CurrentPlayer]) {
-		Tails_Display(obj);
+		switch (EntityData1Ptrs[CurrentPlayer]->CharID) {
+		case Characters_Sonic:
+			Sonic_Display(obj);
+			break;
+		case Characters_Tails:
+			Tails_Display(obj);
+			break;
+		}
 		return;
 	}
 
-	switch (HeroesChars[CurrentPlayer]->Data1->CharID) {
-	case Characters_Cream:
-		CreamHeroes_Display(obj);
-		break;
-	case Characters_Rouge:
-		RougeHeroes_Display(obj);
-		break;
-	case Characters_Charmy:
-		CharmyHeroes_Display(obj);
-		break;
-	case Characters_HeroesTails:
-		TailsHeroes_Display(obj);
-		break;
-	default:
-		Tails_Display(obj);
-		break;
-	}
+	DisplayFuncs[HeroesChars[CurrentPlayer]->Data1->CharID - 9](obj);
 }
 
 void Tails_Main_r(ObjectMaster* a1);
@@ -117,23 +133,7 @@ void PlayVoice_HeoresChar(int ID) {
 
 	switch (ID) {
 	case 1803:
-		switch (HeroesChars[CurrentPlayer]->Data1->CharID) {
-		case Characters_Cream:
-			PlayVoice_Cream(ID);
-			break;
-		case Characters_Rouge:
-			PlayVoice_Rouge(ID);
-			break;
-		case Characters_Charmy:
-			PlayVoice_Charmy(ID);
-			break;
-		case Characters_HeroesTails:
-			PlayVoice_Tails(ID);
-			break;
-		default:
-			PlayVoice(ID);
-			break;
-		}
+		VoiceFuncs[HeroesChars[CurrentPlayer]->Data1->CharID - 9](ID);
 		break;
 	default:
 		PlayVoice(ID);
@@ -154,27 +154,12 @@ int PlaySound_HeroesChar(int ID, void *a2, int a3, void *a4) {
 		return 0;
 	}
 	
-	switch (HeroesChars[CurrentPlayer]->Data1->CharID) {
-	case Characters_Cream:
-		return PlaySound_Cream(ID, a2, a3, a4);
-		break;
-	case Characters_Rouge:
-		return PlaySound_Rouge(ID, a2, a3, a4);
-		break;
-	case Characters_Charmy:
-		return PlaySound_Charmy(ID, a2, a3, a4);
-		break;
-	case Characters_HeroesTails:
-		return PlaySound_Tails(ID, a2, a3, a4);
-		break;
-	default:
-		return PlaySound(ID, a2, a3, a4);
-		break;
-	}
+	SoundFuncs[HeroesChars[CurrentPlayer]->Data1->CharID - 9](ID);
+	return 1;
 }
 
 void Characters_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config) {
-	const string FlyCharacter = config->getString("2- Characters", "FlyCharacter", "None");
+	const std::string FlyCharacter = config->getString("2- Characters", "FlyCharacter", "None");
 	
 	if (!FlyCharacter.compare("Cream")) {
 		LoadCreamFiles(path, helperFunctions);
@@ -193,34 +178,27 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 		FlyCharEnabled = Characters_HeroesTails;
 	}
 
-	WriteCall((void*)0x462456, Tails_Display_);
-	WriteCall((void*)0x45C037, PlaySound_HeroesChar); //jump
-	WriteCall((void*)0x45BE01, PlaySound_HeroesChar); //fly
-	WriteCall((void*)0x45BF8D, PlaySound_HeroesChar); //hurt
-	WriteCall((void*)0x446A49, PlaySound_HeroesChar); //death
-	WriteCall((void*)0x45BE57, PlayVoice_HeoresChar); //death
+	if (FlyCharEnabled) {
+		WriteCall((void*)0x462456, Heroes_Display);
+		WriteCall((void*)0x45C037, PlaySound_HeroesChar); //jump
+		WriteCall((void*)0x45BE01, PlaySound_HeroesChar); //fly
+		WriteCall((void*)0x45BF8D, PlaySound_HeroesChar); //hurt
+		WriteCall((void*)0x446A49, PlaySound_HeroesChar); //death
+		WriteCall((void*)0x45BE57, PlayVoice_HeoresChar); //win
+	}
 }
 
 void Characters_OnFrame() {
 	for (uint8_t player = 0; player < 8; ++player) {
-		if (!EntityData1Ptrs[player]) continue;
-		if (EntityData1Ptrs[player]->CharID == Characters_Tails && !HeroesChars[player]) {
-			if (FlyCharEnabled == Characters_Cream) {
-				HeroesChars[player] = LoadObject(LoadObj_Data1, 1, CreamHeroes_Main);
-				HeroesChars[player]->Data1->CharIndex = player;
-			}
-			else if (FlyCharEnabled == Characters_Rouge) {
-				HeroesChars[player] = LoadObject(LoadObj_Data1, 1, RougeHeroes_Main);
-				HeroesChars[player]->Data1->CharIndex = player;
-			}
-			else if (FlyCharEnabled == Characters_Charmy) {
-				HeroesChars[player] = LoadObject(LoadObj_Data1, 1, CharmyHeroes_Main);
-				HeroesChars[player]->Data1->CharIndex = player;
-			}
-			else if (FlyCharEnabled == Characters_HeroesTails) {
-				HeroesChars[player] = LoadObject(LoadObj_Data1, 1, TailsHeroes_Main);
-				HeroesChars[player]->Data1->CharIndex = player;
-			}
+		if (!EntityData1Ptrs[player] || HeroesChars[player]) continue;
+
+		if (SpeedCharEnabled && EntityData1Ptrs[player]->CharID == Characters_Sonic) {
+			HeroesChars[player] = LoadObject(LoadObj_Data1, 1, MainFuncs[SpeedCharEnabled - 9]);
+			HeroesChars[player]->Data1->CharIndex = player;
+		}
+		else if (FlyCharEnabled && EntityData1Ptrs[player]->CharID == Characters_Tails) {
+			HeroesChars[player] = LoadObject(LoadObj_Data1, 1, MainFuncs[FlyCharEnabled - 9]);
+			HeroesChars[player]->Data1->CharIndex = player;
 		}
 	}
 }
