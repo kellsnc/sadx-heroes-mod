@@ -122,10 +122,10 @@ void PlayVoice_HeoresChar(int ID) {
 			PlayVoice_Cream(ID);
 			break;
 		case Characters_Rouge:
-			PlayVoice_Cream(ID);
+			PlayVoice_Rouge(ID);
 			break;
 		case Characters_Charmy:
-			PlayVoice_Cream(ID);
+			PlayVoice_Charmy(ID);
 			break;
 		case Characters_HeroesTails:
 			PlayVoice_Tails(ID);
