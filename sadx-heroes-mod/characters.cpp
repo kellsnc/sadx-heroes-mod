@@ -10,28 +10,32 @@ ObjectFuncPtr DisplayFuncs[]{
 	CreamHeroes_Display,
 	RougeHeroes_Display,
 	CharmyHeroes_Display,
-	TailsHeroes_Display
+	TailsHeroes_Display,
+	SonicHeroes_Display
 };
 
 ObjectFuncPtr MainFuncs[]{
 	CreamHeroes_Main,
 	RougeHeroes_Main,
 	CharmyHeroes_Main,
-	TailsHeroes_Main
+	TailsHeroes_Main,
+	SonicHeroes_Main
 };
 
 PlaySoundFuncPtr SoundFuncs[]{
 	PlaySound_Cream,
 	PlaySound_Rouge,
 	PlaySound_Charmy,
-	PlaySound_Tails
+	PlaySound_Tails,
+	PlaySound_Sonic
 };
 
 PlaySoundFuncPtr VoiceFuncs[]{
 	PlayVoice_Cream,
 	PlayVoice_Rouge,
 	PlayVoice_Charmy,
-	PlayVoice_Tails
+	PlayVoice_Tails,
+	PlayVoice_Sonic
 };
 
 bool OhNoImDead2(EntityData1 *a1, ObjectData2 *a2);
@@ -125,7 +129,7 @@ void Tails_Main_r(ObjectMaster* obj) {
 	original(obj);
 }
 
-void PlayVoice_HeoresChar(int ID) {
+void PlayVoice_HeroesChar(int ID) {
 	if (!HeroesChars[CurrentPlayer]) {
 		PlayVoice(ID);
 		return;
@@ -159,8 +163,18 @@ int PlaySound_HeroesChar(int ID, void *a2, int a3, void *a4) {
 }
 
 void Characters_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config) {
+	const std::string SpeedCharacter = config->getString("2- Characters", "SpeedCharacter", "None");
 	const std::string FlyCharacter = config->getString("2- Characters", "FlyCharacter", "None");
 	
+	if (!SpeedCharacter.compare("Sonic")) {
+		LoadSonicFiles(path, helperFunctions);
+		SpeedCharEnabled = Characters_HeroesSonic;
+	}
+	
+	if (SpeedCharEnabled) {
+		WriteCall((void*)0x49BF04, Heroes_Display);
+	}
+
 	if (!FlyCharacter.compare("Cream")) {
 		LoadCreamFiles(path, helperFunctions);
 		FlyCharEnabled = Characters_Cream;
@@ -184,7 +198,7 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 		WriteCall((void*)0x45BE01, PlaySound_HeroesChar); //fly
 		WriteCall((void*)0x45BF8D, PlaySound_HeroesChar); //hurt
 		WriteCall((void*)0x446A49, PlaySound_HeroesChar); //death
-		WriteCall((void*)0x45BE57, PlayVoice_HeoresChar); //win
+		WriteCall((void*)0x45BE57, PlayVoice_HeroesChar); //win
 	}
 }
 

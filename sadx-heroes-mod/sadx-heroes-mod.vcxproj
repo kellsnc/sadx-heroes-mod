@@ -112,6 +112,7 @@
     <ClCompile Include="paths.cpp" />
     <ClCompile Include="Objects\special-stages-objects.cpp" />
     <ClCompile Include="Levels\special-stages.cpp" />
+    <ClCompile Include="sonic.cpp" />
     <ClCompile Include="sounds.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

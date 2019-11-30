@@ -138,6 +138,9 @@
     <ClCompile Include="sounds.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="sonic.cpp">
+      <Filter>Source Files\Characters</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">

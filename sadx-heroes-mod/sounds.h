@@ -105,5 +105,21 @@ enum HeroesSounds {
 	TailsSound_Win,
 	TailsSound_Lose,
 	TailsSound_Idle1,
-	TailsSound_Idle2
+	TailsSound_Idle2,
+	SonicSound_Attack = 11300,
+	SonicSound_FlyBegin,
+	SonicSound_FlyAttack,
+	SonicSound_FlyUp,
+	SonicSound_TeamSwap,
+	SonicSound_ThatHurts,
+	SonicSound_Hurt1,
+	SonicSound_Hurt2,
+	SonicSound_Trick,
+	SonicSound_Ready,
+	SonicSound_Death,
+	SonicSound_LevelUp,
+	SonicSound_Win,
+	SonicSound_Lose,
+	SonicSound_Idle1,
+	SonicSound_Idle2
 };
