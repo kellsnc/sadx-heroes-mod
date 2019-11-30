@@ -21,6 +21,8 @@ void SetupWorldMatrix();
 void PlayHeroesAnimation(ObjectMaster *obj, uint8_t ID, AnimData* animdata, float forcespeed, float forcestate);
 bool CharactersCommon_Init(ObjectMaster* obj, const char* name, NJS_TEXLIST* tex);
 
+NJS_VECTOR SpeedAnims(EntityData1* data, EntityData1* playerdata, CharObj2* playerco2);
+
 extern ObjectMaster* HeroesChars[];
 
 void CreamHeroes_Display(ObjectMaster *obj);

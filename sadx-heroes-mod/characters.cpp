@@ -168,6 +168,244 @@ bool CharactersCommon_Init(ObjectMaster* obj, const char* name, NJS_TEXLIST* tex
 	return true;
 }
 
+//Speed characters common anims
+NJS_VECTOR SpeedAnims(EntityData1* data, EntityData1* playerdata, CharObj2* playerco2) {
+	int anim = playerco2->AnimationThing.Index;
+	float speed = 0;
+	float state = 0;
+	float frame = data->Scale.x;
+
+	switch (playerco2->AnimationThing.Index) {
+	case 0: //stance
+	case 1:
+	case 2:
+	case 7:
+	case 8:
+		anim = 54; data->Status = 0; break;
+	case 3: //idle
+	case 4:
+	case 5:
+	case 6:
+		anim = 55;
+		if (++data->Status == 100) {
+			playerco2->AnimationThing.Index = 0;
+			data->Status = 0;
+		}
+		break;
+	case 9:
+		data->Status = 0;
+		anim = 0;
+		if (playerco2->Speed.x < 0.02f) anim = 11;
+		break;
+	case 10:
+		anim = 0;
+		speed = 0.9f + playerco2->Speed.x * 0.2f;
+		break;
+	case 11:
+		anim = 5;
+		speed = 0.9f + playerco2->Speed.x * 0.2f;
+		break;
+	case 12:
+		anim = 6;
+		speed = 1.5f + playerco2->Speed.x * 0.1f;
+		break;
+	case 13:
+		anim = 7;
+		speed = 0.5f + playerco2->Speed.x * 0.1f;
+		break;
+	case 14: //jumping
+		if (anim < 13 || anim > 18) {
+			anim = 13;
+		}
+		else if (anim == 14) {
+			if (data->Unknown > 2) {
+				anim = 15;
+			}
+		}
+		else if (anim == 16) {
+			if (playerdata->Position.y - playerco2->_struct_a3.DistanceMax < 10) anim = 17;
+		}
+		break;
+	case 15: //rolling
+	case 16:
+	case 17: //spring jump
+		anim = 14;
+		break;
+	case 18: //fall after spring jump
+		if (playerco2->Speed.x > 1 || playerdata->Action == 14) anim = 49;
+		else anim = 16;
+		break;
+	case 19: //falling
+		anim = 18;
+		if (playerco2->Speed.x > 8 && playerdata->Position.y - playerco2->_struct_a3.DistanceMax > 500) {
+			anim = 49;
+			playerco2->AnimationThing.Index = 150;
+		}
+		break;
+	case 20: //break
+	case 25:
+		anim = 36;
+		if (playerco2->Speed.x > 6) {
+			anim = 35;
+		}
+		else if (playerco2->Speed.x > 3) {
+			anim = 34;
+		}
+		break;
+	case 21: //push
+	case 22:
+		anim = 48;
+		break;
+	case 24: //hurt
+		anim = 42;
+		break;
+	case 26: //updraft
+	case 46:
+		anim = 41;
+		break;
+	case 27:
+	case 28:
+		anim = 42;
+		break;
+	case 29:
+		anim = 15;
+		break;
+	case 30:
+		anim = 37;
+		break;
+	case 31: //ball
+	case 32:
+	case 39:
+	case 40:
+	case 41:
+	case 42:
+	case 43:
+	case 45:
+	case 83:
+	case 125:
+		anim = 14;
+		break;
+	case 44:
+		anim = 9;
+		break;
+	case 47:
+		anim = 80;
+		anim = 29;
+		break;
+	case 48: //pull
+		anim = 1;
+		break;
+	case 49: //shake tree
+	case 50: //pickup
+	case 51: //shake
+	case 53:
+	case 54:
+	case 55:
+	case 56:
+	case 65: //car
+	case 77: //rocket
+	case 130:
+	case 131:
+		anim = 33;
+		break;
+	case 52:
+	case 57:
+	case 58:
+	case 59:
+	case 60:
+	case 61:
+	case 62:
+	case 63:
+	case 132:
+		anim = 32;
+		break;
+	case 64:
+	case 70:
+	case 79: //rocket
+		anim = 49;
+		break;
+	case 71: //ice
+		anim = 0;
+		break;
+	case 75: //won
+	case 76:
+		anim = 52;
+		if (data->Unknown > 1) {
+			if (frame > 124) data->Unknown = 20;
+			if (frame < 110) data->Unknown = 40;
+
+			if (data->Unknown > 20 && data->Unknown < 40) {
+				++data->Unknown;
+				state = 124 - (data->Unknown - 20);
+			}
+			else if (data->Unknown > 40) {
+				++data->Unknown;
+				state = 110 + (data->Unknown - 40);
+			}
+		}
+		break;
+	case 82:
+		anim = 42;
+		speed = 0;
+		break;
+	case 84:
+		anim = 45;
+		break;
+	case 85: //death
+	case 86:
+	case 87:
+		anim = 42;
+		break;
+	case 88: //water current slide
+		anim = 53;
+		break;
+	case 102: //snowboard
+	case 105:
+	case 109:
+	case 110:
+	case 111:
+	case 112:
+	case 113:
+	case 114:
+	case 115:
+		anim = 21;
+		break;
+	case 103:
+	case 107:
+		if (playerco2->Speed.z > 0.1f) anim = 28;
+		else anim = 26;
+		break;
+	case 104:
+	case 108:
+		if (playerco2->Speed.z < 0.1f) anim = 27;
+		else anim = 26;
+		break;
+	case 106:
+		anim = 20;
+		break;
+	case 116:
+	case 117:
+	case 118:
+	case 119:
+	case 120:
+	case 121:
+	case 122:
+	case 123:
+		anim = 25;
+		break;
+	case 124:
+		anim = 22;
+		break;
+	case 126:
+	case 127:
+	case 128:
+		anim = 56;
+		break;
+	}
+
+	return { (float)anim, speed, state };
+}
+
 //Redirect the player's display sub if a Heroes character is loaded on top of it.
 void Heroes_Display(ObjectMaster* obj) {
 	if (!HeroesChars[obj->Data1->CharIndex]) {
