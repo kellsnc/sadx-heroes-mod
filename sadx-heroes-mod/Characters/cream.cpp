@@ -335,26 +335,11 @@ void CreamHeroes_Display(ObjectMaster *obj) {
 void CreamHeroes_Main(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1;
 
-	if (data->Action == 0) {
-		obj->DeleteSub = CharactersCommon_Delete;
-		data->CharID = Characters_Cream;
-		data->Action = 1;
-
-		if (!CharTexsLoaded[Characters_Cream - 9]) {
-			CharTexsLoaded[Characters_Cream - 9] = true;
-			LoadPVM("cream", &CREAM_TEXLIST);
-		}
-
-		return;
-	}
-	else if (data->Action == 1) {
-		if (GameState == 4 || GameState == 15) LoadChildObject((LoadObj)(LoadObj_Data1 | LoadObj_Data2), Cheese_Main, obj);
-		data->Action = 2;
+	if (!CharactersCommon_Init(obj, "cream", &CREAM_TEXLIST)) {
 		return;
 	}
 
 	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
-	if (!playerobj || playerobj->Data1->CharID != Characters_Tails) {DeleteObject_(obj); return; }
 	if (!obj->Child) LoadChildObject((LoadObj)(LoadObj_Data1 | LoadObj_Data2), Cheese_Main, obj);
 
 	EntityData1* playerdata = playerobj->Data1;

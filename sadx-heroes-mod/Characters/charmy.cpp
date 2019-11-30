@@ -142,26 +142,11 @@ void CharmyHeroes_Display(ObjectMaster *obj) {
 void CharmyHeroes_Main(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1;
 
-	if (data->Action == 0) {
-		obj->DeleteSub = CharactersCommon_Delete;
-		data->CharID = Characters_Charmy;
-		data->Action = 1;
-
-		if (!CharTexsLoaded[Characters_Charmy - 9]) {
-			CharTexsLoaded[Characters_Charmy - 9] = true;
-			LoadPVM("charmy", &CHARMY_TEXLIST);
-		}
-
-		return;
-	}
-	else if (data->Action == 1) {
-		if (GameState == 4 || GameState == 15) LoadChildObject((LoadObj)(LoadObj_Data1 | LoadObj_Data2), CharmyWings_Main, obj);
-		data->Action = 2;
+	if (!CharactersCommon_Init(obj, "charmy", &CHARMY_TEXLIST)) {
 		return;
 	}
 
 	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
-	if (!playerobj || playerobj->Data1->CharID != Characters_Tails) { DeleteObject_(obj); return; }
 	if (!obj->Child) LoadChildObject((LoadObj)(LoadObj_Data1 | LoadObj_Data2), CharmyWings_Main, obj);
 
 	EntityData1* playerdata = playerobj->Data1;

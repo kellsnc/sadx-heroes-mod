@@ -19,7 +19,7 @@ void njCnkAction_Queue(NJS_ACTION* action, float frame, QueuedModelFlagsB flags)
 void njCnkAction(NJS_ACTION* action, float frame);
 void SetupWorldMatrix();
 void PlayHeroesAnimation(ObjectMaster *obj, uint8_t ID, AnimData* animdata, float forcespeed, float forcestate);
-void CharactersCommon_Delete(ObjectMaster* obj);
+bool CharactersCommon_Init(ObjectMaster* obj, const char* name, NJS_TEXLIST* tex);
 
 extern ObjectMaster* HeroesChars[];
 

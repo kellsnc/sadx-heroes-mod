@@ -119,28 +119,11 @@ void SonicHeroes_Display(ObjectMaster *obj) {
 void SonicHeroes_Main(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1;
 
-	if (data->Action == 0) {
-		obj->DeleteSub = CharactersCommon_Delete;
-		data->CharID = Characters_HeroesSonic;
-		data->Action = 1;
-
-		if (!CharTexsLoaded[Characters_HeroesSonic - 9]) {
-			CharTexsLoaded[Characters_HeroesSonic - 9] = true;
-			LoadPVM("sonich", &HSONIC_TEXLIST);
-		}
-
-		data->LoopData = (Loop*)&HSONIC_TEXLIST;
-
-		return;
-	}
-	else if (data->Action == 1) {
-		data->Action = 2;
+	if (!CharactersCommon_Init(obj, "sonich", &HSONIC_TEXLIST)) {
 		return;
 	}
 
 	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
-	if (!playerobj || playerobj->Data1->CharID != Characters_Sonic) { DeleteObject_(obj); return; }
-
 	EntityData1* playerdata = playerobj->Data1;
 	EntityData2* playerdata2 = (EntityData2*)playerobj->Data2;
 	CharObj2* playerco2 = playerdata2->CharacterData;

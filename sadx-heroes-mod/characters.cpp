@@ -101,7 +101,7 @@ void PlayHeroesAnimation(ObjectMaster* obj, uint8_t ID, AnimData* animdata, floa
 	data->Scale.x = frame;
 }
 
-//Common removal function
+//Common player removal function
 void CharactersCommon_Delete(ObjectMaster* obj) {
 	HeroesChars[obj->Data1->CharIndex] = nullptr;
 
@@ -130,6 +130,42 @@ void CharactersCommon_Delete(ObjectMaster* obj) {
 		playerco2->PhysicsData.field_14 = PhysicsArray[2].field_14;
 		playerco2->PhysicsData.AirAccel = PhysicsArray[2].AirAccel;
 	}
+}
+
+//Common player init function
+bool CharactersCommon_Init(ObjectMaster* obj, const char* name, NJS_TEXLIST* tex) {
+	EntityData1* data = obj->Data1;
+	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
+
+	if (data->Action == 0) {
+		obj->DeleteSub = CharactersCommon_Delete;
+		data->Action = 1;
+
+		if (!CharTexsLoaded[data->CharID - 9]) {
+			CharTexsLoaded[data->CharID - 9] = true;
+			LoadPVM(name, tex);
+		}
+
+		data->LoopData = (Loop*)tex;
+
+		return false;
+	}
+	else if (data->Action == 1) {
+		if (playerobj->Data1) {
+			obj->Data1->Action = 2;
+			return true;
+		}
+		
+		return false;
+	}
+
+	if (!playerobj || (data->CharID >= Characters_HeroesSonic && playerobj->Data1->CharID != Characters_Sonic) 
+		|| (data->CharID < Characters_HeroesSonic && playerobj->Data1->CharID != Characters_Tails)) { 
+		DeleteObject_(obj); 
+		return false; 
+	}
+
+	return true;
 }
 
 //Redirect the player's display sub if a Heroes character is loaded on top of it.
@@ -233,10 +269,12 @@ void Characters_OnFrame() {
 		if (SpeedCharEnabled && EntityData1Ptrs[player]->CharID == Characters_Sonic) {
 			HeroesChars[player] = LoadObject(LoadObj_Data1, 1, MainFuncs[SpeedCharEnabled - 9]);
 			HeroesChars[player]->Data1->CharIndex = player;
+			HeroesChars[player]->Data1->CharID = SpeedCharEnabled;
 		}
 		else if (FlyCharEnabled && EntityData1Ptrs[player]->CharID == Characters_Tails) {
 			HeroesChars[player] = LoadObject(LoadObj_Data1, 1, MainFuncs[FlyCharEnabled - 9]);
 			HeroesChars[player]->Data1->CharIndex = player;
+			HeroesChars[player]->Data1->CharID = FlyCharEnabled;
 		}
 	}
 }
