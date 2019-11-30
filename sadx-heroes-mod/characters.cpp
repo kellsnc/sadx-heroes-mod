@@ -134,8 +134,8 @@ void CharactersCommon_Delete(ObjectMaster* obj) {
 
 //Redirect the player's display sub if a Heroes character is loaded on top of it.
 void Heroes_Display(ObjectMaster* obj) {
-	if (!HeroesChars[CurrentPlayer]) {
-		switch (EntityData1Ptrs[CurrentPlayer]->CharID) {
+	if (!HeroesChars[obj->Data1->CharIndex]) {
+		switch (EntityData1Ptrs[obj->Data1->CharIndex]->CharID) {
 		case Characters_Sonic:
 			Sonic_Display(obj);
 			break;
@@ -146,7 +146,7 @@ void Heroes_Display(ObjectMaster* obj) {
 		return;
 	}
 
-	DisplayFuncs[HeroesChars[CurrentPlayer]->Data1->CharID - 9](obj);
+	DisplayFuncs[HeroesChars[obj->Data1->CharIndex]->Data1->CharID - 9](obj);
 }
 
 //Hijack the sound functions of Sonic, Tails and Knuckles to redirect those
