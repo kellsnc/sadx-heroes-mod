@@ -71,23 +71,6 @@ void RougeCallback(NJS_OBJECT* object) {
 	}
 }
 
-void RougeHeroes_Delete(ObjectMaster *obj) {
-	bool IsThereRouge = false;
-
-	for (uint8_t player = 0; player < 8; ++player) {
-		if (player != obj->Data1->CharIndex && PlayerPtrs[player]) {
-			if (HeroesChars[obj->Data1->CharIndex]->Data1->CharID == Characters_Rouge) IsThereRouge = true;
-		}
-	}
-
-	if (!IsThereRouge) {
-		njReleaseTexture(&ROUGE_TEXLIST);
-		CharTexsLoaded[Characters_Rouge - 9] = false;
-	}
-
-	CharactersCommon_Delete(obj);
-}
-
 void RougeHeroes_Display(ObjectMaster *obj) {
 	ObjectMaster* rougeobj = HeroesChars[obj->Data1->CharIndex];
 	if (!rougeobj) return;
@@ -167,7 +150,7 @@ void RougeHeroes_Main(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1;
 
 	if (data->Action == 0) {
-		obj->DeleteSub = RougeHeroes_Delete;
+		obj->DeleteSub = CharactersCommon_Delete;
 		data->CharID = Characters_Rouge;
 		data->Action = 1;
 

@@ -38,6 +38,7 @@ PlaySoundFuncPtr VoiceFuncs[]{
 	PlayVoice_Sonic
 };
 
+//Add new weaknesses for enemies: chao and tails' trap rings
 bool OhNoImDead2(EntityData1 *a1, ObjectData2 *a2);
 Trampoline OhNoImDead2_t(0x004CE030, 0x004CE036, OhNoImDead2);
 bool OhNoImDead2(EntityData1 *a1, ObjectData2 *a2) {
@@ -50,6 +51,18 @@ bool OhNoImDead2(EntityData1 *a1, ObjectData2 *a2) {
 	return original(a1, a2);
 }
 
+//Store the current player id at the start of their function
+//to get which character triggered a sound, as PlaySound doesn't keep track of the entity
+void Tails_Main_r(ObjectMaster* a1);
+Trampoline Tails_Main_t(0x00461700, 0x00461712, Tails_Main_r);
+void Tails_Main_r(ObjectMaster* obj) {
+	CurrentPlayer = obj->Data1->CharIndex;
+
+	ObjectFunc(original, Tails_Main_t.Target());
+	original(obj);
+}
+
+//Character Animation like Sonic Heroes does
 void PlayHeroesAnimation(ObjectMaster* obj, uint8_t ID, AnimData* animdata, float forcespeed, float forcestate) {
 	EntityData1* data = obj->Data1;
 	float frame = data->Scale.x;
@@ -88,8 +101,23 @@ void PlayHeroesAnimation(ObjectMaster* obj, uint8_t ID, AnimData* animdata, floa
 	data->Scale.x = frame;
 }
 
+//Common removal function
 void CharactersCommon_Delete(ObjectMaster* obj) {
 	HeroesChars[obj->Data1->CharIndex] = nullptr;
+
+	int character = obj->Data1->CharID;
+	bool ArethereOthers = false;
+
+	for (uint8_t player = 0; player < 8; ++player) {
+		if (player != obj->Data1->CharIndex && PlayerPtrs[player]) {
+			if (HeroesChars[player]->Data1->CharID == character) ArethereOthers = true;
+		}
+	}
+
+	if (!ArethereOthers) {
+		njReleaseTexture((NJS_TEXLIST*)obj->Data1->LoopData);
+		CharTexsLoaded[character - 9] = false;
+	}
 
 	ObjectMaster* playerobj = PlayerPtrs[obj->Data1->CharIndex];
 	if (playerobj) {
@@ -104,6 +132,7 @@ void CharactersCommon_Delete(ObjectMaster* obj) {
 	}
 }
 
+//Redirect the player's display sub if a Heroes character is loaded on top of it.
 void Heroes_Display(ObjectMaster* obj) {
 	if (!HeroesChars[CurrentPlayer]) {
 		switch (EntityData1Ptrs[CurrentPlayer]->CharID) {
@@ -120,15 +149,8 @@ void Heroes_Display(ObjectMaster* obj) {
 	DisplayFuncs[HeroesChars[CurrentPlayer]->Data1->CharID - 9](obj);
 }
 
-void Tails_Main_r(ObjectMaster* a1);
-Trampoline Tails_Main_t(0x00461700, 0x00461712, Tails_Main_r);
-void Tails_Main_r(ObjectMaster* obj) {
-	CurrentPlayer = obj->Data1->CharIndex;
-
-	ObjectFunc(original, Tails_Main_t.Target());
-	original(obj);
-}
-
+//Hijack the sound functions of Sonic, Tails and Knuckles to redirect those
+//to play custom character sounds, as they do not keep track of the entity
 void PlayVoice_HeroesChar(int ID) {
 	if (!HeroesChars[CurrentPlayer]) {
 		PlayVoice(ID);
@@ -162,6 +184,7 @@ int PlaySound_HeroesChar(int ID, void *a2, int a3, void *a4) {
 	return 1;
 }
 
+//Load the files of selected characters
 void Characters_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config) {
 	const std::string SpeedCharacter = config->getString("2- Characters", "SpeedCharacter", "None");
 	const std::string FlyCharacter = config->getString("2- Characters", "FlyCharacter", "None");
@@ -202,6 +225,7 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 	}
 }
 
+//Replace characters if they are loaded
 void Characters_OnFrame() {
 	for (uint8_t player = 0; player < 8; ++player) {
 		if (!EntityData1Ptrs[player] || HeroesChars[player]) continue;

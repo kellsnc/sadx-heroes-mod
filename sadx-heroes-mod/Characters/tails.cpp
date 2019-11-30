@@ -144,23 +144,6 @@ void TailsCallback(NJS_OBJECT* object) {
 	}
 }
 
-void TailsHeroes_Delete(ObjectMaster *obj) {
-	bool IsThereTails = false;
-
-	for (uint8_t player = 0; player < 8; ++player) {
-		if (player != obj->Data1->CharIndex && PlayerPtrs[player]) {
-			if (HeroesChars[obj->Data1->CharIndex]->Data1->CharID == Characters_HeroesTails) IsThereTails = true;
-		}
-	}
-
-	if (!IsThereTails) {
-		njReleaseTexture(&TAILS_TEXLIST);
-		CharTexsLoaded[Characters_HeroesTails - 9] = false;
-	}
-
-	CharactersCommon_Delete(obj);
-}
-
 void TailsHeroes_Display(ObjectMaster *obj) {
 	ObjectMaster* tailsobj = HeroesChars[obj->Data1->CharIndex];
 	if (!tailsobj) return;
@@ -240,7 +223,7 @@ void TailsHeroes_Main(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1;
 
 	if (data->Action == 0) {
-		obj->DeleteSub = TailsHeroes_Delete;
+		obj->DeleteSub = CharactersCommon_Delete;
 		data->CharID = Characters_HeroesTails;
 		data->Action = 1;
 

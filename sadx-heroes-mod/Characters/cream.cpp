@@ -261,23 +261,6 @@ void CreamCallback(NJS_OBJECT* object) {
 	}
 }
 
-void CreamHeroes_Delete(ObjectMaster *obj) {
-	bool IsThereCream = false;
-
-	for (uint8_t player = 0; player < 8; ++player) {
-		if (player != obj->Data1->CharIndex && PlayerPtrs[player]) {
-			if (HeroesChars[obj->Data1->CharIndex]->Data1->CharID == Characters_Cream) IsThereCream = true;
-		}
-	}
-
-	if (!IsThereCream) {
-		njReleaseTexture(&CREAM_TEXLIST);
-		CharTexsLoaded[Characters_Cream - 9] = false;
-	}
-
-	CharactersCommon_Delete(obj);
-}
-
 void CreamHeroes_Display(ObjectMaster *obj) {
 	ObjectMaster* creamobj = HeroesChars[obj->Data1->CharIndex];
 	if (!creamobj) return;
@@ -353,7 +336,7 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1;
 
 	if (data->Action == 0) {
-		obj->DeleteSub = CreamHeroes_Delete;
+		obj->DeleteSub = CharactersCommon_Delete;
 		data->CharID = Characters_Cream;
 		data->Action = 1;
 

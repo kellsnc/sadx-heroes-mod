@@ -47,23 +47,6 @@ void SonicCallback(NJS_OBJECT* object) {
 	}
 }
 
-void SonicHeroes_Delete(ObjectMaster *obj) {
-	bool IsThereSonic = false;
-
-	for (uint8_t player = 0; player < 8; ++player) {
-		if (player != obj->Data1->CharIndex && PlayerPtrs[player]) {
-			if (HeroesChars[obj->Data1->CharIndex]->Data1->CharID == Characters_HeroesSonic) IsThereSonic = true;
-		}
-	}
-
-	if (!IsThereSonic) {
-		njReleaseTexture(&HSONIC_TEXLIST);
-		CharTexsLoaded[Characters_HeroesSonic - 9] = false;
-	}
-
-	CharactersCommon_Delete(obj);
-}
-
 void SonicHeroes_Display(ObjectMaster *obj) {
 	ObjectMaster* sonicobj = HeroesChars[obj->Data1->CharIndex];
 	if (!sonicobj) return;
@@ -137,7 +120,7 @@ void SonicHeroes_Main(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1;
 
 	if (data->Action == 0) {
-		obj->DeleteSub = SonicHeroes_Delete;
+		obj->DeleteSub = CharactersCommon_Delete;
 		data->CharID = Characters_HeroesSonic;
 		data->Action = 1;
 
@@ -145,6 +128,8 @@ void SonicHeroes_Main(ObjectMaster *obj) {
 			CharTexsLoaded[Characters_HeroesSonic - 9] = true;
 			LoadPVM("sonich", &HSONIC_TEXLIST);
 		}
+
+		data->LoopData = (Loop*)&HSONIC_TEXLIST;
 
 		return;
 	}

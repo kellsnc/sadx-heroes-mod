@@ -62,23 +62,6 @@ void CharmyCallback(NJS_OBJECT* object) {
 	}
 }
 
-void CharmyHeroes_Delete(ObjectMaster *obj) {
-	bool IsThereCharmy = false;
-
-	for (uint8_t player = 0; player < 8; ++player) {
-		if (player != obj->Data1->CharIndex && PlayerPtrs[player]) {
-			if (HeroesChars[obj->Data1->CharIndex]->Data1->CharID == Characters_Charmy) IsThereCharmy = true;
-		}
-	}
-
-	if (!IsThereCharmy) {
-		njReleaseTexture(&CHARMY_TEXLIST);
-		CharTexsLoaded[Characters_Charmy - 9] = false;
-	}
-
-	CharactersCommon_Delete(obj);
-}
-
 void CharmyHeroes_Display(ObjectMaster *obj) {
 	ObjectMaster* Charmyobj = HeroesChars[obj->Data1->CharIndex];
 	if (!Charmyobj) return;
@@ -160,7 +143,7 @@ void CharmyHeroes_Main(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1;
 
 	if (data->Action == 0) {
-		obj->DeleteSub = CharmyHeroes_Delete;
+		obj->DeleteSub = CharactersCommon_Delete;
 		data->CharID = Characters_Charmy;
 		data->Action = 1;
 
