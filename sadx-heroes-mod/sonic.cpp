@@ -199,7 +199,7 @@ void SonicHeroes_Main(ObjectMaster *obj) {
 		PlayHeroesAnimation(obj, 14, HSonicAnimData, 0, 0);
 		break;
 	case 4:
-		TornadoTrick(data, data2, playerco2);
+		if (TornadoTrick(data, data2, playerco2)) PlayHeroesSound(SonicSound_Attack);
 		PlayHeroesAnimation(obj, 14, HSonicAnimData, 0, 0);
 		break;
 	}

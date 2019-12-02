@@ -23,8 +23,7 @@ bool CharactersCommon_Init(ObjectMaster* obj, const char* name, NJS_TEXLIST* tex
 void CharactersCommon_DrawBall(EntityData1* playerdata, EntityData1* data);
 
 NJS_VECTOR SpeedAnims(EntityData1* data, EntityData1* playerdata, CharObj2* playerco2);
-void TornadoTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2);
-void TornadoDraw(ObjectMaster* obj);
+bool TornadoTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2);
 
 extern ObjectMaster* HeroesChars[];
 

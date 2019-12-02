@@ -9,6 +9,7 @@ int CurrentPlayer;
 bool JumpBallEnabled = true;
 
 ModelInfo* CharMdls[2];
+CollisionData Tornado_Col = { 0, 0, 0, 0, 0, { 0.0f, 0.0f, 0.0f }, { 20, 0.0f, 0.0f }, 0, 0 };
 
 ObjectFuncPtr DisplayFuncs[]{
 	CreamHeroes_Display,
@@ -49,19 +50,6 @@ Uint32 CharColours[]{
 	0x96FBFB04,
 	0x960080FF,
 };
-
-//Add new weaknesses for enemies: chao and tails' trap rings
-bool OhNoImDead2(EntityData1 *a1, ObjectData2 *a2);
-Trampoline OhNoImDead2_t(0x004CE030, 0x004CE036, OhNoImDead2);
-bool OhNoImDead2(EntityData1 *a1, ObjectData2 *a2) {
-	if (a1->CollisionInfo->CollidingObject) {
-		if (a1->CollisionInfo->CollidingObject->Object->MainSub == Cheese_Main 
-			|| a1->CollisionInfo->CollidingObject->Object->MainSub == TrapRing_Main) return 1;
-	}
-
-	FunctionPointer(bool, original, (EntityData1 *a1, ObjectData2 *a2), OhNoImDead2_t.Target());
-	return original(a1, a2);
-}
 
 //Store the current player id at the start of their function
 //to get which character triggered a sound, as PlaySound doesn't keep track of the entity
@@ -144,6 +132,7 @@ void CharactersCommon_Delete(ObjectMaster* obj) {
 	}
 }
 
+//Display the ball and dash effects
 void BallObject(ObjectMaster* obj) {
 	if (GameState != 16) {
 		if (obj->Data1->Index != 0) {
@@ -165,7 +154,6 @@ void BallObject(ObjectMaster* obj) {
 	obj->Data1->Index = 1;
 }
 
-//Common display stuff for characters
 void CharactersCommon_DrawBall(EntityData1* playerdata, EntityData1* data) {
 	if (!JumpBallEnabled) return;
 	
@@ -238,6 +226,7 @@ NJS_VECTOR SpeedAnims(EntityData1* data, EntityData1* playerdata, CharObj2* play
 	case 15: case 16: case 17: anim = 14; break; //roll
 	case 18: //fall after spring jump
 		if (playerco2->Speed.x > 1 || playerdata->Action == 14) anim = 49;
+		else if (playerco2->Speed.y > 2 && playerco2->Speed.x < 1) anim = 50;
 		else anim = 16; break;
 	case 19: anim = 18; //falling
 		if (playerco2->Speed.x > 8 && playerdata->Position.y - playerco2->_struct_a3.DistanceMax > 500) {
@@ -304,6 +293,7 @@ NJS_VECTOR SpeedAnims(EntityData1* data, EntityData1* playerdata, CharObj2* play
 	case 116: case 117: case 118: case 119: case 120: case 121: case 122: case 123: anim = 25; break;
 	case 124: anim = 22; break;
 	case 126: case 127: case 128: anim = 56; break;
+	case 129: anim = 11;
 	}
 
 	return { (float)anim, speed, state };
@@ -311,18 +301,109 @@ NJS_VECTOR SpeedAnims(EntityData1* data, EntityData1* playerdata, CharObj2* play
 
 //Speed characters tornado trick
 void TornadoObj(ObjectMaster* obj) {
+	if (GameState != 16) {
+		obj->Data1->Rotation.y += 1000;
+		obj->Data1->Rotation.x += 300;
+		obj->Data1->Rotation.z += 500;
 
+		if (++obj->Data1->InvulnerableTime >= 180) DeleteObject_(obj);
+		if (obj->Data1->InvulnerableTime > 150) {
+			obj->Data1->Scale.x = ((180 - obj->Data1->InvulnerableTime) / 30) * 250;
+
+			obj->Data1->Scale.x = 180 - obj->Data1->InvulnerableTime;
+			obj->Data1->Scale.x /= 30;
+			obj->Data1->Scale.x *= 250;
+		}
+
+		AddToCollisionList(obj->Data1);
+	}
+
+	if (!MissedFrames) {
+		njPushMatrix(0);
+		njSetTexture(&SHCommonTextures);
+		njTranslateV(0, &obj->Data1->Position);
+
+		njRotateXYZ(0, 0x4000, obj->Data1->Rotation.y, 0);
+		CharMdls[1]->getmodel()->basicdxmodel->mats[0].diffuse.color = CharColours[obj->Data1->CharID - 9];
+		if (obj->Data1->Scale.x) CharMdls[1]->getmodel()->basicdxmodel->mats[0].diffuse.argb.a = obj->Data1->Scale.x;
+		njDrawModel_SADX(CharMdls[1]->getmodel()->basicdxmodel);
+
+		njRotateY(0, obj->Data1->Rotation.x);
+		CharMdls[1]->getmodel()->child->basicdxmodel->mats[0].diffuse.color = CharColours[obj->Data1->CharID - 9];
+		if (obj->Data1->Scale.x) CharMdls[1]->getmodel()->child->basicdxmodel->mats[0].diffuse.argb.a = obj->Data1->Scale.x;
+		njDrawModel_SADX(CharMdls[1]->getmodel()->child->basicdxmodel);
+
+		njRotateY(0, obj->Data1->Rotation.z);
+		CharMdls[1]->getmodel()->child->child->basicdxmodel->mats[0].diffuse.color = CharColours[obj->Data1->CharID - 9];
+		if (obj->Data1->Scale.x) CharMdls[1]->getmodel()->child->child ->basicdxmodel->mats[0].diffuse.argb.a = obj->Data1->Scale.x;
+		njDrawModel_SADX(CharMdls[1]->getmodel()->child->child->basicdxmodel);
+
+		njPopMatrix(1);
+	}
 }
 
-void TornadoTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2) {
-	if (++data->field_A == 48) {
+bool TornadoTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2) {
+	if (++data->field_A == 130 || PressedButtons[data->CharIndex] & Buttons_X) {
 		data->Action = 2;
 		data->field_A = 0;
+
+		playerco2->Speed.y = 2;
+		playerco2->AnimationThing.Index = 129;
 		playerco2->Powerups &= ~Powerups_Invincibility;
 	}
 	else {
+		EntityData1* playerdata = EntityData1Ptrs[data->CharIndex];
+
+		if (data->field_A == 1) {
+			data2->SomeCollisionVector = playerdata->Position;
+			data2->field_28 = 1;
+
+			ObjectMaster * tornado = LoadObject(LoadObj_Data1, 5, TornadoObj);
+			tornado->DisplaySub = tornado->MainSub;
+			tornado->Data1->Position = playerdata->Position;
+
+			if (playerco2->_struct_a3.DistanceMax - tornado->Data1->Position.y > -50)
+				tornado->Data1->Position.y = playerco2->_struct_a3.DistanceMax;
+			else
+				tornado->Data1->Position.y -= 20;
+
+			tornado->Data1->CharID = data->CharID;
+			Collision_Init(tornado, &Tornado_Col, 1, 3u);
+
+			PlayHeroesSoundQueue(CommonSound_Tornado, tornado, 500, false);
+
+			return true;
+		}
+		
 		playerco2->Powerups |= Powerups_Invincibility;
+		data->Rotation.z += 0x500;
+
+		NJS_VECTOR dir = { 0, 0, 15 };
+		njPushMatrix(_nj_unit_matrix_);
+		njTranslateV(0, &data2->SomeCollisionVector);
+		njRotateY(0, data->Rotation.z);
+		njCalcPoint(0, &dir, &data2->VelocityDirection);
+		njPopMatrix(1u);
+
+		playerdata->Rotation.y = fPositionToRotation(&playerdata->Position, &data2->VelocityDirection).y;
+		playerdata->Position = data2->VelocityDirection;
 	}
+
+	return false;
+}
+
+//Add new weaknesses for enemies: chao and tails' trap rings
+bool OhNoImDead2(EntityData1 *a1, ObjectData2 *a2);
+Trampoline OhNoImDead2_t(0x004CE030, 0x004CE036, OhNoImDead2);
+bool OhNoImDead2(EntityData1 *a1, ObjectData2 *a2) {
+	if (a1->CollisionInfo->CollidingObject) {
+		if (a1->CollisionInfo->CollidingObject->Object->MainSub == Cheese_Main
+			|| a1->CollisionInfo->CollidingObject->Object->MainSub == TrapRing_Main
+			|| a1->CollisionInfo->CollidingObject->Object->MainSub == TornadoObj) return 1;
+	}
+
+	FunctionPointer(bool, original, (EntityData1 *a1, ObjectData2 *a2), OhNoImDead2_t.Target());
+	return original(a1, a2);
 }
 
 //Redirect the player's display sub if a Heroes character is loaded on top of it.
