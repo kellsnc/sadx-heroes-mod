@@ -153,6 +153,8 @@ void Cheese_Main(ObjectMaster* obj) {
 		data2->VelocityDirection = GetCheesePoint(&playerdata->Position, &playerdata->Rotation);
 		data->Rotation = playerdata->Rotation;
 
+		if (dist > 1000) data->Position = data2->VelocityDirection;
+
 		if (dist < 5) {
 			data->Position = GetPathPosition(&data->Position, &data2->VelocityDirection, dist / (100 + (400 - dist)));
 			data2->SomeCollisionVector = data->Position;
@@ -354,6 +356,8 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 	float speed = 0;
 	float state = 0;
 	float frame = data->Scale.x;
+
+	CharactersCommon_DrawBall(playerdata, data);
 
 	switch (data->Action) {
 	case 2:

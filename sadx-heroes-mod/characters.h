@@ -20,8 +20,11 @@ void njCnkAction(NJS_ACTION* action, float frame);
 void SetupWorldMatrix();
 void PlayHeroesAnimation(ObjectMaster *obj, uint8_t ID, AnimData* animdata, float forcespeed, float forcestate);
 bool CharactersCommon_Init(ObjectMaster* obj, const char* name, NJS_TEXLIST* tex);
+void CharactersCommon_DrawBall(EntityData1* playerdata, EntityData1* data);
 
 NJS_VECTOR SpeedAnims(EntityData1* data, EntityData1* playerdata, CharObj2* playerco2);
+void TornadoTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2);
+void TornadoDraw(ObjectMaster* obj);
 
 extern ObjectMaster* HeroesChars[];
 

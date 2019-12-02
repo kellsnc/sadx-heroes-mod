@@ -55,7 +55,7 @@ void SonicHeroes_Display(ObjectMaster *obj) {
 	EntityData2* entity2 = (EntityData2*)obj->Data2;
 	CharObj2* co2 = entity2->CharacterData;
 
-	if (entity1->Action == 13 || entity1->Action == 60) {
+	if (entity1->Action == 16 || entity1->Action == 86) {
 		if (FrameCounterUnpaused % 5 == 0) {
 			if (sonicobj->Data1->NextAction == 0) sonicobj->Data1->NextAction = 1;
 			else sonicobj->Data1->NextAction = 0;
@@ -79,7 +79,7 @@ void SonicHeroes_Display(ObjectMaster *obj) {
 	njRotateX(0, entity1->Rotation.x);
 	njRotateY(0, -entity1->Rotation.y - 0x4000);
 
-	if (co2->AnimationThing.Index == 54 || co2->AnimationThing.Index == 55) {
+	if (sonicobj->Data1->Index == 52) {
 		njTranslate(0, 10, 2, 0);
 	}
 
@@ -107,7 +107,7 @@ void SonicHeroes_Display(ObjectMaster *obj) {
 		DrawChunkModel(pupils->child->child->child->chunkmodel);
 		break;
 	}
-
+	
 	Direct3D_UnsetChunkModelRenderState();
 	njPopMatrix(1);
 
@@ -118,6 +118,7 @@ void SonicHeroes_Display(ObjectMaster *obj) {
 
 void SonicHeroes_Main(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1;
+	EntityData2* data2 = (EntityData2*)obj->Data2;
 
 	if (!CharactersCommon_Init(obj, "sonich", &HSONIC_TEXLIST)) {
 		return;
@@ -132,6 +133,8 @@ void SonicHeroes_Main(ObjectMaster *obj) {
 	playerco2->PhysicsData.MaxAccel = 4.0f;
 	playerco2->PhysicsData.field_14 = 0.95f;
 
+	CharactersCommon_DrawBall(playerdata, data);
+
 	switch (data->Action) {
 	case 2:
 		PlayerPtrs[data->CharIndex]->DisplaySub = SonicHeroes_Display;
@@ -142,7 +145,7 @@ void SonicHeroes_Main(ObjectMaster *obj) {
 			break;
 		}
 
-		if (anim == 14 && PressedButtons[data->CharIndex] & Buttons_X) {
+		if (data->Index == 14 && PressedButtons[data->CharIndex] & Buttons_X) {
 			data->field_A = 0;
 			data->Action = 4;
 		}
@@ -193,18 +196,10 @@ void SonicHeroes_Main(ObjectMaster *obj) {
 			}
 		}
 
-		PlayHeroesAnimation(obj, 15, HSonicAnimData, 0, 0);
+		PlayHeroesAnimation(obj, 14, HSonicAnimData, 0, 0);
 		break;
 	case 4:
-		if (++data->field_A == 48) {
-			data->Action = 2;
-			data->field_A = 0;
-			playerco2->Powerups &= ~Powerups_Invincibility;
-		}
-		else {
-			playerco2->Powerups |= Powerups_Invincibility;
-		}
-
+		TornadoTrick(data, data2, playerco2);
 		PlayHeroesAnimation(obj, 14, HSonicAnimData, 0, 0);
 		break;
 	}

@@ -162,6 +162,8 @@ void CharmyHeroes_Main(ObjectMaster *obj) {
 	float state = 0;
 	float frame = data->Scale.x;
 
+	CharactersCommon_DrawBall(playerdata, data);
+
 	switch (data->Action) {
 	case 2:
 		PlayerPtrs[data->CharIndex]->DisplaySub = CharmyHeroes_Display;

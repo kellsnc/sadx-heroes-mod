@@ -91,4 +91,5 @@ void WaterfallObject(ObjectMaster *a1);
 
 extern NJS_MATERIAL matlist_col[1];
 extern NJS_MATERIAL matlist_waterfall[1];
+extern NJS_TEXLIST SHCommonTextures;
 extern bool EnableModels;
