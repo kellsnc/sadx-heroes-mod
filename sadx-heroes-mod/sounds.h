@@ -107,6 +107,7 @@ enum HeroesSounds {
 	TailsSound_Lose,
 	TailsSound_Idle1,
 	TailsSound_Idle2,
+	TailsSound_Flying,
 	SonicSound_Attack = 11300,
 	SonicSound_FlyBegin,
 	SonicSound_FlyAttack,

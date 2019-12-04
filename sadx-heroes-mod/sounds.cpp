@@ -50,13 +50,9 @@ int GetSoundEntryByStream(HCHANNEL channel) {
 }
 
 float GetVolumeRange(NJS_VECTOR* pos, float dist) {
-	int nb = IsPlayerInsideSphere_(pos, dist) - 1;
-	if (nb > -1) {
-		EntityData1* player = EntityData1Ptrs[nb];
-		if (player) {
-			float playerdist = GetDistance(&player->Position, pos);
-			return 0.4 - (0.4 * playerdist / dist);
-		}
+	if (Camera_Data1) {
+		float playerdist = GetDistance(&Camera_Data1->Position, pos);
+		return 0.4 - (0.4 * playerdist / dist);
 	}
 	
 	return 0;

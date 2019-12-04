@@ -272,7 +272,10 @@ void TailsHeroes_Main(ObjectMaster *obj) {
 		if (FrameCounterUnpaused % 20 == 0) data->field_A = 0;
 
 		if (anim == 19 && playerco2->AnimationThing.Index < 6) {
-			anim = 20; //just stopped rolling
+			if (playerco2->Speed.x < 1) anim = 20;
+			else if (playerco2->Speed.x < 3) anim = 0;
+			else if (playerco2->Speed.x < 6) anim = 5;
+			else anim = 6;
 		}
 
 		if (playerco2->IdleTime > 1000) {
@@ -402,6 +405,8 @@ void TailsHeroes_Main(ObjectMaster *obj) {
 			case 37: //flying
 			case 40:
 			case 41:
+				if (flysounds && FrameCounterUnpaused % 40 == 0)
+					PlayHeroesSoundQueue(TailsSound_Flying, playerobj, 50, 0);
 				anim = 34; //52 IF HOLDING PLAYER
 				if (HeldButtons2[data->CharIndex] & Buttons_A) speed = 0.8;
 				speed += playerco2->Speed.x * 0.5f;
