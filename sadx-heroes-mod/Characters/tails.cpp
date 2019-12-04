@@ -272,10 +272,7 @@ void TailsHeroes_Main(ObjectMaster *obj) {
 		if (FrameCounterUnpaused % 20 == 0) data->field_A = 0;
 
 		if (anim == 19 && playerco2->AnimationThing.Index < 6) {
-			if (playerco2->Speed.x < 1) anim = 20;
-			else if (playerco2->Speed.x < 3) anim = 0;
-			else if (playerco2->Speed.x < 6) anim = 5;
-			else anim = 6;
+			anim = 20; //just stopped rolling
 		}
 
 		if (playerco2->IdleTime > 1000) {
