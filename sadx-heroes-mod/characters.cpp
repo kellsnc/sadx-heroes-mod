@@ -134,8 +134,10 @@ void CharactersCommon_Delete(ObjectMaster* obj) {
 
 //Display the ball and dash effects
 void BallObject(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1;
+	
 	if (GameState != 16) {
-		if (obj->Data1->Index != 0) {
+		if (data->Index != 0) {
 			DeleteObject_(obj);
 			return;
 		}
@@ -144,11 +146,26 @@ void BallObject(ObjectMaster* obj) {
 	njPushMatrix(0);
 	njSetTexture(&SHCommonTextures);
 	njTranslateV(0, &obj->Data1->Position);
-	njRotateXYZ(0, obj->Data1->Rotation.x, obj->Data1->Rotation.y, obj->Data1->Rotation.z);
-	njTranslate(0, 0, 5, 0);
+	njRotateZ(0, obj->Data1->Rotation.z);
+	njRotateX(0, obj->Data1->Rotation.x);
+	njRotateY(0, -obj->Data1->Rotation.y - 0x4000);
+	
 
-	CharMdls[0]->getmodel()->basicdxmodel->mats[0].diffuse.color = CharColours[obj->Data1->CharID - 9];
-	njDrawModel_SADX(CharMdls[0]->getmodel()->basicdxmodel);
+	if (data->Action == 0) {
+		njTranslate(0, 0, 5.5f, -2);
+		CharMdls[0]->getmodel()->basicdxmodel->mats[0].diffuse.color = CharColours[obj->Data1->CharID - 9];
+		njDrawModel_SADX(CharMdls[0]->getmodel()->basicdxmodel);
+	}
+	else {
+		njTranslate(0, 0, 5, -4);
+		njScale(0, 0.9f, 0.9f, 0.9f);
+		njRotateZ(0, 0x4000);
+		njRotateX(0, 0x4000);
+		njRotateY(0, 0x7000);
+		CharMdls[0]->getmodel()->child->basicdxmodel->mats[0].diffuse.color = CharColours[obj->Data1->CharID - 9];
+		njDrawModel_SADX(CharMdls[0]->getmodel()->child->basicdxmodel);
+	}
+	
 	njPopMatrix(1);
 
 	obj->Data1->Index = 1;
@@ -156,6 +173,18 @@ void BallObject(ObjectMaster* obj) {
 
 void CharactersCommon_DrawBall(EntityData1* playerdata, EntityData1* data) {
 	if (!JumpBallEnabled) return;
+	
+	if (playerdata->CharID == Characters_Sonic) {
+		if (data->Scale.z != 14) {
+			data->Scale.z = playerdata->Action;
+		}
+		else {
+			if (++data->Scale.y > 50 || playerdata->Status & Status_Ground) {
+				data->Scale.z = 0;
+				data->Scale.y = 0;
+			}
+		}
+	}
 	
 	if ((playerdata->CharID == Characters_Sonic && data->Index == 14) ||
 		(playerdata->CharID == Characters_Tails && data->Index == 19)) {
@@ -165,6 +194,14 @@ void CharactersCommon_DrawBall(EntityData1* playerdata, EntityData1* data) {
 		ball->Data1->Position = playerdata->Position;
 		ball->Data1->Rotation = playerdata->Rotation;
 		ball->Data1->CharID = data->CharID;
+	}
+	else if ((playerdata->CharID == Characters_Sonic && data->Index == 49) && data->Scale.z == 14) {
+		ObjectMaster * ball = LoadObject(LoadObj_Data1, 5, BallObject);
+		ball->DisplaySub = ball->MainSub;
+		ball->Data1->Position = playerdata->Position;
+		ball->Data1->Rotation = playerdata->Rotation;
+		ball->Data1->CharID = data->CharID;
+		ball->Data1->Action = 1;
 	}
 }
 
@@ -322,6 +359,7 @@ void TornadoObj(ObjectMaster* obj) {
 		njPushMatrix(0);
 		njSetTexture(&SHCommonTextures);
 		njTranslateV(0, &obj->Data1->Position);
+		njScale(0, 0.8f, 0.7f, 0.8f);
 
 		njRotateXYZ(0, 0x4000, obj->Data1->Rotation.y, 0);
 		CharMdls[1]->getmodel()->basicdxmodel->mats[0].diffuse.color = CharColours[obj->Data1->CharID - 9];
@@ -392,7 +430,7 @@ bool TornadoTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2) {
 	return false;
 }
 
-//Add new weaknesses for enemies: chao and tails' trap rings
+//Add new weaknesses for enemies: cheese, tails' trap rings and tornados
 bool OhNoImDead2(EntityData1 *a1, ObjectData2 *a2);
 Trampoline OhNoImDead2_t(0x004CE030, 0x004CE036, OhNoImDead2);
 bool OhNoImDead2(EntityData1 *a1, ObjectData2 *a2) {
