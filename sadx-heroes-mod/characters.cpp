@@ -430,6 +430,7 @@ void TornadoTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, En
 void KickTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, EntityData1* playerdata) {
 	if (data->field_A == 0) {
 		data->field_A = 1;
+		playerco2->Powerups |= Powerups_Invincibility;
 		playerco2->Speed.x = 5;
 	}
 	else if (data->field_A < 20) {
@@ -437,6 +438,7 @@ void KickTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, Entit
 	}
 	else {
 		data->field_A = 0;
+		playerco2->Powerups &= ~Powerups_Invincibility;
 		playerdata->Action = 2;
 		data->Action = 2;
 	}
