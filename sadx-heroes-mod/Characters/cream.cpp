@@ -385,10 +385,6 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 
 		if (FrameCounterUnpaused % 20 == 0) data->field_A = 0;
 
-		if (anim == 19 && playerco2->AnimationThing.Index < 6) {
-			anim = 20; //just stopped rolling
-		}
-
 		if (playerco2->IdleTime > 1000) {
 			if (rand() % 2 == 0) {
 				PlayHeroesSound(CreamSound_Idle1);
@@ -401,214 +397,215 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 			playerco2->IdleTime = 0;
 		}
 
-		if (anim != 20) {
-			switch (playerco2->AnimationThing.Index) {
-			case 0: anim = 11; data->Status = 0; break;
-			case 2: anim = 8; data->Status = 0; break;
-			case 4:
-			case 5:
-			case 6:
-				anim = 10;
-				if (++data->Status == 100) {
-					playerco2->AnimationThing.Index = 0;
-					data->Status = 0;
-				}
-				break;
-			case 9:
+		switch (playerco2->AnimationThing.Index) {
+		case 0: 
+		case 7:
+		case 8:
+			anim = 11; data->Status = 0; break;
+		case 2: anim = 8; data->Status = 0; break;
+		case 4:
+		case 5:
+		case 6:
+			anim = 10;
+			if (++data->Status == 100) {
+				playerco2->AnimationThing.Index = 0;
 				data->Status = 0;
-				anim = 0;
-				if (playerco2->Speed.x < 0.02f) anim = 11;
-				break;
-			case 10:
-				anim = 0;
-				speed = 0.9f + playerco2->Speed.x * 0.2f;
-				break;
-			case 11:
-				anim = 0;
-				speed = 0.9f + playerco2->Speed.x * 0.2f;
-				break;
-			case 12:
-				anim = 5;
-				speed = 1.5f + playerco2->Speed.x * 0.1f;
-				break;
-			case 13:
-				anim = 6;
-				speed = 0.5f + playerco2->Speed.x * 0.1f;
-				break;
-			case 14: //jumping
-				if (anim < 18 || anim > 23) {
-					anim = 18;
-				}
-				else if (anim == 19) {
-					if (data->Unknown > 2) {
-						anim = 20;
-					}
-				}
-				else if (anim == 21) {
-					if (playerdata->Position.y - playerco2->_struct_a3.DistanceMax < 10) anim = 22;
-				}
-				break;
-			case 15: //rolling
-			case 16:
-				anim = 19;
-				break;
-			case 17: //spring jump
-				anim = 19;
-				break;
-			case 18: //fall after spring jump
-				anim = 21;
-				break;
-			case 19: //falling
-				anim = 21;
-				if (playerco2->Speed.x > 8 && playerdata->Position.y - playerco2->_struct_a3.DistanceMax > 500) {
-					anim = 16;
-					playerco2->AnimationThing.Index = 150;
-				}
-				break;
-			case 20:
-				anim = 23;
-				break;
-			case 21: //break
-				anim = 47;
-				if (playerco2->Speed.x > 6) {
-					anim = 46;
-				}
-				else if (playerco2->Speed.x > 3) {
-					anim = 45;
-				}
-				break;
-			case 22:
-				anim = 48;
-				break;
-			case 24:
-				anim = 2;
-				speed = 0;
-				break;
-			case 25:
-				anim = 2;
-				break;
-			case 26:
-				anim = 54;
-				break;
-			case 27:
-				anim = 56;
-				break;
-			case 28: //hurt
-			case 29:
-			case 30:
-			case 31:
-				anim = 55;
-				break;
-			case 32:
-				anim = 45;
-				break;
-			case 33: //thumbling
-			case 34:
-				anim = 53;
-				break;
-			case 35:
-				anim = 55;
-				break;
-			case 36:
-				anim = 11;
-				break;
-			case 37: //flying
-			case 40:
-			case 41:
-				anim = 34; //52 IF HOLDING PLAYER
-				if (HeldButtons2[data->CharIndex] & Buttons_A) speed = 0.8;
-				speed += playerco2->Speed.x * 0.5f;
-				break;
-			case 38: //flying falling
-			case 39:
-			case 42:
-				anim = 35;
-				break;
-			case 43:
-				anim = 39;
-				break;
-			case 44:
-			case 45:
-			case 46:
-			case 47:
-			case 48:
-			case 49:
-			case 50:
-			case 51:
-			case 52:
-			case 53:
-				anim = 39;
-				data->Rotation.y += 0x100;
-				break;
-			case 54: //won
-			case 55:
-				anim = 60;
-				if (data->Unknown > 1) {
-					if (frame > 124) data->Unknown = 20;
-					if (frame < 110) data->Unknown = 40;
-
-					if (data->Unknown > 20 && data->Unknown < 40) {
-						++data->Unknown;
-						state = 124 - (data->Unknown - 20);
-					}
-					else if (data->Unknown > 40) {
-						++data->Unknown;
-						state = 110 + (data->Unknown - 40);
-					}
-				}
-				break;
-			case 56: //lost
-			case 57:
-				anim = 10;
-				break;
-			case 58:
-				anim = 44;
-				break;
-			case 72: //holding hook
-				anim = 51;
-				break;
-			case 89:
-				anim = 11;
-				break;
-			case 107: //snowboard
-			case 108:
-			case 109:
-				anim = 26;
-				break;
-			case 110:
-			case 111:
-			case 116:
-				anim = 26;
-				break;
-			case 112:
-				if (playerco2->Speed.z > 0.1f) anim = 33;
-				break;
-			case 113:
-				if (playerco2->Speed.z < 0.1f) anim = 32;
-				break;
-			case 114:
-			case 115:
-			case 117:
-			case 118:
-			case 119:
-				anim = 30;
-				break;
-			case 120:
-			case 121:
-			case 122:
-			case 123:
-			case 124:
-			case 125:
-			case 126:
-				anim = 31;
-				break;
-			case 127:
-				anim = 27;
-				break;
-			case 150:
-				anim = 16;
-				break;
 			}
+			break;
+		case 9:
+			data->Status = 0;
+			anim = 0;
+			if (playerco2->Speed.x < 0.02f) anim = 11;
+			break;
+		case 10:
+			anim = 0;
+			speed = 0.9f + playerco2->Speed.x * 0.2f;
+			break;
+		case 11:
+			anim = 0;
+			speed = 0.9f + playerco2->Speed.x * 0.2f;
+			break;
+		case 12:
+			anim = 5;
+			speed = 1.5f + playerco2->Speed.x * 0.1f;
+			break;
+		case 13:
+			anim = 6;
+			speed = 0.5f + playerco2->Speed.x * 0.1f;
+			break;
+		case 14: //jumping
+			if (anim < 18 || anim > 23) {
+				anim = 18;
+			}
+			else if (anim == 19) {
+				if (data->Unknown > 2) {
+					anim = 20;
+				}
+			}
+			else if (anim == 21) {
+				if (playerdata->Position.y - playerco2->_struct_a3.DistanceMax < 10) anim = 22;
+			}
+			break;
+		case 15: //rolling
+		case 16:
+			anim = 19;
+			break;
+		case 17: //spring jump
+			anim = 19;
+			break;
+		case 18: //fall after spring jump
+			anim = 21;
+			break;
+		case 19: //falling
+			anim = 21;
+			if (playerco2->Speed.x > 8 && playerdata->Position.y - playerco2->_struct_a3.DistanceMax > 500) {
+				anim = 16;
+				playerco2->AnimationThing.Index = 150;
+			}
+			break;
+		case 20:
+			anim = 23;
+			break;
+		case 21: //break
+			anim = 47;
+			if (playerco2->Speed.x > 6) {
+				anim = 46;
+			}
+			else if (playerco2->Speed.x > 3) {
+				anim = 45;
+			}
+			break;
+		case 22:
+			anim = 48;
+			break;
+		case 24:
+			anim = 2;
+			speed = 0;
+			break;
+		case 25:
+			anim = 2;
+			break;
+		case 26:
+			anim = 54;
+			break;
+		case 27:
+			anim = 56;
+			break;
+		case 28: //hurt
+		case 29:
+		case 30:
+		case 31:
+			anim = 55;
+			break;
+		case 32:
+			anim = 45;
+			break;
+		case 33: //thumbling
+		case 34:
+			anim = 53;
+			break;
+		case 35:
+			anim = 55;
+			break;
+		case 36:
+			anim = 21;
+			break;
+		case 37: //flying
+		case 40:
+		case 41:
+			anim = 34; //52 IF HOLDING PLAYER
+			if (HeldButtons2[data->CharIndex] & Buttons_A) speed = 0.8;
+			speed += playerco2->Speed.x * 0.5f;
+			break;
+		case 38: //flying falling
+		case 39:
+		case 42:
+			anim = 35;
+			break;
+		case 43:
+			anim = 39;
+			break;
+		case 44:
+		case 45:
+		case 46:
+		case 47:
+		case 48:
+		case 49:
+		case 50:
+		case 51:
+		case 52:
+		case 53:
+			anim = 39;
+			data->Rotation.y += 0x100;
+			break;
+		case 54: //won
+		case 55:
+			anim = 60;
+			if (data->Unknown > 1) {
+				if (frame > 124) data->Unknown = 20;
+				if (frame < 110) data->Unknown = 40;
+
+				if (data->Unknown > 20 && data->Unknown < 40) {
+					++data->Unknown;
+					state = 124 - (data->Unknown - 20);
+				}
+				else if (data->Unknown > 40) {
+					++data->Unknown;
+					state = 110 + (data->Unknown - 40);
+				}
+			}
+			break;
+		case 56: //lost
+		case 57:
+			anim = 10;
+			break;
+		case 58:
+			anim = 44;
+			break;
+		case 72: //holding hook
+			anim = 51;
+			break;
+		case 89:
+			anim = 11;
+			break;
+		case 107: //snowboard
+		case 108:
+		case 109:
+			anim = 26;
+			break;
+		case 110:
+		case 111:
+		case 116:
+			anim = 26;
+			break;
+		case 112:
+			if (playerco2->Speed.z > 0.1f) anim = 33;
+			break;
+		case 113:
+			if (playerco2->Speed.z < 0.1f) anim = 32;
+			break;
+		case 114:
+		case 115:
+		case 117:
+		case 118:
+		case 119:
+			anim = 30;
+			break;
+		case 120:
+		case 121:
+		case 122:
+		case 123:
+		case 124:
+		case 125:
+		case 126:
+			anim = 31;
+			break;
+		case 127:
+			anim = 27;
+			break;
+		case 150:
+			anim = 16;
+			break;
 		}
 
 		if (anim != 39) {
