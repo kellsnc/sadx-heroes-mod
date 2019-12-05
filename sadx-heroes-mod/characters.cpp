@@ -157,7 +157,7 @@ void BallObject(ObjectMaster* obj) {
 		njDrawModel_SADX(CharMdls[0]->getmodel()->basicdxmodel);
 	}
 	else {
-		njTranslate(0, 0, 5, -4);
+		njTranslate(0, 0, 4, -4);
 		njScale(0, 0.9f, 0.9f, 0.9f);
 		njRotateZ(0, 0x4000);
 		njRotateX(0, 0x4000);
@@ -278,7 +278,7 @@ NJS_VECTOR SpeedAnims(EntityData1* data, EntityData1* playerdata, CharObj2* play
 	case 24: anim = 42; break; //hurt
 	case 26: case 46: anim = 41; break; //updraft
 	case 27: case 28: anim = 42; break;
-	case 29: anim = 15; break;
+	case 29: anim = 18; break;
 	case 30: anim = 37; break;
 	case 31: //ball
 	case 32: case 39: case 40: case 41: case 42: case 43: case 45: case 83: case 125: anim = 14; break;
@@ -380,7 +380,7 @@ void TornadoObj(ObjectMaster* obj) {
 	}
 }
 
-bool TornadoTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2) {
+void TornadoTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, EntityData1* playerdata) {
 	if (++data->field_A == 130 || PressedButtons[data->CharIndex] & Buttons_X) {
 		data->Action = 2;
 		data->field_A = 0;
@@ -409,8 +409,6 @@ bool TornadoTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2) {
 			Collision_Init(tornado, &Tornado_Col, 1, 3u);
 
 			PlayHeroesSoundQueue(CommonSound_Tornado, tornado, 500, false);
-
-			return true;
 		}
 		
 		playerco2->Powerups |= Powerups_Invincibility;
@@ -426,8 +424,22 @@ bool TornadoTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2) {
 		playerdata->Rotation.y = fPositionToRotation(&playerdata->Position, &data2->VelocityDirection).y;
 		playerdata->Position = data2->VelocityDirection;
 	}
+}
 
-	return false;
+//Speed characters Accel trick
+void KickTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, EntityData1* playerdata) {
+	if (data->field_A == 0) {
+		data->field_A = 1;
+		playerco2->Speed.x = 5;
+	}
+	else if (data->field_A < 20) {
+		++data->field_A;
+	}
+	else {
+		data->field_A = 0;
+		playerdata->Action = 2;
+		data->Action = 2;
+	}
 }
 
 //Add new weaknesses for enemies: cheese, tails' trap rings and tornados

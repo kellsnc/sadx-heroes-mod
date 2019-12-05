@@ -25,7 +25,7 @@ void PlaySound_Sonic(int ID) {
 		PlayHeroesSound(SonicSound_Attack);
 		break;
 	case 1243:
-		PlayHeroesSound(SonicSound_FlyBegin);
+		PlayHeroesSound(SonicSound_Ya);
 		break;
 	case 1249:
 		if (random < 4) PlayHeroesSound(SonicSound_ThatHurts);
@@ -139,14 +139,16 @@ void SonicHeroes_Main(ObjectMaster *obj) {
 	case 2:
 		PlayerPtrs[data->CharIndex]->DisplaySub = SonicHeroes_Display;
 
-		if (playerco2->Speed.x < 2 && PressedButtons[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
-			playerdata->Action = 100;
+		if (playerco2->Speed.x < 2 && HeldButtons2[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
+			playerdata->Action = 5;
+			PlayHeroesSound(SonicSound_Ya);
 			data->Action = 3;
 			break;
 		}
 
-		if (data->Index == 14 && PressedButtons[data->CharIndex] & Buttons_X) {
+		if (data->Index == 14 && (playerdata->Status & Status_Ground) != Status_Ground && PressedButtons[data->CharIndex] & Buttons_X) {
 			data->field_A = 0;
+			PlayHeroesSound(SonicSound_Attack);
 			data->Action = 4;
 		}
 
@@ -175,31 +177,11 @@ void SonicHeroes_Main(ObjectMaster *obj) {
 
 		break;
 	case 3:
-		if (data->field_A == 0) {
-			data->field_A = 1;
-			PlayHeroesSound(SonicSound_Ready);
-			data->Scale.x = 0;
-		}
-		else if (data->field_A < 30) {
-			if (data->field_A < 20) {
-				++data->field_A;
-			}
-			else {
-				data->field_A = 30;
-			}
-		}
-		else {
-			if (++data->field_A == 78) {
-				data->Action = 2;
-				playerdata->Action = 1;
-				data->field_A = 0;
-			}
-		}
-
-		PlayHeroesAnimation(obj, 14, HSonicAnimData, 0, 0);
+		KickTrick(data, data2, playerco2, playerdata);
+		PlayHeroesAnimation(obj, 53, HSonicAnimData, 0, 0);
 		break;
 	case 4:
-		if (TornadoTrick(data, data2, playerco2)) PlayHeroesSound(SonicSound_Attack);
+		TornadoTrick(data, data2, playerco2, playerdata);
 		PlayHeroesAnimation(obj, 14, HSonicAnimData, 0, 0);
 		break;
 	}
