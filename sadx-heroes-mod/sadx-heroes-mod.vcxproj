@@ -78,6 +78,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Characters\sonic.cpp" />
     <ClCompile Include="Characters\tails.cpp" />
     <ClCompile Include="Objects\bingo-highway-objects.cpp" />
     <ClCompile Include="Levels\bingo-highway.cpp" />
@@ -112,7 +113,6 @@
     <ClCompile Include="paths.cpp" />
     <ClCompile Include="Objects\special-stages-objects.cpp" />
     <ClCompile Include="Levels\special-stages.cpp" />
-    <ClCompile Include="sonic.cpp" />
     <ClCompile Include="sounds.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
