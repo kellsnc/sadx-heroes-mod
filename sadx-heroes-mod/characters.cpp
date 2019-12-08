@@ -109,7 +109,7 @@ void CharactersCommon_Delete(ObjectMaster* obj) {
 	bool ArethereOthers = false;
 
 	for (uint8_t player = 0; player < 8; ++player) {
-		if (player != obj->Data1->CharIndex && PlayerPtrs[player]) {
+		if (player != obj->Data1->CharIndex && HeroesChars[player]) {
 			if (HeroesChars[player]->Data1->CharID == character) ArethereOthers = true;
 		}
 	}
@@ -381,7 +381,7 @@ void TornadoObj(ObjectMaster* obj) {
 }
 
 void TornadoTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, EntityData1* playerdata) {
-	if (++data->field_A == 130 || PressedButtons[data->CharIndex] & Buttons_X) {
+	if (++data->field_A == 130 || PressedButtons[data->CharIndex] & Buttons_X || IsPointInCollision(&playerdata->Position, 10)) {
 		data->Action = 2;
 		data->field_A = 0;
 

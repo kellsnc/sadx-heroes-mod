@@ -69,6 +69,9 @@ bool IsPointInsideSphere(NJS_VECTOR *center, NJS_VECTOR *pos, float radius);
 int IsPlayerInsideSphere_(NJS_VECTOR *center, float radius);
 bool DynColRadius(ObjectMaster *a1, float radius, uint8_t col);
 bool DynColRadiusAuto(ObjectMaster *a1, uint8_t col);
+bool IsPointInCollision(NJS_VECTOR* pos, float radius);
+void TransformSpline(ObjectMaster * a1, NJS_VECTOR orig, NJS_VECTOR dest, float state);
+void DoBall(uint8_t id);
 
 FastcallFunctionPointer(void, DrawChunkModel_, (Sint32* a1, Sint16* a2), 0x7917F0);
 void DrawChunkModel(NJS_CNK_MODEL* model);

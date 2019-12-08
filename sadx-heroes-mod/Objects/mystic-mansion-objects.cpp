@@ -173,9 +173,6 @@ void MysticFan(ObjectMaster *a1)
 	a1->DisplaySub = &MysticFan_Display;
 }
 
-void DoBall(uint8_t id);
-void TransformSpline(ObjectMaster * a1, NJS_VECTOR orig, NJS_VECTOR dest, float state);
-
 void CartActions(ObjectMaster * a1) {
 	EntityData1 * entity = a1->Data1;
 	auto player = EntityData1Ptrs[entity->Index - 1];
