@@ -251,7 +251,7 @@ NJS_VECTOR SpeedAnims(EntityData1* data, EntityData1* playerdata, CharObj2* play
 	switch (playerco2->AnimationThing.Index) {
 	case 0: case 1:	case 2:	case 7: case 8:anim = 54; data->Status = 0; break; //stance
 	case 3: case 4: case 5: case 6: anim = 55; if (++data->Status == 100) { playerco2->AnimationThing.Index = 0; data->Status = 0; } break; //idle
-	case 9: data->Status = 0; anim = 0; if (playerco2->Speed.x < 0.02f) anim = 11; break;
+	case 9: data->Status = 0; anim = 0; if (playerco2->Speed.x < 0.02f) anim = 5; break;
 	case 10: anim = 0; speed = 0.9f + playerco2->Speed.x * 0.2f; break;
 	case 11: anim = 5; speed = 0.9f + playerco2->Speed.x * 0.2f; break;
 	case 12: anim = 6; speed = 1.5f + playerco2->Speed.x * 0.1f; break;
