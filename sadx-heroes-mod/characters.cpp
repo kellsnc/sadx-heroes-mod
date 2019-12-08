@@ -337,7 +337,7 @@ NJS_VECTOR SpeedAnims(EntityData1* data, EntityData1* playerdata, CharObj2* play
 }
 
 //Speed characters tornado trick
-void TornadoObj(ObjectMaster* obj) {
+void TornadoObj(ObjectMaster* obj) {	
 	if (GameState != 16) {
 		obj->Data1->Rotation.y += 1000;
 		obj->Data1->Rotation.x += 300;
@@ -381,7 +381,7 @@ void TornadoObj(ObjectMaster* obj) {
 }
 
 void TornadoTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, EntityData1* playerdata) {
-	if (++data->field_A == 130 || PressedButtons[data->CharIndex] & Buttons_X || IsPointInCollision(&playerdata->Position, 10)) {
+	if (++data->field_A == 130 || PressedButtons[data->CharIndex] & Buttons_X || IsPointInCollision(&playerdata->Position, 5)) {
 		data->Action = 2;
 		data->field_A = 0;
 

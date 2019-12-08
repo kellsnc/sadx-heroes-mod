@@ -12,7 +12,7 @@ std::vector<MESH> TempColMesh;
 void GetModelsByRadius(NJS_VECTOR* pos) {
 	LandTable* land = CurrentLandTable;
 
-	for (uint8_t i = 0; i < land->COLCount; ++i) {
+	for (int i = 0; i < land->COLCount; ++i) {
 		COL* col = &land->Col[i];
 
 		if (col->Flags & ColFlags_Solid && IsPointInsideSphere(&col->Center, pos, col->Radius)) {
