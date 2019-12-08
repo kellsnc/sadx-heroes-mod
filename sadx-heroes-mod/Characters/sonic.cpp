@@ -11,7 +11,8 @@ NJS_MATRIX SonicMatrix;
 
 void PlayVoice_Sonic(int ID) {
 	switch (ID) {
-	case 1803:
+	case 1498:
+	case 1495:
 		PlayHeroesSound(SonicSound_Win);
 		break;
 	}
@@ -24,19 +25,14 @@ void PlaySound_Sonic(int ID) {
 	case 17:
 		PlayHeroesSound(SonicSound_Attack);
 		break;
-	case 1243:
-		PlayHeroesSound(SonicSound_Ya);
-		break;
-	case 1249:
+	case 1232:
+	case 1233:
 		if (random < 4) PlayHeroesSound(SonicSound_ThatHurts);
 		else if (random < 8) PlayHeroesSound(SonicSound_Hurt1);
 		else PlayHeroesSound(SonicSound_Hurt2);
 		break;
-	case 1465:
+	case 1503:
 		PlayHeroesSound(SonicSound_Death);
-		break;
-	case 1453:
-		PlaySound(ID, 0, 0, 0);
 		break;
 	}
 }
