@@ -563,6 +563,7 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 	if (SpeedCharEnabled) {
 		WriteCall((void*)0x49BF04, Heroes_Display);
 		WriteCall((void*)0x495EAA, PlaySound_HeroesChar); //jump
+		WriteCall((void*)0x494BE7, PlaySound_HeroesChar); //dash
 		WriteCall((void*)0x492E96, PlaySound_HeroesChar); //hurt
 		WriteCall((void*)0x492F08, PlaySound_HeroesChar); //hurt
 		WriteCall((void*)0x492DD4, PlaySound_HeroesChar); //hurt

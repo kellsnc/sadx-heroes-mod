@@ -25,11 +25,14 @@ void PlaySound_Sonic(int ID) {
 	case 17:
 		PlayHeroesSound(SonicSound_Attack);
 		break;
+	case 762:
+		PlayHeroesSound(CommonSound_HomingAttack);
+		break;
 	case 1232:
+		PlayHeroesSound(SonicSound_Hurt2);
+		break;
 	case 1233:
-		if (random < 4) PlayHeroesSound(SonicSound_ThatHurts);
-		else if (random < 8) PlayHeroesSound(SonicSound_Hurt1);
-		else PlayHeroesSound(SonicSound_Hurt2);
+		PlayHeroesSound(SonicSound_Hurt1); 
 		break;
 	case 1503:
 		PlayHeroesSound(SonicSound_Death);
