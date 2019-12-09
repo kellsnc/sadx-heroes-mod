@@ -3,7 +3,7 @@
 uint8_t FlyCharEnabled;
 uint8_t SpeedCharEnabled;
 ObjectMaster* HeroesChars[8];
-bool CharTexsLoaded[5];
+bool CharTexsLoaded[6];
 int CurrentPlayer;
 
 bool JumpBallEnabled = true;
@@ -17,7 +17,8 @@ ObjectFuncPtr DisplayFuncs[]{
 	RougeHeroes_Display,
 	CharmyHeroes_Display,
 	TailsHeroes_Display,
-	SonicHeroes_Display
+	SonicHeroes_Display,
+	ShadowHeroes_Display
 };
 
 ObjectFuncPtr MainFuncs[]{
@@ -25,7 +26,8 @@ ObjectFuncPtr MainFuncs[]{
 	RougeHeroes_Main,
 	CharmyHeroes_Main,
 	TailsHeroes_Main,
-	SonicHeroes_Main
+	SonicHeroes_Main,
+	ShadowHeroes_Main
 };
 
 PlaySoundFuncPtr SoundFuncs[]{
@@ -33,7 +35,8 @@ PlaySoundFuncPtr SoundFuncs[]{
 	PlaySound_Rouge,
 	PlaySound_Charmy,
 	PlaySound_Tails,
-	PlaySound_Sonic
+	PlaySound_Sonic,
+	PlaySound_Shadow
 };
 
 PlaySoundFuncPtr VoiceFuncs[]{
@@ -41,7 +44,8 @@ PlaySoundFuncPtr VoiceFuncs[]{
 	PlayVoice_Rouge,
 	PlayVoice_Charmy,
 	PlayVoice_Tails,
-	PlayVoice_Sonic
+	PlayVoice_Sonic,
+	PlayVoice_Shadow
 };
 
 Uint32 CharColours[]{
@@ -50,6 +54,7 @@ Uint32 CharColours[]{
 	0x96FBFB04,
 	0x96FBFB04,
 	0x960080FF,
+	0xBC660000,
 };
 
 //Store the current player id at the start of their function
@@ -277,8 +282,10 @@ NJS_VECTOR SpeedAnims(EntityData1* data, EntityData1* playerdata, CharObj2* play
 	case 9: data->Status = 0; anim = 0; if (playerco2->Speed.x < 0.02f) anim = 5; break;
 	case 10: anim = 0; speed = 0.9f + playerco2->Speed.x * 0.2f; break;
 	case 11: anim = 5; speed = 0.9f + playerco2->Speed.x * 0.2f; break;
-	case 12: anim = 6; speed = 1.5f + playerco2->Speed.x * 0.1f; break;
-	case 13: anim = 7; speed = 0.5f + playerco2->Speed.x * 0.1f; break;
+	case 12: anim = 6; speed = 1.5f + playerco2->Speed.x * 0.1f; 
+		if (data->CharID == Characters_Shadow && playerco2->Speed.x > 3) anim = 7; break;
+	case 13: anim = 7; speed = 0.5f + playerco2->Speed.x * 0.1f; 
+		if (data->CharID == Characters_Shadow && playerco2->Speed.x > 3) anim = 57; break;
 	case 14: //jumping
 		if (anim < 13 || anim > 18) { anim = 13; }
 		else if (anim == 14) { if (data->Unknown > 2) anim = 15; }
@@ -543,6 +550,10 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 	if (!SpeedCharacter.compare("Sonic")) {
 		LoadSonicFiles(path, helperFunctions);
 		SpeedCharEnabled = Characters_HeroesSonic;
+	}
+	else if (!SpeedCharacter.compare("Shadow")) {
+		LoadShadowFiles(path, helperFunctions);
+		SpeedCharEnabled = Characters_Shadow;
 	}
 	
 	if (!FlyCharacter.compare("Cream")) {

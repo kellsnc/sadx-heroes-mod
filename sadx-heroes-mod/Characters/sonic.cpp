@@ -1,8 +1,8 @@
 #include "stdafx.h"
 
 ModelInfo* SonicMdls[2];
-AnimationFile* SonicAnms[57];
-AnimData HSonicAnimData[57];
+AnimationFile* SonicAnms[58];
+AnimData HSonicAnimData[58];
 
 NJS_TEXNAME HSONIC_TEXNAMES[4];
 NJS_TEXLIST HSONIC_TEXLIST = { arrayptrandlength(HSONIC_TEXNAMES) };
@@ -257,6 +257,7 @@ void LoadSonicFiles(const char *path, const HelperFunctions &helperFunctions) {
 	SonicAnms[54] = LoadCharacterAnim("SN_IDLE");
 	SonicAnms[55] = LoadCharacterAnim("SN_IDLE_C");
 	SonicAnms[56] = LoadCharacterAnim("SN_IDLE_D");
+	SonicAnms[57] = LoadCharacterAnim("HERO_SN");
 
 	for (uint8_t i = 0; i < LengthOfArray(HSonicAnimData); ++i) {
 		if (SonicAnms[i] == nullptr) continue;

@@ -125,5 +125,21 @@ enum HeroesSounds {
 	SonicSound_Win,
 	SonicSound_Lose,
 	SonicSound_Idle1,
-	SonicSound_Idle2
+	SonicSound_Idle2,
+	ShadowSound_Attack = 11400,
+	ShadowSound_Ya,
+	ShadowSound_Go,
+	ShadowSound_FlyUp,
+	ShadowSound_TeamSwap,
+	ShadowSound_HereWeGo,
+	ShadowSound_Hurt1,
+	ShadowSound_Hurt2,
+	ShadowSound_Trick,
+	ShadowSound_Ready,
+	ShadowSound_Death,
+	ShadowSound_LevelUp,
+	ShadowSound_Win,
+	ShadowSound_Lose,
+	ShadowSound_Idle1,
+	ShadowSound_Idle2
 };
