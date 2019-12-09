@@ -7,6 +7,7 @@ bool CharTexsLoaded[5];
 int CurrentPlayer;
 
 bool JumpBallEnabled = true;
+bool P2SoundsEnabled = false;
 
 ModelInfo* CharMdls[2];
 CollisionData Tornado_Col = { 0, 0, 0, 0, 0, { 0.0f, 0.0f, 0.0f }, { 20, 0.0f, 0.0f }, 0, 0 };
@@ -59,7 +60,7 @@ void Tails_Main_r(ObjectMaster* obj) {
 	CurrentPlayer = obj->Data1->CharIndex;
 
 	//Player 2 can play sounds
-	if (HeroesChars[obj->Data1->CharIndex]) {
+	if (P2SoundsEnabled && HeroesChars[obj->Data1->CharIndex]) {
 		WriteData((char*)0x45C02C, (char)0x99);
 		WriteData((char*)0x45BDF3, (char)0x99);
 		WriteData((char*)0x45BF7F, (char)0x99);
@@ -68,7 +69,7 @@ void Tails_Main_r(ObjectMaster* obj) {
 	ObjectFunc(original, Tails_Main_t.Target());
 	original(obj);
 
-	if (HeroesChars[obj->Data1->CharIndex]) {
+	if (P2SoundsEnabled && HeroesChars[obj->Data1->CharIndex]) {
 		WriteData((char*)0x45C02C, (char)0x01);
 		WriteData((char*)0x45BDF3, (char)0x01);
 		WriteData((char*)0x45BF7F, (char)0x01);
@@ -537,6 +538,7 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 	const std::string SpeedCharacter = config->getString("2- Characters", "SpeedCharacter", "None");
 	const std::string FlyCharacter = config->getString("2- Characters", "FlyCharacter", "None");
 	JumpBallEnabled = config->getBool("2- Characters", "JumpBallEnabled", true);
+	P2SoundsEnabled = config->getBool("2- Characters", "P2SoundsEnabled", false);
 
 	if (!SpeedCharacter.compare("Sonic")) {
 		LoadSonicFiles(path, helperFunctions);
