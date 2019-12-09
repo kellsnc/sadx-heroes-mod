@@ -54,12 +54,34 @@ Uint32 CharColours[]{
 //Store the current player id at the start of their function
 //to get which character triggered a sound, as PlaySound doesn't keep track of the entity
 void Tails_Main_r(ObjectMaster* a1);
-Trampoline Tails_Main_t(0x00461700, 0x00461712, Tails_Main_r);
+Trampoline Tails_Main_t((int)Tails_Main, (int)Tails_Main + 0x12, Tails_Main_r);
 void Tails_Main_r(ObjectMaster* obj) {
 	CurrentPlayer = obj->Data1->CharIndex;
 
+	//Player 2 can play sounds
+	if (HeroesChars[obj->Data1->CharIndex]) {
+		WriteData((char*)0x45C02C, (char)0x99);
+		WriteData((char*)0x45BDF3, (char)0x99);
+		WriteData((char*)0x45BF7F, (char)0x99);
+	}
+
 	ObjectFunc(original, Tails_Main_t.Target());
 	original(obj);
+
+	if (HeroesChars[obj->Data1->CharIndex]) {
+		WriteData((char*)0x45C02C, (char)0x01);
+		WriteData((char*)0x45BDF3, (char)0x01);
+		WriteData((char*)0x45BF7F, (char)0x01);
+	}
+}
+
+void Sonic_Act1_r(EntityData1 *entity1, EntityData2 *entity2, CharObj2 *obj2);
+Trampoline Sonic_Act1_t((int)Sonic_Act1, (int)Sonic_Act1 + 0x8, Sonic_Act1_r);
+void Sonic_Act1_r(EntityData1 *entity1, EntityData2 *entity2, CharObj2 *obj2) {
+	CurrentPlayer = entity1->CharIndex;
+
+	FunctionPointer(void, original, (EntityData1 *entity1, EntityData2 *entity2, CharObj2 *obj2), Sonic_Act1_t.Target());
+	original(entity1, entity2, obj2);
 }
 
 //Character Animation like Sonic Heroes does
