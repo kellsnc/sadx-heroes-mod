@@ -119,6 +119,7 @@ void RougeHeroes_Display(ObjectMaster *obj) {
 
 	switch (rougeobj->Data1->InvulnerableTime) {
 	case 1:
+	case 3:
 		DrawChunkModel(eyelashes->child->chunkmodel);
 		DrawChunkModel(eyelashes->sibling->child->chunkmodel);
 		break;
@@ -479,7 +480,7 @@ void RougeHeroes_Main(ObjectMaster *obj) {
 	}
 
 	if (data->InvulnerableTime != 0 && FrameCounterUnpaused % 2 == 0) {
-		if (++data->InvulnerableTime > 2) data->InvulnerableTime = 0;
+		if (++data->InvulnerableTime > 3) data->InvulnerableTime = 0;
 	}
 
 	RunObjectChildren(obj);

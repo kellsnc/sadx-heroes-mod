@@ -310,12 +310,15 @@ void CreamHeroes_Display(ObjectMaster *obj) {
 
 	switch (creamobj->Data1->InvulnerableTime) {
 	case 1:
+	case 7:
 		DrawChunkModel(CreamMdls[1]->getmodel()->child->chunkmodel);
 		break;
 	case 2:
+	case 6:
 		DrawChunkModel(CreamMdls[1]->getmodel()->child->child->chunkmodel);
 		break;
 	case 3:
+	case 5:
 		DrawChunkModel(CreamMdls[1]->getmodel()->child->child->child->chunkmodel);
 		break;
 	case 4:
@@ -662,7 +665,7 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 	}
 
 	if (data->InvulnerableTime != 0 && FrameCounterUnpaused % 2 == 0) {
-		if (++data->InvulnerableTime > 4) data->InvulnerableTime = 0;
+		if (++data->InvulnerableTime > 7) data->InvulnerableTime = 0;
 	}
 
 	RunObjectChildren(obj);
