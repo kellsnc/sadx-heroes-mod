@@ -78,6 +78,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Characters\amy.cpp" />
     <ClCompile Include="Characters\shadow.cpp" />
     <ClCompile Include="Characters\sonic.cpp" />
     <ClCompile Include="Characters\tails.cpp" />

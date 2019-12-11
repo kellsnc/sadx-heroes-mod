@@ -141,5 +141,21 @@ enum HeroesSounds {
 	ShadowSound_Win,
 	ShadowSound_Lose,
 	ShadowSound_Idle1,
-	ShadowSound_Idle2
+	ShadowSound_Idle2,
+	AmySound_Attack = 11500,
+	AmySound_Ya,
+	AmySound_Go,
+	AmySound_FlyUp,
+	AmySound_TeamSwap,
+	AmySound_HereWeGo,
+	AmySound_Hurt1,
+	AmySound_Hurt2,
+	AmySound_Trick,
+	AmySound_Ready,
+	AmySound_Death,
+	AmySound_LevelUp,
+	AmySound_Win,
+	AmySound_Lose,
+	AmySound_Idle1,
+	AmySound_Idle2
 };

@@ -3,7 +3,7 @@
 uint8_t FlyCharEnabled;
 uint8_t SpeedCharEnabled;
 ObjectMaster* HeroesChars[8];
-bool CharTexsLoaded[6];
+bool CharTexsLoaded[7];
 int CurrentPlayer;
 
 bool JumpBallEnabled = true;
@@ -18,7 +18,8 @@ ObjectFuncPtr DisplayFuncs[]{
 	CharmyHeroes_Display,
 	TailsHeroes_Display,
 	SonicHeroes_Display,
-	ShadowHeroes_Display
+	ShadowHeroes_Display,
+	AmyHeroes_Display
 };
 
 ObjectFuncPtr MainFuncs[]{
@@ -27,7 +28,8 @@ ObjectFuncPtr MainFuncs[]{
 	CharmyHeroes_Main,
 	TailsHeroes_Main,
 	SonicHeroes_Main,
-	ShadowHeroes_Main
+	ShadowHeroes_Main,
+	AmyHeroes_Main
 };
 
 PlaySoundFuncPtr SoundFuncs[]{
@@ -36,7 +38,8 @@ PlaySoundFuncPtr SoundFuncs[]{
 	PlaySound_Charmy,
 	PlaySound_Tails,
 	PlaySound_Sonic,
-	PlaySound_Shadow
+	PlaySound_Shadow,
+	PlaySound_Amy
 };
 
 PlaySoundFuncPtr VoiceFuncs[]{
@@ -45,7 +48,8 @@ PlaySoundFuncPtr VoiceFuncs[]{
 	PlayVoice_Charmy,
 	PlayVoice_Tails,
 	PlayVoice_Sonic,
-	PlayVoice_Shadow
+	PlayVoice_Shadow,
+	PlayVoice_Amy
 };
 
 Uint32 CharColours[]{
@@ -55,6 +59,7 @@ Uint32 CharColours[]{
 	0x96FBFB04,
 	0x960080FF,
 	0xBC660000,
+	0x96FB7D88
 };
 
 //Store the current player id at the start of their function
@@ -554,6 +559,10 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 	else if (!SpeedCharacter.compare("Shadow")) {
 		LoadShadowFiles(path, helperFunctions);
 		SpeedCharEnabled = Characters_Shadow;
+	}
+	else if (!SpeedCharacter.compare("Amy")) {
+		LoadAmyFiles(path, helperFunctions);
+		SpeedCharEnabled = Characters_HeroesAmy;
 	}
 	
 	if (!FlyCharacter.compare("Cream")) {

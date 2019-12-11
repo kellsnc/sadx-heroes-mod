@@ -12,7 +12,8 @@ enum CharactersHeroes
 	Characters_Charmy,
 	Characters_HeroesTails,
 	Characters_HeroesSonic,
-	Characters_Shadow
+	Characters_Shadow,
+	Characters_HeroesAmy
 };
 
 void DrawChunkModel(NJS_CNK_MODEL* model);
@@ -66,5 +67,11 @@ void ShadowHeroes_Main(ObjectMaster *obj);
 void LoadShadowFiles(const char *path, const HelperFunctions &helperFunctions);
 void PlaySound_Shadow(int ID);
 void PlayVoice_Shadow(int ID);
+
+void AmyHeroes_Display(ObjectMaster *obj);
+void AmyHeroes_Main(ObjectMaster *obj);
+void LoadAmyFiles(const char *path, const HelperFunctions &helperFunctions);
+void PlaySound_Amy(int ID);
+void PlayVoice_Amy(int ID);
 
 static void(__cdecl** NodeCallbackFuncPtr)(NJS_OBJECT* obj) = (decltype(NodeCallbackFuncPtr))0x3AB9908;
