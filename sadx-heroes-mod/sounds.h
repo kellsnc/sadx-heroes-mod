@@ -157,5 +157,21 @@ enum HeroesSounds {
 	AmySound_Win,
 	AmySound_Lose,
 	AmySound_Idle1,
-	AmySound_Idle2
+	AmySound_Idle2,
+	EspioSound_Attack = 11600,
+	EspioSound_Ya,
+	EspioSound_TeamSwap,
+	EspioSound_FlyUp,
+	EspioSound_Jump,
+	EspioSound_HereWeGo,
+	EspioSound_Hurt1,
+	EspioSound_Hurt2,
+	EspioSound_Trick,
+	EspioSound_Ready,
+	EspioSound_Death,
+	EspioSound_LevelUp,
+	EspioSound_Win,
+	EspioSound_Lose,
+	EspioSound_Idle1,
+	EspioSound_Idle2
 };
