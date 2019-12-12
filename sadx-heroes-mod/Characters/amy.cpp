@@ -23,7 +23,7 @@ void PlaySound_Amy(int ID) {
 
 	switch (ID) {
 	case 17:
-		PlayHeroesSound(AmySound_Attack);
+		PlayHeroesSound(AmySound_Jump);
 		break;
 	case 762:
 		PlayHeroesSound(CommonSound_HomingAttack);
@@ -116,6 +116,13 @@ void AmyHeroes_Display(ObjectMaster *obj) {
 		break;
 	}
 	
+	if (amyobj->Data1->Index == 53 || amyobj->Data1->Index == 61) {
+		memcpy(_nj_current_matrix_ptr_, AmyMatrices[1], sizeof(NJS_MATRIX));
+		njTranslate(0, 0, 0, 0.5f);
+		njRotateZ(0, 0xC000);
+		DrawChunkModel(AmyMdls[2]->getmodel()->child->chunkmodel);
+	}
+	
 	Direct3D_UnsetChunkModelRenderState();
 	njPopMatrix(1);
 
@@ -151,7 +158,7 @@ void AmyHeroes_Main(ObjectMaster *obj) {
 	case 2:
 		PlayerPtrs[data->CharIndex]->DisplaySub = AmyHeroes_Display;
 
-		if (playerco2->Speed.x < 2 && HeldButtons2[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
+		if (playerco2->Speed.x < 2 && PressedButtons[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
 			playerdata->Action = 5;
 			PlayHeroesSound(AmySound_Ya);
 			data->Action = 3;
@@ -189,7 +196,22 @@ void AmyHeroes_Main(ObjectMaster *obj) {
 
 		break;
 	case 3:
-		KickTrick(data, data2, playerco2, playerdata);
+		if (data->field_A == 0) {
+			data->Scale.x = 0;
+			data->field_A = 1;
+			playerco2->Powerups |= Powerups_Invincibility;
+		}
+		else if (data->field_A < 119) {
+			++data->field_A;
+			
+		}
+		else {
+			data->field_A = 0;
+			playerco2->Powerups &= ~Powerups_Invincibility;
+			playerdata->Action = 2;
+			data->Action = 2;
+		}
+
 		PlayHeroesAnimation(obj, 53, HAmyAnimData, 0, 0);
 		break;
 	case 4:
@@ -264,10 +286,10 @@ void LoadAmyFiles(const char *path, const HelperFunctions &helperFunctions) {
 	AmyAnms[47] = LoadCharacterAnim("AM_EDGE_OTTO_C");
 	AmyAnms[48] = LoadCharacterAnim("AM_EDGE_OTTO_C");
 	AmyAnms[49] = LoadCharacterAnim("AM_FW_JUMP");
-	AmyAnms[50] = LoadCharacterAnim("AM_ATC_HAM");
+	AmyAnms[50] = LoadCharacterAnim("AM_TRAP_JUMP");
 	AmyAnms[51] = LoadCharacterAnim("AM_POW_ROT_HALF");
 	AmyAnms[52] = LoadCharacterAnim("AM_WIN");
-	AmyAnms[53] = LoadCharacterAnim("AM_ATC_DASH");
+	AmyAnms[53] = LoadCharacterAnim("AM_ATC_HAM");
 	AmyAnms[54] = LoadCharacterAnim("AM_IDLE_HALF");
 	AmyAnms[55] = LoadCharacterAnim("AM_IDLE_B_HALF");
 	AmyAnms[56] = LoadCharacterAnim("AM_IDLE_C_HALF");
