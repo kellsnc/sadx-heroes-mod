@@ -229,6 +229,10 @@ void TailsHeroes_Main(ObjectMaster *obj) {
 		return;
 	}
 
+	if (data->CharIndex == 0) {
+		CON_REGULAR_TEXNAMES[14].texaddr = TAILS_TEXLIST.textures[3].texaddr;
+	}
+
 	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
 	if (!obj->Child) LoadChildObject((LoadObj)(LoadObj_Data1 | LoadObj_Data2), TailsTails_Main, obj);
 

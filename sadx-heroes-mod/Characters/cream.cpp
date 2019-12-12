@@ -344,6 +344,10 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 		return;
 	}
 
+	if (data->CharIndex == 0) {
+		CON_REGULAR_TEXNAMES[14].texaddr = CREAM_TEXLIST.textures[1].texaddr;
+	}
+
 	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
 	if (!obj->Child) LoadChildObject((LoadObj)(LoadObj_Data1 | LoadObj_Data2), Cheese_Main, obj);
 

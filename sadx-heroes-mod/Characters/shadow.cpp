@@ -149,6 +149,10 @@ void ShadowHeroes_Main(ObjectMaster *obj) {
 		return;
 	}
 
+	if (data->CharIndex == 0) {
+		CON_REGULAR_TEXNAMES[12].texaddr = SHADOW_TEXLIST.textures[1].texaddr;
+	}
+
 	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
 	EntityData1* playerdata = playerobj->Data1;
 	EntityData2* playerdata2 = (EntityData2*)playerobj->Data2;

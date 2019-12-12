@@ -149,6 +149,10 @@ void CharmyHeroes_Main(ObjectMaster *obj) {
 		return;
 	}
 
+	if (data->CharIndex == 0) {
+		CON_REGULAR_TEXNAMES[14].texaddr = CHARMY_TEXLIST.textures[5].texaddr;
+	}
+
 	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
 	if (!obj->Child) LoadChildObject((LoadObj)(LoadObj_Data1 | LoadObj_Data2), CharmyWings_Main, obj);
 
