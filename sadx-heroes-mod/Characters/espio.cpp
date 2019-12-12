@@ -9,6 +9,8 @@ NJS_TEXLIST ESPIO_TEXLIST = { arrayptrandlength(ESPIO_TEXNAMES) };
 
 NJS_MATRIX EspioMatrix;
 
+CollisionData Ninja_Col = { 0, 0, 0, 0, 0, { 0.0f, 0.0f, 0.0f }, { 2.5, 0.0f, 0.0f }, 0, 0 };
+
 void PlayVoice_Espio(int ID) {
 	switch (ID) {
 	case 1498:
@@ -43,6 +45,67 @@ void PlaySound_Espio(int ID) {
 void EspioCallback(NJS_OBJECT* object) {
 	if (object == (NJS_OBJECT*)EspioMdls[0]->getdata("Dummy006")) {
 		memcpy(EspioMatrix, _nj_current_matrix_ptr_, sizeof(NJS_MATRIX)); //eyelids
+	}
+}
+
+void NinjaObj(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1;
+	NJS_VECTOR dir = { 0, 0, 0 };
+
+	if (GameState != 16) {
+		switch (data->Action) {
+		case 0:
+			obj->DisplaySub = obj->MainSub;
+			data->Action = 1;
+
+			dir.x = 10;
+			dir.y = 5;
+			njPushMatrix(_nj_unit_matrix_);
+			njTranslateV(0, &data->Position);
+			njRotateZ(0, data->Rotation.z);
+			njRotateX(0, data->Rotation.x);
+			njRotateY(0, -data->Rotation.y);
+			njCalcPoint(0, &dir, &data->Position);
+			njPopMatrix(1u);
+
+			Collision_Init(obj, &Ninja_Col, 1, 3);
+			break;
+		case 1:
+			dir.x = 5;
+			njPushMatrix(_nj_unit_matrix_);
+			njTranslateV(0, &data->Position);
+			njRotateZ(0, data->Rotation.z);
+			njRotateX(0, data->Rotation.x);
+			njRotateY(0, -data->Rotation.y);
+			njCalcPoint(0, &dir, &data->Position);
+			njPopMatrix(1u);
+
+			if (++data->InvulnerableTime > 300) {
+				DeleteObject_(obj);
+				return;
+			}
+
+			data->Scale.y -= 0x1000;
+			AddToCollisionList(data);
+
+			break;
+		}
+	}
+
+	if (!MissedFrames) {
+		njSetTexture(&ESPIO_TEXLIST);
+
+		njPushMatrix(0);
+		njTranslateV(0, &data->Position);
+		njRotateZ(0, data->Rotation.z);
+		njRotateX(0, data->Rotation.x);
+		njRotateY(0, data->Scale.y);
+		njScale(0, 0.5f, 0.5f, 0.5f);
+		SetupWorldMatrix();
+		Direct3D_SetChunkModelRenderState();
+		DrawChunkModel(EspioMdls[2]->getmodel()->child->chunkmodel);
+		Direct3D_UnsetChunkModelRenderState();
+		njPopMatrix(1);
 	}
 }
 
@@ -145,7 +208,7 @@ void EspioHeroes_Main(ObjectMaster *obj) {
 	case 2:
 		PlayerPtrs[data->CharIndex]->DisplaySub = EspioHeroes_Display;
 
-		if (playerco2->Speed.x < 2 && HeldButtons2[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
+		if (HeldButtons2[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
 			playerdata->Action = 5;
 			PlayHeroesSound(EspioSound_Ya);
 			data->Action = 3;
@@ -183,7 +246,13 @@ void EspioHeroes_Main(ObjectMaster *obj) {
 
 		break;
 	case 3:
-		KickTrick(data, data2, playerco2, playerdata);
+		if (KickTrick(data, data2, playerco2, playerdata)) {
+			ObjectMaster* obj = LoadObject(LoadObj_Data1, 3, NinjaObj);
+			obj->Data1->Position = playerdata->Position;
+			obj->Data1->Rotation = playerdata->Rotation;
+			playerco2->Speed.x = 2;
+		}
+
 		PlayHeroesAnimation(obj, 53, EspioAnimData, 0, 0);
 		break;
 	case 4:

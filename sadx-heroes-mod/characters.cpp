@@ -467,14 +467,14 @@ void TornadoTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, En
 }
 
 //Speed characters Accel trick
-void KickTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, EntityData1* playerdata) {
+bool KickTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, EntityData1* playerdata) {
 	if (data->field_A == 0) {
 		data->field_A = 1;
 		playerco2->Powerups |= Powerups_Invincibility;
 		playerco2->Speed.x = 5;
 	}
 	else if (data->field_A < 20) {
-		++data->field_A;
+		if (++data->field_A == 10) return true;
 	}
 	else {
 		data->field_A = 0;
@@ -482,16 +482,19 @@ void KickTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, Entit
 		playerdata->Action = 2;
 		data->Action = 2;
 	}
+
+	return false;
 }
 
-//Add new weaknesses for enemies: cheese, tails' trap rings and tornados
+//Add new weaknesses for enemies: cheese, tails' trap rings, tornadoes, etc.
 bool OhNoImDead2(EntityData1 *a1, ObjectData2 *a2);
 Trampoline OhNoImDead2_t(0x004CE030, 0x004CE036, OhNoImDead2);
 bool OhNoImDead2(EntityData1 *a1, ObjectData2 *a2) {
 	if (a1->CollisionInfo->CollidingObject) {
 		if (a1->CollisionInfo->CollidingObject->Object->MainSub == Cheese_Main
 			|| a1->CollisionInfo->CollidingObject->Object->MainSub == TrapRing_Main
-			|| a1->CollisionInfo->CollidingObject->Object->MainSub == TornadoObj) return 1;
+			|| a1->CollisionInfo->CollidingObject->Object->MainSub == TornadoObj
+			|| a1->CollisionInfo->CollidingObject->Object->MainSub == NinjaObj) return 1;
 	}
 
 	FunctionPointer(bool, original, (EntityData1 *a1, ObjectData2 *a2), OhNoImDead2_t.Target());
