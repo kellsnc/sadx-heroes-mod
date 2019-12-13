@@ -386,6 +386,9 @@ void CharmyHeroes_Main(ObjectMaster *obj) {
 		case 109:
 			anim = 26;
 			break;
+		case 100:
+			anim = 48;
+			break;
 		case 110:
 		case 111:
 		case 116:

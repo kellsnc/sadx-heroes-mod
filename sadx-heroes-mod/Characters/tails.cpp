@@ -463,6 +463,9 @@ void TailsHeroes_Main(ObjectMaster *obj) {
 		case 89:
 			anim = 9;
 			break;
+		case 100:
+			anim = 51;
+			break;
 		case 107: //snowboard
 		case 108:
 		case 109:

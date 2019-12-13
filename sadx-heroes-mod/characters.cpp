@@ -323,7 +323,7 @@ NJS_VECTOR SpeedAnims(EntityData1* data, EntityData1* playerdata, CharObj2* play
 	case 31: //ball
 	case 32: case 39: case 40: case 41: case 42: case 43: case 45: case 83: case 125: anim = 14; break;
 	case 44: anim = 9; break;
-	case 47: anim = 80; anim = 29; break;
+	case 47: anim = 40; break;
 	case 48: anim = 1; break; //pull
 	case 49: //shake tree
 	case 50: //pickup
