@@ -603,6 +603,17 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 		WriteCall((void*)0x492DD4, PlaySound_HeroesChar); //hurt
 		WriteCall((void*)0x492DD4, PlaySound_HeroesChar); //hurt
 		WriteCall((void*)0x446A26, PlaySound_HeroesChar); //death
+		CharMdls[0] = LoadObjectModel("effect_ball");
+		CharMdls[1] = LoadObjectModel("effect_tornado");
+		WriteData<5>((void*)0x49B238, 0x90);
+		WriteData<5>((void*)0x49AF36, 0x90);
+		WriteData<5>((void*)0x49AFD7, 0x90);
+		WriteData<5>((void*)0x49BB46, 0x90);
+		WriteData<5>((void*)0x49BC1A, 0x90);
+		WriteData<5>((void*)0x49BC29, 0x90);
+		WriteData<5>((void*)0x49AFE6, 0x90);
+		WriteData<5>((void*)0x49BB55, 0x90);
+		WriteData<5>((void*)0x49BC29, 0x90);
 	}
 
 	if (FlyCharEnabled) {
@@ -615,8 +626,6 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 
 	if (SpeedCharEnabled || FlyCharEnabled) {
 		WriteCall((void*)0x45BE57, PlayVoice_HeroesChar); //win
-		CharMdls[0] = LoadObjectModel("effect_ball");
-		CharMdls[1] = LoadObjectModel("effect_tornado");
 	}
 }
 
