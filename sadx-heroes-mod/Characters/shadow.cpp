@@ -59,6 +59,8 @@ void ShadowCallback(NJS_OBJECT* object) {
 }
 
 void ShadowHeroes_Display(ObjectMaster *obj) {
+	if (MissedFrames) return;
+
 	ObjectMaster* sonicobj = HeroesChars[obj->Data1->CharIndex];
 	if (!sonicobj) return;
 
@@ -89,10 +91,6 @@ void ShadowHeroes_Display(ObjectMaster *obj) {
 	njRotateZ(0, entity1->Rotation.z);
 	njRotateX(0, entity1->Rotation.x);
 	njRotateY(0, -entity1->Rotation.y - 0x4000);
-
-	if (sonicobj->Data1->Index == 52) {
-		njTranslate(0, 10, 2, 0);
-	}
 
 	SetupWorldMatrix();
 	Direct3D_SetChunkModelRenderState();

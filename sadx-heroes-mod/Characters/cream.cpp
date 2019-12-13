@@ -264,6 +264,8 @@ void CreamCallback(NJS_OBJECT* object) {
 }
 
 void CreamHeroes_Display(ObjectMaster *obj) {
+	if (MissedFrames) return;
+
 	ObjectMaster* creamobj = HeroesChars[obj->Data1->CharIndex];
 	if (!creamobj) return;
 

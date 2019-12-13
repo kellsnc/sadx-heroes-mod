@@ -145,6 +145,8 @@ void TailsCallback(NJS_OBJECT* object) {
 }
 
 void TailsHeroes_Display(ObjectMaster *obj) {
+	if (MissedFrames) return;
+
 	ObjectMaster* tailsobj = HeroesChars[obj->Data1->CharIndex];
 	if (!tailsobj) return;
 

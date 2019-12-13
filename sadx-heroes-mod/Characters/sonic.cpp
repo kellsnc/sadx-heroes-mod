@@ -47,6 +47,8 @@ void SonicCallback(NJS_OBJECT* object) {
 }
 
 void SonicHeroes_Display(ObjectMaster *obj) {
+	if (MissedFrames) return;
+
 	ObjectMaster* sonicobj = HeroesChars[obj->Data1->CharIndex];
 	if (!sonicobj) return;
 
@@ -79,7 +81,7 @@ void SonicHeroes_Display(ObjectMaster *obj) {
 	njRotateY(0, -entity1->Rotation.y - 0x4000);
 
 	if (sonicobj->Data1->Index == 52) {
-		njTranslate(0, 10, 2, 0);
+		njRotateY(0, 0xC000);
 	}
 
 	SetupWorldMatrix();
@@ -286,4 +288,5 @@ void LoadSonicFiles(const char *path, const HelperFunctions &helperFunctions) {
 	HSonicAnimData[25].Property = 1;
 	HSonicAnimData[26].Property = 1;
 	HSonicAnimData[44].NextAnim = 17;
+	HSonicAnimData[52].Property = 1;
 }

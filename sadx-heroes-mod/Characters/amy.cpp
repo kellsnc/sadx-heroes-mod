@@ -50,6 +50,8 @@ void AmyCallback(NJS_OBJECT* object) {
 }
 
 void AmyHeroes_Display(ObjectMaster *obj) {
+	if (MissedFrames) return;
+
 	ObjectMaster* amyobj = HeroesChars[obj->Data1->CharIndex];
 	if (!amyobj) return;
 
@@ -82,7 +84,7 @@ void AmyHeroes_Display(ObjectMaster *obj) {
 	njRotateY(0, -entity1->Rotation.y - 0x4000);
 
 	if (amyobj->Data1->Index == 52) {
-		njTranslate(0, 10, 2, 0);
+		njTranslate(0, -10, 5, 0);
 	}
 
 	SetupWorldMatrix();
@@ -319,4 +321,5 @@ void LoadAmyFiles(const char *path, const HelperFunctions &helperFunctions) {
 	HAmyAnimData[25].Property = 1;
 	HAmyAnimData[26].Property = 1;
 	HAmyAnimData[44].NextAnim = 17;
+	HAmyAnimData[52].Property = 1;
 }

@@ -72,6 +72,8 @@ void RougeCallback(NJS_OBJECT* object) {
 }
 
 void RougeHeroes_Display(ObjectMaster *obj) {
+	if (MissedFrames) return;
+
 	ObjectMaster* rougeobj = HeroesChars[obj->Data1->CharIndex];
 	if (!rougeobj) return;
 

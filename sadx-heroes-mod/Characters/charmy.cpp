@@ -63,6 +63,8 @@ void CharmyCallback(NJS_OBJECT* object) {
 }
 
 void CharmyHeroes_Display(ObjectMaster *obj) {
+	if (MissedFrames) return;
+
 	ObjectMaster* Charmyobj = HeroesChars[obj->Data1->CharIndex];
 	if (!Charmyobj) return;
 

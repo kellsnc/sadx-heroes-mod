@@ -339,19 +339,7 @@ NJS_VECTOR SpeedAnims(EntityData1* data, EntityData1* playerdata, CharObj2* play
 	case 71: anim = 0; break; //ice
 	case 75: case 76: //won
 		anim = 52;
-		if (data->Unknown > 1) {
-			if (frame > 124) data->Unknown = 20;
-			if (frame < 110) data->Unknown = 40;
-
-			if (data->Unknown > 20 && data->Unknown < 40) {
-				++data->Unknown;
-				state = 124 - (data->Unknown - 20);
-			}
-			else if (data->Unknown > 40) {
-				++data->Unknown;
-				state = 110 + (data->Unknown - 40);
-			}
-		}
+		if (data->CharID == Characters_Espio) anim = 55;
 		break;
 	case 82: anim = 42; speed = 0; break;
 	case 84: anim = 45; break;

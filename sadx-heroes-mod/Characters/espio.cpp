@@ -110,6 +110,8 @@ void NinjaObj(ObjectMaster* obj) {
 }
 
 void EspioHeroes_Display(ObjectMaster *obj) {
+	if (MissedFrames) return;
+	
 	ObjectMaster* espioobj = HeroesChars[obj->Data1->CharIndex];
 	if (!espioobj) return;
 
@@ -140,10 +142,6 @@ void EspioHeroes_Display(ObjectMaster *obj) {
 	njRotateZ(0, entity1->Rotation.z);
 	njRotateX(0, entity1->Rotation.x);
 	njRotateY(0, -entity1->Rotation.y - 0x4000);
-
-	if (espioobj->Data1->Index == 52) {
-		njTranslate(0, 10, 2, 0);
-	}
 
 	SetupWorldMatrix();
 	Direct3D_SetChunkModelRenderState();
@@ -338,7 +336,7 @@ void LoadEspioFiles(const char *path, const HelperFunctions &helperFunctions) {
 	EspioAnms[49] = LoadCharacterAnim("ES_FW_JUMP");
 	EspioAnms[50] = LoadCharacterAnim("ES_TRAP_JUMP");
 	EspioAnms[51] = LoadCharacterAnim("ES_POW_ROT");
-	EspioAnms[52] = LoadCharacterAnim("ES_WIN_B");
+	EspioAnms[52] = LoadCharacterAnim("ES_WIN");
 	EspioAnms[53] = LoadCharacterAnim("ES_ATC_SHURI");
 	EspioAnms[54] = LoadCharacterAnim("ES_IDLE_HALF");
 	EspioAnms[55] = LoadCharacterAnim("ES_IDLE_B_HALF");
