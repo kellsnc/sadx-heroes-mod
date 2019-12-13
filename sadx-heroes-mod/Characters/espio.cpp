@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-ModelInfo* EspioMdls[4];
+ModelInfo* EspioMdls[5];
 AnimationFile* EspioAnms[59];
 AnimData EspioAnimData[59];
 
@@ -153,8 +153,12 @@ void EspioHeroes_Display(ObjectMaster *obj) {
 	*NodeCallbackFuncPtr = nullptr;
 
 	memcpy(_nj_current_matrix_ptr_, EspioMatrix, sizeof(NJS_MATRIX));
-	NJS_CNK_OBJECT* pupils = EspioMdls[1]->getmodel();
 
+	njRotateX(0, 0x4000);
+	DrawChunkModel(EspioMdls[4]->getmodel()->chunkmodel);
+	njRotateX(0, 0xC000);
+
+	NJS_CNK_OBJECT* pupils = EspioMdls[1]->getmodel();
 	switch (espioobj->Data1->InvulnerableTime) {
 	case 1:
 	case 7:
@@ -277,6 +281,11 @@ void LoadEspioFiles(const char *path, const HelperFunctions &helperFunctions) {
 	EspioMdls[1] = LoadCharacterModel("espio_eyelids");
 	EspioMdls[2] = LoadCharacterModel("espio_attacks");
 	EspioMdls[3] = LoadCharacterModel("espio_objs");
+	EspioMdls[4] = LoadCharacterModel("espio_head");
+
+	//the head lightning is wrong, since it's not weighted I replace it with a non weighted, working one
+	NJS_OBJECT* head = (NJS_OBJECT*)EspioMdls[0]->getdata("Dummy006");
+	head->evalflags |= NJD_EVAL_HIDE;
 
 	EspioAnms[0] = LoadCharacterAnim("ES_WALK");
 	EspioAnms[1] = LoadCharacterAnim("ES_WALK_PULL");
