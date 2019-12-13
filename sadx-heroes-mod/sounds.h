@@ -163,7 +163,7 @@ enum HeroesSounds {
 	EspioSound_TeamSwap,
 	EspioSound_FlyUp,
 	EspioSound_Jump,
-	EspioSound_HereWeGo,
+	EspioSound_Letsgo,
 	EspioSound_Hurt1,
 	EspioSound_Hurt2,
 	EspioSound_Trick,

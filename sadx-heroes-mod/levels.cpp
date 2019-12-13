@@ -161,6 +161,7 @@ void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size, NJS_
 
 void LevelHandler_Delete(ObjectMaster * a1) {
 	FreeCurrentChunk(CurrentLevel, CurrentAct);
+	CurrentChunk = 0;
 	delete oldinfo;
 	oldinfo = nullptr;
 	anim = 0;
