@@ -9,7 +9,7 @@ NJS_TEXLIST ESPIO_TEXLIST = { arrayptrandlength(ESPIO_TEXNAMES) };
 
 NJS_MATRIX EspioMatrix;
 
-CollisionData Ninja_Col = { 0, 0, 0, 0, 0, { 0.0f, 0.0f, 0.0f }, { 2.5, 0.0f, 0.0f }, 0, 0 };
+CollisionData Ninja_Col = { 0, 0, 0, 0, 0, { 0.0f, 0.0f, 0.0f }, { 3.5, 0.0f, 0.0f }, 0, 0 };
 
 void PlayVoice_Espio(int ID) {
 	switch (ID) {
@@ -100,7 +100,7 @@ void NinjaObj(ObjectMaster* obj) {
 		njRotateZ(0, data->Rotation.z);
 		njRotateX(0, data->Rotation.x);
 		njRotateY(0, data->Scale.y);
-		njScale(0, 0.5f, 0.5f, 0.5f);
+		njScale(0, 0.7f, 0.7f, 0.7f);
 		SetupWorldMatrix();
 		Direct3D_SetChunkModelRenderState();
 		DrawChunkModel(EspioMdls[2]->getmodel()->child->chunkmodel);
@@ -153,7 +153,6 @@ void EspioHeroes_Display(ObjectMaster *obj) {
 	*NodeCallbackFuncPtr = nullptr;
 
 	memcpy(_nj_current_matrix_ptr_, EspioMatrix, sizeof(NJS_MATRIX));
-
 	njRotateX(0, 0x4000);
 	DrawChunkModel(EspioMdls[4]->getmodel()->chunkmodel);
 	njRotateX(0, 0xC000);
