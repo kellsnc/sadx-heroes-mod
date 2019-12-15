@@ -503,6 +503,12 @@ void Heroes_Display(ObjectMaster* obj) {
 		return;
 	}
 
+	if (obj->Data1->CharID == Characters_Sonic && SuperSonicFlag && HeroesChars[obj->Data1->CharIndex]) {
+		Sonic_Display(obj);
+		obj->DisplaySub = Sonic_Display;
+		DeleteObject_(HeroesChars[obj->Data1->CharIndex]);
+	}
+
 	DisplayFuncs[HeroesChars[obj->Data1->CharIndex]->Data1->CharID - 9](obj);
 }
 
@@ -622,7 +628,7 @@ void Characters_OnFrame() {
 	for (uint8_t player = 0; player < 8; ++player) {
 		if (!EntityData1Ptrs[player] || HeroesChars[player]) continue;
 
-		if (SpeedCharEnabled && EntityData1Ptrs[player]->CharID == Characters_Sonic) {
+		if (SpeedCharEnabled && EntityData1Ptrs[player]->CharID == Characters_Sonic && !SuperSonicFlag) {
 			HeroesChars[player] = LoadObject((LoadObj)(LoadObj_Data1 | LoadObj_Data2), 1, MainFuncs[SpeedCharEnabled - 9]);
 			HeroesChars[player]->Data1->CharIndex = player;
 			HeroesChars[player]->Data1->CharID = SpeedCharEnabled;
