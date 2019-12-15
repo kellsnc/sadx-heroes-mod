@@ -310,7 +310,7 @@ void TailsHeroes_Main(ObjectMaster *obj) {
 		case 9:
 			data->Status = 0;
 			anim = 0;
-			if (playerco2->Speed.x < 0.02f) anim = 11;
+			if (playerco2->Speed.x < 0.02f) anim = 9;
 			break;
 		case 10:
 			anim = 0;
