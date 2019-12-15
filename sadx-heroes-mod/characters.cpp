@@ -2,6 +2,8 @@
 
 uint8_t FlyCharEnabled;
 uint8_t SpeedCharEnabled;
+uint8_t PowerCharEnabled;
+
 ObjectMaster* HeroesChars[8];
 bool CharTexsLoaded[8];
 int CurrentPlayer;
@@ -70,7 +72,16 @@ Uint32 CharColours[]{
 
 //Store the current player id at the start of their function
 //to get which character triggered a sound, as PlaySound doesn't keep track of the entity
-void Tails_Main_r(ObjectMaster* a1);
+void Knuckles_Main_r(ObjectMaster* obj);
+Trampoline Knuckles_Main_t((int)Knuckles_Main, (int)Knuckles_Main + 0x8, Knuckles_Main_r);
+void Knuckles_Main_r(ObjectMaster* obj) {
+	CurrentPlayer = obj->Data1->CharIndex;
+
+	ObjectFunc(original, Knuckles_Main_t.Target());
+	original(obj);
+}
+
+void Tails_Main_r(ObjectMaster* obj);
 Trampoline Tails_Main_t((int)Tails_Main, (int)Tails_Main + 0x12, Tails_Main_r);
 void Tails_Main_r(ObjectMaster* obj) {
 	CurrentPlayer = obj->Data1->CharIndex;
@@ -500,7 +511,11 @@ void Heroes_Display(ObjectMaster* obj) {
 		case Characters_Tails:
 			Tails_Display(obj);
 			break;
+		case Characters_Knuckles:
+			Knuckles_Display(obj);
+			break;
 		}
+
 		return;
 	}
 
@@ -552,6 +567,8 @@ int PlaySound_HeroesChar(int ID, void *a2, int a3, void *a4) {
 void Characters_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config) {
 	const std::string SpeedCharacter = config->getString("2- Characters", "SpeedCharacter", "None");
 	const std::string FlyCharacter = config->getString("2- Characters", "FlyCharacter", "None");
+	const std::string PowerCharacter = config->getString("2- Characters", "PowerCharacter", "None");
+
 	CustomPhysics = config->getBool("2- Characters", "CustomPhysics", true);
 	JumpBallEnabled = config->getBool("2- Characters", "JumpBallEnabled", true);
 	P2SoundsEnabled = config->getBool("2- Characters", "P2SoundsEnabled", false);
@@ -590,6 +607,23 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 		FlyCharEnabled = Characters_HeroesTails;
 	}
 
+	if (!PowerCharacter.compare("Knuckles")) {
+		//LoadKnuckFiles(path, helperFunctions);
+		PowerCharEnabled = Characters_HeroesKnuckles;
+	}
+	else if (!PowerCharacter.compare("Omega")) {
+		//LoadOmegaFiles(path, helperFunctions);
+		PowerCharEnabled = Characters_Omega;
+	}
+	else if (!PowerCharacter.compare("Big")) {
+		//LoadBigFiles(path, helperFunctions);
+		PowerCharEnabled = Characters_HeroesBig;
+	}
+	else if (!PowerCharacter.compare("Vector")) {
+		//LoadVectorFiles(path, helperFunctions);
+		PowerCharEnabled = Characters_Vector;
+	}
+
 	if (SpeedCharEnabled) {
 		WriteCall((void*)0x49BF04, Heroes_Display);
 		WriteCall((void*)0x495EAA, PlaySound_HeroesChar); //jump
@@ -599,8 +633,12 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 		WriteCall((void*)0x492DD4, PlaySound_HeroesChar); //hurt
 		WriteCall((void*)0x492DD4, PlaySound_HeroesChar); //hurt
 		WriteCall((void*)0x446A26, PlaySound_HeroesChar); //death
+
+		//Common special effects
 		CharMdls[0] = LoadObjectModel("effect_ball");
 		CharMdls[1] = LoadObjectModel("effect_tornado");
+
+		//Remove the dash trail
 		WriteData<5>((void*)0x49B238, 0x90);
 		WriteData<5>((void*)0x49AF36, 0x90);
 		WriteData<5>((void*)0x49AFD7, 0x90);
@@ -620,7 +658,14 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 		WriteCall((void*)0x446A49, PlaySound_HeroesChar); //death
 	}
 
-	if (SpeedCharEnabled || FlyCharEnabled) {
+	if (PowerCharEnabled) {
+		WriteCall((void*)0x47B489, Heroes_Display);
+		WriteCall((void*)0x473766, PlaySound_HeroesChar); //jump
+		WriteCall((void*)0x4507AC, PlaySound_HeroesChar); //hurt
+		WriteCall((void*)0x446A49, PlaySound_HeroesChar); //death
+	}
+
+	if (SpeedCharEnabled || FlyCharEnabled || PowerCharEnabled) {
 		WriteCall((void*)0x45BE57, PlayVoice_HeroesChar); //win
 	}
 }
@@ -639,6 +684,11 @@ void Characters_OnFrame() {
 			HeroesChars[player] = LoadObject(LoadObj_Data1, 1, MainFuncs[FlyCharEnabled - 9]);
 			HeroesChars[player]->Data1->CharIndex = player;
 			HeroesChars[player]->Data1->CharID = FlyCharEnabled;
+		}
+		else if (PowerCharEnabled && EntityData1Ptrs[player]->CharID == Characters_Knuckles) {
+			HeroesChars[player] = LoadObject(LoadObj_Data1, 1, MainFuncs[PowerCharEnabled - 9]);
+			HeroesChars[player]->Data1->CharIndex = player;
+			HeroesChars[player]->Data1->CharID = PowerCharEnabled;
 		}
 	}
 }

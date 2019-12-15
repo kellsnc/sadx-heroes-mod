@@ -15,7 +15,11 @@ enum CharactersHeroes
 	Characters_HeroesSonic,
 	Characters_Shadow,
 	Characters_HeroesAmy,
-	Characters_Espio
+	Characters_Espio,
+	Characters_HeroesKnuckles,
+	Characters_Omega,
+	Characters_HeroesBig,
+	Characters_Vector
 };
 
 void DrawChunkModel(NJS_CNK_MODEL* model);
