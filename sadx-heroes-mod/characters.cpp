@@ -6,6 +6,7 @@ ObjectMaster* HeroesChars[8];
 bool CharTexsLoaded[8];
 int CurrentPlayer;
 
+bool CustomPhysics = true;
 bool JumpBallEnabled = true;
 bool P2SoundsEnabled = false;
 
@@ -551,6 +552,7 @@ int PlaySound_HeroesChar(int ID, void *a2, int a3, void *a4) {
 void Characters_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config) {
 	const std::string SpeedCharacter = config->getString("2- Characters", "SpeedCharacter", "None");
 	const std::string FlyCharacter = config->getString("2- Characters", "FlyCharacter", "None");
+	CustomPhysics = config->getBool("2- Characters", "CustomPhysics", true);
 	JumpBallEnabled = config->getBool("2- Characters", "JumpBallEnabled", true);
 	P2SoundsEnabled = config->getBool("2- Characters", "P2SoundsEnabled", false);
 

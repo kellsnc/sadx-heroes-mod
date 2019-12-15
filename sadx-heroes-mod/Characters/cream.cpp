@@ -346,10 +346,6 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 		return;
 	}
 
-	if (data->CharIndex == 0) {
-		CON_REGULAR_TEXNAMES[14].texaddr = CREAM_TEXLIST.textures[1].texaddr;
-	}
-
 	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
 	if (!obj->Child) LoadChildObject((LoadObj)(LoadObj_Data1 | LoadObj_Data2), Cheese_Main, obj);
 
@@ -357,10 +353,20 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 	EntityData2* playerdata2 = (EntityData2*)playerobj->Data2;
 	CharObj2* playerco2 = playerdata2->CharacterData;
 
-	playerco2->PhysicsData.MaxAccel = 2.5f;
-	playerco2->PhysicsData.field_14 = 0.8f;
-	playerco2->PhysicsData.AirAccel = 0.035999999f;
+	if (data->Rotation.z == 0) {
+		if (data->CharIndex == 0) {
+			CON_REGULAR_TEXNAMES[14].texaddr = CREAM_TEXLIST.textures[1].texaddr;
+		}
 
+		if (CustomPhysics) {
+			playerco2->PhysicsData.MaxAccel = 2.5f;
+			playerco2->PhysicsData.field_14 = 0.8f;
+			playerco2->PhysicsData.AirAccel = 0.035999999f;
+		}
+
+		data->Rotation.z = 1;
+	}
+	
 	int anim = data->Index;
 	float speed = 0;
 	float state = 0;

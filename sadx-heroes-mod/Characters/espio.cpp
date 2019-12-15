@@ -190,18 +190,24 @@ void EspioHeroes_Main(ObjectMaster *obj) {
 		return;
 	}
 
-	if (data->CharIndex == 0) {
-		CON_REGULAR_TEXNAMES[12].texaddr = ESPIO_TEXLIST.textures[1].texaddr;
-	}
-
 	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
 	EntityData1* playerdata = playerobj->Data1;
 	EntityData2* playerdata2 = (EntityData2*)playerobj->Data2;
 	CharObj2* playerco2 = playerdata2->CharacterData;
 
-	playerco2->PhysicsData.HSpeedCap = 18;
-	playerco2->PhysicsData.MaxAccel = 4.0f;
-	playerco2->PhysicsData.field_14 = 0.95f;
+	if (data->Rotation.z == 0) {
+		if (data->CharIndex == 0) {
+			CON_REGULAR_TEXNAMES[12].texaddr = ESPIO_TEXLIST.textures[1].texaddr;
+		}
+
+		if (CustomPhysics) {
+			playerco2->PhysicsData.HSpeedCap = 17;
+			playerco2->PhysicsData.MaxAccel = 3.6f;
+			playerco2->PhysicsData.field_14 = 0.95f;
+		}
+
+		data->Rotation.z = 1;
+	}
 
 	CharactersCommon_DrawBall(playerdata, data);
 

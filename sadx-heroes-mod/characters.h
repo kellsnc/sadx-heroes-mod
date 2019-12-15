@@ -4,6 +4,7 @@ typedef void(__cdecl *PlaySoundFuncPtr)(int);
 
 extern int CurrentPlayer;
 extern bool CharTexsLoaded[];
+extern bool CustomPhysics;
 
 enum CharactersHeroes
 {
