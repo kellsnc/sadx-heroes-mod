@@ -5,7 +5,7 @@ uint8_t SpeedCharEnabled;
 uint8_t PowerCharEnabled;
 
 ObjectMaster* HeroesChars[8];
-bool CharTexsLoaded[8];
+bool CharTexsLoaded[9];
 int CurrentPlayer;
 
 bool CustomPhysics = true;
@@ -23,7 +23,8 @@ ObjectFuncPtr DisplayFuncs[]{
 	SonicHeroes_Display,
 	ShadowHeroes_Display,
 	AmyHeroes_Display,
-	EspioHeroes_Display
+	EspioHeroes_Display,
+	KnucklesHeroes_Display
 };
 
 ObjectFuncPtr MainFuncs[]{
@@ -34,7 +35,8 @@ ObjectFuncPtr MainFuncs[]{
 	SonicHeroes_Main,
 	ShadowHeroes_Main,
 	AmyHeroes_Main,
-	EspioHeroes_Main
+	EspioHeroes_Main,
+	KnucklesHeroes_Main
 };
 
 PlaySoundFuncPtr SoundFuncs[]{
@@ -45,7 +47,8 @@ PlaySoundFuncPtr SoundFuncs[]{
 	PlaySound_Sonic,
 	PlaySound_Shadow,
 	PlaySound_Amy,
-	PlaySound_Espio
+	PlaySound_Espio,
+	PlaySound_Knuckles
 };
 
 PlaySoundFuncPtr VoiceFuncs[]{
@@ -56,7 +59,8 @@ PlaySoundFuncPtr VoiceFuncs[]{
 	PlayVoice_Sonic,
 	PlayVoice_Shadow,
 	PlayVoice_Amy,
-	PlayVoice_Espio
+	PlayVoice_Espio,
+	PlayVoice_Knuckles
 };
 
 Uint32 CharColours[]{
@@ -67,7 +71,8 @@ Uint32 CharColours[]{
 	0x960080FF,
 	0xBC660000,
 	0x96FB7D88,
-	0x96BD008A
+	0x96BD008A,
+	0x96E90500
 };
 
 //Store the current player id at the start of their function
@@ -237,6 +242,7 @@ void CharactersCommon_DrawBall(EntityData1* playerdata, EntityData1* data) {
 	}
 	
 	if ((playerdata->CharID == Characters_Sonic && data->Index == 14) ||
+		(playerdata->CharID == Characters_Knuckles && data->Index == 14) ||
 		(playerdata->CharID == Characters_Tails && data->Index == 19)) {
 
 		ObjectMaster * ball = LoadObject(LoadObj_Data1, 5, BallObject);
@@ -282,10 +288,12 @@ bool CharactersCommon_Init(ObjectMaster* obj, const char* name, NJS_TEXLIST* tex
 		return false;
 	}
 
-	if (!playerobj || (data->CharID >= Characters_HeroesSonic && playerobj->Data1->CharID != Characters_Sonic) 
-		|| (data->CharID < Characters_HeroesSonic && playerobj->Data1->CharID != Characters_Tails)) { 
-		DeleteObject_(obj); 
-		return false; 
+	char charid = playerobj->Data1->CharID;
+	if ((charid == Characters_Sonic && (data->CharID < Characters_HeroesSonic || data->CharID > Characters_Espio)) ||
+		(charid == Characters_Tails && data->CharID > Characters_HeroesTails) ||
+		(charid == Characters_Knuckles && data->CharID < Characters_HeroesKnuckles) || !playerobj) {
+		DeleteObject_(obj);
+		return false;
 	}
 
 	return true;
@@ -371,6 +379,63 @@ NJS_VECTOR SpeedAnims(EntityData1* data, EntityData1* playerdata, CharObj2* play
 	case 124: anim = 22; break;
 	case 126: case 127: case 128: anim = 56; break;
 	case 129: anim = 11;
+	}
+
+	return { (float)anim, speed, state };
+}
+
+NJS_VECTOR PowerAnims(EntityData1* data, EntityData1* playerdata, CharObj2* playerco2) {
+	int anim = playerco2->AnimationThing.Index;
+	float speed = 0;
+	float state = 0;
+	float frame = data->Scale.x;
+
+	switch (playerco2->AnimationThing.Index) {
+	case 0: case 1:	case 2:	case 7: case 8: anim = 54; data->Status = 0; 
+		if (playerco2->AnimationThing.Index == 0 && playerdata->Position.y - playerco2->_struct_a3.DistanceMax > 500) anim = 49; break; //stance
+	case 3: case 4: case 5: case 6: anim = 55; if (++data->Status == 100) { playerco2->AnimationThing.Index = 0; data->Status = 0; } break; //idle
+	case 9: data->Status = 0; anim = 0; if (playerco2->Speed.x < 0.02f) anim = 5; break;
+	case 10: anim = 0; speed = 0.9f + playerco2->Speed.x * 0.2f; break;
+	case 11: anim = 5; speed = 0.9f + playerco2->Speed.x * 0.2f; break;
+	case 12: anim = 6; speed = 1.5f + playerco2->Speed.x * 0.1f;
+		if (data->CharID == Characters_Shadow && playerco2->Speed.x > 3) anim = 7; break;
+	case 13: anim = 7; speed = 0.5f + playerco2->Speed.x * 0.1f;
+		if (data->CharID == Characters_Shadow && playerco2->Speed.x > 3) anim = 57; break;
+	case 14: //jumping
+		if (anim < 13 || anim > 18) { anim = 13; }
+		else if (anim == 14) { if (data->Unknown > 2) anim = 15; }
+		else if (anim == 16) { if (playerdata->Position.y - playerco2->_struct_a3.DistanceMax < 10) anim = 17; } break;
+	case 15: case 16: case 17: case 34: anim = 14; break; //roll
+	case 18: //fall after spring jump
+		if (playerco2->Speed.x > 1 || playerdata->Action == 14) anim = 49;
+		else if (playerco2->Speed.y > 2 && playerco2->Speed.x < 1) anim = 50;
+		else anim = 16; break;
+	case 19: anim = 16; //falling
+		if (playerco2->Speed.x > 8 && playerdata->Position.y - playerco2->_struct_a3.DistanceMax > 500) {
+			anim = 49;
+		}
+		break;
+	case 20: anim = 18; break;
+	case 21: anim = 36; //break
+		if (playerco2->Speed.x > 6) anim = 35;
+		else if (playerco2->Speed.x > 3) anim = 34; break;
+	case 22: anim = 38; break;
+	case 23: case 24: anim = 2; break; //push
+	case 25: case 27: case 28: case 38: anim = 42; break; //hurt, drowning
+	case 30: anim = 41; break;
+	case 33: anim = 18; break;
+	case 39: case 40: anim = 52; break;
+	case 41: case 42: case 43: case 44: anim = 10; break;
+	case 45: anim = 45; break;
+	case 51: anim = 19; break;
+	case 46: case 47: case 48: anim = 1; break;
+	case 49: case 52: anim = 33; break;
+	case 50: anim = 47; break;
+	case 54: anim = 11; break;
+	case 55: anim = 10; break;
+	case 56: anim = 12; break;
+	case 70: case 71: case 72: case 73: case 74: case 75: case 85: case 86: case 104: case 107: anim = 1; break;
+	case 84: case 101: case 102: case 103: case 108: case 109: case 110: anim = 29; break;
 	}
 
 	return { (float)anim, speed, state };
@@ -608,7 +673,7 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 	}
 
 	if (!PowerCharacter.compare("Knuckles")) {
-		//LoadKnuckFiles(path, helperFunctions);
+		LoadKnuckFiles(path, helperFunctions);
 		PowerCharEnabled = Characters_HeroesKnuckles;
 	}
 	else if (!PowerCharacter.compare("Omega")) {
@@ -686,7 +751,7 @@ void Characters_OnFrame() {
 			HeroesChars[player]->Data1->CharID = FlyCharEnabled;
 		}
 		else if (PowerCharEnabled && EntityData1Ptrs[player]->CharID == Characters_Knuckles) {
-			HeroesChars[player] = LoadObject(LoadObj_Data1, 1, MainFuncs[PowerCharEnabled - 9]);
+			HeroesChars[player] = LoadObject((LoadObj)(LoadObj_Data1 | LoadObj_Data2), 1, MainFuncs[PowerCharEnabled - 9]);
 			HeroesChars[player]->Data1->CharIndex = player;
 			HeroesChars[player]->Data1->CharID = PowerCharEnabled;
 		}

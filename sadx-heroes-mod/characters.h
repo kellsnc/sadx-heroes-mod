@@ -34,6 +34,8 @@ NJS_VECTOR SpeedAnims(EntityData1* data, EntityData1* playerdata, CharObj2* play
 void TornadoTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, EntityData1* playerdata);
 bool KickTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, EntityData1* playerdata);
 
+NJS_VECTOR PowerAnims(EntityData1* data, EntityData1* playerdata, CharObj2* playerco2);
+
 extern ObjectMaster* HeroesChars[];
 
 void CreamHeroes_Display(ObjectMaster *obj);
@@ -86,5 +88,11 @@ void NinjaObj(ObjectMaster* obj);
 void LoadEspioFiles(const char *path, const HelperFunctions &helperFunctions);
 void PlaySound_Espio(int ID);
 void PlayVoice_Espio(int ID);
+
+void KnucklesHeroes_Display(ObjectMaster *obj);
+void KnucklesHeroes_Main(ObjectMaster *obj);
+void LoadKnuckFiles(const char *path, const HelperFunctions &helperFunctions);
+void PlaySound_Knuckles(int ID);
+void PlayVoice_Knuckles(int ID);
 
 static void(__cdecl** NodeCallbackFuncPtr)(NJS_OBJECT* obj) = (decltype(NodeCallbackFuncPtr))0x3AB9908;
