@@ -169,20 +169,22 @@ void PlayHeroesAnimation(ObjectMaster* obj, uint8_t ID, AnimData* animdata, floa
 void CharactersCommon_Delete(ObjectMaster* obj) {
 	HeroesChars[obj->Data1->CharIndex] = nullptr;
 
-	int character = obj->Data1->CharID;
-	bool ArethereOthers = false;
+	if (GameState == 9 || (GameState == 8 && Lives == 0)) {
+		int character = obj->Data1->CharID;
+		bool ArethereOthers = false;
 
-	for (uint8_t player = 0; player < 8; ++player) {
-		if (player != obj->Data1->CharIndex && HeroesChars[player]) {
-			if (HeroesChars[player]->Data1->CharID == character) ArethereOthers = true;
+		for (uint8_t player = 0; player < 8; ++player) {
+			if (player != obj->Data1->CharIndex && HeroesChars[player]) {
+				if (HeroesChars[player]->Data1->CharID == character) ArethereOthers = true;
+			}
+		}
+
+		if (!ArethereOthers) {
+			njReleaseTexture((NJS_TEXLIST*)obj->Data1->LoopData);
+			CharTexsLoaded[character - 9] = false;
 		}
 	}
-
-	if (!ArethereOthers) {
-		njReleaseTexture((NJS_TEXLIST*)obj->Data1->LoopData);
-		CharTexsLoaded[character - 9] = false;
-	}
-
+	
 	ObjectMaster* playerobj = PlayerPtrs[obj->Data1->CharIndex];
 	if (playerobj) {
 		EntityData2* playerdata2 = (EntityData2*)playerobj->Data2;
@@ -274,7 +276,7 @@ void CharactersCommon_DrawBall(EntityData1* playerdata, EntityData1* data) {
 bool CharactersCommon_Init(ObjectMaster* obj, const char* name, NJS_TEXLIST* tex) {
 	EntityData1* data = obj->Data1;
 	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
-
+	
 	if (data->Action == 0) {
 		obj->DeleteSub = CharactersCommon_Delete;
 		data->Action = 1;
