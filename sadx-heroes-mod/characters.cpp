@@ -144,6 +144,19 @@ void Sonic_Act1_r(EntityData1 *entity1, EntityData2 *entity2, CharObj2 *obj2) {
 	original(entity1, entity2, obj2);
 }
 
+//Unload a Knuckles object that doesn't delete itself with charsel swapping.
+void sub_473CE0(ObjectMaster* obj);
+Trampoline sub_473CE0_t(0x473CE0, 0x473CE8, sub_473CE0);
+void sub_473CE0(ObjectMaster* obj) {
+	if (EntityData1Ptrs[obj->Data1->CharIndex]->CharID != Characters_Knuckles) {
+		DeleteObject_(obj);
+		return;
+	}
+
+	ObjectFunc(original, sub_473CE0_t.Target());
+	original(obj);
+}
+
 //Character Animation like Sonic Heroes does
 void PlayHeroesAnimation(ObjectMaster* obj, uint8_t ID, AnimData* animdata, float forcespeed, float forcestate) {
 	EntityData1* data = obj->Data1;
@@ -210,17 +223,27 @@ void CharactersCommon_Delete(ObjectMaster* obj) {
 		}
 	}
 	
-	ObjectMaster* playerobj = PlayerPtrs[obj->Data1->CharIndex];
+	/*ObjectMaster* playerobj = PlayerPtrs[obj->Data1->CharIndex];
 	if (playerobj) {
 		EntityData2* playerdata2 = (EntityData2*)playerobj->Data2;
 		CharObj2* playerco2 = playerdata2->CharacterData;
 
-		playerobj->DisplaySub = Tails_Display;
+		switch (playerobj->Data1->CharID) {
+		case Characters_Sonic:
+			playerobj->DisplaySub = Sonic_Display;
+			break;
+		case Characters_Tails:
+			playerobj->DisplaySub = Tails_Display;
+			break;
+		case Characters_Knuckles:
+			playerobj->DisplaySub = Knuckles_Display;
+			break;
+		}
 
 		playerco2->PhysicsData.MaxAccel = PhysicsArray[2].MaxAccel;
 		playerco2->PhysicsData.field_14 = PhysicsArray[2].field_14;
 		playerco2->PhysicsData.AirAccel = PhysicsArray[2].AirAccel;
-	}
+	}*/
 }
 
 //Display the ball and dash effects
@@ -338,7 +361,7 @@ bool CharactersCommon_Init(ObjectMaster* obj, const char* name, NJS_TEXLIST* tex
 
 //Speed characters common anims
 NJS_VECTOR SpeedAnims(EntityData1* data, EntityData1* playerdata, CharObj2* playerco2) {
-	int anim = playerco2->AnimationThing.Index;
+	int anim = data->Index;
 	float speed = 0;
 	float state = 0;
 	float frame = data->Scale.x;
@@ -372,7 +395,7 @@ NJS_VECTOR SpeedAnims(EntityData1* data, EntityData1* playerdata, CharObj2* play
 		if (playerco2->Speed.x > 6) anim = 35;
 		else if (playerco2->Speed.x > 3) anim = 34; break;
 	case 21: case 22: anim = 48; break; //push
-	case 24: anim = 42; break; //hurt
+	case 23: case 24: anim = 42; break; //hurt
 	case 26: case 46: anim = 41; break; //updraft
 	case 27: case 28: anim = 42; break;
 	case 29: anim = 18; break;
@@ -422,7 +445,7 @@ NJS_VECTOR SpeedAnims(EntityData1* data, EntityData1* playerdata, CharObj2* play
 }
 
 NJS_VECTOR PowerAnims(EntityData1* data, EntityData1* playerdata, CharObj2* playerco2) {
-	int anim = playerco2->AnimationThing.Index;
+	int anim = data->Index;
 	float speed = 0;
 	float state = 0;
 	float frame = data->Scale.x;
