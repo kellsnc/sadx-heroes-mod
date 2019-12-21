@@ -48,11 +48,12 @@ typedef struct {
 
 extern uint8_t killcount;
 
-ModelInfo* LoadObjectModel(const char *name);
+ModelInfo* LoadCommonModel(const char *name);
+ModelInfo* LoadObjectModel(ModelInfo * ptr, const char *name);
 ModelInfo* LoadCharacterModel(const char *name);
 AnimationFile* LoadObjectAnim(const char *name);
 AnimationFile* LoadCharacterAnim(const char *name);
-void FreeMDL(ModelInfo * pointer);
+ModelInfo* FreeMDL(ModelInfo * pointer);
 void FreeANM(AnimationFile * pointer);
 
 void DynCol_Add(ObjectMaster *a1, uint8_t col);

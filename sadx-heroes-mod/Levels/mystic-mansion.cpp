@@ -35,16 +35,16 @@ void MysticMansion_MusicHandler() {
 }
 
 void MysticMansion_InitObjects() {
-	MM_SKELFAN = LoadObjectModel("MM_SKELFAN");
-	MM_SPHERE1 = LoadObjectModel("MM_SPHERE1");
-	MM_SPHERE2 = LoadObjectModel("MM_SPHERE2");
-	MM_MYSTCAR = LoadObjectModel("MM_MYSTCAR");
-	MM_MOVPLAT = LoadObjectModel("MM_MOVPLAT");
-	MM_MYSDOOR = LoadObjectModel("MM_MYSDOOR");
-	MM_MYSWALL = LoadObjectModel("MM_MYSWALL");
-	MM_TORCHES = LoadObjectModel("MM_TORCHES");
-	HC_SPKWARP = LoadObjectModel("HC_SPKWARP");
-	HC_HFLAMES = LoadObjectModel("HC_HFLAMES");
+	MM_SKELFAN = LoadObjectModel(MM_SKELFAN, "MM_SKELFAN");
+	MM_SPHERE1 = LoadObjectModel(MM_SPHERE1, "MM_SPHERE1");
+	MM_SPHERE2 = LoadObjectModel(MM_SPHERE2, "MM_SPHERE2");
+	MM_MYSTCAR = LoadObjectModel(MM_MYSTCAR, "MM_MYSTCAR");
+	MM_MOVPLAT = LoadObjectModel(MM_MOVPLAT, "MM_MOVPLAT");
+	MM_MYSDOOR = LoadObjectModel(MM_MYSDOOR, "MM_MYSDOOR");
+	MM_MYSWALL = LoadObjectModel(MM_MYSWALL, "MM_MYSWALL");
+	MM_TORCHES = LoadObjectModel(MM_TORCHES, "MM_TORCHES");
+	HC_SPKWARP = LoadObjectModel(HC_SPKWARP, "HC_SPKWARP");
+	HC_HFLAMES = LoadObjectModel(HC_HFLAMES, "HC_HFLAMES");
 	
 	MMMODELLIST[0] = MM_SPHERE1->getmodel()->basicdxmodel;
 	MMMODELLIST[1] = MM_SPHERE2->getmodel()->basicdxmodel;
@@ -57,16 +57,16 @@ void MysticMansion_InitObjects() {
 }
 
 void MysticMansion_Delete(ObjectMaster * a1) {
-	FreeMDL(MM_SPHERE1);
-	FreeMDL(MM_SPHERE2);
-	FreeMDL(MM_SKELFAN);
-	FreeMDL(MM_MYSTCAR);
-	FreeMDL(MM_MOVPLAT);
-	FreeMDL(MM_MYSDOOR);
-	FreeMDL(MM_MYSWALL);
-	FreeMDL(MM_TORCHES);
-	FreeMDL(HC_SPKWARP);
-	FreeMDL(HC_HFLAMES);
+	MM_SPHERE1 = FreeMDL(MM_SPHERE1);
+	MM_SPHERE2 = FreeMDL(MM_SPHERE2);
+	MM_SKELFAN = FreeMDL(MM_SKELFAN);
+	MM_MYSTCAR = FreeMDL(MM_MYSTCAR);
+	MM_MOVPLAT = FreeMDL(MM_MOVPLAT);
+	MM_MYSDOOR = FreeMDL(MM_MYSDOOR);
+	MM_MYSWALL = FreeMDL(MM_MYSWALL);
+	MM_TORCHES = FreeMDL(MM_TORCHES);
+	HC_SPKWARP = FreeMDL(HC_SPKWARP);
+	HC_HFLAMES = FreeMDL(HC_HFLAMES);
 
 	if (IsLantern) {
 		set_shader_flags_ptr(ShaderFlags_Blend, false);

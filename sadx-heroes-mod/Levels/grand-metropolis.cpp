@@ -15,12 +15,12 @@ void GrandMetropolisSkybox(ObjectMaster *a1) {
 }
 
 void GrandMetropolis_InitObjects() {
-	GM_ADVERTS = LoadObjectModel("GM_ADVERTS");
-	GM_GPISTON = LoadObjectModel("GM_GPISTON");
-	GM_GRFLUID = LoadObjectModel("GM_GRFLUID");
-	GM_GRPLANE = LoadObjectModel("GM_GRPLANE");
-	GM_MCLOUDS = LoadObjectModel("GM_MCLOUDS");
-	GM_ZEPPLIN = LoadObjectModel("GM_ZEPPLIN");
+	GM_ADVERTS = LoadObjectModel(GM_ADVERTS, "GM_ADVERTS");
+	GM_GPISTON = LoadObjectModel(GM_GPISTON, "GM_GPISTON");
+	GM_GRFLUID = LoadObjectModel(GM_GRFLUID, "GM_GRFLUID");
+	GM_GRPLANE = LoadObjectModel(GM_GRPLANE, "GM_GRPLANE");
+	GM_MCLOUDS = LoadObjectModel(GM_MCLOUDS, "GM_MCLOUDS");
+	GM_ZEPPLIN = LoadObjectModel(GM_ZEPPLIN, "GM_ZEPPLIN");
 
 	LoadObject(LoadObj_Data1, 3, GMPistons);
 	LoadObject(LoadObj_Data1, 3, GMCars);
@@ -34,13 +34,13 @@ void GrandMetropolis_InitObjects() {
 }
 
 void GrandMetropolis_Delete(ObjectMaster * a1) {
-	FreeMDL(GM_ADVERTS);
-	FreeMDL(GM_FLYCARS);
-	FreeMDL(GM_GPISTON);
-	FreeMDL(GM_GRFLUID);
-	FreeMDL(GM_GRPLANE);
-	FreeMDL(GM_MCLOUDS);
-	FreeMDL(GM_ZEPPLIN);
+	GM_ADVERTS = FreeMDL(GM_ADVERTS);
+	GM_FLYCARS = FreeMDL(GM_FLYCARS);
+	GM_GPISTON = FreeMDL(GM_GPISTON);
+	GM_GRFLUID = FreeMDL(GM_GRFLUID);
+	GM_GRPLANE = FreeMDL(GM_GRPLANE);
+	GM_MCLOUDS = FreeMDL(GM_MCLOUDS);
+	GM_ZEPPLIN = FreeMDL(GM_ZEPPLIN);
 
 	if (IsLantern) {
 		set_shader_flags_ptr(ShaderFlags_Blend, false);
@@ -65,7 +65,7 @@ void GrandMetropolisHandler(ObjectMaster * a1) {
 		a1->Data1->Action = 1;
 		a1->DeleteSub = GrandMetropolis_Delete;
 
-		GM_FLYCARS = LoadObjectModel("GM_FLYCARS");
+		GM_FLYCARS = LoadObjectModel(GM_FLYCARS, "GM_FLYCARS");
 
 		if (CurrentAct == 0) {
 			CurrentLevelTexlist = &CASINO01_TEXLIST;

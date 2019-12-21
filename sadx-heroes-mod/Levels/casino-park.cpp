@@ -6,31 +6,31 @@
 void CasinoSkybox(ObjectMaster *a1);
 
 void CasinoPark_InitObjects() {
-	CP_BIGDICE = LoadObjectModel("CP_BIGDICE");
-	CP_CSNOBOB = LoadObjectModel("CP_CSNOBOB");
-	CP_DIRSIGN = LoadObjectModel("CP_DIRSIGN");
-	CP_FLIPPER = LoadObjectModel("CP_FLIPPER");
-	CP_MOVDICE = LoadObjectModel("CP_MOVDICE");
-	CP_RURETTO = LoadObjectModel("CP_RURETTO");
-	CP_SLDDOOR = LoadObjectModel("CP_SLDDOOR");
-	CP_SLOTMCS = LoadObjectModel("CP_SLOTMCS");
-	CP_DSHPANL = LoadObjectModel("CP_DSHPANL");
-	CP_SKYMDLS = LoadObjectModel("CP_SKYMDLS");
+	CP_BIGDICE = LoadObjectModel(CP_BIGDICE, "CP_BIGDICE");
+	CP_CSNOBOB = LoadObjectModel(CP_CSNOBOB, "CP_CSNOBOB");
+	CP_DIRSIGN = LoadObjectModel(CP_DIRSIGN, "CP_DIRSIGN");
+	CP_FLIPPER = LoadObjectModel(CP_FLIPPER, "CP_FLIPPER");
+	CP_MOVDICE = LoadObjectModel(CP_MOVDICE, "CP_MOVDICE");
+	CP_RURETTO = LoadObjectModel(CP_RURETTO, "CP_RURETTO");
+	CP_SLDDOOR = LoadObjectModel(CP_SLDDOOR, "CP_SLDDOOR");
+	CP_SLOTMCS = LoadObjectModel(CP_SLOTMCS, "CP_SLOTMCS");
+	CP_DSHPANL = LoadObjectModel(CP_DSHPANL, "CP_DSHPANL");
+	CP_SKYMDLS = LoadObjectModel(CP_SKYMDLS, "CP_SKYMDLS");
 
 	LoadObject(LoadObj_Data1, 3, CPGlass);
 }
 
 void CasinoPark_Delete(ObjectMaster * a1) {
-	FreeMDL(CP_BIGDICE);
-	FreeMDL(CP_CSNOBOB);
-	FreeMDL(CP_DIRSIGN);
-	FreeMDL(CP_FLIPPER);
-	FreeMDL(CP_MOVDICE);
-	FreeMDL(CP_RURETTO);
-	FreeMDL(CP_SLDDOOR);
-	FreeMDL(CP_SLOTMCS);
-	FreeMDL(CP_DSHPANL);
-	FreeMDL(CP_SKYMDLS);
+	CP_BIGDICE = FreeMDL(CP_BIGDICE);
+	CP_CSNOBOB = FreeMDL(CP_CSNOBOB);
+	CP_DIRSIGN = FreeMDL(CP_DIRSIGN);
+	CP_FLIPPER = FreeMDL(CP_FLIPPER);
+	CP_MOVDICE = FreeMDL(CP_MOVDICE);
+	CP_RURETTO = FreeMDL(CP_RURETTO);
+	CP_SLDDOOR = FreeMDL(CP_SLDDOOR);
+	CP_SLOTMCS = FreeMDL(CP_SLOTMCS);
+	CP_DSHPANL = FreeMDL(CP_DSHPANL);
+	CP_SKYMDLS = FreeMDL(CP_SKYMDLS);
 
 	CasinoCommon_Delete(a1);
 	LevelHandler_Delete(a1);

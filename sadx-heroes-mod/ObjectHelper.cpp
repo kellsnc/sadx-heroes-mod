@@ -30,7 +30,14 @@ ModelInfo* LoadMDL(const char *type, const char *name) {
 	}
 }
 
-ModelInfo* LoadObjectModel(const char *name) {
+ModelInfo* LoadCommonModel(const char *name) {
+	PrintDebug("[SHM] Loading common object model: %s... ", name);
+	return LoadMDL("objects", name);
+}
+
+ModelInfo* LoadObjectModel(ModelInfo* ptr, const char *name) {
+	if (ptr) return ptr;
+
 	PrintDebug("[SHM] Loading object model: %s... ", name);
 	return LoadMDL("objects", name);
 }
@@ -41,10 +48,15 @@ ModelInfo* LoadCharacterModel(const char *name) {
 }
 
 //Free Object File
-void FreeMDL(ModelInfo * pointer) {
+ModelInfo* FreeMDL(ModelInfo * pointer) {
+	if (GameState == 7) {
+		return pointer;
+	}
+
 	if (pointer) {
 		PrintDebug("[SHM] Freeing model: %s... \n", pointer->getdescription().c_str());
 		delete(pointer);
+		return nullptr;
 	}
 }
 
@@ -118,7 +130,7 @@ void DynCol_Add(ObjectMaster *a1, uint8_t col) {
 	1 is moving (refresh the colision every frame)
 	2 is static, scalable
 	3 is moving, scalable	*/
-	
+
 	EntityData1 * original = a1->Data1;
 	NJS_OBJECT *colobject;
 
@@ -188,7 +200,8 @@ bool DynColRadius(ObjectMaster *a1, float radius, uint8_t col) {
 			return 2;
 		}
 		return true;
-	} else if (a1->Data1->LoopData) {
+	}
+	else if (a1->Data1->LoopData) {
 		DynamicCOL_Remove(a1, (NJS_OBJECT*)a1->Data1->LoopData);
 		ObjectArray_Remove((NJS_OBJECT*)a1->Data1->LoopData);
 		a1->Data1->LoopData = nullptr;

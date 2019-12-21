@@ -60,9 +60,9 @@ void SeasideHill_OnFrame(EntityData1 * entity, CharObj2 * co2) {
 }
 
 void SeasideHill_InitObjects() {
-	SH_PLATFOR = LoadObjectModel("SH_PLATFOR");
-	SH_WATERFS = LoadObjectModel("SH_WATERFS");
-	SH_MORUINS = LoadObjectModel("SH_MORUINS");
+	SH_PLATFOR = LoadObjectModel(SH_PLATFOR, "SH_PLATFOR");
+	SH_WATERFS = LoadObjectModel(SH_WATERFS, "SH_WATERFS");
+	SH_MORUINS = LoadObjectModel(SH_MORUINS, "SH_MORUINS");
 	
 	SeasideHill_UVShift[0].List = SH_WATERFS->getmodel()->basicdxmodel->meshsets[0].vertuv;
 	SeasideHill_UVShift[1].List = SH_WATERFS->getmodel()->child->basicdxmodel->meshsets[0].vertuv;
@@ -78,11 +78,11 @@ void SeasideHill_InitObjects() {
 }
 
 void SeasideHill_Delete(ObjectMaster * a1) {
-	FreeMDL(SH_MORUINS);
-	FreeMDL(SH_POLFLAG);
-	FreeMDL(SH_FLOWERS);
-	FreeMDL(SH_PLATFOR);
-	FreeMDL(SH_WATERFS);
+	SH_MORUINS = SH_MORUINS = FreeMDL(SH_MORUINS);
+	SH_POLFLAG = SH_POLFLAG = FreeMDL(SH_POLFLAG);
+	SH_FLOWERS = SH_FLOWERS = FreeMDL(SH_FLOWERS);
+	SH_PLATFOR = SH_PLATFOR = FreeMDL(SH_PLATFOR);
+	SH_WATERFS = SH_WATERFS = FreeMDL(SH_WATERFS);
 
 	LevelHandler_Delete(a1);
 }
@@ -105,8 +105,8 @@ void SeasideHillHandler(ObjectMaster * a1) {
 			PlayMusic(MusicIDs_EmeraldCoastAzureBlueWorld);
 			SoundManager_Delete2();
 
-			SH_FLOWERS = LoadObjectModel("SH_FLOWERS");
-			SH_POLFLAG = LoadObjectModel("SH_POLFLAG");
+			SH_FLOWERS = LoadObjectModel(SH_FLOWERS, "SH_FLOWERS");
+			SH_POLFLAG = LoadObjectModel(SH_POLFLAG, "SH_POLFLAG");
 			LoadObject(LoadObj_Data1, 3, SHFlowers);
 
 			CurrentLevelTexlist = &BEACH01_TEXLIST;

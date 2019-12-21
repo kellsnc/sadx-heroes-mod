@@ -5,18 +5,18 @@
 void CasinoSkybox(ObjectMaster *a1);
 
 void BingoHighway_InitObjects() {
-	CP_CSNOBOB = LoadObjectModel("CP_CSNOBOB");
-	CP_FLIPPER = LoadObjectModel("CP_FLIPPER");
-	CP_MOVDICE = LoadObjectModel("CP_MOVDICE");
-	CP_RURETTO = LoadObjectModel("CP_RURETTO");
-	CP_SLDDOOR = LoadObjectModel("CP_SLDDOOR");
-	CP_SLOTMCS = LoadObjectModel("CP_SLOTMCS");
-	CP_DSHPANL = LoadObjectModel("CP_DSHPANL");
-	CP_SKYMDLS = LoadObjectModel("CP_SKYMDLS");
-	BH_BIGCHIP = LoadObjectModel("BH_BIGCHIP");
-	BH_BNGCHIP = LoadObjectModel("BH_BNGCHIP");
-	BH_BNGCARD = LoadObjectModel("BH_BNGCARD");
-	BH_TBLSIGN = LoadObjectModel("BH_TBLSIGN");
+	CP_CSNOBOB = LoadObjectModel(CP_CSNOBOB, "CP_CSNOBOB");
+	CP_FLIPPER = LoadObjectModel(CP_FLIPPER, "CP_FLIPPER");
+	CP_MOVDICE = LoadObjectModel(CP_MOVDICE, "CP_MOVDICE");
+	CP_RURETTO = LoadObjectModel(CP_RURETTO, "CP_RURETTO");
+	CP_SLDDOOR = LoadObjectModel(CP_SLDDOOR, "CP_SLDDOOR");
+	CP_SLOTMCS = LoadObjectModel(CP_SLOTMCS, "CP_SLOTMCS");
+	CP_DSHPANL = LoadObjectModel(CP_DSHPANL, "CP_DSHPANL");
+	CP_SKYMDLS = LoadObjectModel(CP_SKYMDLS, "CP_SKYMDLS");
+	BH_BIGCHIP = LoadObjectModel(BH_BIGCHIP, "BH_BIGCHIP");
+	BH_BNGCHIP = LoadObjectModel(BH_BNGCHIP, "BH_BNGCHIP");
+	BH_BNGCARD = LoadObjectModel(BH_BNGCARD, "BH_BNGCARD");
+	BH_TBLSIGN = LoadObjectModel(BH_TBLSIGN, "BH_TBLSIGN");
 
 	BINGONB[0] = BH_BNGCHIP->getmodel()->basicdxmodel;
 	BINGONB[1] = BH_BNGCHIP->getmodel()->child->basicdxmodel;
@@ -33,18 +33,18 @@ void BingoHighway_InitObjects() {
 }
 
 void BingoHighway_Delete(ObjectMaster * a1) {
-	FreeMDL(CP_CSNOBOB);
-	FreeMDL(CP_FLIPPER);
-	FreeMDL(CP_MOVDICE);
-	FreeMDL(CP_RURETTO);
-	FreeMDL(CP_SLDDOOR);
-	FreeMDL(CP_SLOTMCS);
-	FreeMDL(CP_DSHPANL);
-	FreeMDL(BH_BIGCHIP);
-	FreeMDL(BH_BNGCHIP);
-	FreeMDL(BH_BNGCARD);
-	FreeMDL(BH_TBLSIGN);
-	FreeMDL(CP_SKYMDLS);
+	CP_CSNOBOB = FreeMDL(CP_CSNOBOB);
+	CP_FLIPPER = FreeMDL(CP_FLIPPER);
+	CP_MOVDICE = FreeMDL(CP_MOVDICE);
+	CP_RURETTO = FreeMDL(CP_RURETTO);
+	CP_SLDDOOR = FreeMDL(CP_SLDDOOR);
+	CP_SLOTMCS = FreeMDL(CP_SLOTMCS);
+	CP_DSHPANL = FreeMDL(CP_DSHPANL);
+	BH_BIGCHIP = FreeMDL(BH_BIGCHIP);
+	BH_BNGCHIP = FreeMDL(BH_BNGCHIP);
+	BH_BNGCARD = FreeMDL(BH_BNGCARD);
+	BH_TBLSIGN = FreeMDL(BH_TBLSIGN);
+	CP_SKYMDLS = FreeMDL(CP_SKYMDLS);
 
 	CasinoCommon_Delete(a1);
 	LevelHandler_Delete(a1);

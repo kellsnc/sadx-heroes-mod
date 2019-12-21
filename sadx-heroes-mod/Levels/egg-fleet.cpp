@@ -6,15 +6,15 @@ ModelInfo * EF_SKYMDLS;
 void EggFleetObjects_Init();
 
 void EggFleet_InitObjects() {
-	EF_SKYMDLS = LoadObjectModel("EF_SKYMDLS");
-	EF_CANNON1 = LoadObjectModel("EF_CANNON1");
-	EF_BULLETS = LoadObjectModel("EF_BULLETS");
+	EF_SKYMDLS = LoadObjectModel(EF_SKYMDLS, "EF_SKYMDLS");
+	EF_CANNON1 = LoadObjectModel(EF_CANNON1, "EF_CANNON1");
+	EF_BULLETS = LoadObjectModel(EF_BULLETS, "EF_BULLETS");
 }
 
 void EggFleet_Delete(ObjectMaster *a1) {
-	FreeMDL(EF_SKYMDLS);
-	FreeMDL(EF_CANNON1);
-	FreeMDL(EF_BULLETS);
+	EF_SKYMDLS = FreeMDL(EF_SKYMDLS);
+	EF_CANNON1 = FreeMDL(EF_CANNON1);
+	EF_BULLETS = FreeMDL(EF_BULLETS);
 
 	LevelHandler_Delete(a1);
 }

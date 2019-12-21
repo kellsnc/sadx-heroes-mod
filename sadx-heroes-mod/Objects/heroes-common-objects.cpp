@@ -865,22 +865,22 @@ void CasinoObjects_Sounds(int ID, void *a2, int a3, void *a4) {
 void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config) {
 	helperFunctions.RegisterCommonObjectPVM(shobjpvm);
 
-	CO_BALLOON = LoadObjectModel("CO_BALLOON");
-	CO_CMNREEL = LoadObjectModel("CO_CMNREEL");
-	CO_COMNFAN = LoadObjectModel("CO_COMNFAN");
-	CO_LCKCASE = LoadObjectModel("CO_LCKCASE");
-	CO_OCANNON = LoadObjectModel("CO_OCANNON");
-	CO_WOODBOX = LoadObjectModel("CO_WOODBOX");
+	CO_BALLOON = LoadCommonModel("CO_BALLOON");
+	CO_CMNREEL = LoadCommonModel("CO_CMNREEL");
+	CO_COMNFAN = LoadCommonModel("CO_COMNFAN");
+	CO_LCKCASE = LoadCommonModel("CO_LCKCASE");
+	CO_OCANNON = LoadCommonModel("CO_OCANNON");
+	CO_WOODBOX = LoadCommonModel("CO_WOODBOX");
 
 	if (config->getBool("3- Objects", "GoalRing", true)) {
 		WriteJump((void*)0x46B170, Capsule_Load_r);
-		CO_GOALRNG = LoadObjectModel("CO_GOALRNG");
+		CO_GOALRNG = LoadCommonModel("CO_GOALRNG");
 		EnableModels = true;
 	}
 
 	if (config->getBool("3- Objects", "DashPanel", true)) {
 		WriteJump((void*)0x7A4360, SHDashPanel);
-		CO_DSHPANL = LoadObjectModel("CO_DSHPANL");
+		CO_DSHPANL = LoadCommonModel("CO_DSHPANL");
 		Objects_UVSHIFT[0].List = CO_DSHPANL->getmodel()->basicdxmodel->meshsets[0].vertuv;
 		Objects_UVSHIFT[0].Size = CO_DSHPANL->getmodel()->basicdxmodel->meshsets[0].nbMesh * 3;
 		EnableModels = true;
@@ -888,7 +888,7 @@ void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions
 
 	if (config->getBool("3- Objects", "DashHoop", true)) {
 		WriteJump((void*)0x7A2470, SHDashHoop);
-		CO_DSHHOOP = LoadObjectModel("CO_DSHHOOP");
+		CO_DSHHOOP = LoadCommonModel("CO_DSHHOOP");
 		Objects_UVSHIFT[1].List = CO_DSHHOOP->getmodel()->basicdxmodel->meshsets[2].vertuv;
 		Objects_UVSHIFT[1].Size = CO_DSHHOOP->getmodel()->basicdxmodel->meshsets[2].nbMesh * 3;
 		EnableModels = true;
@@ -896,7 +896,7 @@ void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions
 
 	if (config->getBool("3- Objects", "LaunchRamp", true)) {
 		WriteJump((void*)0x500020, SHLaunchRamp);
-		CO_LCHRAMP = LoadObjectModel("CO_LCHRAMP");
+		CO_LCHRAMP = LoadCommonModel("CO_LCHRAMP");
 		Objects_UVSHIFT[2].List = CO_LCHRAMP->getmodel()->basicdxmodel->meshsets[15].vertuv;
 		Objects_UVSHIFT[2].Size = CO_LCHRAMP->getmodel()->basicdxmodel->meshsets[15].nbMesh * 3;
 		EnableModels = true;

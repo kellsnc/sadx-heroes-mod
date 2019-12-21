@@ -26,18 +26,18 @@ void PowerPlantSkybox(ObjectMaster *a1) {
 }
 
 void PowerPlant_InitObjects() {
-	PP_ELEVATR = LoadObjectModel("PP_ELEVATR");
-	PP_FLDPATH = LoadObjectModel("PP_FLDPATH");
-	PP_LGTSIGN = LoadObjectModel("PP_LGTSIGN");
-	PP_SKYMDLS = LoadObjectModel("PP_SKYMDLS");
-	PP_MTRUCKS = LoadObjectModel("PP_MTRUCKS");
-	PP_PLTFRMS = LoadObjectModel("PP_PLTFRMS");
-	PP_PPCRANE = LoadObjectModel("PP_PPCRANE");
-	PP_SOLARPN = LoadObjectModel("PP_SOLARPN");
-	PP_TNKDOOR = LoadObjectModel("PP_TNKDOOR");
-	PP_TNKSTEP = LoadObjectModel("PP_TNKSTEP");
-	PP_ENERGYT = LoadObjectModel("PP_ENERGYT");
-	PP_SHAFTST = LoadObjectModel("PP_SHAFTST");
+	PP_ELEVATR = LoadObjectModel(PP_ELEVATR, "PP_ELEVATR");
+	PP_FLDPATH = LoadObjectModel(PP_FLDPATH, "PP_FLDPATH");
+	PP_LGTSIGN = LoadObjectModel(PP_LGTSIGN, "PP_LGTSIGN");
+	PP_SKYMDLS = LoadObjectModel(PP_SKYMDLS, "PP_SKYMDLS");
+	PP_MTRUCKS = LoadObjectModel(PP_MTRUCKS, "PP_MTRUCKS");
+	PP_PLTFRMS = LoadObjectModel(PP_PLTFRMS, "PP_PLTFRMS");
+	PP_PPCRANE = LoadObjectModel(PP_PPCRANE, "PP_PPCRANE");
+	PP_SOLARPN = LoadObjectModel(PP_SOLARPN, "PP_SOLARPN");
+	PP_TNKDOOR = LoadObjectModel(PP_TNKDOOR, "PP_TNKDOOR");
+	PP_TNKSTEP = LoadObjectModel(PP_TNKSTEP, "PP_TNKSTEP");
+	PP_ENERGYT = LoadObjectModel(PP_ENERGYT, "PP_ENERGYT");
+	PP_SHAFTST = LoadObjectModel(PP_SHAFTST, "PP_SHAFTST");
 
 	PowerPlant_UVSHIFT[0].List = PP_SOLARPN->getmodel()->child->basicdxmodel->meshsets[2].vertuv;
 	PowerPlant_UVSHIFT[1].List = PP_ELEVATR->getmodel()->basicdxmodel->meshsets[5].vertuv;
@@ -52,18 +52,18 @@ void PowerPlant_InitObjects() {
 }
 
 void PowerPlant_Delete(ObjectMaster * a1) {
-	FreeMDL(PP_ELEVATR);
-	FreeMDL(PP_FLDPATH);
-	FreeMDL(PP_LGTSIGN);
-	FreeMDL(PP_SKYMDLS);
-	FreeMDL(PP_MTRUCKS);
-	FreeMDL(PP_PLTFRMS);
-	FreeMDL(PP_PPCRANE);
-	FreeMDL(PP_SOLARPN);
-	FreeMDL(PP_TNKDOOR);
-	FreeMDL(PP_TNKSTEP);
-	FreeMDL(PP_ENERGYT);
-	FreeMDL(PP_SHAFTST);
+	PP_ELEVATR = FreeMDL(PP_ELEVATR);
+	PP_FLDPATH = FreeMDL(PP_FLDPATH);
+	PP_LGTSIGN = FreeMDL(PP_LGTSIGN);
+	PP_SKYMDLS = FreeMDL(PP_SKYMDLS);
+	PP_MTRUCKS = FreeMDL(PP_MTRUCKS);
+	PP_PLTFRMS = FreeMDL(PP_PLTFRMS);
+	PP_PPCRANE = FreeMDL(PP_PPCRANE);
+	PP_SOLARPN = FreeMDL(PP_SOLARPN);
+	PP_TNKDOOR = FreeMDL(PP_TNKDOOR);
+	PP_TNKSTEP = FreeMDL(PP_TNKSTEP);
+	PP_ENERGYT = FreeMDL(PP_ENERGYT);
+	PP_SHAFTST = FreeMDL(PP_SHAFTST);
 
 	if (IsLantern) {
 		set_shader_flags_ptr(ShaderFlags_Blend, false);

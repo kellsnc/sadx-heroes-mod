@@ -48,11 +48,11 @@ void OceanPalaceSkybox(ObjectMaster *a1) {
 }
 
 void OceanPalace_delete(ObjectMaster * a1) {
-	FreeMDL(OP_TURFINS);
-	FreeMDL(OP_POLFLAG);
-	FreeMDL(OP_FLOWERS);
-	FreeMDL(OP_BOULDER);
-	FreeMDL(OP_WATERFS);
+	OP_TURFINS = FreeMDL(OP_TURFINS);
+	OP_POLFLAG = FreeMDL(OP_POLFLAG);
+	OP_FLOWERS = FreeMDL(OP_FLOWERS);
+	OP_BOULDER = FreeMDL(OP_BOULDER);
+	OP_WATERFS = FreeMDL(OP_WATERFS);
 
 	LevelHandler_Delete(a1);
 }
@@ -65,7 +65,7 @@ void OceanPalaceHandler(ObjectMaster * a1) {
 		a1->Data1->Action = 1;
 		a1->DeleteSub = OceanPalace_delete;
 
-		OP_WATERFS = LoadObjectModel("OP_WATERFS");
+		OP_WATERFS = LoadObjectModel(OP_WATERFS, "OP_WATERFS");
 		LoadObject(LoadObj_Data1, 3, OPWaterfalls);
 
 		if (CurrentAct == 0) {
@@ -83,11 +83,11 @@ void OceanPalaceHandler(ObjectMaster * a1) {
 			LoadObject(LoadObj_Data1, 3, OPFins_Main);
 			LoadObject(LoadObj_Data1, 3, OPBoulders);
 
-			OP_FLOWERS = LoadObjectModel("OP_FLOWERS");
-			OP_TURFINS = LoadObjectModel("OP_TURFINS");
-			OP_BOULDER = LoadObjectModel("OP_BOULDER");
-			OP_POLFLAG = LoadObjectModel("OP_POLFLAG");
-			OP_SKYMDLS = LoadObjectModel("OP_SKYMDLS");
+			OP_FLOWERS = LoadObjectModel(OP_FLOWERS, "OP_FLOWERS");
+			OP_TURFINS = LoadObjectModel(OP_TURFINS, "OP_TURFINS");
+			OP_BOULDER = LoadObjectModel(OP_BOULDER, "OP_BOULDER");
+			OP_POLFLAG = LoadObjectModel(OP_POLFLAG, "OP_POLFLAG");
+			OP_SKYMDLS = LoadObjectModel(OP_SKYMDLS, "OP_SKYMDLS");
 
 			OceanPalace_UVShift[0].List = OP_WATERFS->getmodel()->basicdxmodel->meshsets[0].vertuv;
 			OceanPalace_UVShift[1].List = OP_WATERFS->getmodel()->child->basicdxmodel->meshsets[0].vertuv;

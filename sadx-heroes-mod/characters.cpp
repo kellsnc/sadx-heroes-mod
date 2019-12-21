@@ -830,8 +830,7 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 		WriteCall((void*)0x446A26, PlaySound_HeroesChar); //death
 
 		//Common special effects
-		CharMdls[0] = LoadObjectModel("effect_ball");
-		CharMdls[1] = LoadObjectModel("effect_tornado");
+		CharMdls[1] = LoadObjectModel(CharMdls[1], "effect_tornado");
 
 		//Remove the dash trail
 		WriteData<5>((void*)0x49B238, 0x90);
@@ -861,6 +860,7 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 	}
 
 	if (SpeedCharEnabled || FlyCharEnabled || PowerCharEnabled) {
+		CharMdls[0] = LoadCommonModel("effect_ball");
 		WriteCall((void*)0x45BE57, PlayVoice_HeroesChar); //win
 	}
 }

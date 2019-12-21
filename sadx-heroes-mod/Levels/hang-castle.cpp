@@ -63,15 +63,15 @@ void HangCastleSkybox(ObjectMaster *a1) {
 }
 
 void HangCastle_InitObjects() {
-	HC_SPKWARP = LoadObjectModel("HC_SPKWARP");
-	HC_HFLAMES = LoadObjectModel("HC_HFLAMES");
-	HC_HCBLADE = LoadObjectModel("HC_HCBLADE");
-	HC_HPLANTA = LoadObjectModel("HC_HPLANTA");
-	HC_HPLANTB = LoadObjectModel("HC_HPLANTB");
-	HC_POLFLAG = LoadObjectModel("HC_POLFLAG");
-	HC_SPDSIGN = LoadObjectModel("HC_SPDSIGN");
-	HC_SKYMDLS = LoadObjectModel("HC_SKYMDLS");
-	HC_MCLOUDS = LoadObjectModel("HC_MCLOUDS");
+	HC_SPKWARP = LoadObjectModel(HC_SPKWARP, "HC_SPKWARP");
+	HC_HFLAMES = LoadObjectModel(HC_HFLAMES, "HC_HFLAMES");
+	HC_HCBLADE = LoadObjectModel(HC_HCBLADE, "HC_HCBLADE");
+	HC_HPLANTA = LoadObjectModel(HC_HPLANTA, "HC_HPLANTA");
+	HC_HPLANTB = LoadObjectModel(HC_HPLANTB, "HC_HPLANTB");
+	HC_POLFLAG = LoadObjectModel(HC_POLFLAG, "HC_POLFLAG");
+	HC_SPDSIGN = LoadObjectModel(HC_SPDSIGN, "HC_SPDSIGN");
+	HC_SKYMDLS = LoadObjectModel(HC_SKYMDLS, "HC_SKYMDLS");
+	HC_MCLOUDS = LoadObjectModel(HC_MCLOUDS, "HC_MCLOUDS");
 
 	HCMODELLIST[0] = HC_HFLAMES->getmodel()->basicdxmodel;
 	HCMODELLIST[1] = HC_HFLAMES->getmodel()->child->basicdxmodel;
@@ -82,17 +82,17 @@ void HangCastle_InitObjects() {
 void HangCastle_Delete(ObjectMaster * a1) {
 	HCFlags_Reset();
 
-	FreeMDL(HC_HCBLADE);
-	FreeMDL(HC_HFLAMES);
-	FreeMDL(HC_HPLANTA);
-	FreeMDL(HC_HPLANTB);
-	FreeMDL(HC_POLFLAG);
-	FreeMDL(HC_SPDSIGN);
-	FreeMDL(HC_SPKDOOR);
-	FreeMDL(HC_SPKTREE);
-	FreeMDL(HC_SPKWARP);
-	FreeMDL(HC_SKYMDLS);
-	FreeMDL(HC_MCLOUDS);
+	HC_HCBLADE = FreeMDL(HC_HCBLADE);
+	HC_HFLAMES = FreeMDL(HC_HFLAMES);
+	HC_HPLANTA = FreeMDL(HC_HPLANTA);
+	HC_HPLANTB = FreeMDL(HC_HPLANTB);
+	HC_POLFLAG = FreeMDL(HC_POLFLAG);
+	HC_SPDSIGN = FreeMDL(HC_SPDSIGN);
+	HC_SPKDOOR = FreeMDL(HC_SPKDOOR);
+	HC_SPKTREE = FreeMDL(HC_SPKTREE);
+	HC_SPKWARP = FreeMDL(HC_SPKWARP);
+	HC_SKYMDLS = FreeMDL(HC_SKYMDLS);
+	HC_MCLOUDS = FreeMDL(HC_MCLOUDS);
 
 	if (IsLantern) {
 		set_shader_flags_ptr(ShaderFlags_Blend, false);
@@ -123,8 +123,8 @@ void HangCastleHandler(ObjectMaster * a1) {
 			CurrentLevelTexlist = &RUIN01_TEXLIST;
 			CurrentLandAddress = (LandTable**)0x97DAE8;
 
-			HC_SPKDOOR = LoadObjectModel("HC_SPKDOOR");
-			HC_SPKTREE = LoadObjectModel("HC_SPKTREE");
+			HC_SPKDOOR = LoadObjectModel(HC_SPKDOOR, "HC_SPKDOOR");
+			HC_SPKTREE = LoadObjectModel(HC_SPKTREE, "HC_SPKTREE");
 
 			HangCastle_UVShift[0].List = HC_MCLOUDS->getmodel()->basicdxmodel->meshsets[0].vertuv;
 			HangCastle_UVShift[1].List = HC_MCLOUDS->getmodel()->child->basicdxmodel->meshsets[0].vertuv;
