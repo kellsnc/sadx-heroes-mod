@@ -201,11 +201,6 @@ void ShadowHeroes_Main(ObjectMaster *obj) {
 
 		NJS_VECTOR anim = SpeedAnims(data, playerdata, playerco2); //id, speed, state
 
-		if (anim.x != data->Index) {
-			data->Scale.x = 0;
-			data->Unknown = 0;
-		}
-
 		PlayHeroesAnimation(obj, anim.x, HShadowAnimData, anim.y, anim.z);
 		break;
 	case 3:

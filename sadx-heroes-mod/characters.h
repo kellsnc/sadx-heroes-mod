@@ -35,8 +35,12 @@ void TornadoTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, En
 bool KickTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, EntityData1* playerdata);
 
 NJS_VECTOR PowerAnims(EntityData1* data, EntityData1* playerdata, CharObj2* playerco2);
+int PowerComboTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, EntityData1* playerdata);
+bool FlightPunchTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, EntityData1* playerdata);
 
 extern ObjectMaster* HeroesChars[];
+
+void ExploseEnemies(NJS_VECTOR* pos, float size);
 
 void CreamHeroes_Display(ObjectMaster *obj);
 void CreamHeroes_Main(ObjectMaster *obj);

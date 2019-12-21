@@ -440,10 +440,7 @@ void RougeHeroes_Main(ObjectMaster *obj) {
 		if (anim != 39) {
 			data->Rotation.y = 0;
 		}
-		if (anim != data->Index) {
-			data->Scale.x = 0;
-			data->Unknown = 0;
-		}
+		
 		PlayHeroesAnimation(obj, anim, RougeAnimData, speed, state);
 
 		break;

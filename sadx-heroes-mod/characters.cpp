@@ -15,6 +15,9 @@ bool P2SoundsEnabled = false;
 ModelInfo* CharMdls[2];
 CollisionData Tornado_Col = { 0, 0, 0, 0, 0, { 0.0f, 0.0f, 0.0f }, { 20, 0.0f, 0.0f }, 0, 0 };
 
+DataPointer(NJS_VECTOR, bombpos, 0x3C5AB24);
+float bombsize;
+
 ObjectFuncPtr DisplayFuncs[]{
 	CreamHeroes_Display,
 	RougeHeroes_Display,
@@ -120,9 +123,15 @@ void Sonic_Act1_r(EntityData1 *entity1, EntityData2 *entity2, CharObj2 *obj2) {
 //Character Animation like Sonic Heroes does
 void PlayHeroesAnimation(ObjectMaster* obj, uint8_t ID, AnimData* animdata, float forcespeed, float forcestate) {
 	EntityData1* data = obj->Data1;
+	
+	if (data->Index != ID) {
+		data->Index = ID;
+		data->Scale.x = 0;
+		data->Unknown = 0;
+	}
+
 	float frame = data->Scale.x;
 
-	data->Index = ID;
 	if (forcestate) {
 		frame = forcestate - 1;
 	}
@@ -392,7 +401,7 @@ NJS_VECTOR PowerAnims(EntityData1* data, EntityData1* playerdata, CharObj2* play
 
 	switch (playerco2->AnimationThing.Index) {
 	case 0: case 1:	case 2:	case 7: case 8: anim = 54; data->Status = 0; 
-		if (playerco2->AnimationThing.Index == 0 && playerdata->Position.y - playerco2->_struct_a3.DistanceMax > 500) anim = 49; break; //stance
+		if (playerco2->AnimationThing.Index == 0 && playerdata->Position.y - playerco2->_struct_a3.DistanceMax > 500 && playerdata->Action > 5) anim = 49; break; //stance
 	case 3: case 4: case 5: case 6: anim = 55; if (++data->Status == 100) { playerco2->AnimationThing.Index = 0; data->Status = 0; } break; //idle
 	case 9: data->Status = 0; anim = 0; if (playerco2->Speed.x < 0.02f) anim = 5; break;
 	case 10: anim = 0; speed = 0.9f + playerco2->Speed.x * 0.2f; break;
@@ -427,7 +436,11 @@ NJS_VECTOR PowerAnims(EntityData1* data, EntityData1* playerdata, CharObj2* play
 	case 39: case 40: anim = 52; break;
 	case 41: case 42: case 43: case 44: anim = 10; break;
 	case 45: anim = 45; break;
-	case 51: anim = 19; break;
+	case 51: anim = 19; 
+		if (data->field_A == 0) {
+			data->field_A = 1;
+			PlayHeroesSound(CommonSound_GlideBegin);
+		} break; //gliding
 	case 46: case 47: case 48: anim = 1; break;
 	case 49: case 52: anim = 33; break;
 	case 50: anim = 47; break;
@@ -551,6 +564,116 @@ bool KickTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, Entit
 	return false;
 }
 
+void ExploseEnemies(NJS_VECTOR* pos, float size) {
+	bombpos = *pos;
+	bombsize = size * 10;
+}
+
+//Power combo trick, return the attacks' number as it launches, 4 is custom character attack.
+int PowerComboTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, EntityData1* playerdata) {
+	int combo = data2->field_30;
+	float frame = data->Scale.x;
+	playerdata->Action = 2;
+
+	switch (combo) {
+	case 0:
+		data2->field_30 = 1;
+		playerco2->Speed.x = 2;
+		playerco2->Powerups |= Powerups_Invincibility;
+		return 1;
+	case 1:
+		if (frame > 30) {
+			data2->field_30 = 0;
+			playerco2->Powerups &= ~Powerups_Invincibility;
+			data->Action = 2;
+			return 0;
+		}
+		else if (frame > 15) {
+			if (PressedButtons[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
+				data2->field_30 = 2;
+				playerco2->Speed.x = 3;
+				data->Scale.x = 30;
+				return 2;
+			}
+		}
+		else if (frame > 5) {
+			if (PressedButtons[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
+				data2->field_30 = 1;
+				playerco2->Speed.x = 1;
+				data->Scale.x = 0;
+				return 1;
+			}
+		}
+		break;
+	case 2:
+		if (frame > 60) {
+			data2->field_30 = 0;
+			playerco2->Powerups &= ~Powerups_Invincibility;
+			data->Action = 2;
+			return 0;
+		}
+		else if (frame > 45) {
+			if (PressedButtons[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
+				data2->field_30 = 3;
+				data->Scale.x = 60;
+				return 3;
+			}
+		}
+		else if (frame > 35) {
+			if (PressedButtons[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
+				data2->field_30 = 1;
+				playerco2->Speed.x = 1;
+				data->Scale.x = 0;
+				return 1;
+			}
+		}
+		break;
+	case 3:
+		return 4;
+	}
+	
+	return 0;
+}
+
+//Power flight punch, return when the attack launches
+bool FlightPunchTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, EntityData1* playerdata) {
+	playerdata->Action = 2;
+	
+	if (data->field_A == 0) {
+		data->field_A = 1;
+		PlayHeroesSound(CommonSound_FlyPunchBegin);
+		playerco2->Powerups |= Powerups_Invincibility;
+		playerco2->Speed.y = 1;
+		playerco2->Speed.x = 1;
+		return true;
+	}
+	else if (data->field_A == 1) {
+		playerco2->Speed.y -= 0.01f;
+		playerco2->Speed.x = 0;
+
+		if (playerdata->Status & Status_Ground) {
+			playerco2->Powerups &= ~Powerups_Invincibility;
+			PlayHeroesSound(CommonSound_FlyPunchHit);
+			ExploseEnemies(&playerdata->Position, 3);
+			data->field_A = 2;
+		}
+		
+		if (data->Scale.x > 29) {
+			playerco2->Powerups &= ~Powerups_Invincibility;
+			data->field_A = 0;
+			data->Action = 2;
+		}
+	}
+	else {
+		if (data->Scale.x > 29) {
+			data->field_A = 0;
+			data->Action = 2;
+		}
+	}
+
+	return false;
+}
+
 //Add new weaknesses for enemies: cheese, tails' trap rings, tornadoes, etc.
 bool OhNoImDead2(EntityData1 *a1, ObjectData2 *a2);
 Trampoline OhNoImDead2_t(0x004CE030, 0x004CE036, OhNoImDead2);
@@ -561,6 +684,11 @@ bool OhNoImDead2(EntityData1 *a1, ObjectData2 *a2) {
 			|| a1->CollisionInfo->CollidingObject->Object->MainSub == TornadoObj
 			|| a1->CollisionInfo->CollidingObject->Object->MainSub == NinjaObj) return 1;
 	}
+
+	float i = GetDistance(&bombpos, &a1->Position);
+
+	if (GetDistance(&bombpos, &a1->Position) < bombsize) 
+		return 1;
 
 	FunctionPointer(bool, original, (EntityData1 *a1, ObjectData2 *a2), OhNoImDead2_t.Target());
 	return original(a1, a2);

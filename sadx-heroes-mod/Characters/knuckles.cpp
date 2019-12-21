@@ -174,8 +174,8 @@ void KnucklesHeroes_Main(ObjectMaster *obj) {
 		PlayerPtrs[data->CharIndex]->DisplaySub = KnucklesHeroes_Display;
 
 		if (playerco2->Speed.x < 2 && HeldButtons2[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
-			playerdata->Action = 5;
-			PlayHeroesSound(KnucklesSound_Ya);
+			data->field_A = 0;
+			playerdata->Action = 2;
 			data->Action = 3;
 			break;
 		}
@@ -186,7 +186,7 @@ void KnucklesHeroes_Main(ObjectMaster *obj) {
 			data->Action = 4;
 		}
 
-		if (FrameCounterUnpaused % 20 == 0) data->field_A = 0;
+		if (playerdata->Status & Status_Ground) data->field_A = 0;
 
 		if (playerco2->IdleTime > 1000) {
 			if (rand() % 2 == 0) {
@@ -202,21 +202,37 @@ void KnucklesHeroes_Main(ObjectMaster *obj) {
 
 		NJS_VECTOR anim = PowerAnims(data, playerdata, playerco2); //id, speed, state
 
-		if (anim.x != data->Index) {
-			data->Scale.x = 0;
-			data->Unknown = 0;
-		}
-
 		PlayHeroesAnimation(obj, anim.x, HKnucklesAnimData, anim.y, anim.z);
 
 		break;
 	case 3:
-		
+		switch (PowerComboTrick(data, data2, playerco2, playerdata)) {
+		case 1:
+			PlayHeroesSound(KnucklesSound_Combo1);
+			break;
+		case 2:
+			PlayHeroesSound(KnucklesSound_Combo2);
+			break;
+		case 3:
+			PlayHeroesSound(KnucklesSound_Combo3);
+			playerco2->Speed.x = 1;
+			playerco2->Speed.y = 2;
+		case 4:
+			if (data->Scale.x > 89) {
+				ExploseEnemies(&playerdata->Position, 2);
+				data2->field_30 = 0;
+				playerco2->Powerups &= ~Powerups_Invincibility;
+				data->Action = 2;
+			}
+			break;
+		}
+
 		PlayHeroesAnimation(obj, 11, HKnucklesAnimData, 0, 0);
 		break;
 	case 4:
-		
-		PlayHeroesAnimation(obj, 53, HKnucklesAnimData, 0, 0);
+		if (FlightPunchTrick(data, data2, playerco2, playerdata)) PlayHeroesSound(KnucklesSound_Trick);
+
+		PlayHeroesAnimation(obj, 12, HKnucklesAnimData, 0, 0);
 		break;
 	}
 
