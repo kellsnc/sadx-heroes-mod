@@ -106,7 +106,7 @@ void FreeMDLFiles(ModelInfo** Files, int size) {
 }
 
 void FreeANMFiles(AnimationFile** Files, int size) {
-	PrintDebug("[SHM] Freeing %s animations... ", std::to_string(size));
+	PrintDebug("[SHM] Freeing %s animations... ", std::to_string(size).c_str());
 
 	for (int i = 0; i < size; ++i) {
 		FreeANM(Files[i]);

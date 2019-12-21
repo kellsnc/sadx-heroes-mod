@@ -206,7 +206,12 @@ void PlayHeroesAnimation(ObjectMaster* obj, uint8_t ID, AnimData* animdata, floa
 void CharactersCommon_Delete(ObjectMaster* obj) {
 	HeroesChars[obj->Data1->CharIndex] = nullptr;
 	
-	if (GameState == 15 || GameState == 9 || (GameState == 8 && Lives == 0)) {
+	if (GameState == 15) {
+		njReleaseTexture((NJS_TEXLIST*)obj->Data1->LoopData);
+		UnloadFilesFuncs[obj->Data1->CharID - 9]();
+		CharFilesLoaded[obj->Data1->CharID - 9] = false;
+	}
+	else if (GameState == 9 || (GameState == 8 && Lives == 0)) {
 		int character = obj->Data1->CharID;
 		bool ArethereOthers = false;
 
@@ -379,7 +384,7 @@ NJS_VECTOR SpeedAnims(EntityData1* data, EntityData1* playerdata, CharObj2* play
 		if (data->CharID == Characters_Shadow && playerco2->Speed.x > 3) anim = 57; break;
 	case 14: //jumping
 		if (anim < 13 || anim > 18) { anim = 13; }
-		else if (anim == 14) { if (data->Unknown > 2) anim = 15; }
+		else if (anim == 14) { if (data->Unknown > 2 && (playerdata->Status & Status_Ground) != Status_Ground) anim = 15; }
 		else if (anim == 16) { if (playerdata->Position.y - playerco2->_struct_a3.DistanceMax < 10) anim = 17; } break;
 	case 15: case 16: case 17: anim = 14; break; //roll
 	case 18: //fall after spring jump
