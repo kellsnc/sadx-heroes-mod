@@ -9,7 +9,7 @@ bool JumpBallEnabled = true;
 bool P2SoundsEnabled = false;
 
 ObjectMaster* HeroesChars[8];
-bool CharTexsLoaded[9];
+bool CharFilesLoaded[9];
 int CurrentPlayer;
 
 ModelInfo* CharMdls[2];
@@ -78,7 +78,7 @@ Uint32 CharColours[]{
 	0x96E90500
 };
 
-VoidFunction LoadFiles[]{
+VoidFunction LoadFilesFuncs[]{
 	LoadCreamFiles,
 	LoadRougeFiles,
 	LoadCharmyFiles,
@@ -88,6 +88,18 @@ VoidFunction LoadFiles[]{
 	LoadAmyFiles,
 	LoadEspioFiles,
 	LoadKnuckFiles
+};
+
+VoidFunction UnloadFilesFuncs[]{
+	UnloadCreamFiles,
+	UnloadRougeFiles,
+	UnloadCharmyFiles,
+	UnloadTailsFiles,
+	UnloadSonicFiles,
+	UnloadShadowFiles,
+	UnloadAmyFiles,
+	UnloadEspioFiles,
+	UnloadKnuckFiles
 };
 
 //Store the current player id at the start of their function
@@ -180,8 +192,8 @@ void PlayHeroesAnimation(ObjectMaster* obj, uint8_t ID, AnimData* animdata, floa
 //Common player removal function
 void CharactersCommon_Delete(ObjectMaster* obj) {
 	HeroesChars[obj->Data1->CharIndex] = nullptr;
-
-	if (GameState == 9 || (GameState == 8 && Lives == 0)) {
+	
+	if (GameState == 15 || GameState == 9 || (GameState == 8 && Lives == 0)) {
 		int character = obj->Data1->CharID;
 		bool ArethereOthers = false;
 
@@ -193,7 +205,8 @@ void CharactersCommon_Delete(ObjectMaster* obj) {
 
 		if (!ArethereOthers) {
 			njReleaseTexture((NJS_TEXLIST*)obj->Data1->LoopData);
-			CharTexsLoaded[character - 9] = false;
+			UnloadFilesFuncs[obj->Data1->CharID - 9]();
+			CharFilesLoaded[character - 9] = false;
 		}
 	}
 	
@@ -293,9 +306,9 @@ bool CharactersCommon_Init(ObjectMaster* obj, const char* name, NJS_TEXLIST* tex
 		obj->DeleteSub = CharactersCommon_Delete;
 		data->Action = 1;
 
-		if (!CharTexsLoaded[data->CharID - 9]) {
-			LoadFiles[data->CharID - 9]();
-			CharTexsLoaded[data->CharID - 9] = true;
+		if (!CharFilesLoaded[data->CharID - 9]) {
+			LoadFilesFuncs[data->CharID - 9]();
+			CharFilesLoaded[data->CharID - 9] = true;
 			LoadPVM(name, tex);
 		}
 

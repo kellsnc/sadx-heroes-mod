@@ -1,7 +1,7 @@
 #pragma once
 
 extern int CurrentPlayer;
-extern bool CharTexsLoaded[];
+extern bool CharFilesLoaded[];
 extern bool CustomPhysics;
 
 enum CharactersHeroes
@@ -48,18 +48,21 @@ void CreamHeroes_Display(ObjectMaster *obj);
 void CreamHeroes_Main(ObjectMaster *obj);
 void Cheese_Main(ObjectMaster *obj);
 void LoadCreamFiles();
+void UnloadCreamFiles();
 void PlaySound_Cream(int ID);
 void PlayVoice_Cream(int ID);
 
 void RougeHeroes_Display(ObjectMaster *obj);
 void RougeHeroes_Main(ObjectMaster *obj);
 void LoadRougeFiles();
+void UnloadRougeFiles();
 void PlaySound_Rouge(int ID);
 void PlayVoice_Rouge(int ID);
 
 void CharmyHeroes_Display(ObjectMaster *obj);
 void CharmyHeroes_Main(ObjectMaster *obj);
 void LoadCharmyFiles();
+void UnloadCharmyFiles();
 void PlaySound_Charmy(int ID);
 void PlayVoice_Charmy(int ID);
 
@@ -67,24 +70,28 @@ void TailsHeroes_Display(ObjectMaster *obj);
 void TailsHeroes_Main(ObjectMaster *obj);
 void TrapRing_Main(ObjectMaster* obj);
 void LoadTailsFiles();
+void UnloadTailsFiles();
 void PlaySound_Tails(int ID);
 void PlayVoice_Tails(int ID);
 
 void SonicHeroes_Display(ObjectMaster *obj);
 void SonicHeroes_Main(ObjectMaster *obj);
 void LoadSonicFiles();
+void UnloadSonicFiles();
 void PlaySound_Sonic(int ID);
 void PlayVoice_Sonic(int ID);
 
 void ShadowHeroes_Display(ObjectMaster *obj);
 void ShadowHeroes_Main(ObjectMaster *obj);
 void LoadShadowFiles();
+void UnloadShadowFiles();
 void PlaySound_Shadow(int ID);
 void PlayVoice_Shadow(int ID);
 
 void AmyHeroes_Display(ObjectMaster *obj);
 void AmyHeroes_Main(ObjectMaster *obj);
 void LoadAmyFiles();
+void UnloadAmyFiles();
 void PlaySound_Amy(int ID);
 void PlayVoice_Amy(int ID);
 
@@ -92,11 +99,13 @@ void EspioHeroes_Display(ObjectMaster *obj);
 void EspioHeroes_Main(ObjectMaster *obj);
 void NinjaObj(ObjectMaster* obj);
 void LoadEspioFiles();
+void UnloadEspioFiles();
 void PlaySound_Espio(int ID);
 void PlayVoice_Espio(int ID);
 
 void KnucklesHeroes_Display(ObjectMaster *obj);
 void KnucklesHeroes_Main(ObjectMaster *obj);
 void LoadKnuckFiles();
+void UnloadKnuckFiles();
 void PlaySound_Knuckles(int ID);
 void PlayVoice_Knuckles(int ID);

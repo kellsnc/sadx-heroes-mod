@@ -324,3 +324,8 @@ void LoadAmyFiles() {
 	HAmyAnimData[44].NextAnim = 17;
 	HAmyAnimData[52].Property = 1;
 }
+
+void UnloadAmyFiles() {
+	FreeMDLFiles(AmyMdls, LengthOfArray(AmyMdls));
+	FreeANMFiles(AmyAnms, LengthOfArray(AmyAnms));
+}

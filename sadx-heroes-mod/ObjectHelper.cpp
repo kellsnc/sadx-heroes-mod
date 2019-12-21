@@ -90,9 +90,29 @@ AnimationFile* LoadCharacterAnim(const char *name) {
 //Free Object File
 void FreeANM(AnimationFile * pointer) {
 	if (pointer) {
-		PrintDebug("[SHM] Freeing animation: %s... \n", pointer->getlabel().c_str());
 		delete(pointer);
 	}
+}
+
+//Free a list of files
+void FreeMDLFiles(ModelInfo** Files, int size) {
+	PrintDebug("[SHM] Freeing %s models... ", std::to_string(size).c_str());
+
+	for (int i = 0; i < size; ++i) {
+		FreeMDL(Files[i]);
+	}
+
+	PrintDebug("Done. \n");
+}
+
+void FreeANMFiles(AnimationFile** Files, int size) {
+	PrintDebug("[SHM] Freeing %s animations... ", std::to_string(size));
+
+	for (int i = 0; i < size; ++i) {
+		FreeANM(Files[i]);
+	}
+
+	PrintDebug("Done. \n");
 }
 
 //Basic drawing call

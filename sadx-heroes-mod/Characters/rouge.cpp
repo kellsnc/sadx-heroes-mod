@@ -606,3 +606,8 @@ void LoadRougeFiles() {
 
 	RWingsAnimData[6].Property = 1;
 }
+
+void UnloadRougeFiles() {
+	FreeMDLFiles(RougeMdls, LengthOfArray(RougeMdls));
+	FreeANMFiles(RougeAnms, LengthOfArray(RougeAnms));
+}

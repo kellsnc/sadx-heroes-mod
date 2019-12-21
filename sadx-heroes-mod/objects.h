@@ -55,6 +55,8 @@ AnimationFile* LoadObjectAnim(const char *name);
 AnimationFile* LoadCharacterAnim(const char *name);
 ModelInfo* FreeMDL(ModelInfo * pointer);
 void FreeANM(AnimationFile * pointer);
+void FreeMDLFiles(ModelInfo** Files, int size);
+void FreeANMFiles(AnimationFile** Files, int size);
 
 void DynCol_Add(ObjectMaster *a1, uint8_t col);
 void DrawObjModel(ObjectMaster *a1, NJS_MODEL_SADX *m, bool scalable);

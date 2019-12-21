@@ -310,3 +310,8 @@ void LoadShadowFiles() {
 	HShadowAnimData[26].Property = 1;
 	HShadowAnimData[44].NextAnim = 17;
 }
+
+void UnloadShadowFiles() {
+	FreeMDLFiles(ShadowMdls, LengthOfArray(ShadowMdls));
+	FreeANMFiles(ShadowAnms, LengthOfArray(ShadowAnms));
+}

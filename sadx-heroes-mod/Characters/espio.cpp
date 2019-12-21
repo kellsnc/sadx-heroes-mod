@@ -366,3 +366,8 @@ void LoadEspioFiles() {
 	EspioAnimData[26].Property = 1;
 	EspioAnimData[44].NextAnim = 17;
 }
+
+void UnloadEspioFiles() {
+	FreeMDLFiles(EspioMdls, LengthOfArray(EspioMdls));
+	FreeANMFiles(EspioAnms, LengthOfArray(EspioAnms));
+}

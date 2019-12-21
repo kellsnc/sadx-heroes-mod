@@ -805,3 +805,8 @@ void LoadCreamFiles() {
 	CheeseAnimData[6].NextAnim = 7;
 	CheeseAnimData[8].Property = 1;
 }
+
+void UnloadCreamFiles() {
+	FreeMDLFiles(CreamMdls, LengthOfArray(CreamMdls));
+	FreeANMFiles(CreamAnms, LengthOfArray(CreamAnms));
+}

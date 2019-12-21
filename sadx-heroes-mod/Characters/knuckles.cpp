@@ -335,3 +335,8 @@ void LoadKnuckFiles() {
 	HKnucklesAnimData[44].NextAnim = 17;
 	HKnucklesAnimData[52].Property = 1;
 }
+
+void UnloadKnuckFiles() {
+	FreeMDLFiles(KnucklesMdls, LengthOfArray(KnucklesMdls));
+	FreeANMFiles(KnucklesAnms, LengthOfArray(KnucklesAnms));
+}

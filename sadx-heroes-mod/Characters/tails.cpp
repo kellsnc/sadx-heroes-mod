@@ -718,3 +718,8 @@ void LoadTailsFiles() {
 		TTailsAnimData[i].AnimationSpeed = 0.5f;
 	}
 }
+
+void UnloadTailsFiles() {
+	FreeMDLFiles(TailsMdls, LengthOfArray(TailsMdls));
+	FreeANMFiles(TailsAnms, LengthOfArray(TailsAnms));
+}

@@ -592,3 +592,8 @@ void LoadCharmyFiles() {
 	CWingsAnimData.Animation->motion = CharmyAnms[0]->getmotion();
 	CWingsAnimData.NextAnim = 0;
 }
+
+void UnloadCharmyFiles() {
+	FreeMDLFiles(CharmyMdls, LengthOfArray(CharmyMdls));
+	FreeANMFiles(CharmyAnms, LengthOfArray(CharmyAnms));
+}

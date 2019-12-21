@@ -291,3 +291,8 @@ void LoadSonicFiles() {
 	HSonicAnimData[44].NextAnim = 17;
 	HSonicAnimData[52].Property = 1;
 }
+
+void UnloadSonicFiles() {
+	FreeMDLFiles(SonicMdls, LengthOfArray(SonicMdls));
+	FreeANMFiles(SonicAnms, LengthOfArray(SonicAnms));
+}
