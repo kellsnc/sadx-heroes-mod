@@ -498,7 +498,7 @@ void RougeHeroes_Main(ObjectMaster *obj) {
 	RunObjectChildren(obj);
 }
 
-void LoadRougeFiles(const char *path, const HelperFunctions &helperFunctions) {
+void LoadRougeFiles() {
 	RougeMdls[0] = LoadCharacterModel("rouge_main");
 	RougeMdls[1] = LoadCharacterModel("rouge_eyelashes");
 	RougeMdls[2] = LoadCharacterModel("rouge_wings");

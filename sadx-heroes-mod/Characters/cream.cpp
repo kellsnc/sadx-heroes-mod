@@ -683,7 +683,7 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 	RunObjectChildren(obj);
 }
 
-void LoadCreamFiles(const char *path, const HelperFunctions &helperFunctions) {
+void LoadCreamFiles() {
 	CreamMdls[0] = LoadCharacterModel("cream_main");
 	CreamMdls[1] = LoadCharacterModel("cream_eyelashes");
 	CreamMdls[2] = LoadCharacterModel("cheese_main");

@@ -224,7 +224,7 @@ void ShadowHeroes_Main(ObjectMaster *obj) {
 	RunObjectChildren(obj);
 }
 
-void LoadShadowFiles(const char *path, const HelperFunctions &helperFunctions) {
+void LoadShadowFiles() {
 	ShadowMdls[0] = LoadCharacterModel("shadow_main");
 	ShadowMdls[1] = LoadCharacterModel("shadow_pupils");
 	ShadowMdls[2] = LoadCharacterModel("shadow_air");

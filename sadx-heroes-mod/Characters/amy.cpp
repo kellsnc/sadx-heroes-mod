@@ -234,7 +234,7 @@ void AmyHeroes_Main(ObjectMaster *obj) {
 	RunObjectChildren(obj);
 }
 
-void LoadAmyFiles(const char *path, const HelperFunctions &helperFunctions) {
+void LoadAmyFiles() {
 	AmyMdls[0] = LoadCharacterModel("amy_main");
 	AmyMdls[1] = LoadCharacterModel("amy_eyelashes");
 	AmyMdls[2] = LoadCharacterModel("amy_hammer");

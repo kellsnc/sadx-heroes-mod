@@ -247,7 +247,7 @@ void KnucklesHeroes_Main(ObjectMaster *obj) {
 	RunObjectChildren(obj);
 }
 
-void LoadKnuckFiles(const char *path, const HelperFunctions &helperFunctions) {
+void LoadKnuckFiles() {
 	KnucklesMdls[0] = LoadCharacterModel("knucks_main");
 	KnucklesMdls[1] = LoadCharacterModel("knucks_eyelids");
 

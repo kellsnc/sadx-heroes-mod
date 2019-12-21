@@ -582,7 +582,7 @@ void TailsHeroes_Main(ObjectMaster *obj) {
 	RunObjectChildren(obj);
 }
 
-void LoadTailsFiles(const char *path, const HelperFunctions &helperFunctions) {
+void LoadTailsFiles() {
 	TailsMdls[0] = LoadCharacterModel("tails_main");
 	TailsMdls[1] = LoadCharacterModel("tails_pupils");
 	TailsMdls[2] = LoadCharacterModel("tails_tails");

@@ -4,13 +4,13 @@ uint8_t FlyCharEnabled;
 uint8_t SpeedCharEnabled;
 uint8_t PowerCharEnabled;
 
-ObjectMaster* HeroesChars[8];
-bool CharTexsLoaded[9];
-int CurrentPlayer;
-
 bool CustomPhysics = true;
 bool JumpBallEnabled = true;
 bool P2SoundsEnabled = false;
+
+ObjectMaster* HeroesChars[8];
+bool CharTexsLoaded[9];
+int CurrentPlayer;
 
 ModelInfo* CharMdls[2];
 CollisionData Tornado_Col = { 0, 0, 0, 0, 0, { 0.0f, 0.0f, 0.0f }, { 20, 0.0f, 0.0f }, 0, 0 };
@@ -76,6 +76,18 @@ Uint32 CharColours[]{
 	0x96FB7D88,
 	0x96BD008A,
 	0x96E90500
+};
+
+VoidFunction LoadFiles[]{
+	LoadCreamFiles,
+	LoadRougeFiles,
+	LoadCharmyFiles,
+	LoadTailsFiles,
+	LoadSonicFiles,
+	LoadShadowFiles,
+	LoadAmyFiles,
+	LoadEspioFiles,
+	LoadKnuckFiles
 };
 
 //Store the current player id at the start of their function
@@ -282,6 +294,7 @@ bool CharactersCommon_Init(ObjectMaster* obj, const char* name, NJS_TEXLIST* tex
 		data->Action = 1;
 
 		if (!CharTexsLoaded[data->CharID - 9]) {
+			LoadFiles[data->CharID - 9]();
 			CharTexsLoaded[data->CharID - 9] = true;
 			LoadPVM(name, tex);
 		}
@@ -769,53 +782,41 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 	P2SoundsEnabled = config->getBool("2- Characters", "P2SoundsEnabled", false);
 
 	if (!SpeedCharacter.compare("Sonic")) {
-		LoadSonicFiles(path, helperFunctions);
 		SpeedCharEnabled = Characters_HeroesSonic;
 	}
 	else if (!SpeedCharacter.compare("Shadow")) {
-		LoadShadowFiles(path, helperFunctions);
 		SpeedCharEnabled = Characters_Shadow;
 	}
 	else if (!SpeedCharacter.compare("Amy")) {
-		LoadAmyFiles(path, helperFunctions);
 		SpeedCharEnabled = Characters_HeroesAmy;
 	}
 	else if (!SpeedCharacter.compare("Espio")) {
-		LoadEspioFiles(path, helperFunctions);
 		SpeedCharEnabled = Characters_Espio;
 	}
 	
 	if (!FlyCharacter.compare("Cream")) {
-		LoadCreamFiles(path, helperFunctions);
 		FlyCharEnabled = Characters_Cream;
 	}
 	else if (!FlyCharacter.compare("Rouge")) {
-		LoadRougeFiles(path, helperFunctions);
 		FlyCharEnabled = Characters_Rouge;
 	}
 	else if (!FlyCharacter.compare("Charmy")) {
-		LoadCharmyFiles(path, helperFunctions);
 		FlyCharEnabled = Characters_Charmy;
 	}
 	else if (!FlyCharacter.compare("Tails")) {
-		LoadTailsFiles(path, helperFunctions);
 		FlyCharEnabled = Characters_HeroesTails;
 	}
 
 	if (!PowerCharacter.compare("Knuckles")) {
-		LoadKnuckFiles(path, helperFunctions);
 		PowerCharEnabled = Characters_HeroesKnuckles;
 	}
 	else if (!PowerCharacter.compare("Omega")) {
-		//LoadOmegaFiles(path, helperFunctions);
 		PowerCharEnabled = Characters_Omega;
 	}
 	else if (!PowerCharacter.compare("Big")) {
-		//LoadBigFiles(path, helperFunctions);
 		PowerCharEnabled = Characters_HeroesBig;
 	}
 	else if (!PowerCharacter.compare("Vector")) {
-		//LoadVectorFiles(path, helperFunctions);
 		PowerCharEnabled = Characters_Vector;
 	}
 

@@ -206,7 +206,7 @@ void SonicHeroes_Main(ObjectMaster *obj) {
 	RunObjectChildren(obj);
 }
 
-void LoadSonicFiles(const char *path, const HelperFunctions &helperFunctions) {
+void LoadSonicFiles() {
 	SonicMdls[0] = LoadCharacterModel("sonic_main");
 	SonicMdls[1] = LoadCharacterModel("sonic_pupils");
 

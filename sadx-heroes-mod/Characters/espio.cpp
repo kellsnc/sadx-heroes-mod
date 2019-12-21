@@ -274,7 +274,7 @@ void EspioHeroes_Main(ObjectMaster *obj) {
 	RunObjectChildren(obj);
 }
 
-void LoadEspioFiles(const char *path, const HelperFunctions &helperFunctions) {
+void LoadEspioFiles() {
 	EspioMdls[0] = LoadCharacterModel("espio_main");
 	EspioMdls[1] = LoadCharacterModel("espio_eyelids");
 	EspioMdls[2] = LoadCharacterModel("espio_attacks");

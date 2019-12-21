@@ -489,7 +489,7 @@ void CharmyHeroes_Main(ObjectMaster *obj) {
 	RunObjectChildren(obj);
 }
 
-void LoadCharmyFiles(const char *path, const HelperFunctions &helperFunctions) {
+void LoadCharmyFiles() {
 	CharmyMdls[0] = LoadCharacterModel("charmy_main");
 	CharmyMdls[1] = LoadCharacterModel("charmy_eyelashes");
 	CharmyMdls[2] = LoadCharacterModel("charmy_wings");
