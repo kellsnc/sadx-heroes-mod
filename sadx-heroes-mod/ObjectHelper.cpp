@@ -49,14 +49,13 @@ ModelInfo* LoadCharacterModel(const char *name) {
 
 //Free Object File
 ModelInfo* FreeMDL(ModelInfo * pointer) {
-	if (GameState == 7) {
-		return pointer;
-	}
-
-	if (pointer) {
+	if (GameState == 9 || (GameState == 8 && Lives == 0)) {
 		PrintDebug("[SHM] Freeing model: %s... \n", pointer->getdescription().c_str());
 		delete(pointer);
 		return nullptr;
+	}
+	else {
+		return pointer;
 	}
 }
 
