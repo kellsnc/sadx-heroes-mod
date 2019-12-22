@@ -9,7 +9,7 @@ bool JumpBallEnabled = true;
 bool P2SoundsEnabled = false;
 
 ObjectMaster* HeroesChars[8];
-bool CharFilesLoaded[9];
+bool CharFilesLoaded[10];
 int CurrentPlayer;
 
 ModelInfo* CharMdls[2];
@@ -27,7 +27,8 @@ ObjectFuncPtr DisplayFuncs[]{
 	ShadowHeroes_Display,
 	AmyHeroes_Display,
 	EspioHeroes_Display,
-	KnucklesHeroes_Display
+	KnucklesHeroes_Display,
+	OmegaHeroes_Display
 };
 
 ObjectFuncPtr MainFuncs[]{
@@ -39,7 +40,8 @@ ObjectFuncPtr MainFuncs[]{
 	ShadowHeroes_Main,
 	AmyHeroes_Main,
 	EspioHeroes_Main,
-	KnucklesHeroes_Main
+	KnucklesHeroes_Main,
+	OmegaHeroes_Main
 };
 
 PlaySoundFuncPtr SoundFuncs[]{
@@ -51,7 +53,8 @@ PlaySoundFuncPtr SoundFuncs[]{
 	PlaySound_Shadow,
 	PlaySound_Amy,
 	PlaySound_Espio,
-	PlaySound_Knuckles
+	PlaySound_Knuckles,
+	PlaySound_Omega
 };
 
 PlaySoundFuncPtr VoiceFuncs[]{
@@ -63,7 +66,8 @@ PlaySoundFuncPtr VoiceFuncs[]{
 	PlayVoice_Shadow,
 	PlayVoice_Amy,
 	PlayVoice_Espio,
-	PlayVoice_Knuckles
+	PlayVoice_Knuckles,
+	PlayVoice_Omega
 };
 
 Uint32 CharColours[]{
@@ -75,7 +79,8 @@ Uint32 CharColours[]{
 	0xBC660000,
 	0x96FB7D88,
 	0x96BD008A,
-	0x96E90500
+	0x96E90500,
+	0
 };
 
 VoidFunction LoadFilesFuncs[]{
@@ -87,7 +92,8 @@ VoidFunction LoadFilesFuncs[]{
 	LoadShadowFiles,
 	LoadAmyFiles,
 	LoadEspioFiles,
-	LoadKnuckFiles
+	LoadKnuckFiles,
+	LoadOmegaFiles
 };
 
 VoidFunction UnloadFilesFuncs[]{
@@ -99,7 +105,8 @@ VoidFunction UnloadFilesFuncs[]{
 	UnloadShadowFiles,
 	UnloadAmyFiles,
 	UnloadEspioFiles,
-	UnloadKnuckFiles
+	UnloadKnuckFiles,
+	UnloadOmegaFiles
 };
 
 //Store the current player id at the start of their function
@@ -775,7 +782,8 @@ void Heroes_Display(ObjectMaster* obj) {
 		DeleteObject_(HeroesChars[obj->Data1->CharIndex]);
 	}
 
-	DisplayFuncs[HeroesChars[obj->Data1->CharIndex]->Data1->CharID - 9](obj);
+	if (HeroesChars[obj->Data1->CharIndex]->Data1->LoopData) 
+		DisplayFuncs[HeroesChars[obj->Data1->CharIndex]->Data1->CharID - 9](obj);
 }
 
 //Hijack the sound functions of Sonic, Tails and Knuckles to redirect those

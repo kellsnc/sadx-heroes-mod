@@ -109,3 +109,10 @@ void LoadKnuckFiles();
 void UnloadKnuckFiles();
 void PlaySound_Knuckles(int ID);
 void PlayVoice_Knuckles(int ID);
+
+void OmegaHeroes_Display(ObjectMaster *obj);
+void OmegaHeroes_Main(ObjectMaster *obj);
+void LoadOmegaFiles();
+void UnloadOmegaFiles();
+void PlaySound_Omega(int ID);
+void PlayVoice_Omega(int ID);
