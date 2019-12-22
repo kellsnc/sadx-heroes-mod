@@ -157,12 +157,12 @@
     <ClInclude Include="Levels\mystic-mansion.h" />
     <ClInclude Include="objects.h" />
     <ClInclude Include="Levels\seaside-hill-deathzones.h" />
-    <ClInclude Include="Levels\seaside-hill-objects.h" />
     <ClInclude Include="Levels\ocean-palace.h" />
     <ClInclude Include="Levels\power-plant.h" />
     <ClInclude Include="Levels\seaside-hill.h" />
     <ClInclude Include="mod.h" />
     <ClInclude Include="Levels\seaside-hill-paths.h" />
+    <ClInclude Include="Objects\seaside-hill-objects.h" />
     <ClInclude Include="sounds.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
