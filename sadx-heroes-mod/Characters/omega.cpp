@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-ModelInfo* OmegaMdls[3];
+ModelInfo* OmegaMdls[4];
 AnimationFile* OmegaAnms[60];
 AnimData OmegaAnimData[60];
 
@@ -44,19 +44,71 @@ void PlaySound_Omega(int ID) {
 	}
 }
 
+inline bool IsSameObject(NJS_OBJECT* object, const char* name) {
+	return (object == (NJS_OBJECT*)OmegaMdls[0]->getdata(name) ? 1 : 0);
+}
+
+inline void DrawGammaLayerPart_Draw(const char* name) {
+	NJS_OBJECT *obj = (NJS_OBJECT*)OmegaMdls[3]->getdata(name);
+	DrawModel_QueueVisible(obj->basicdxmodel, QueuedModelFlagsB_EnableZWrite, 1);
+}
+
+inline bool DrawGammaLayerPart(NJS_OBJECT* object, const char* name) {
+	if (IsSameObject(object, name)) {
+		DrawGammaLayerPart_Draw(name);
+		return true;
+	}
+	return false;
+}
+
 void OmegaCallback(NJS_OBJECT* object) {
-	if (object == (NJS_OBJECT*)OmegaMdls[0]->getdata("Dummy037")) {
+	if (IsSameObject(object, "Dummy037")) {
+		DrawGammaLayerPart_Draw("Dummy037");
 		memcpy(OmegaMatrices[0], _nj_current_matrix_ptr_, sizeof(NJS_MATRIX));
+		return;
 	}
-	else if (object == (NJS_OBJECT*)OmegaMdls[0]->getdata("Dummy022")) {
+	
+	if (IsSameObject(object, "Dummy022")) {
+		DrawGammaLayerPart_Draw("Dummy022");
 		memcpy(OmegaMatrices[1], _nj_current_matrix_ptr_, sizeof(NJS_MATRIX));
+		return;
 	}
-	else if (object == (NJS_OBJECT*)OmegaMdls[0]->getdata("Dummy012")) {
+
+	if (IsSameObject(object, "Dummy012")) {
+		DrawGammaLayerPart_Draw("Dummy012");
 		memcpy(OmegaMatrices[2], _nj_current_matrix_ptr_, sizeof(NJS_MATRIX));
+		return;
 	}
-	else if (object == (NJS_OBJECT*)OmegaMdls[0]->getdata("Dummy011")) {
+	
+	if (IsSameObject(object, "Dummy011")) {
+		DrawGammaLayerPart_Draw("Dummy011");
 		memcpy(OmegaMatrices[3], _nj_current_matrix_ptr_, sizeof(NJS_MATRIX));
+		return;
 	}
+
+	if (DrawGammaLayerPart(object, "Dummy008")) return;
+	if (DrawGammaLayerPart(object, "Dummy010")) return;
+	if (DrawGammaLayerPart(object, "Dummy011")) return;
+	if (DrawGammaLayerPart(object, "Dummy012")) return;
+	if (DrawGammaLayerPart(object, "Dummy013")) return;
+	if (DrawGammaLayerPart(object, "Dummy014")) return;
+	if (DrawGammaLayerPart(object, "Dummy018")) return;
+	if (DrawGammaLayerPart(object, "Dummy019")) return;
+	if (DrawGammaLayerPart(object, "Dummy021")) return;
+	if (DrawGammaLayerPart(object, "Dummy022")) return;
+	if (DrawGammaLayerPart(object, "Dummy033")) return;
+	if (DrawGammaLayerPart(object, "Dummy034")) return;
+	if (DrawGammaLayerPart(object, "Dummy036")) return;
+	if (DrawGammaLayerPart(object, "Dummy037")) return;
+	if (DrawGammaLayerPart(object, "Dummy047")) return;
+	if (DrawGammaLayerPart(object, "Dummy050")) return;
+	if (DrawGammaLayerPart(object, "Dummy052")) return;
+	if (DrawGammaLayerPart(object, "Dummy053")) return;
+	if (DrawGammaLayerPart(object, "Dummy054")) return;
+	if (DrawGammaLayerPart(object, "Dummy055")) return;
+	if (DrawGammaLayerPart(object, "Dummy057")) return;
+	if (DrawGammaLayerPart(object, "Dummy058")) return;
+	if (DrawGammaLayerPart(object, "Dummy059")) return;
 }
 
 void OmegaHeroes_Display(ObjectMaster *obj) {
@@ -135,7 +187,7 @@ void OmegaHeroes_Display(ObjectMaster *obj) {
 		break;
 	}
 
-	if (1) {
+	if (0) {
 		for (uint8_t i = 23; i < 47; ++i) {
 			if (i > 32 && i < 38) continue;
 			std::string str = "Dummy0";
@@ -311,6 +363,7 @@ void LoadOmegaFiles() {
 	OmegaMdls[0] = LoadCharacterModel("omega_main");
 	OmegaMdls[1] = LoadCharacterModel("omega_guns");
 	OmegaMdls[2] = LoadCharacterModel("omega_effects");
+	OmegaMdls[3] = LoadCharacterModel("omega_overlay");
 
 	OmegaAnms[0] = LoadCharacterAnim("OM_WALK");
 	OmegaAnms[1] = LoadCharacterAnim("OM_WALK_PULL");
