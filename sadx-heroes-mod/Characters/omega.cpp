@@ -9,10 +9,6 @@ NJS_TEXLIST OMEGA_TEXLIST = { arrayptrandlength(OMEGA_TEXNAMES) };
 
 NJS_MATRIX OmegaMatrices[4];
 
-NJS_VECTOR LineVecs[2] = { {0, 0, 0} };
-NJS_COLOR LineColours[2] = {0xFFFF9900, 0xFFFF33FF };
-NJS_POINT3COL Line = { LineVecs, LineColours, 0, 2 };
-
 void PlayVoice_Omega(int ID) {
 	switch (ID) {
 	case 1498:
