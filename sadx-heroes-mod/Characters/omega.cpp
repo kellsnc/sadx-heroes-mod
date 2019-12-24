@@ -152,11 +152,11 @@ void OmegaHeroes_Display(ObjectMaster *obj) {
 	njTranslateV(0, &entity1->Position);
 
 	if (entity1->Action == 19) {
-		if (data2->field_38 > -6) data2->field_38 -= 0.1f;
-		njTranslate(0, 0, data2->field_38, 0);
+		if (data2->field_34 > -6) data2->field_34 -= 0.1f;
+		njTranslate(0, 0, data2->field_34, 0);
 	}
 	else if (entity1->Action == 20 || entity1->Action == 21) {
-		data2->field_38 = 0;
+		data2->field_34 = 0;
 	}
 
 	njRotateZ(0, entity1->Rotation.z);
@@ -187,7 +187,7 @@ void OmegaHeroes_Display(ObjectMaster *obj) {
 		break;
 	}
 
-	if (0) {
+	if (omegaobj->Data1->Index == 9 || (omegaobj->Data1->Index == 11 && omegaobj->Data1->Scale.x > 60) || obj->Data1->Action == 19 || obj->Data1->Action == 20) {
 		for (uint8_t i = 23; i < 47; ++i) {
 			if (i > 32 && i < 38) continue;
 			std::string str = "Dummy0";
@@ -199,35 +199,43 @@ void OmegaHeroes_Display(ObjectMaster *obj) {
 		memcpy(_nj_current_matrix_ptr_, OmegaMatrices[0], sizeof(NJS_MATRIX));
 		njTranslate(0, -3.5f, 0, 0);
 		njScale(0, 1, 0.8f, 0.8f);
-		if (0) njDrawModel_SADX(OmegaMdls[1]->getmodel()->basicdxmodel);
+		if (obj->Data1->Action == 19 || obj->Data1->Action == 20) {
+			njRotateX(0, data2->field_38);
+			njDrawModel_SADX(OmegaMdls[1]->getmodel()->basicdxmodel);
+		}
 		else {
 			njTranslate(0, 2, 0, 0);
 			njRotateX(0, data2->field_38);
 			njDrawModel_SADX(OmegaMdls[1]->getmodel()->child->child->basicdxmodel);
 			njDrawModel_SADX(OmegaMdls[1]->getmodel()->child->child->child->basicdxmodel);
+			memcpy(OmegaMatrices[0], _nj_current_matrix_ptr_, sizeof(NJS_MATRIX));
 		}
 
 		memcpy(_nj_current_matrix_ptr_, OmegaMatrices[1], sizeof(NJS_MATRIX));
 		njRotateY(0, 0x8000);
 		njTranslate(0, -3.5f, 0, 0);
 		njScale(0, 1, 0.8f, 0.8f);
-		if (0) njDrawModel_SADX(OmegaMdls[1]->getmodel()->basicdxmodel);
+		if (obj->Data1->Action == 19 || obj->Data1->Action == 20) {
+			njDrawModel_SADX(OmegaMdls[1]->getmodel()->basicdxmodel);
+			njRotateX(0, data2->field_38);
+		}
 		else {
 			njTranslate(0, 2, 0, 0);
 			njRotateX(0, data2->field_38);
 			njDrawModel_SADX(OmegaMdls[1]->getmodel()->child->child->basicdxmodel);
 			njDrawModel_SADX(OmegaMdls[1]->getmodel()->child->child->child->basicdxmodel);
+			memcpy(OmegaMatrices[1], _nj_current_matrix_ptr_, sizeof(NJS_MATRIX));
 		}
 	}
 	else {
 		NJS_OBJECT* mdl = (NJS_OBJECT*)OmegaMdls[0]->getdata("Dummy038");
 		if (mdl->evalflags & NJD_EVAL_HIDE) {
 			for (uint8_t i = 23; i < 47; ++i) {
-				if (i > 32 || i < 23) continue;
+				if (i > 32 && i < 38) continue;
 				std::string str = "Dummy0";
 				str = str + std::to_string(i);
 				mdl = (NJS_OBJECT*)OmegaMdls[0]->getdata(str);
-				mdl->evalflags |= NJD_EVAL_HIDE;
+				mdl->evalflags &= ~NJD_EVAL_HIDE;
 			}
 		}
 	}
@@ -239,13 +247,33 @@ void OmegaHeroes_Display(ObjectMaster *obj) {
 	Direct3D_ResetZFunc();
 }
 
-void OmegaMissile(ObjectMaster *obj) {
-	/*LineVecs[1] = entity1->Position;
-	njColorBlendingMode(0, NJD_COLOR_BLENDING_SRCALPHA);
-	njColorBlendingMode(NJD_DESTINATION_COLOR, NJD_COLOR_BLENDING_ONE);
-	DrawLineList(&Line, 1, 0);
-	njColorBlendingMode(0, NJD_COLOR_BLENDING_SRCALPHA);
-	njColorBlendingMode(NJD_DESTINATION_COLOR, NJD_COLOR_BLENDING_INVSRCALPHA);*/
+void OmegaDrawMissiles(float y, float z) {
+	for (uint8_t j = 0; j < 2; ++j) {
+		memcpy(_nj_current_matrix_ptr_, OmegaMatrices[j], sizeof(NJS_MATRIX));
+		njRotateY(0, 0x8000);
+		njTranslate(0, 7, y, z);
+		if (FrameCounterUnpaused % 3 == 0) njTranslate(0, 5, 0, 0);
+		njRotateZ(0, 0xC000);
+		njScale(0, 0.02f, 0.2f, 0.02f);
+		for (uint8_t i = 0; i < 5; ++i) {
+			njDrawModel_SADX(OmegaMdls[2]->getmodel()->basicdxmodel);
+			njTranslate(0, 0, 20, 0);
+		}
+	}
+}
+
+void OmegaDrawMissilesList() {
+	njSetTexture(&OMEGA_TEXLIST);
+	njPushMatrixEx();
+	OmegaDrawMissiles(1, 0);
+	OmegaDrawMissiles(0.5, 0.5);
+	OmegaDrawMissiles(0, 1);
+	OmegaDrawMissiles(0.5, -0.5);
+	OmegaDrawMissiles(0, -1);
+	OmegaDrawMissiles(-0.5, -0.5);
+	OmegaDrawMissiles(-1, -1);
+	OmegaDrawMissiles(-0.5, 0.5);
+	njPopMatrix(1);
 }
 
 void OmegaHeroes_Main(ObjectMaster *obj) {
@@ -260,6 +288,11 @@ void OmegaHeroes_Main(ObjectMaster *obj) {
 	EntityData1* playerdata = playerobj->Data1;
 	EntityData2* playerdata2 = (EntityData2*)playerobj->Data2;
 	CharObj2* playerco2 = playerdata2->CharacterData;
+
+	if (playerdata->Action == 19 || playerdata->Action == 20) {
+		data2->field_38 += 0x1000;
+	}
+	playerco2->Upgrades |= Upgrades_ShovelClaw;
 
 	if (data->Rotation.z == 0) {
 		if (data->CharIndex == 0) {
@@ -283,7 +316,7 @@ void OmegaHeroes_Main(ObjectMaster *obj) {
 	case 2:
 		PlayerPtrs[data->CharIndex]->DisplaySub = OmegaHeroes_Display;
 
-		if (playerco2->Speed.x < 2 && HeldButtons2[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
+		if (playerco2->Speed.x < 2 && HeldButtons2[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground && (HeldButtons2[data->CharIndex] & Buttons_A) != Buttons_A) {
 			data->field_A = 0;
 			playerdata->Action = 2;
 			data->Action = 3;
@@ -328,8 +361,11 @@ void OmegaHeroes_Main(ObjectMaster *obj) {
 		case 4:
 			playerco2->Speed = { 0, 0, 0 };
 
+			data->Scale.x += 1;
 			data2->field_38 += 0x1000; //rotate guns
-			ExploseEnemies(&playerdata->Position, 4);
+			ExploseEnemies(&playerdata->Position, 5);
+
+			OmegaDrawMissilesList();
 
 			if (data->Scale.x > 125 || (data->Scale.x > 100 && PressedButtons[playerdata->CharIndex] & Buttons_X)) {
 				data2->field_30 = 0;
@@ -343,8 +379,26 @@ void OmegaHeroes_Main(ObjectMaster *obj) {
 		break;
 	case 4:
 		if (FlightPunchTrick(data, data2, playerco2, playerdata)) PlayHeroesSound(OmegaSound_Trick);
+		
+		data2->field_38 += 0x1000;
 
-		PlayHeroesAnimation(obj, 12, OmegaAnimData, 0, 0);
+		if (data->Scale.x > 10 && data->Scale.x < 20) {
+			NJS_VECTOR pos;
+			njPushMatrix(_nj_unit_matrix_);
+			njTranslateV(0, &playerdata->Position);
+			njRotateY(0, -playerdata->Rotation.y);
+			njTranslate(0, 15, 0, 0);
+			njSetTexture(&OMEGA_TEXLIST);
+			njGetTranslation(_nj_current_matrix_ptr_, &pos);
+			njPopMatrix(1);
+
+			ExploseEnemies(&pos, 5);
+
+			OmegaDrawMissilesList();
+		}
+		
+
+		PlayHeroesAnimation(obj, 9, OmegaAnimData, 0, 0);
 		break;
 	}
 
