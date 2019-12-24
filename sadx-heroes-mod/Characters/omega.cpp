@@ -29,10 +29,8 @@ void PlaySound_Omega(int ID) {
 		PlayHeroesSound(CommonSound_HomingAttack);
 		break;
 	case 1232:
-		PlayHeroesSound(OmegaSound_Hurt2);
 		break;
 	case 1233:
-		PlayHeroesSound(OmegaSound_Hurt1);
 		break;
 	case 1503:
 		PlayHeroesSound(OmegaSound_Death);
@@ -288,7 +286,6 @@ void OmegaHeroes_Main(ObjectMaster *obj) {
 	if (playerdata->Action == 19 || playerdata->Action == 20) {
 		data2->field_38 += 0x1000;
 	}
-	playerco2->Upgrades |= Upgrades_ShovelClaw;
 
 	if (data->Rotation.z == 0) {
 		if (data->CharIndex == 0) {
@@ -297,7 +294,7 @@ void OmegaHeroes_Main(ObjectMaster *obj) {
 
 		if (CustomPhysics) {
 			playerdata->CollisionInfo->CollisionArray->scale.x = 8;
-			playerco2->PhysicsData.CollisionSize = 10;
+			playerco2->PhysicsData.CollisionSize = 8;
 			playerco2->PhysicsData.RippleSize = 0.5f;
 
 			playerco2->PhysicsData.HSpeedCap = 15;
@@ -321,7 +318,6 @@ void OmegaHeroes_Main(ObjectMaster *obj) {
 
 		if (data->Index == 14 && (playerdata->Status & Status_Ground) != Status_Ground && PressedButtons[data->CharIndex] & Buttons_X) {
 			data->field_A = 0;
-			PlayHeroesSound(OmegaSound_Attack);
 			data->Action = 4;
 		}
 
