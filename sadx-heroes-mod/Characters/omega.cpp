@@ -394,14 +394,6 @@ void OmegaHeroes_Main(ObjectMaster *obj) {
 		break;
 	}
 
-	if (FrameCounterUnpaused % 200 == 0) {
-		data->InvulnerableTime = 1;
-	}
-
-	if (data->InvulnerableTime != 0 && FrameCounterUnpaused % 2 == 0) {
-		if (++data->InvulnerableTime > 5) data->InvulnerableTime = 0;
-	}
-
 	RunObjectChildren(obj);
 }
 

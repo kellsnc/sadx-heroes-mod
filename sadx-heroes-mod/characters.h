@@ -37,6 +37,7 @@ bool KickTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, Entit
 
 NJS_VECTOR PowerAnims(EntityData1* data, EntityData1* playerdata, CharObj2* playerco2);
 int PowerComboTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, EntityData1* playerdata);
+int PowerLaunchTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, EntityData1* playerdata);
 bool FlightPunchTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, EntityData1* playerdata);
 
 extern ObjectMaster* HeroesChars[];
@@ -116,3 +117,11 @@ void LoadOmegaFiles();
 void UnloadOmegaFiles();
 void PlaySound_Omega(int ID);
 void PlayVoice_Omega(int ID);
+
+void BigHeroes_Display(ObjectMaster *obj);
+void BigHeroes_Main(ObjectMaster *obj);
+void LureObj_Main(ObjectMaster *obj);
+void LoadBigFiles();
+void UnloadBigFiles();
+void PlaySound_Big(int ID);
+void PlayVoice_Big(int ID);

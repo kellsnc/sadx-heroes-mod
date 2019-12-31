@@ -9,7 +9,7 @@ bool JumpBallEnabled = true;
 bool P2SoundsEnabled = false;
 
 ObjectMaster* HeroesChars[8];
-bool CharFilesLoaded[10];
+bool CharFilesLoaded[11];
 int CurrentPlayer;
 
 ModelInfo* CharMdls[2];
@@ -28,7 +28,8 @@ ObjectFuncPtr DisplayFuncs[]{
 	AmyHeroes_Display,
 	EspioHeroes_Display,
 	KnucklesHeroes_Display,
-	OmegaHeroes_Display
+	OmegaHeroes_Display,
+	BigHeroes_Display
 };
 
 ObjectFuncPtr MainFuncs[]{
@@ -41,7 +42,8 @@ ObjectFuncPtr MainFuncs[]{
 	AmyHeroes_Main,
 	EspioHeroes_Main,
 	KnucklesHeroes_Main,
-	OmegaHeroes_Main
+	OmegaHeroes_Main,
+	BigHeroes_Main
 };
 
 PlaySoundFuncPtr SoundFuncs[]{
@@ -54,7 +56,8 @@ PlaySoundFuncPtr SoundFuncs[]{
 	PlaySound_Amy,
 	PlaySound_Espio,
 	PlaySound_Knuckles,
-	PlaySound_Omega
+	PlaySound_Omega,
+	PlaySound_Big
 };
 
 PlaySoundFuncPtr VoiceFuncs[]{
@@ -67,7 +70,8 @@ PlaySoundFuncPtr VoiceFuncs[]{
 	PlayVoice_Amy,
 	PlayVoice_Espio,
 	PlayVoice_Knuckles,
-	PlayVoice_Omega
+	PlayVoice_Omega,
+	PlayVoice_Big
 };
 
 Uint32 CharColours[]{
@@ -80,7 +84,8 @@ Uint32 CharColours[]{
 	0x96FB7D88,
 	0x96BD008A,
 	0x96E90500,
-	0
+	0,
+	0x963D0089
 };
 
 VoidFunction LoadFilesFuncs[]{
@@ -93,7 +98,8 @@ VoidFunction LoadFilesFuncs[]{
 	LoadAmyFiles,
 	LoadEspioFiles,
 	LoadKnuckFiles,
-	LoadOmegaFiles
+	LoadOmegaFiles,
+	LoadBigFiles
 };
 
 VoidFunction UnloadFilesFuncs[]{
@@ -106,7 +112,8 @@ VoidFunction UnloadFilesFuncs[]{
 	UnloadAmyFiles,
 	UnloadEspioFiles,
 	UnloadKnuckFiles,
-	UnloadOmegaFiles
+	UnloadOmegaFiles,
+	UnloadBigFiles
 };
 
 //Store the current player id at the start of their function
@@ -699,6 +706,57 @@ int PowerComboTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, 
 	return 0;
 }
 
+int PowerLaunchTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, EntityData1* playerdata) {
+	int combo = data2->field_30;
+	float frame = data->Scale.x;
+	playerdata->Action = 2;
+
+	switch (combo) {
+	case 0:
+		data2->field_30 = 1;
+		playerco2->Speed.x = 2;
+		playerco2->Powerups |= Powerups_Invincibility;
+		return 1;
+	case 1:
+		if (frame > 20) {
+			data2->field_30 = 0;
+			playerco2->Powerups &= ~Powerups_Invincibility;
+			data->Action = 2;
+			return 0;
+		}
+		else if (frame > 5) {
+			if (PressedButtons[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
+				data2->field_30 = 2;
+				playerco2->Speed.x = 3;
+				data->Scale.x = 30;
+				return 2;
+			}
+		}
+		break;
+	case 2:
+		if (frame > 40) {
+			data2->field_30 = 0;
+			playerco2->Powerups &= ~Powerups_Invincibility;
+			data->Action = 2;
+			return 0;
+		}
+		else if (frame > 30) {
+			if (PressedButtons[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
+				data2->field_30 = 3;
+				playerco2->Speed.x = 3;
+				return 3;
+			}
+		}
+		break;
+	case 3:
+		return 4;
+	case 4:
+		return 5;
+	}
+
+	return 0;
+}
+
 //Power flight punch, return when the attack launches
 bool FlightPunchTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, EntityData1* playerdata) {
 	playerdata->Action = 2;
@@ -746,6 +804,7 @@ bool OhNoImDead2(EntityData1 *a1, ObjectData2 *a2) {
 		if (a1->CollisionInfo->CollidingObject->Object->MainSub == Cheese_Main
 			|| a1->CollisionInfo->CollidingObject->Object->MainSub == TrapRing_Main
 			|| a1->CollisionInfo->CollidingObject->Object->MainSub == TornadoObj
+			|| a1->CollisionInfo->CollidingObject->Object->MainSub == LureObj_Main
 			|| a1->CollisionInfo->CollidingObject->Object->MainSub == NinjaObj) return 1;
 	}
 
