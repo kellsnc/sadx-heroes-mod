@@ -335,7 +335,8 @@ void CharactersCommon_DrawBall(EntityData1* playerdata, EntityData1* data) {
 		ball->Data1->Position = playerdata->Position;
 		ball->Data1->Rotation = playerdata->Rotation;
 		ball->Data1->CharID = data->CharID;
-		if (data->CharID > 18) ball->Data1->Scale.x = 1.5f;
+		if (data->CharID == Characters_HeroesBig) ball->Data1->Scale.x = 2;
+		if (data->CharID == Characters_Vector) ball->Data1->Scale.x = 1.5f;
 	}
 	else if ((playerdata->CharID == Characters_Sonic && data->Index == 49) && data->Scale.z == 14) {
 		ObjectMaster * ball = LoadObject(LoadObj_Data1, 5, BallObject);

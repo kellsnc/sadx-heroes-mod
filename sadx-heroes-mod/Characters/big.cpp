@@ -325,7 +325,8 @@ void BigHeroes_Main(ObjectMaster *obj) {
 			if (data->field_A == 2 || PressedButtons[data->CharIndex] & Buttons_X) {
 				data->field_A = 2;
 				data->Scale.y += 0.25f;
-				if (data->Scale.y > 72) {
+				if (data->Scale.y > 72 || PressedButtons[data->CharIndex] & Buttons_X) {
+					if (obj->Child) DeleteChildObjects(obj);
 					data2->field_30 = 0;
 					playerco2->Powerups &= ~Powerups_Invincibility;
 					data->Action = 2;
