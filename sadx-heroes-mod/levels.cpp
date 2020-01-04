@@ -1,7 +1,4 @@
 #include "stdafx.h"
-#include "mod.h"
-
-#include "levels.h"
 
 static bool EnableSeasideHill = true;
 static bool EnableSeaGate = true;
@@ -24,9 +21,12 @@ bool IsHeroesLevel = false;
 
 LandTable** CurrentLandAddress;
 
-std::string modpath;
 LandTableInfo *info = nullptr;
 LandTableInfo *oldinfo = nullptr;
+
+VoidFunc(sub_40D3B0, 0x40D3B0);
+FunctionPointer(void, DrawModelBlend_IsVisible, (NJS_MODEL_SADX *model, QueuedModelFlagsB blend, float radius_scale), 0x4094D0);
+FunctionPointer(void, DrawSimpleModel_IsVisible, (NJS_MODEL_SADX *model, float scale), 0x407A00);
 
 StartPosition Heroes_StartPositions[]{
 	{ HeroesLevelID_SeasideHill, 0,{ 0, 6.800581f, 5.217285f }, 0xBFFF },
@@ -161,6 +161,7 @@ void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size, NJS_
 
 void LevelHandler_Delete(ObjectMaster * a1) {
 	FreeCurrentChunk(CurrentLevel, CurrentAct);
+	CurrentChunk = 0;
 	delete oldinfo;
 	oldinfo = nullptr;
 	anim = 0;
@@ -175,33 +176,32 @@ void LevelHandler_Delete(ObjectMaster * a1) {
 }
 
 //Animate textures of the current landtable in a similar way to Sonic Heroes
-void AnimateTextures(SH_ANIMTEXS *list, Int listcount) {
-	if (!DroppedFrames) {
-		for (Int j = 0; j < CurrentLandTable->COLCount; ++j) {
-			if ((CurrentLandTable->Col[j].Flags & ColFlags_Visible) == ColFlags_Visible) {
-				for (Int k = 0; k < CurrentLandTable->Col[j].Model->basicdxmodel->nbMat; ++k) {
+void AnimateTexlist(SH_ANIMTEXS *list, Int listcount, NJS_TEXLIST* texlist) {
+	if (!DroppedFrames && texlist) {
+		for (uint8_t count = 0; count < listcount; ++count) {
+			SH_ANIMTEXS * clist = &list[count];
+			int base = clist->texid;
+			NJS_TEXNAME * texname = &texlist->textures[base];
+			
+			Int CurrentTex = base + clist->cache;
 
-					for (int l = 0; l < listcount; ++l) {
-						Int last = list[l].texid + list[l].count;
-
-						if (CurrentLandTable->Col[j].Model->basicdxmodel->mats[k].attr_texId >= list[l].texid &&
-							CurrentLandTable->Col[j].Model->basicdxmodel->mats[k].attr_texId <= last) {
-
-							Int Currenttex = CurrentLandTable->Col[j].Model->basicdxmodel->mats[k].attr_texId - list[l].texid;
-							if (anim % (list[l].duration[Currenttex]) == 0) {
-								if (Currenttex == last - list[l].texid) {
-									CurrentLandTable->Col[j].Model->basicdxmodel->mats[k].attr_texId = list[l].texid;
-								}
-								else {
-									CurrentLandTable->Col[j].Model->basicdxmodel->mats[k].attr_texId += 1;
-								}
-							}
-						}
-					}
+			if (anim % clist->duration[clist->cache] == 0) {
+				if (CurrentTex == base + clist->count) {
+					clist->cache = 0;
+					texname->texaddr = clist->address;
+				}
+				else {
+					if (clist->cache == 0) clist->address = texname->texaddr;
+					texname->texaddr = texlist->textures[CurrentTex + 1].texaddr;
+					clist->cache += 1;
 				}
 			}
 		}
 	}
+}
+
+void AnimateTextures(SH_ANIMTEXS *list, Int listcount) {
+	AnimateTexlist(list, listcount, CurrentLevelTexlist);
 }
 
 //Set start positions and trial menu entries for every character
@@ -319,42 +319,33 @@ void __cdecl DrawLandTableFog(NJS_MODEL_SADX *a1)
 	}
 }
 
+//Default light for stages
+void DefaultLight(HeroesLevelIDs levelid) {
+	for (int i = 0; i < StageLightList_Length; ++i) {
+		if (StageLightList[i].level == levelid)
+			StageLightList[i] = *GetStageLight(LevelIDs_Casinopolis, 0, 0);
+	}
+}
+
 //Initialize levels
-void Levels_Init(const char *path, const HelperFunctions &helperFunctions)
+void Levels_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config)
 {
-	modpath = std::string(path);
-
-	//Get the config.ini information
-	const IniFile *config = new IniFile(modpath + "\\config.ini");
-	EnableSeasideHill = config->getBool("Levels", "EnableSeasideHill", true);
-	EnableOceanPalace = config->getBool("Levels", "EnableOceanPalace", true);
-	EnableGrandMetropolis = config->getBool("Levels", "EnableGrandMetropolis", true);
-	EnablePowerPlant = config->getBool("Levels", "EnablePowerPlant", true);
-	EnableCasinoPark = config->getBool("Levels", "EnableCasinoPark", true);
-	EnableBingoHighway = config->getBool("Levels", "EnableBingoHighway", true);
-	EnableHangCastle = config->getBool("Levels", "EnableHangCastle", true);
-	EnableMysticMansion = config->getBool("Levels", "EnableMysticMansion", true);
-	EnableEggFleet = config->getBool("Levels", "EnableEggFleet", true);
-	EnableSpecialStages = config->getBool("Levels", "EnableSpecialStages", true);
-	NoMysticMusic = config->getBool("General", "NoMysticMusic", false);
-	NoPinball = config->getBool("General", "NoPinball", false);
-	EnableFog = config->getBool("General", "EnableFog", true);
-	delete config;
-
+	EnableSeasideHill = config->getBool("1- Levels", "EnableSeasideHill", true);
+	EnableOceanPalace = config->getBool("1- Levels", "EnableOceanPalace", true);
+	EnableGrandMetropolis = config->getBool("1- Levels", "EnableGrandMetropolis", true);
+	EnablePowerPlant = config->getBool("1- Levels", "EnablePowerPlant", true);
+	EnableCasinoPark = config->getBool("1- Levels", "EnableCasinoPark", true);
+	EnableBingoHighway = config->getBool("1- Levels", "EnableBingoHighway", true);
+	EnableHangCastle = config->getBool("1- Levels", "EnableHangCastle", true);
+	EnableMysticMansion = config->getBool("1- Levels", "EnableMysticMansion", true);
+	EnableEggFleet = config->getBool("1- Levels", "EnableEggFleet", true);
+	EnableSpecialStages = config->getBool("1- Levels", "EnableSpecialStages", true);
+	NoMysticMusic = config->getBool("0- General", "NoMysticMusic", false);
+	NoPinball = config->getBool("0- General", "NoPinball", false);
+	EnableFog = config->getBool("0- General", "EnableFog", true);
+	
 	WriteJump((void*)0x406F00, ForceAct); //njReleaseTextureAll_
 	WriteJump((void*)0x40A140, DrawLandTableFog); //DrawLandTableObject_SimpleModel
-
-	//Init sound effects
-	if (EnableSounds >= 1) {
-		ReplaceADX("invncibl", "invncibl");
-		ReplaceADX("rndclear", "rndclear");
-		ReplaceADX("speedup", "speedup");
-		ReplaceDAT("check_sheet_bank02", "SH_CHECK");
-		ReplaceDAT("COMMON_BANK00", "SH_COMMON", );
-		ReplaceDAT("P_METALTAILS_BANK03", "SH_METALTAILS");
-		ReplaceDAT("P_SONICTAILS_BANK03", "SH_SONICTAILS");
-		ReplaceDAT("V_SONICTAILS_E_BANK06", "SH_V_SONICTAILS");
-	}
 
 	if (EnableSeasideHill) SeasideHill_Init(path, helperFunctions);
 	if (EnableOceanPalace) OceanPalace_Init(path, helperFunctions);

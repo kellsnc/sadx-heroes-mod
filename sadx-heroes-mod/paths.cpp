@@ -1,6 +1,4 @@
 #include "stdafx.h"
-#include "mod.h"
-#include <math.h>
 
 ObjectMaster * railcam;
 extern LoopHead *MysticMansionPathList[70];
@@ -103,6 +101,7 @@ void RailPath_Main(ObjectMaster * a1) {
 
 	if (a1->Data1->Action == 0) {
 		EntityData1 * player = EntityData1Ptrs[a1->Data1->NextAction];
+		entity->Position = player->Position;
 
 		if (!player) {
 			a1->Data1->Action = 1;
@@ -174,11 +173,6 @@ void RailPath_Main(ObjectMaster * a1) {
 			if (!web) {
 				RailPhysics(a1, player, co2, loopdata);
 				railspeed = a1->Data1->Scale.y;
-
-				if (++a1->field_30 > 125) {
-					a1->field_30 = 0;
-					PlaySound(49, 0, 0, 0);
-				}
 			}
 			
 			//next position in spline
@@ -308,6 +302,7 @@ void AutoLoop_Main(ObjectMaster * a1) {
 
 			TransformSpline(GetCharacterObject(a1->Data1->NextAction), loopdata->LoopList[a1->Data1->InvulnerableTime].Position, loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position, a1->Data1->Scale.x);
 			player->Rotation.y = fPositionToRotation(&loopdata->LoopList[a1->Data1->InvulnerableTime].Position, &loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position).y;
+			a1->Data1->Position = player->Position;
 
 			//go to next point
 			if (a1->Data1->Scale.x > 1) { a1->Data1->Scale.x = 0; a1->Data1->InvulnerableTime++; }
@@ -389,7 +384,7 @@ void Path_Main(ObjectMaster * a1) {
 				if (CurrentLevel == HeroesLevelID_SeasideHill && players[slot]->Position.z > -900) return;
 				if (a1->Data1->field_A == 2 && CharObj2Ptrs[slot]->Upgrades & Upgrades_SuperSonic) return;
 
-				for (uint8_t point = 0; point < loopdata->Count; ++point) {
+				for (uint8_t point = 0; point < loopdata->Count - 1; ++point) {
 					for (float l = 0; l <= 1; l += 0.01f) {
 						a1->Data1->Position.x = (loopdata->LoopList[point + 1].Position.x - loopdata->LoopList[point].Position.x) * l + loopdata->LoopList[point].Position.x;
 						a1->Data1->Position.y = (loopdata->LoopList[point + 1].Position.y - loopdata->LoopList[point].Position.y) * l + loopdata->LoopList[point].Position.y;
@@ -401,9 +396,6 @@ void Path_Main(ObjectMaster * a1) {
 						if ((a1->Data1->Position.x > (players[slot]->Position.x - range) && a1->Data1->Position.x < (players[slot]->Position.x + range))
 							&& (a1->Data1->Position.y > (players[slot]->Position.y - range) && a1->Data1->Position.y < (players[slot]->Position.y + range))
 							&& (a1->Data1->Position.z > (players[slot]->Position.z - range) && a1->Data1->Position.z < (players[slot]->Position.z + range))) {
-
-							a1->Data1->Scale = { -3, 8, 4 }; //fix weird bug
-							if (IsPlayerInsideSphere(&a1->Data1->Scale, 10)) return;
 
 							players[slot]->Position = a1->Data1->Position;
 							a1->Data1->Action = 1;
@@ -430,6 +422,9 @@ void Path_Main(ObjectMaster * a1) {
 
 							//rail stuff
 							if (type == 2) {
+								tempobj->Data1->Position = a1->Data1->Position;
+								PlayHeroesSoundQueue(CommonSound_Rail, tempobj, 1000, 1);
+								
 								if (co2) tempobj->Data1->Scale.y = co2->Speed.x * 2; //store horizontal speed
 								if (tempobj->Data1->Scale.y == 0) RailValues[RailPhysics_MaxSpeed];
 

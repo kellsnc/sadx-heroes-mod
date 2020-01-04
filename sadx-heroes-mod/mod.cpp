@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "mod.h"
 
 bool IsLantern = false;
 set_shader_flags* set_shader_flags_ptr;
@@ -13,11 +12,9 @@ set_diffuse_blend_factor* set_diffuse_blend_factor_ptr;
 set_specular_blend_factor* set_specular_blend_factor_ptr;
 set_blend* set_blend_ptr;
 
+std::string modpath;
 HelperFunctions HelperFunctionsGlobal;
 
-bool EnableModels = true;
-bool EnableSounds = true;
-bool EnableGamePlay = false;
 bool IsLoaded = false;
 bool ChunkSwapped = false;
 
@@ -27,22 +24,18 @@ NJS_TEXLIST * CurrentLevelTexlist;
 
 static const Uint8 FREECAM_FIX[] = { 0x81, 0x0D, /*0xA8, 0xCB, 0xB2, 0x03, 0x0C, 0x00, 0x00, 0x80*/ };
 
-void Levels_Init(const char *path, const HelperFunctions &helperFunctions);
-void Objects_Init(const char *path, const HelperFunctions &helperFunctions);
+void Levels_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config);
+void Objects_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config);
+void Characters_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config);
+void Sounds_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config);
 void CommonObjects_OnFrame();
-void GamePlay_OnFrame();
+void Characters_OnFrame();
+void Sounds_OnFrame();
 
 extern "C"
 {
 	__declspec(dllexport) void __cdecl Init(const char *path, const HelperFunctions &helperFunctions)
 	{
-		//Get the config.ini information
-		const IniFile *config = new IniFile(std::string(path) + "\\config.ini");
-		EnableSounds = config->getBool("General", "EnableSounds", true);
-		EnableModels = config->getBool("General", "EnableModels", true);
-		EnableGamePlay = config->getBool("General", "EnableGamePlay", false);
-		delete config;
-
 		//Set up function pointers for Lantern API (borrowed from PkR)
 		HMODULE LanternDLL = GetModuleHandle(L"sadx-dc-lighting");
 
@@ -60,24 +53,34 @@ extern "C"
 			set_blend_ptr = (void(*)(int32_t, int32_t))GetProcAddress(LanternDLL, "set_blend");
 		}
 
+		modpath = std::string(path);
 		HelperFunctionsGlobal = helperFunctions;
 
 		WriteData((Uint8*)0x438330, FREECAM_FIX); //freecam fix by SonicFreak94
 		
-		Levels_Init(path, helperFunctions);
-		Objects_Init(path, helperFunctions);
+		const IniFile *config = new IniFile(std::string(path) + "\\config.ini");
+		Levels_Init(path, helperFunctions, config);
+		Objects_Init(path, helperFunctions, config);
+		Characters_Init(path, helperFunctions, config);
+		Sounds_Init(path, helperFunctions, config);
+		delete config;
 	}
 
 	__declspec(dllexport) void __cdecl OnFrame()
 	{
 		if (GameState != 16) ++anim;
 
-		if ((GameState == 15 || GameState == 4)) {
-			if (EnableModels) CommonObjects_OnFrame();
+		Sounds_OnFrame();
+
+		if (GameState == 15 || GameState == 4 || GameMode == 12) {
+			Characters_OnFrame();
 			
-			EnableGamePlay = true;
-			if (EnableGamePlay) GamePlay_OnFrame();
-			if (!IsLoaded) IsLoaded = true;
+			if (GameMode != 12) {
+				if (EnableModels) {
+					CommonObjects_OnFrame();
+				}
+				if (!IsLoaded) IsLoaded = true;
+			}
 		}
 
 		ChunkSwapped = false;

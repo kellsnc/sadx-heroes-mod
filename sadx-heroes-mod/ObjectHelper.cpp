@@ -1,25 +1,118 @@
 #include "stdafx.h"
-#include "mod.h"
 
 //Load Object File
-ModelInfo* LoadMDL(const char *name) {
-	PrintDebug("[SHM] Loading model "); PrintDebug(name); PrintDebug("... ");
+ModelInfo* LoadMDL(const char *type, const char *name) {
+	std::string fullPath = "system\\";
+	fullPath = fullPath + type + "\\" + name + ".sa1mdl";
 
-	std::string fullPath = "system\\objects\\";
-	fullPath = fullPath + name + ".sa1mdl";
-	const char *foo = fullPath.c_str();
+	ModelInfo * temp = new ModelInfo(HelperFunctionsGlobal.GetReplaceablePath(fullPath.c_str()));
 
-	ModelInfo * temp = new ModelInfo(HelperFunctionsGlobal.GetReplaceablePath(foo));
+	if (temp->getformat() == ModelFormat_Invalid) {
+		delete temp;
+		fullPath = "system\\";
+		fullPath = fullPath + type + "\\" + name + ".cnkmdl";
 
-	if (temp->getformat() == ModelFormat_Basic) PrintDebug("Done.\n");
-	else PrintDebug("Error.\n");
+		temp = new ModelInfo(HelperFunctionsGlobal.GetReplaceablePath(fullPath.c_str()));
 
-	return temp;
+		if (temp->getformat() == ModelFormat_Invalid) {
+			PrintDebug("Failed.\n");
+			delete temp;
+			return nullptr;
+		}
+		else {
+			PrintDebug("Done.\n");
+			return temp;
+		}
+	}
+	else {
+		PrintDebug("Done.\n");
+		return temp;
+	}
+}
+
+ModelInfo* LoadCommonModel(const char *name) {
+	PrintDebug("[SHM] Loading common object model: %s... ", name);
+	return LoadMDL("objects", name);
+}
+
+ModelInfo* LoadObjectModel(ModelInfo* ptr, const char *name) {
+	if (ptr) return ptr;
+
+	PrintDebug("[SHM] Loading object model: %s... ", name);
+	return LoadMDL("objects", name);
+}
+
+ModelInfo* LoadCharacterModel(const char *name) {
+	PrintDebug("[SHM] Loading character model: %s... ", name);
+	return LoadMDL("characters", name);
 }
 
 //Free Object File
-void FreeMDL(ModelInfo * pointer) {
-	if (pointer) delete(pointer);
+ModelInfo* FreeMDL(ModelInfo * pointer) {
+	if (GameState == 9 || (GameState == 8 && Lives == 0)) {
+		PrintDebug("[SHM] Freeing model: %s... \n", pointer->getdescription().c_str());
+		delete(pointer);
+		return nullptr;
+	}
+	else {
+		return pointer;
+	}
+}
+
+//Load Animation File
+AnimationFile* LoadANM(const char *type, const char *name) {
+	std::string fullPath = "system\\";
+	fullPath = fullPath + type + "\\" + name + ".saanim";
+
+	AnimationFile * temp = new AnimationFile(HelperFunctionsGlobal.GetReplaceablePath(fullPath.c_str()));
+
+	if (temp->getmodelcount()) {
+		PrintDebug("Done.\n");
+		return temp;
+	}
+	else {
+		PrintDebug("Failed.\n");
+		delete temp;
+		return nullptr;
+	}
+}
+
+AnimationFile* LoadObjectAnim(const char *name) {
+	PrintDebug("[SHM] Loading object animation: %s... ", name);
+	return LoadANM("objects", name);
+}
+
+AnimationFile* LoadCharacterAnim(const char *name) {
+	PrintDebug("[SHM] Loading character animation: %s... ", name);
+	return LoadANM("characters", name);
+}
+
+//Free Object File
+void FreeANM(AnimationFile * pointer) {
+	if (pointer) {
+		delete(pointer);
+	}
+}
+
+//Free a list of files
+void FreeMDLFiles(ModelInfo** Files, int size) {
+	PrintDebug("[SHM] Freeing %s models... ", std::to_string(size).c_str());
+
+	for (int i = 0; i < size; ++i) {
+		FreeMDL(Files[i]);
+	}
+
+	PrintDebug("Done. \n");
+}
+
+void FreeANMFiles(AnimationFile** Files, int size) {
+	PrintDebug("[SHM] Freeing %s animations... ", std::to_string(size).c_str());
+
+	for (int i = 0; i < size; ++i) {
+		FreeANM(Files[i]);
+	}
+
+	PrintDebug("Done. \n");
 }
 
 //Basic drawing call
@@ -56,7 +149,7 @@ void DynCol_Add(ObjectMaster *a1, uint8_t col) {
 	1 is moving (refresh the colision every frame)
 	2 is static, scalable
 	3 is moving, scalable	*/
-	
+
 	EntityData1 * original = a1->Data1;
 	NJS_OBJECT *colobject;
 
@@ -101,15 +194,33 @@ void DynCol_Delete(ObjectMaster *a1) {
 	}
 }
 
+bool IsPointInsideSphere(NJS_VECTOR *center, NJS_VECTOR *pos, float radius) {
+	return (powf(pos->x - center->x, 2) + pow(pos->y - center->y, 2) + pow(pos->z - center->z, 2)) <= pow(radius, 2);
+}
+
+int IsPlayerInsideSphere_(NJS_VECTOR *center, float radius) {
+	for (uint8_t player = 0; player < 8; ++player) {
+		if (!EntityData1Ptrs[player]) continue;
+
+		NJS_VECTOR *pos = &EntityData1Ptrs[player]->Position;
+		if (IsPointInsideSphere(center, pos, radius)) {
+			return player + 1;
+		}
+	}
+
+	return 0;
+}
+
 //Only allocate dynamic collision within radius
 bool DynColRadius(ObjectMaster *a1, float radius, uint8_t col) {
-	if (IsPlayerInsideSphere(&a1->Data1->Position, radius)) {
+	if (IsPlayerInsideSphere_(&a1->Data1->Position, radius)) {
 		if (!a1->Data1->LoopData) {
 			DynCol_Add(a1, col);
 			return 2;
 		}
 		return true;
-	} else if (a1->Data1->LoopData) {
+	}
+	else if (a1->Data1->LoopData) {
 		DynamicCOL_Remove(a1, (NJS_OBJECT*)a1->Data1->LoopData);
 		ObjectArray_Remove((NJS_OBJECT*)a1->Data1->LoopData);
 		a1->Data1->LoopData = nullptr;
@@ -142,33 +253,6 @@ void AnimateUV(SH_UVSHIFT *UVSHIFT, int size) {
 						UVSHIFT[j].List[i].v += UVSHIFT[j].uvshift[1];
 					}
 				}
-		}
-	}
-}
-
-//Animate textures of models, requires a SH_ANIMTEXS struct
-void AnimateObjectsTextures(NJS_MODEL_SADX * *objlist, int size, SH_ANIMTEXS *list, Int listcount) {
-	for (Int j = 0; j < size; ++j) {
-		if (objlist[j] == nullptr) continue;
-
-		for (Int k = 0; k < objlist[j]->nbMat; ++k) {
-			for (int l = 0; l < listcount; ++l) {
-				Int last = list[l].texid + list[l].count;
-
-				if (objlist[j]->mats[k].attr_texId >= list[l].texid &&
-					objlist[j]->mats[k].attr_texId <= last) {
-
-					Int Currenttex = objlist[j]->mats[k].attr_texId - list[l].texid;
-					if (anim % (list[l].duration[Currenttex]) == 0) {
-						if (Currenttex == last - list[l].texid) {
-							objlist[j]->mats[k].attr_texId = list[l].texid;
-						}
-						else {
-							objlist[j]->mats[k].attr_texId += 1;
-						}
-					}
-				}
-			}
 		}
 	}
 }
@@ -207,4 +291,42 @@ bool CheckModelDisplay2(SOI_LIST2 item) {
 		}
 	}
 	return false;
+}
+
+NJS_VECTOR GetPathPosition(NJS_VECTOR* orig, NJS_VECTOR* dest, float state) {
+	NJS_VECTOR result;
+	result.x = (dest->x - orig->x) * state + orig->x;
+	result.y = (dest->y - orig->y) * state + orig->y;
+	result.z = (dest->z - orig->z) * state + orig->z;
+
+	return result;
+}
+
+float GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest) {
+	return sqrtf(powf(dest->x - orig->x, 2) + powf(dest->y - orig->y, 2) + powf(dest->z - orig->z, 2));
+}
+
+D3DMATRIX WorldMatrixBackup;
+
+void DrawChunkModel(NJS_CNK_MODEL* model)
+{
+	DrawChunkModel_(model->vlist, model->plist);
+}
+
+void njCnkAction_Queue(NJS_ACTION* action, float frame, QueuedModelFlagsB flags)
+{
+	DisplayAnimationFrame(action, frame, flags, 0, (void(__cdecl*)(NJS_MODEL_SADX*, int, int))DrawChunkModel);
+}
+
+void njCnkAction(NJS_ACTION* action, float frame)
+{
+	DisplayAnimationFrame(action, frame, (QueuedModelFlagsB)0, 0, (void(__cdecl*)(NJS_MODEL_SADX*, int, int))DrawChunkModel);
+}
+
+void SetupWorldMatrix()
+{
+	ProjectToWorldSpace();
+	WorldMatrixBackup = WorldMatrix;
+	Direct3D_SetWorldTransform();
+	memcpy(_nj_current_matrix_ptr_, &ViewMatrix, sizeof(NJS_MATRIX));
 }

@@ -4,13 +4,22 @@
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-
 #include <stdlib.h>
+#include <math.h>
 #include <cmath>
 
+//Mod Loader headers
 #include <SADXModLoader.h>
 #include "lanternapi.h"
 #include "Trampoline.h"
 #include "IniFile.hpp"
 #include "LandTableInfo.h"
 #include "ModelInfo.h"
+#include "AnimationFile.h"
+
+//Common mod headers
+#include "mod.h"
+#include "levels.h"
+#include "objects.h"
+#include "characters.h"
+#include "sounds.h"

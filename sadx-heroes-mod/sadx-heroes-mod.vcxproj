@@ -52,13 +52,13 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)Data;$(ProjectDir)..\sadx-mod-loader\libmodutils;$(ProjectDir)..\sadx-mod-loader\mod-loader-common\ModLoaderCommon;$(ProjectDir)..\sadx-mod-loader\SADXModLoader\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Characters;$(ProjectDir)Levels;$(ProjectDir)Objects;$(ProjectDir)..\sadx-mod-loader\libmodutils;$(ProjectDir)..\sadx-mod-loader\mod-loader-common\ModLoaderCommon;$(ProjectDir)..\sadx-mod-loader\SADXModLoader\include;$(ProjectDir)..\sadx-mod-loader\extlib\bass</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>$(SolutionDir)sadx-dc-lighting.lib;$(ProjectDir)..\bin\ModLoaderCommon.lib;$(ProjectDir)..\bin\libmodutils.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)sadx-dc-lighting.lib;$(ProjectDir)..\sadx-mod-loader\extlib\bass\bass_vgmstream.lib;$(ProjectDir)..\sadx-mod-loader\extlib\bass\bass.lib;$(ProjectDir)..\bin\ModLoaderCommon.lib;$(ProjectDir)..\bin\libmodutils.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -66,89 +66,107 @@
       <WarningLevel>Level3</WarningLevel>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)Data;$(ProjectDir)..\sadx-mod-loader\libmodutils;$(ProjectDir)..\sadx-mod-loader\mod-loader-common\ModLoaderCommon;$(ProjectDir)..\sadx-mod-loader\SADXModLoader\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Characters;$(ProjectDir)Levels;$(ProjectDir)Objects;$(ProjectDir)..\sadx-mod-loader\libmodutils;$(ProjectDir)..\sadx-mod-loader\mod-loader-common\ModLoaderCommon;$(ProjectDir)..\sadx-mod-loader\SADXModLoader\include;$(ProjectDir)..\sadx-mod-loader\extlib\bass</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_ITERATOR_DEBUG_LEVEL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>$(SolutionDir)sadx-dc-lighting.lib;$(ProjectDir)..\bin\ModLoaderCommon.lib;$(ProjectDir)..\bin\libmodutils.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)sadx-dc-lighting.lib;$(ProjectDir)..\sadx-mod-loader\extlib\bass\bass_vgmstream.lib;$(ProjectDir)..\sadx-mod-loader\extlib\bass\bass.lib;$(ProjectDir)..\bin\ModLoaderCommon.lib;$(ProjectDir)..\bin\libmodutils.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="bingo-highway-objects.cpp" />
-    <ClCompile Include="bingo-highway.cpp" />
-    <ClCompile Include="casino-common-objects.cpp" />
-    <ClCompile Include="casino-common.cpp" />
-    <ClCompile Include="casino-park-objects.cpp" />
-    <ClCompile Include="casino-park.cpp" />
-    <ClCompile Include="egg-fleet-objects.cpp" />
-    <ClCompile Include="egg-fleet.cpp" />
-    <ClCompile Include="gameplay.cpp" />
-    <ClCompile Include="grand-metropolis-objects.cpp" />
-    <ClCompile Include="grand-metropolis.cpp" />
-    <ClCompile Include="hang-castle-objects.cpp" />
-    <ClCompile Include="hang-castle.cpp" />
-    <ClCompile Include="heroes-common-objects.cpp" />
-    <ClCompile Include="mystic-common-objects.cpp" />
-    <ClCompile Include="mystic-mansion-objects.cpp" />
-    <ClCompile Include="mystic-mansion.cpp" />
+    <ClCompile Include="Characters\amy.cpp" />
+    <ClCompile Include="Characters\big.cpp" />
+    <ClCompile Include="Characters\espio.cpp" />
+    <ClCompile Include="Characters\knuckles.cpp" />
+    <ClCompile Include="Characters\omega.cpp" />
+    <ClCompile Include="Characters\shadow.cpp" />
+    <ClCompile Include="Characters\sonic.cpp" />
+    <ClCompile Include="Characters\tails.cpp" />
+    <ClCompile Include="Characters\vector.cpp" />
+    <ClCompile Include="collision.cpp" />
+    <ClCompile Include="Objects\bingo-highway-objects.cpp" />
+    <ClCompile Include="Levels\bingo-highway.cpp" />
+    <ClCompile Include="Objects\casino-common-objects.cpp" />
+    <ClCompile Include="Levels\casino-common.cpp" />
+    <ClCompile Include="Objects\casino-park-objects.cpp" />
+    <ClCompile Include="Levels\casino-park.cpp" />
+    <ClCompile Include="characters.cpp" />
+    <ClCompile Include="Characters\charmy.cpp" />
+    <ClCompile Include="Characters\cream.cpp" />
+    <ClCompile Include="Objects\egg-fleet-objects.cpp" />
+    <ClCompile Include="Levels\egg-fleet.cpp" />
+    <ClCompile Include="Objects\grand-metropolis-objects.cpp" />
+    <ClCompile Include="Levels\grand-metropolis.cpp" />
+    <ClCompile Include="Objects\hang-castle-objects.cpp" />
+    <ClCompile Include="Levels\hang-castle.cpp" />
+    <ClCompile Include="Objects\heroes-common-objects.cpp" />
+    <ClCompile Include="Objects\mystic-common-objects.cpp" />
+    <ClCompile Include="Objects\mystic-mansion-objects.cpp" />
+    <ClCompile Include="Levels\mystic-mansion.cpp" />
     <ClCompile Include="objects.cpp" />
     <ClCompile Include="levels.cpp" />
     <ClCompile Include="ObjectHelper.cpp" />
-    <ClCompile Include="ocean-palace-objects.cpp" />
-    <ClCompile Include="ocean-palace.cpp" />
-    <ClCompile Include="power-plant-objects.cpp" />
-    <ClCompile Include="power-plant.cpp" />
-    <ClCompile Include="seaside-hill.cpp" />
+    <ClCompile Include="Objects\ocean-palace-objects.cpp" />
+    <ClCompile Include="Levels\ocean-palace.cpp" />
+    <ClCompile Include="Objects\power-plant-objects.cpp" />
+    <ClCompile Include="Levels\power-plant.cpp" />
+    <ClCompile Include="Characters\rouge.cpp" />
+    <ClCompile Include="Levels\seaside-hill.cpp" />
     <ClCompile Include="mod.cpp" />
-    <ClCompile Include="seaside-hill-objects.cpp" />
+    <ClCompile Include="Objects\seaside-hill-objects.cpp" />
     <ClCompile Include="paths.cpp" />
-    <ClCompile Include="special-stages-objects.cpp" />
-    <ClCompile Include="special-stages.cpp" />
+    <ClCompile Include="Objects\special-stages-objects.cpp" />
+    <ClCompile Include="Levels\special-stages.cpp" />
+    <ClCompile Include="sounds.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="bingo-highway.h" />
-    <ClInclude Include="casino-park.h" />
-    <ClInclude Include="Data\bingo-highway-paths.h" />
-    <ClInclude Include="Data\casino-common-objects.h" />
-    <ClInclude Include="Data\casino-park-deathzones.h" />
-    <ClInclude Include="Data\casino-park-paths.h" />
-    <ClInclude Include="Data\grand-metropolis-deathzones.h" />
-    <ClInclude Include="Data\grand-metropolis-objects.h" />
-    <ClInclude Include="Data\grand-metropolis-paths.h" />
-    <ClInclude Include="Data\hang-castle-deathzones.h" />
-    <ClInclude Include="Data\hang-castle-objects.h" />
-    <ClInclude Include="Data\hang-castle-paths.h" />
-    <ClInclude Include="Data\mystic-common-objects.h" />
-    <ClInclude Include="Data\mystic-mansion-deathzones.h" />
-    <ClInclude Include="Data\mystic-mansion-paths.h" />
-    <ClInclude Include="Data\ocean-palace-objects.h" />
-    <ClInclude Include="Data\ocean-palace-paths.h" />
-    <ClInclude Include="Data\power-plant-deathzones.h" />
-    <ClInclude Include="Data\power-plant-objects.h" />
-    <ClInclude Include="Data\power-plant-paths.h" />
-    <ClInclude Include="Data\road-rock-deathzones.h" />
-    <ClInclude Include="egg-fleet.h" />
-    <ClInclude Include="grand-metropolis.h" />
-    <ClInclude Include="hang-castle.h" />
+    <ClInclude Include="Levels\bingo-highway.h" />
+    <ClInclude Include="Levels\casino-park.h" />
+    <ClInclude Include="characters.h" />
+    <ClInclude Include="Levels\bingo-highway-paths.h" />
+    <ClInclude Include="Objects\casino-common-objects.h" />
+    <ClInclude Include="Levels\casino-park-deathzones.h" />
+    <ClInclude Include="Levels\casino-park-paths.h" />
+    <ClInclude Include="Levels\grand-metropolis-deathzones.h" />
+    <ClInclude Include="Objects\grand-metropolis-objects.h" />
+    <ClInclude Include="Levels\grand-metropolis-paths.h" />
+    <ClInclude Include="Levels\hang-castle-deathzones.h" />
+    <ClInclude Include="Objects\hang-castle-objects.h" />
+    <ClInclude Include="Levels\hang-castle-paths.h" />
+    <ClInclude Include="Objects\mystic-common-objects.h" />
+    <ClInclude Include="Levels\mystic-mansion-deathzones.h" />
+    <ClInclude Include="Levels\mystic-mansion-paths.h" />
+    <ClInclude Include="Objects\ocean-palace-objects.h" />
+    <ClInclude Include="Levels\ocean-palace-paths.h" />
+    <ClInclude Include="Levels\power-plant-deathzones.h" />
+    <ClInclude Include="Objects\power-plant-objects.h" />
+    <ClInclude Include="Levels\power-plant-paths.h" />
+    <ClInclude Include="Levels\road-rock-deathzones.h" />
+    <ClInclude Include="Levels\egg-fleet.h" />
+    <ClInclude Include="Levels\grand-metropolis.h" />
+    <ClInclude Include="Levels\hang-castle.h" />
     <ClInclude Include="lanternapi.h" />
     <ClInclude Include="levels.h" />
-    <ClInclude Include="mystic-mansion.h" />
+    <ClInclude Include="Levels\mystic-mansion.h" />
     <ClInclude Include="objects.h" />
-    <ClInclude Include="Data\seaside-hill-deathzones.h" />
-    <ClInclude Include="Data\seaside-hill-objects.h" />
-    <ClInclude Include="ocean-palace.h" />
-    <ClInclude Include="power-plant.h" />
-    <ClInclude Include="seaside-hill.h" />
+    <ClInclude Include="Levels\seaside-hill-deathzones.h" />
+    <ClInclude Include="Levels\ocean-palace.h" />
+    <ClInclude Include="Levels\power-plant.h" />
+    <ClInclude Include="Levels\seaside-hill.h" />
     <ClInclude Include="mod.h" />
-    <ClInclude Include="Data\seaside-hill-paths.h" />
+    <ClInclude Include="Levels\seaside-hill-paths.h" />
+    <ClInclude Include="Objects\seaside-hill-objects.h" />
+    <ClInclude Include="sounds.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
