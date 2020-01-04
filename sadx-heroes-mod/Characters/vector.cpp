@@ -259,8 +259,6 @@ void VectorHeroes_Main(ObjectMaster *obj) {
 			break;
 		}
 
-		RunObjectChildren(obj);
-
 		break;
 	case 4:
 		if (playerdata->Position.y - playerco2->_struct_a3.DistanceMax < 30) {
