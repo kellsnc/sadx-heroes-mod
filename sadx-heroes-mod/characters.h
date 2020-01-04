@@ -125,3 +125,10 @@ void LoadBigFiles();
 void UnloadBigFiles();
 void PlaySound_Big(int ID);
 void PlayVoice_Big(int ID);
+
+void VectorHeroes_Display(ObjectMaster *obj);
+void VectorHeroes_Main(ObjectMaster *obj);
+void LoadVectorFiles();
+void UnloadVectorFiles();
+void PlaySound_Vector(int ID);
+void PlayVoice_Vector(int ID);

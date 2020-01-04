@@ -9,7 +9,7 @@ bool JumpBallEnabled = true;
 bool P2SoundsEnabled = false;
 
 ObjectMaster* HeroesChars[8];
-bool CharFilesLoaded[11];
+bool CharFilesLoaded[12];
 int CurrentPlayer;
 
 ModelInfo* CharMdls[2];
@@ -29,7 +29,8 @@ ObjectFuncPtr DisplayFuncs[]{
 	EspioHeroes_Display,
 	KnucklesHeroes_Display,
 	OmegaHeroes_Display,
-	BigHeroes_Display
+	BigHeroes_Display,
+	VectorHeroes_Display
 };
 
 ObjectFuncPtr MainFuncs[]{
@@ -43,7 +44,8 @@ ObjectFuncPtr MainFuncs[]{
 	EspioHeroes_Main,
 	KnucklesHeroes_Main,
 	OmegaHeroes_Main,
-	BigHeroes_Main
+	BigHeroes_Main,
+	VectorHeroes_Main
 };
 
 PlaySoundFuncPtr SoundFuncs[]{
@@ -57,7 +59,8 @@ PlaySoundFuncPtr SoundFuncs[]{
 	PlaySound_Espio,
 	PlaySound_Knuckles,
 	PlaySound_Omega,
-	PlaySound_Big
+	PlaySound_Big,
+	PlaySound_Vector
 };
 
 PlaySoundFuncPtr VoiceFuncs[]{
@@ -71,7 +74,8 @@ PlaySoundFuncPtr VoiceFuncs[]{
 	PlayVoice_Espio,
 	PlayVoice_Knuckles,
 	PlayVoice_Omega,
-	PlayVoice_Big
+	PlayVoice_Big,
+	PlayVoice_Vector
 };
 
 Uint32 CharColours[]{
@@ -85,7 +89,8 @@ Uint32 CharColours[]{
 	0x96BD008A,
 	0x96E90500,
 	0,
-	0x963D0089
+	0x963D0089,
+	0x964EBF44
 };
 
 VoidFunction LoadFilesFuncs[]{
@@ -99,7 +104,8 @@ VoidFunction LoadFilesFuncs[]{
 	LoadEspioFiles,
 	LoadKnuckFiles,
 	LoadOmegaFiles,
-	LoadBigFiles
+	LoadBigFiles,
+	LoadVectorFiles
 };
 
 VoidFunction UnloadFilesFuncs[]{
@@ -113,7 +119,8 @@ VoidFunction UnloadFilesFuncs[]{
 	UnloadEspioFiles,
 	UnloadKnuckFiles,
 	UnloadOmegaFiles,
-	UnloadBigFiles
+	UnloadBigFiles,
+	UnloadVectorFiles
 };
 
 //Store the current player id at the start of their function
@@ -196,7 +203,7 @@ void PlayHeroesAnimation(ObjectMaster* obj, uint8_t ID, AnimData* animdata, floa
 	}
 	
 	if (frame == animdata[ID].Animation->motion->nbFrame - 1) {
-		frame = 0;
+  		frame = 0;
 
 		if (animdata[ID].Property == 1) {
 			frame = animdata[ID].Animation->motion->nbFrame - 2;
@@ -283,9 +290,9 @@ void BallObject(ObjectMaster* obj) {
 	njRotateX(0, obj->Data1->Rotation.x);
 	njRotateY(0, -obj->Data1->Rotation.y - 0x4000);
 	
-
 	if (data->Action == 0) {
 		njTranslate(0, 0, 5.5f, -2);
+		if (obj->Data1->Scale.x) njScale(0, obj->Data1->Scale.x, obj->Data1->Scale.x, obj->Data1->Scale.x);
 		CharMdls[0]->getmodel()->basicdxmodel->mats[0].diffuse.color = CharColours[obj->Data1->CharID - 9];
 		njDrawModel_SADX(CharMdls[0]->getmodel()->basicdxmodel);
 	}
@@ -328,6 +335,7 @@ void CharactersCommon_DrawBall(EntityData1* playerdata, EntityData1* data) {
 		ball->Data1->Position = playerdata->Position;
 		ball->Data1->Rotation = playerdata->Rotation;
 		ball->Data1->CharID = data->CharID;
+		if (data->CharID > 18) ball->Data1->Scale.x = 1.5f;
 	}
 	else if ((playerdata->CharID == Characters_Sonic && data->Index == 49) && data->Scale.z == 14) {
 		ObjectMaster * ball = LoadObject(LoadObj_Data1, 5, BallObject);
@@ -740,7 +748,7 @@ int PowerLaunchTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2,
 			data->Action = 2;
 			return 0;
 		}
-		else if (frame > 30) {
+		else if (frame > 20) {
 			if (PressedButtons[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
 				data2->field_30 = 3;
 				playerco2->Speed.x = 3;

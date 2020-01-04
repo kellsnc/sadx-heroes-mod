@@ -296,6 +296,7 @@ void OmegaHeroes_Main(ObjectMaster *obj) {
 			playerdata->CollisionInfo->CollisionArray->scale.x = 8;
 			playerco2->PhysicsData.CollisionSize = 8;
 			playerco2->PhysicsData.RippleSize = 0.5f;
+			playerco2->_struct_a3.ShadowScale = 1.5f;
 
 			playerco2->PhysicsData.HSpeedCap = 15;
 			playerco2->PhysicsData.MaxAccel = 3.5f;
