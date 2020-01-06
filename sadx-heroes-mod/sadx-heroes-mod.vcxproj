@@ -90,6 +90,7 @@
     <ClCompile Include="Characters\tails.cpp" />
     <ClCompile Include="Characters\vector.cpp" />
     <ClCompile Include="collision.cpp" />
+    <ClCompile Include="gameplay.cpp" />
     <ClCompile Include="Objects\bingo-highway-objects.cpp" />
     <ClCompile Include="Levels\bingo-highway.cpp" />
     <ClCompile Include="Objects\casino-common-objects.cpp" />

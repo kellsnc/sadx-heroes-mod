@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "mod.h"
 
 #define _HIBYTE(x)   (*((Uint8*)&(x)+1))
 
@@ -19,12 +18,7 @@ enum AIStates {
 	AIState_Stop
 };
 
-Rotation3 fPositionToRotation(NJS_VECTOR* orig, NJS_VECTOR* point);
-float GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest);
-
-bool IsPointInsideSphere(NJS_VECTOR *center, NJS_VECTOR *pos, float radius) {
-	return (powf(pos->x - center->x, 2) + pow(pos->y - center->y, 2) + pow(pos->z - center->z, 2)) <= pow(radius, 2);
-}
+uint8_t TeamSwapping = 0;
 
 bool IsPointInsideBox(NJS_VECTOR *p1, NJS_VECTOR *p2, NJS_VECTOR *pos) {
 	return (pos->x > p1->x && pos->x < p2->x &&
@@ -216,6 +210,11 @@ void AI_InAir(EntityData1* data, EntityData1* playerdata, EntityData1* botdata, 
 	}
 }
 
+extern uint8_t FlyCharEnabled;
+extern uint8_t SpeedCharEnabled;
+extern uint8_t PowerCharEnabled;
+extern ObjectFuncPtr MainFuncs[];
+
 bool Team_SwapCharacter(ObjectMaster* obj, ObjectMaster* player) {
 	EntityData1* data = obj->Data1;
 	EntityData2* data2 = (EntityData2*)obj->Data2;
@@ -242,6 +241,23 @@ bool Team_SwapCharacter(ObjectMaster* obj, ObjectMaster* player) {
 			data2->VelocityDirection = objdata2->CharacterData->Speed;
 			player->MainSub = TeamSonic[data->Index];
 			player->Data1->Action = 0;
+			obj->Data1->field_A = 1;
+
+			uint8_t chara;
+			if (player->MainSub == Sonic_Main) {
+				chara = SpeedCharEnabled;
+			}
+			else if (player->MainSub == Tails_Main) {
+				chara = FlyCharEnabled;
+			}
+			else if (player->MainSub == Knuckles_Main) {
+				chara = PowerCharEnabled;
+			}
+			HeroesChars[player->Data1->CharIndex]->Data1->Action = 0;
+			HeroesChars[player->Data1->CharIndex]->MainSub = MainFuncs[chara - 9];
+			HeroesChars[player->Data1->CharIndex]->Data1->CharID = chara;
+
+			TeamSwapping = 3;
 			return true;
 		}
 	}

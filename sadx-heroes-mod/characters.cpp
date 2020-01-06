@@ -18,6 +18,8 @@ CollisionData Tornado_Col = { 0, 0, 0, 0, 0, { 0.0f, 0.0f, 0.0f }, { 20, 0.0f, 0
 DataPointer(NJS_VECTOR, bombpos, 0x3C5AB24);
 float bombsize;
 
+void Characters_OnFrame();
+
 ObjectFuncPtr DisplayFuncs[]{
 	CreamHeroes_Display,
 	RougeHeroes_Display,
@@ -223,11 +225,12 @@ void PlayHeroesAnimation(ObjectMaster* obj, uint8_t ID, AnimData* animdata, floa
 	data->Scale.x = frame;
 }
 
+extern uint8_t TeamSwapping;
 //Common player removal function
 void CharactersCommon_Delete(ObjectMaster* obj) {
 	HeroesChars[obj->Data1->CharIndex] = nullptr;
 	
-	if (GameState == 15) {
+	if (GameState == 15 && !TeamSwapping) {
 		njReleaseTexture((NJS_TEXLIST*)obj->Data1->LoopData);
 		UnloadFilesFuncs[obj->Data1->CharID - 9]();
 		CharFilesLoaded[obj->Data1->CharID - 9] = false;
@@ -248,7 +251,7 @@ void CharactersCommon_Delete(ObjectMaster* obj) {
 			CharFilesLoaded[character - 9] = false;
 		}
 	}
-	
+
 	/*ObjectMaster* playerobj = PlayerPtrs[obj->Data1->CharIndex];
 	if (playerobj) {
 		EntityData2* playerdata2 = (EntityData2*)playerobj->Data2;
@@ -365,7 +368,8 @@ bool CharactersCommon_Init(ObjectMaster* obj, const char* name, NJS_TEXLIST* tex
 
 		data->LoopData = (Loop*)tex;
 
-		return false;
+		if (playerobj) return true;
+		else return false;
 	}
 	else if (data->Action == 1) {
 		if (playerobj->Data1) {
@@ -376,11 +380,24 @@ bool CharactersCommon_Init(ObjectMaster* obj, const char* name, NJS_TEXLIST* tex
 		return false;
 	}
 
-	char charid = playerobj->Data1->CharID;
-	if ((charid == Characters_Sonic && (data->CharID < Characters_HeroesSonic || data->CharID > Characters_Espio)) ||
-		(charid == Characters_Tails && data->CharID > Characters_HeroesTails) ||
-		(charid == Characters_Knuckles && data->CharID < Characters_HeroesKnuckles) || !playerobj) {
-		DeleteObject_(obj);
+	if (playerobj) {
+		if (TeamSwapping) {
+			TeamSwapping--;
+			if (playerobj->Data1->CharIndex == 0) {
+				PlayHeroesSound(TailsSound_TeamSwap);
+			}
+		}
+		else {
+			char charid = playerobj->Data1->CharID;
+			if ((charid == Characters_Sonic && (data->CharID < Characters_HeroesSonic || data->CharID > Characters_Espio)) ||
+				(charid == Characters_Tails && data->CharID > Characters_HeroesTails) ||
+				(charid == Characters_Knuckles && data->CharID < Characters_HeroesKnuckles) || !playerobj) {
+				DeleteObject_(obj);
+				return false;
+			}
+		}
+	}
+	else {
 		return false;
 	}
 
@@ -850,7 +867,7 @@ void Heroes_Display(ObjectMaster* obj) {
 		DeleteObject_(HeroesChars[obj->Data1->CharIndex]);
 	}
 
-	if (HeroesChars[obj->Data1->CharIndex]->Data1->LoopData) 
+	if (HeroesChars[obj->Data1->CharIndex]->Data1->LoopData && !TeamSwapping) 
 		DisplayFuncs[HeroesChars[obj->Data1->CharIndex]->Data1->CharID - 9](obj);
 }
 

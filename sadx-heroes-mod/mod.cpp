@@ -31,6 +31,9 @@ void Sounds_Init(const char *path, const HelperFunctions &helperFunctions, const
 void CommonObjects_OnFrame();
 void Characters_OnFrame();
 void Sounds_OnFrame();
+void GamePlay_OnFrame();
+
+bool EnableGamePlay = false;
 
 extern "C"
 {
@@ -59,6 +62,7 @@ extern "C"
 		WriteData((Uint8*)0x438330, FREECAM_FIX); //freecam fix by SonicFreak94
 		
 		const IniFile *config = new IniFile(std::string(path) + "\\config.ini");
+		EnableGamePlay = config->getBool("General", "EnableGamePlay", false);
 		Levels_Init(path, helperFunctions, config);
 		Objects_Init(path, helperFunctions, config);
 		Characters_Init(path, helperFunctions, config);
@@ -79,6 +83,9 @@ extern "C"
 				if (EnableModels) {
 					CommonObjects_OnFrame();
 				}
+
+				EnableGamePlay = true;
+				if (EnableGamePlay) GamePlay_OnFrame();
 				if (!IsLoaded) IsLoaded = true;
 			}
 		}
