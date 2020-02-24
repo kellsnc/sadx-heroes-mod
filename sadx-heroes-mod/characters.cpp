@@ -524,9 +524,7 @@ NJS_VECTOR PowerAnims(EntityData1* data, EntityData1* playerdata, CharObj2* play
 	case 46: case 47: case 48: anim = 1; break;
 	case 49: case 52: anim = 33; break;
 	case 50: anim = 47; break;
-	case 54: anim = 11; break;
-	case 55: anim = 10; break;
-	case 56: anim = 12; break;
+	case 54: case 55: case 56: anim = 11; break; //attack
 	case 70: case 71: case 72: case 73: case 74: case 75: case 85: case 86: case 104: case 107: anim = 1; break;
 	case 84: case 101: case 102: case 103: case 108: case 109: case 110: anim = 29; break;
 	}
