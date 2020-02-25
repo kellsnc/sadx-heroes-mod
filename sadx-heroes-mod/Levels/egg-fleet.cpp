@@ -18,7 +18,7 @@ void EggFleet_Delete(ObjectMaster *a1) {
 
 	LevelHandler_Delete(a1);
 }
-void EFCannon(ObjectMaster* a1);
+
 void EggFleetHandler(ObjectMaster *a1) {
 	EntityData1 *entity = EntityData1Ptrs[0];
 	CharObj2 * co2 = CharObj2Ptrs[0];
@@ -36,13 +36,16 @@ void EggFleetHandler(ObjectMaster *a1) {
 		PlayMusic(MusicIDs_SkyDeckSkydeckAGoGo);
 
 		entity->Position = { 500, 4230, 5320 };
-		/*ObjectMaster* test = LoadObject(LoadObj_Data1, 3, EFCannon);
-		test->SETData.SETData = new SETObjData;
-		test->SETData.SETData->Distance = 500000;
-		test->Data1->Position = { 500, 4200, 4720 };*/
-		//entity->Position = { -2895.664, 886.3751, -5348.738 };
+		entity->Position = { -5998.083, 3435.614, -13343.93 };
 	}
 	else {
+
+		//temp until the ship breaker object is ported
+		NJS_VECTOR swap1 = { -5998.083, 3435.614, -13343.93 };
+		if (IsPlayerInsideSphere_(&swap1, 20)) {
+			SwapChunk("EF", 7);
+		}
+			
 		ChunkHandler("EF", EggFleetChunks, LengthOfArray(EggFleetChunks), entity->Position);
 		AnimateTextures(EggFleetAnimTexs, LengthOfArray(EggFleetAnimTexs));
 	}

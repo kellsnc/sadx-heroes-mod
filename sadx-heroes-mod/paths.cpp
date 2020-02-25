@@ -11,17 +11,14 @@ void TransformSpline(ObjectMaster * a1, NJS_VECTOR orig, NJS_VECTOR dest, float 
 }
 
 Rotation3 fPositionToRotation(NJS_VECTOR* orig, NJS_VECTOR* point) {
-	NJS_VECTOR dist;
+	NJS_VECTOR dist = *point;
 	Rotation3 result;
+	
+	njSubVector(&dist, orig);
 
-	dist.x = orig->x - point->x;
-	dist.y = orig->y - point->y;
-	dist.z = orig->z - point->z;
+	result.x = -(atan2(dist.y, dist.z) * 65536.0 * -0.1591549762031479);
+	result.y = -(atan2(dist.x, dist.z) * 65536.0 * 0.1591549762031479) + 0x4000;
 
-	result.x = atan2(dist.y, dist.z) * 65536.0 * -0.1591549762031479;
-	result.y = atan2(dist.x, dist.z) * 65536.0 * 0.1591549762031479;
-
-	result.y = -result.y - 0x4000;
 	return result;
 }
 

@@ -92,7 +92,6 @@ void SwapCurrentLandTable() {
 		}
 	}
 
-	chunkswapped = true;
 	land->TexList = CurrentLevelTexlist;
 	land->AnimCount = 0;
 	WriteData((LandTable**)CurrentLandAddress, land);
@@ -128,11 +127,18 @@ void LoadLevelFile(const char *shortname, int chunknb) {
 
 	PrintDebug("Done. Loaded '"); PrintDebug(foo); PrintDebug("'. Swapping landtable... ");
 
-	CurrentChunk = chunknb;
 	SwapCurrentLandTable();
 	SetCurrentLandTable();
 
 	PrintDebug("Done. \n");
+}
+
+void SwapChunk(const char* shortname, int chunknb) {
+	if (CurrentChunk != chunknb) {
+		LoadLevelFile(shortname, chunknb);
+		CurrentChunk = chunknb;
+		ChunkSwapped = true;
+	}
 }
 
 void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size, NJS_VECTOR pos) {
@@ -148,9 +154,7 @@ void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size, NJS_
 						((chunklist[i].Position2.y == 0 || pos.y > chunklist[i].Position2.y)) &&
 						((chunklist[i].Position2.z == 0 || pos.z > chunklist[i].Position2.z))) {
 
-						LoadLevelFile(level, chunklist[i].Chunk);
-						
-						ChunkSwapped = true;
+						SwapChunk(level, chunklist[i].Chunk);
 						break;
 					}
 				}
