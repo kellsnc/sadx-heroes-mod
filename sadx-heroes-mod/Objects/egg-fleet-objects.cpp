@@ -3,6 +3,14 @@
 ModelInfo * EF_CANNON1;
 ModelInfo * EF_BULLETS;
 
+void LoadExplosion(NJS_VECTOR* position) {
+	ObjectMaster* temp = LoadObject(LoadObj_Data1, 3, (ObjectFuncPtr)0x4AC920);
+	temp->Data1->Position = *position;
+	temp->MainSub(temp);
+	temp->Data1->Action = 1;
+	temp->Data1->InvulnerableTime = 150;
+}
+
 void EFBullet_Display(ObjectMaster *a1) {
 	if (!MissedFrames) {
 		if (a1->Data1->Action == 1) {
@@ -37,15 +45,13 @@ void EFBullet(ObjectMaster* a1) {
 		a1->Data1->Object = EF_BULLETS->getmodel();
 		a1->Data1->Action = 1;
 		a1->Data1->Rotation.y = 0;
+		Collision_Init(a1, (CollisionData*)0x223B3D8, 1, 4u);
 		break;
 	case 1:
-		if (++a1->Data1->field_A > 100) {
-			if (a1->Data1->LoopData) {
-				DynamicCOL_Remove(a1, (NJS_OBJECT*)a1->Data1->LoopData);
-				ObjectArray_Remove((NJS_OBJECT*)a1->Data1->LoopData);
-			}
-
+		if (++a1->Data1->field_A > 105) {
+			LoadExplosion(&a1->Data1->Position);
 			DeleteObject_(a1);
+			return;
 		}
 		else {
 			temp = a1->Data1->Scale;
@@ -55,15 +61,9 @@ void EFBullet(ObjectMaster* a1) {
 			a1->Data1->Position = GetPathPosition(&a1->Data1->Position, &temp, (float)a1->Data1->field_A / 800);
 			a1->Data1->Rotation.y = -fPositionToRotation(&a1->Data1->Position, &temp).x;
 
-			a1->Data1->Object->pos[0] = a1->Data1->Position.x;
-			a1->Data1->Object->pos[1] = a1->Data1->Position.y;
-			a1->Data1->Object->pos[2] = a1->Data1->Position.z;
-			a1->Data1->Object->ang[0] = a1->Data1->Rotation.y;
-			a1->Data1->Object->ang[1] = a1->Parent->Data1->Rotation.y;
-
 			DrawShadow(a1->Data1, 4);
 
-			DynColRadius(a1, 20, 6);
+			AddToCollisionList(a1->Data1);
 		}
 
 		break;
