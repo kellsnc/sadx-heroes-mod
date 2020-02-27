@@ -88,7 +88,6 @@ void BingoHighway_Init(const char *path, const HelperFunctions &helperFunctions)
 
 	LevelObjects[HeroesLevelID_BingoHighway] = BingoHighwayHandler;
 	SkyboxObjects[HeroesLevelID_BingoHighway] = CasinoSkybox;
-	DeathZoneList[HeroesLevelID_BingoHighway][0] = GrandMetropolisBingoHighway;
 
 	BingoHighwayObjects_Init(path);
 }

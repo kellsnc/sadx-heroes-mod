@@ -159,7 +159,7 @@ void RoadRock_Init(const char *path, const HelperFunctions &helperFunctions) {
 
 	MusicList[MusicIDs_wndyvly2].Name = "road-rock";
 
-	WindyValleyDeathZones[1] = RoadRockDeathZones;
+	DeathZoneList[HeroesLevelID_OceanPalace][1] = RoadRockDeathZones;
 }
 
 void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions) {
