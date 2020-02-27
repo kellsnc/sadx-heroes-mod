@@ -112,10 +112,9 @@ void PowerPlant_Init(const char *path, const HelperFunctions &helperFunctions) {
 
 	helperFunctions.RegisterPathList(PowerPlantPaths);
 
-	IceCapDeathZones[0] = PowerPlantDeathZones;
-
 	LevelObjects[HeroesLevelID_PowerPlant] = PowerPlantHandler;
 	SkyboxObjects[HeroesLevelID_PowerPlant] = PowerPlantSkybox;
+	DeathZoneList[HeroesLevelID_PowerPlant][0] = PowerPlantDeathZones;
 
 	PowerPlantObjects_Init(path);
 }

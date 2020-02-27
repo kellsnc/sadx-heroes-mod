@@ -189,10 +189,9 @@ void HangCastle_Init(const char *path, const HelperFunctions &helperFunctions) {
 		FogData_LostWorld1[i].Toggle = false;
 	}
 
-	LostWorldDeathZones[0] = HangCastleDeathZones;
-
 	LevelObjects[HeroesLevelID_HangCastle] = HangCastleHandler;
 	SkyboxObjects[HeroesLevelID_HangCastle] = HangCastleSkybox;
+	DeathZoneList[HeroesLevelID_HangCastle][0] = HangCastleDeathZones;
 
 	HangCastleObjects_Init(path);
 }

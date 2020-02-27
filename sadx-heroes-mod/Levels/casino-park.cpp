@@ -78,10 +78,9 @@ void CasinoPark_Init(const char *path, const HelperFunctions &helperFunctions) {
 
 	helperFunctions.RegisterPathList(CasinoParkPaths);
 
-	TwinkleParkDeathZones[0] = CasinoParkDeathZones;
-
 	LevelObjects[HeroesLevelID_CasinoPark] = CasinoParkHandler;
 	SkyboxObjects[HeroesLevelID_CasinoPark] = CasinoSkybox;
+	DeathZoneList[HeroesLevelID_CasinoPark][0] = CasinoParkDeathZones;
 
 	CasinoParkObjects_Init(path);
 }

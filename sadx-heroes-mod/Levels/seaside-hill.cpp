@@ -155,7 +155,7 @@ void SeaGate_Init(const char *path, const HelperFunctions &helperFunctions) {
 
 	helperFunctions.RegisterPathList(SeaGatePaths);
 
-	EmeraldCoastDeathZones[1] = nullptr;
+	DeathZoneList[HeroesLevelID_SeasideHill][1] = nullptr;
 }
 
 void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions) {
@@ -171,11 +171,10 @@ void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions) 
 	
 	helperFunctions.RegisterPathList(SeasideHillPaths); //splines
 
-	EmeraldCoastDeathZones[0] = SeasideHillDeathZones;
-
 	//Load the level handler
 	LevelObjects[HeroesLevelID_SeasideHill] = SeasideHillHandler;
 	SkyboxObjects[HeroesLevelID_SeasideHill] = SeasideHillSkybox;
+	DeathZoneList[HeroesLevelID_SeasideHill][0] = SeasideHillDeathZones;
 	
 	SeaGate_Init(path, helperFunctions);
 	SeasideHillObjects_Init(path);
