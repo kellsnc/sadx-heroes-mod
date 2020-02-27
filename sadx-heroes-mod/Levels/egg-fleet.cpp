@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "egg-fleet.h"
+#include "egg-fleet-deathzones.h"
 
 ModelInfo * EF_SKYMDLS;
 
@@ -36,7 +37,7 @@ void EggFleetHandler(ObjectMaster *a1) {
 		PlayMusic(MusicIDs_SkyDeckSkydeckAGoGo);
 
 		entity->Position = { 500, 4230, 5320 };
-		entity->Position = { -5998.083, 3435.614, -13343.93 };
+		//entity->Position = { -9501.797, -4170.793, -38106.13 };
 	}
 	else {
 
@@ -45,7 +46,7 @@ void EggFleetHandler(ObjectMaster *a1) {
 		if (IsPlayerInsideSphere_(&swap1, 20)) {
 			SwapChunk("EF", 7);
 		}
-			
+		
 		ChunkHandler("EF", EggFleetChunks, LengthOfArray(EggFleetChunks), entity->Position);
 		AnimateTextures(EggFleetAnimTexs, LengthOfArray(EggFleetAnimTexs));
 	}
@@ -95,10 +96,9 @@ void EggFleet_Init(const char *path, const HelperFunctions &helperFunctions) {
 
 	helperFunctions.RegisterPathList(EggFleetPaths); //splines
 
-	SkyDeckDeathZones[0] = EggFleetDeathZones;
-
 	//Load the level handler
 	SkyboxObjects[HeroesLevelID_EggFleet] = EggFleetSkybox;
+	DeathZoneList[HeroesLevelID_EggFleet][0] = EggFleetDeathZones;
 
 	EggFleetObjects_Init();
 }
