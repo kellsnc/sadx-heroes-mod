@@ -236,7 +236,7 @@ void CharactersCommon_Delete(ObjectMaster* obj) {
 		int character = obj->Data1->CharID;
 		bool ArethereOthers = false;
 
-		for (uint8_t player = 0; player < 8; ++player) {
+		for (uint8_t player = 0; player < MaxPlayers; ++player) {
 			if (player != obj->Data1->CharIndex && HeroesChars[player]) {
 				if (HeroesChars[player]->Data1->CharID == character) ArethereOthers = true;
 			}
@@ -984,7 +984,7 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 
 //Replace characters if they are loaded
 void Characters_OnFrame() {
-	for (uint8_t player = 0; player < 8; ++player) {
+	for (uint8_t player = 0; player < MaxPlayers; ++player) {
 		if (!EntityData1Ptrs[player] || HeroesChars[player]) continue;
 
 		if (SpeedCharEnabled && EntityData1Ptrs[player]->CharID == Characters_Sonic && !SuperSonicFlag) {

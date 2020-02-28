@@ -301,7 +301,7 @@ void PathsFunction() {
 		}
 
 		EntityData1 ** players = EntityData1Ptrs;
-		for (uint8_t slot = 0; slot < 8; ++slot) {
+		for (uint8_t slot = 0; slot < MaxPlayers; ++slot) {
 			if (players[slot]) {
 				EntityData1 *entity = EntityData1Ptrs[slot];
 				bool elevate = false;
@@ -710,7 +710,7 @@ void PowerPlantObjects_Init(const char *path) {
 
 void PPPathsHandler() {
 	EntityData1 ** players = EntityData1Ptrs;
-	for (uint8_t slot = 0; slot < 8; ++slot) {
+	for (uint8_t slot = 0; slot < MaxPlayers; ++slot) {
 		if (players[slot]) {
 			EntityData1 *entity = EntityData1Ptrs[slot];
 			CharObj2 *co2 = CharObj2Ptrs[slot];

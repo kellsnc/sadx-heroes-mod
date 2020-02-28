@@ -41,7 +41,7 @@ void SpecialStagesHandler(ObjectMaster * a1) {
 		//Physics changes, makes character accelerate faster and allow ceiling-running
 		if (a1->Data1->NextAction == 0) {
 			a1->Data1->NextAction = 1;
-			for (uint8_t id = 0; id < 8; ++id) {
+			for (uint8_t id = 0; id < MaxPlayers; ++id) {
 				if (CharObj2Ptrs[id]) {
 					CharObj2Ptrs[id]->PhysicsData.MaxAccel = 20;
 					CharObj2Ptrs[id]->PhysicsData.GroundAccel = 3;

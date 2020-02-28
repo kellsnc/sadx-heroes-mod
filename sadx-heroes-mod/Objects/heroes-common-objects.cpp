@@ -154,7 +154,7 @@ void ObjReel_Main(ObjectMaster *a1)
 
 		if (a1->Data1->Scale.y != 9) {
 			EntityData1 ** players = EntityData1Ptrs; //suport for 8 players, let's get all the pointers
-			for (uint8_t slot = 0; slot < 8; ++slot) {
+			for (uint8_t slot = 0; slot < MaxPlayers; ++slot) {
 				if (players[slot]) {
 					int temp = IsPlayerInsideSphere(pos, 10);
 					if (temp == slot + 1) a1->Data1->Scale.y = slot + 1;

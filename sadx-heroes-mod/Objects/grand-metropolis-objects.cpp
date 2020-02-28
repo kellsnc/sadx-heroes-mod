@@ -462,7 +462,7 @@ void GrandMetropolisObjects_Init(const char *path) {
 
 void AutoPathsMovs() {
 	EntityData1 ** players = EntityData1Ptrs; //suport for 8 players, let's get all the pointers
-	for (uint8_t slot = 0; slot < 8; ++slot) {
+	for (uint8_t slot = 0; slot < MaxPlayers; ++slot) {
 		if (players[slot]) {
 			CharObj2 *co2 = CharObj2Ptrs[slot];
 			if (co2) {

@@ -123,7 +123,7 @@ void BoulderPath(ObjectMaster *a1) {
 				a1->Data1->Rotation.x += 1500;
 
 				a1->Data1->CharIndex = IsPlayerInsideSphere(&a1->Data1->Position, 130.0f);
-				for (uint8_t player = 0; player < 8; ++player) {
+				for (uint8_t player = 0; player < MaxPlayers; ++player) {
 					if (player == a1->Data1->CharIndex - 1) {
 						EntityData1 *ed1 = EntityData1Ptrs[player];
 						CharObj2 *co2 = CharObj2Ptrs[player];
@@ -164,7 +164,7 @@ void Path_Main(ObjectMaster * a1) {
 
 	if (!a1->Data1->Action) {
 		EntityData1 ** players = EntityData1Ptrs; //suport for 8 players, let's get all the pointers
-		for (uint8_t slot = 0; slot < 8; ++slot) {
+		for (uint8_t slot = 0; slot < MaxPlayers; ++slot) {
 			if (players[slot]) {
 
 				if (players[slot]->NextAction == 1) return;

@@ -193,7 +193,7 @@ bool IsPointInsideSphere(NJS_VECTOR* center, NJS_VECTOR* pos, float radius) {
 }
 
 int IsPlayerInsideSphere_(NJS_VECTOR* center, float radius) {
-	for (uint8_t player = 0; player < 8; ++player) {
+	for (uint8_t player = 0; player < MaxPlayers; ++player) {
 		if (!EntityData1Ptrs[player]) continue;
 
 		NJS_VECTOR* pos = &EntityData1Ptrs[player]->Position;

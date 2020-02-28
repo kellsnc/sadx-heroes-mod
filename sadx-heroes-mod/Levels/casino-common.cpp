@@ -85,7 +85,7 @@ void PinTableCamera(EntityData1 *entity) {
 }
 
 void PinTablePhysics() {
-	for (uint8_t i = 0; i < 8; ++i) {
+	for (uint8_t i = 0; i < MaxPlayers; ++i) {
 		EntityData1 *entity = EntityData1Ptrs[i];
 		CharObj2 * co2 = CharObj2Ptrs[i];
 

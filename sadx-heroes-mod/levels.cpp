@@ -216,7 +216,7 @@ void SetStartLevelData(const HelperFunctions &helperFunctions, uint8_t character
 }
 
 void SetCharactersLevelData(const HelperFunctions &helperFunctions) {
-	for (uint8_t character = 0; character < 8; ++character) {
+	for (uint8_t character = 0; character < MaxPlayers; ++character) {
 		if (EnableSeasideHill) {
 			SetStartLevelData(helperFunctions, character, 0, HeroesLevelID_SeasideHill, 0);
 			SetStartLevelData(helperFunctions, character, 1, HeroesLevelID_SeasideHill, 1);
