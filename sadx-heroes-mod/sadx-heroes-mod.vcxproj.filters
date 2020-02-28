@@ -28,6 +28,9 @@
     <Filter Include="Source Files\Characters">
       <UniqueIdentifier>{d65071f3-c5de-49f3-9fb2-4ab60d1710b4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Paths">
+      <UniqueIdentifier>{fe2ceefe-e5b4-470c-be08-8dca5ae87250}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="mod.cpp">
@@ -36,16 +39,10 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="paths.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="levels.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="objects.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjectHelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="characters.cpp">
@@ -164,6 +161,15 @@
     </ClCompile>
     <ClCompile Include="Characters\vector.cpp">
       <Filter>Source Files\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="paths.cpp">
+      <Filter>Source Files\Paths</Filter>
+    </ClCompile>
+    <ClCompile Include="rails.cpp">
+      <Filter>Source Files\Paths</Filter>
+    </ClCompile>
+    <ClCompile Include="utils.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -289,6 +295,9 @@
     </ClInclude>
     <ClInclude Include="Levels\egg-fleet-paths.h">
       <Filter>Header Files\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="utils.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

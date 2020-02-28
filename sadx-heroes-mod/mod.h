@@ -25,3 +25,5 @@ extern NJS_TEXLIST * CurrentLevelTexlist;
 
 extern bool IsLoaded;
 extern bool ChunkSwapped;
+
+#define MaxPlayers 8

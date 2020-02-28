@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+D3DMATRIX WorldMatrixBackup;
+
 //Load Object File
 ModelInfo* LoadMDL(const char *type, const char *name) {
 	std::string fullPath = "system\\";
@@ -87,7 +89,7 @@ AnimationFile* LoadCharacterAnim(const char *name) {
 	return LoadANM("characters", name);
 }
 
-//Free Object File
+//Free Animation File
 void FreeANM(AnimationFile * pointer) {
 	if (pointer) {
 		delete(pointer);
@@ -185,6 +187,29 @@ void DynCol_Add(ObjectMaster *a1, uint8_t col) {
 	else if (col == 6) DynamicCOL_Add((ColFlags)(0x8000000 | ColFlags_Solid | ColFlags_Hurt), a1, colobject);
 }
 
+//Sphere check functions
+bool IsPointInsideSphere(NJS_VECTOR* center, NJS_VECTOR* pos, float radius) {
+	return (powf(pos->x - center->x, 2) + pow(pos->y - center->y, 2) + pow(pos->z - center->z, 2)) <= pow(radius, 2);
+}
+
+int IsPlayerInsideSphere_(NJS_VECTOR* center, float radius) {
+	for (uint8_t player = 0; player < 8; ++player) {
+		if (!EntityData1Ptrs[player]) continue;
+
+		NJS_VECTOR* pos = &EntityData1Ptrs[player]->Position;
+		if (IsPointInsideSphere(center, pos, radius)) {
+			return player + 1;
+		}
+	}
+
+	return 0;
+}
+
+bool IsSpecificPlayerInSphere(NJS_VECTOR* center, float radius, uint8_t player) {
+	if (IsPlayerInsideSphere_(center, radius) == player + 1) return true;
+	else return false;
+}
+
 //Clean dynamic collisions
 void DynCol_Delete(ObjectMaster *a1) {
 	if (a1->Data1->LoopData)
@@ -192,23 +217,6 @@ void DynCol_Delete(ObjectMaster *a1) {
 		DynamicCOL_Remove(a1, (NJS_OBJECT*)a1->Data1->LoopData);
 		ObjectArray_Remove((NJS_OBJECT*)a1->Data1->LoopData);
 	}
-}
-
-bool IsPointInsideSphere(NJS_VECTOR *center, NJS_VECTOR *pos, float radius) {
-	return (powf(pos->x - center->x, 2) + pow(pos->y - center->y, 2) + pow(pos->z - center->z, 2)) <= pow(radius, 2);
-}
-
-int IsPlayerInsideSphere_(NJS_VECTOR *center, float radius) {
-	for (uint8_t player = 0; player < 8; ++player) {
-		if (!EntityData1Ptrs[player]) continue;
-
-		NJS_VECTOR *pos = &EntityData1Ptrs[player]->Position;
-		if (IsPointInsideSphere(center, pos, radius)) {
-			return player + 1;
-		}
-	}
-
-	return 0;
 }
 
 //Only allocate dynamic collision within radius
@@ -293,6 +301,12 @@ bool CheckModelDisplay2(SOI_LIST2 item) {
 	return false;
 }
 
+//Distance checks
+float GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest) {
+	return sqrtf(powf(dest->x - orig->x, 2) + powf(dest->y - orig->y, 2) + powf(dest->z - orig->z, 2));
+}
+
+//Position functions
 NJS_VECTOR GetPathPosition(NJS_VECTOR* orig, NJS_VECTOR* dest, float state) {
 	NJS_VECTOR result;
 	result.x = (dest->x - orig->x) * state + orig->x;
@@ -302,11 +316,17 @@ NJS_VECTOR GetPathPosition(NJS_VECTOR* orig, NJS_VECTOR* dest, float state) {
 	return result;
 }
 
-float GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest) {
-	return sqrtf(powf(dest->x - orig->x, 2) + powf(dest->y - orig->y, 2) + powf(dest->z - orig->z, 2));
-}
+Rotation3 fPositionToRotation(NJS_VECTOR* orig, NJS_VECTOR* point) {
+	NJS_VECTOR dist = *point;
+	Rotation3 result;
 
-D3DMATRIX WorldMatrixBackup;
+	njSubVector(&dist, orig);
+
+	result.x = -(atan2(dist.y, dist.z) * 65536.0 * -0.1591549762031479);
+	result.y = -(atan2(dist.x, dist.z) * 65536.0 * 0.1591549762031479) + 0x4000;
+
+	return result;
+}
 
 void DrawChunkModel(NJS_CNK_MODEL* model)
 {

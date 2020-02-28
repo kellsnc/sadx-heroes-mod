@@ -21,5 +21,6 @@
 #include "mod.h"
 #include "levels.h"
 #include "objects.h"
+#include "utils.h"
 #include "characters.h"
 #include "sounds.h"

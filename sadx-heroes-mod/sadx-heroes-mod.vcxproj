@@ -113,7 +113,7 @@
     <ClCompile Include="Levels\mystic-mansion.cpp" />
     <ClCompile Include="objects.cpp" />
     <ClCompile Include="levels.cpp" />
-    <ClCompile Include="ObjectHelper.cpp" />
+    <ClCompile Include="utils.cpp" />
     <ClCompile Include="Objects\ocean-palace-objects.cpp" />
     <ClCompile Include="Levels\ocean-palace.cpp" />
     <ClCompile Include="Objects\power-plant-objects.cpp" />
@@ -125,6 +125,7 @@
     <ClCompile Include="paths.cpp" />
     <ClCompile Include="Objects\special-stages-objects.cpp" />
     <ClCompile Include="Levels\special-stages.cpp" />
+    <ClCompile Include="rails.cpp" />
     <ClCompile Include="sounds.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -173,6 +174,7 @@
     <ClInclude Include="sounds.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
