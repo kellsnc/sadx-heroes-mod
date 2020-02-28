@@ -9,6 +9,8 @@ void LoadExplosion(NJS_VECTOR* position) {
 	temp->MainSub(temp);
 	temp->Data1->Action = 1;
 	temp->Data1->InvulnerableTime = 150;
+	temp->Parent = LoadObject(LoadObj_Data1, 3, (ObjectFuncPtr)0x4AC920);
+	temp->Parent->Data1->Position = { 9999999, 9999999, 9999999 };
 }
 
 void EFBullet_Display(ObjectMaster *a1) {

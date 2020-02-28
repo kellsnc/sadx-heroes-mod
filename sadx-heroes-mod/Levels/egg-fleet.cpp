@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "egg-fleet.h"
 #include "egg-fleet-deathzones.h"
+#include "egg-fleet-paths.h"
 
 ModelInfo * EF_SKYMDLS;
 
@@ -38,6 +39,7 @@ void EggFleetHandler(ObjectMaster *a1) {
 
 		entity->Position = { 500, 4230, 5320 };
 		//entity->Position = { -9501.797, -4170.793, -38106.13 };
+		entity->Position = { 0.013611,  1846.416,  190.7917 };
 	}
 	else {
 

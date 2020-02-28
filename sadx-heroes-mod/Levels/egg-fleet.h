@@ -22,11 +22,5 @@ SH_ANIMTEXS EggFleetAnimTexs[]{
 	{ 41, 7,{ 14, 10, 8, 10, 8, 10, 8, 5 } }
 };
 
-LoopHead * EggFleetPathList[] = {
-	0
-};
-
-PathDataPtr EggFleetPaths = { LevelAndActIDs_SkyDeck1, EggFleetPathList };
-
 extern ModelInfo * EF_CANNON1;
 extern ModelInfo * EF_BULLETS;
