@@ -429,7 +429,7 @@ void HCPlatform_Main(ObjectMaster *a1) {
 		if (type != 0) {
 			DynColRadiusAuto(a1, 1);
 			
-			if (anim % 80 == 0) if (envsounds) PlayHeroesSoundQueue(LevelSound_Mys_MvPltf, a1, 200, 0);
+			if (anim % 80 == 0) if (envsounds) PlayHeroesSound_Entity(LevelSound_Mys_MvPltf, a1, 200, 0);
 			if (type == 1) {
 				char timer = a1->Data1->NextAction;
 				if (timer == 0) {

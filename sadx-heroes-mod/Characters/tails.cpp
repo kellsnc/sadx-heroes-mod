@@ -414,8 +414,8 @@ void TailsHeroes_Main(ObjectMaster *obj) {
 		case 37: //flying
 		case 40:
 		case 41:
-			if (flysounds && FrameCounterUnpaused % 40 == 0)
-				PlayHeroesSoundQueue(TailsSound_Flying, playerobj, 50, 0);
+			if (flysounds && playerobj->Data1->CharIndex == EntityData1Ptrs[0]->CharIndex && FrameCounterUnpaused % 38 == 0)
+				PlayHeroesSound_Entity(TailsSound_Flying, playerobj, 50, 0);
 			anim = 34; //52 IF HOLDING PLAYER
 			if (HeldButtons2[data->CharIndex] & Buttons_A) speed = 0.8;
 			speed += playerco2->Speed.x * 0.5f;

@@ -1,7 +1,5 @@
 #include "stdafx.h"
 
-
-
 enum PlayerStates {
 	PlayerState_OnRail = 125,
 	PlayerState_SwapLeft,
@@ -88,6 +86,7 @@ void RailPath_CharStatus(EntityData1* PlayerEntity, CharObj2* co2) {
 
 void RailPath_Detach(EntityData1* entity, EntityData1* PlayerEntity, CharObj2* co2, DetachTypes type) {
 	entity->Action = RailState_Deleting;
+	entity->Status |= Status_KillSound;
 	PlayerEntity->Action = 1;
 
 	int id = PlayerEntity->CharID;
@@ -207,8 +206,8 @@ void RailPath_PerformJumpAndDamage(EntityData1* entity, EntityData1* PlayerEntit
 		return;
 	}
 
-	//Damage (if rings go back to 0, probably a nicer way but idk)
-	if (Rings == 0 && Rings != (int)entity->Status) {
+	//Damage
+	if (PlayerEntity->Status & Status_Hurt) {
 		entity->Scale.z = 1; //speed
 	}
 
@@ -216,8 +215,6 @@ void RailPath_PerformJumpAndDamage(EntityData1* entity, EntityData1* PlayerEntit
 	if (co2->Powerups & Powerups_Dead) {
 		RailPath_Detach(entity, PlayerEntity, co2, DetachType_Death);
 	}
-
-	entity->Status = Rings;
 }
 
 void RailPath_PerformPath(EntityData1* entity, EntityData1* PlayerEntity, CharObj2* co2, LoopHead* loophead) {
@@ -387,15 +384,6 @@ bool RailPath_GetDirection(EntityData1* PlayerEntity, LoopHead* loophead, uint16
 	else return true;
 }
 
-void RailPath_PlaySounds(EntityData1* entity, NJS_VECTOR* pos) {
-	/*PlaySound3D(RailSound_Start, entity, pos, 0, 0);
-	PlaySound3D(RailSound_Grind, entity, pos, 200, entity->Scale.z * 50);
-
-	if (entity->Scale.z > 8) {
-		PlaySound3D(RailSound_Fast, entity, pos, 300, 1000 + entity->Scale.z * 100);
-	}*/
-}
-
 void __cdecl RailPath_Exec(ObjectMaster* obj) {
 	EntityData1* entity = obj->Data1;
 	uint8_t id = obj->Data1->CharIndex;
@@ -411,7 +399,6 @@ void __cdecl RailPath_Exec(ObjectMaster* obj) {
 
 		RailPath_PerformPhysics(entity, PlayerEntity, co2, loophead);
 		RailPath_PerformPath(entity, PlayerEntity, co2, loophead);
-		RailPath_PlaySounds(entity, &PlayerEntity->Position);
 
 		if ((loophead->Unknown_0 & RailType_Hang) != RailType_Hang)
 			RailPath_SparkleEffect(&PlayerEntity->Position);
@@ -430,9 +417,7 @@ void __cdecl RailPath_Exec(ObjectMaster* obj) {
 	case RailState_Swapping: //if the player swapped from a rail, we slide it sideways
 		RailPath_PerformPhysics(entity, PlayerEntity, co2, loophead);
 		RailPath_PerformPath(entity, PlayerEntity, co2, loophead);
-		//PlaySound3D(RailSound_Grind, entity, &PlayerEntity->Position, 200, entity->Scale.z * 50);
 		RailPath_SparkleEffect(&PlayerEntity->Position);
-
 		RailPath_SwapTransition(entity, PlayerEntity, loophead);
 
 		break;
@@ -441,6 +426,7 @@ void __cdecl RailPath_Exec(ObjectMaster* obj) {
 			PlayerEntity->field_A = 0;
 			DeleteObject_(obj);
 		}
+
 		break;
 	}
 }
@@ -470,6 +456,8 @@ EntityData1* RailPath_LoadRail(EntityData1* PlayerEntity, LoopHead* loophead, ui
 
 	execentity->Scale.x = point; //give the executor our position in the spline
 	execentity->Scale.y = state;
+
+	PlayHeroesSound_EntityAndPos(CommonSound_Rail, exec, &PlayerEntity->Position, 500, 2, 0);
 
 	return execentity;
 }

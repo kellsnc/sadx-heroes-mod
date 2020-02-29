@@ -5,6 +5,9 @@
 
 ModelInfo * EF_SKYMDLS;
 
+MusicInfo EggFleetMusic = { "egg-fleet", 1 };
+int eggfleetmusicid = 81;
+
 void EggFleetObjects_Init();
 
 void EggFleet_InitObjects() {
@@ -35,7 +38,7 @@ void EggFleetHandler(ObjectMaster *a1) {
 		CurrentLevelTexlist = &SKYDECK01_TEXLIST;
 		CurrentLandAddress = (LandTable**)0x97DAC8;
 
-		PlayMusic(MusicIDs_SkyDeckSkydeckAGoGo);
+		PlayMusic((MusicIDs)eggfleetmusicid);
 
 		entity->Position = { 500, 4230, 5320 };
 		//entity->Position = { -9501.797, -4170.793, -38106.13 };
@@ -93,9 +96,9 @@ void EggFleet_Init(const char *path, const HelperFunctions &helperFunctions) {
 	ReplaceBIN("CAM0600S", "egg-fleet-cam");
 	ReplaceBIN("PL_60B", "egg-fleet-shaders");
 
-	MusicList[MusicIDs_skydeck1].Name = "egg-fleet";
 	DefaultLight(HeroesLevelID_EggFleet);
 
+	eggfleetmusicid =  helperFunctions.RegisterMusicFile(EggFleetMusic); //bgm
 	helperFunctions.RegisterPathList(EggFleetPaths); //splines
 
 	//Load the level handler

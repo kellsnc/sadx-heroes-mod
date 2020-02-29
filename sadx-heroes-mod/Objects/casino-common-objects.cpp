@@ -849,7 +849,7 @@ void CPDoor_Display(ObjectMaster *a1) {
 void CPDoor_Main(ObjectMaster *a1) {
 	if (!ClipSetObject(a1)) {
 		if (IsSwitchPressed(a1->Data1->Scale.x)) {
-			if (a1->Data1->Action == 0) PlayHeroesSoundQueue(LevelSound_Csn_Door, a1, 500, 0);
+			if (a1->Data1->Action == 0) PlayHeroesSound_Entity(LevelSound_Csn_Door, a1, 500, 0);
 			a1->Data1->Action = 1;
 			
 			DynCol_Delete(a1);
@@ -857,7 +857,7 @@ void CPDoor_Main(ObjectMaster *a1) {
 			if (a1->Data1->Scale.z != 60) a1->Data1->Scale.z += 2;
 		}
 		else {
-			if (a1->Data1->Action == 1) PlayHeroesSoundQueue(LevelSound_Csn_Door, a1, 500, 0);
+			if (a1->Data1->Action == 1) PlayHeroesSound_Entity(LevelSound_Csn_Door, a1, 500, 0);
 			a1->Data1->Action = 0;
 
 			DynColRadius(a1, 200, 0);

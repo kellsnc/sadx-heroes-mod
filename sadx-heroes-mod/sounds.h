@@ -1,5 +1,7 @@
 #pragma once
 
+#define Status_KillSound 0x4000
+
 extern bool chrsounds;
 extern bool jmpsounds;
 extern bool flysounds;
@@ -7,7 +9,8 @@ extern bool envsounds;
 
 void PlayHeroesSound(int ID);
 void PlayDelayedHeroesSound(int ID, int time);
-void PlayHeroesSoundQueue(int ID, ObjectMaster* obj, float dist, bool loop);
+void PlayHeroesSound_Entity(int ID, ObjectMaster* obj, float dist, bool loop);
+void PlayHeroesSound_EntityAndPos(int ID, ObjectMaster* obj, NJS_VECTOR* pos, float dist, float volume, float pitch);
 
 enum HeroesSounds {
 	CommonSound_DashPanel = 10100,

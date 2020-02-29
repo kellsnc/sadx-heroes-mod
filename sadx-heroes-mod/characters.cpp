@@ -604,7 +604,7 @@ void TornadoTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, En
 			tornado->Data1->CharID = data->CharID;
 			Collision_Init(tornado, &Tornado_Col, 1, 3u);
 
-			PlayHeroesSoundQueue(CommonSound_Tornado, tornado, 500, false);
+			PlayHeroesSound_Entity(CommonSound_Tornado, tornado, 500, false);
 		}
 		
 		playerco2->Powerups |= Powerups_Invincibility;
