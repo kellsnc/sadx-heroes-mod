@@ -10,7 +10,7 @@ extern bool envsounds;
 void PlayHeroesSound(int ID);
 void PlayDelayedHeroesSound(int ID, int time);
 void PlayHeroesSound_Entity(int ID, ObjectMaster* obj, float dist, bool loop);
-void PlayHeroesSound_EntityAndPos(int ID, ObjectMaster* obj, NJS_VECTOR* pos, float dist, float volume, float pitch);
+void PlayHeroesSound_EntityAndPos(int ID, ObjectMaster* obj, NJS_VECTOR* pos, float dist, float volume, bool loop);
 
 enum HeroesSounds {
 	CommonSound_DashPanel = 10100,
@@ -31,6 +31,7 @@ enum HeroesSounds {
 	CommonSound_Glide,
 	CommonSound_FlyPunchBegin,
 	CommonSound_FlyPunchHit,
+	CommonSound_RailHit,
 	LevelSound_Sea_Seagul = 10200,
 	LevelSound_Sea_RuinStart,
 	LevelSound_Sea_RuinEnd,

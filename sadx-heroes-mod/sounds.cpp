@@ -171,8 +171,8 @@ void PlayHeroesSound_Entity(int ID, ObjectMaster* obj, float dist, bool loop) {
 	PlayHeroesSoundQueue(ID, obj, NULL, dist, loop, NULL, NULL);
 }
 
-void PlayHeroesSound_EntityAndPos(int ID, ObjectMaster* obj, NJS_VECTOR* pos, float dist, float volume, float pitch) {
-	PlayHeroesSoundQueue(ID, obj, pos, dist, true, volume, pitch);
+void PlayHeroesSound_EntityAndPos(int ID, ObjectMaster* obj, NJS_VECTOR* pos, float dist, float volume, bool loop) {
+	PlayHeroesSoundQueue(ID, obj, pos, dist, loop, volume, NULL);
 }
 
 void Sounds_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config) {

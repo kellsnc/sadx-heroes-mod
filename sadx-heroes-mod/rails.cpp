@@ -457,7 +457,8 @@ EntityData1* RailPath_LoadRail(EntityData1* PlayerEntity, LoopHead* loophead, ui
 	execentity->Scale.x = point; //give the executor our position in the spline
 	execentity->Scale.y = state;
 
-	PlayHeroesSound_EntityAndPos(CommonSound_Rail, exec, &PlayerEntity->Position, 500, 2, 0);
+	PlayHeroesSound_EntityAndPos(CommonSound_RailHit, exec, &PlayerEntity->Position, 500, 2, false);
+	PlayHeroesSound_EntityAndPos(CommonSound_Rail, exec, &PlayerEntity->Position, 500, 2, true);
 
 	return execentity;
 }
