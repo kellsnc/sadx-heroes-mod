@@ -39,10 +39,6 @@ extern LandTable** CurrentLandAddress;
 extern bool chunkswapped;
 extern bool IsHeroesLevel;
 
-void AutoLoop(ObjectMaster * a1);
-void RailPath(ObjectMaster * a1);
-void SlopePath(ObjectMaster * a1);
-
 void AnimateTexlist(SH_ANIMTEXS *list, Int listcount, NJS_TEXLIST* texlist);
 void AnimateTextures(SH_ANIMTEXS *list, Int listcount);
 void LoadLevelFile(const char *shortname, int chunknb);

@@ -322,7 +322,7 @@ Rotation3 fPositionToRotation(NJS_VECTOR* orig, NJS_VECTOR* point) {
 
 	njSubVector(&dist, orig);
 
-	result.x = -(atan2(dist.y, dist.z) * 65536.0 * -0.1591549762031479);
+	result.x = atan2(dist.y, dist.z) * 65536.0 * -0.1591549762031479;
 	result.y = -(atan2(dist.x, dist.z) * 65536.0 * 0.1591549762031479) + 0x4000;
 
 	return result;

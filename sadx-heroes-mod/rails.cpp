@@ -258,9 +258,8 @@ void RailPath_PerformPath(EntityData1* entity, EntityData1* PlayerEntity, CharOb
 	}
 
 	//set the rotation
-	NJS_VECTOR pos = { NextPoint->Position.x, LoopPoint->Position.y, NextPoint->Position.z };
 	PlayerEntity->Rotation.x = LoopPoint->Ang_X;
-	PlayerEntity->Rotation.y = fPositionToRotation(&LoopPoint->Position, &pos).y;
+	PlayerEntity->Rotation.y = fPositionToRotation(&LoopPoint->Position, &NextPoint->Position).y;
 	PlayerEntity->Rotation.z = LoopPoint->Ang_Y; //Ang_Y is actually the Z axis
 
 	//visual changes for hang rails
