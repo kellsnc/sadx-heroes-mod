@@ -3,11 +3,17 @@
 ObjectMaster * railcam;
 extern LoopHead *MysticMansionPathList[70];
 
-void TransformSpline(ObjectMaster * a1, NJS_VECTOR orig, NJS_VECTOR dest, float state) {
-	EntityData1 * entity = a1->Data1;
+void TransformSpline(EntityData1* entity, NJS_VECTOR orig, NJS_VECTOR dest, float state) {
 	entity->Position.x = (dest.x - orig.x) * state + orig.x;
 	entity->Position.y = ((dest.y - orig.y) * state + orig.y);
 	entity->Position.z = (dest.z - orig.z) * state + orig.z;
+}
+
+void PathHandler(EntityData1* entity, LoopHead* path, float speed) {
+	if (entity->Scale.x > 1) { entity->Scale.x = 0; entity->InvulnerableTime++; };
+	entity->Scale.x = entity->Scale.x + (path->TotalDist / path->LoopList[ entity->InvulnerableTime].Dist) / path->TotalDist * speed;
+	TransformSpline(entity, path->LoopList[ entity->InvulnerableTime].Position, path->LoopList[ entity->InvulnerableTime + 1].Position, entity->Scale.x);
+	entity->Rotation.y = fPositionToRotation(&path->LoopList[ entity->InvulnerableTime].Position, &path->LoopList[ entity->InvulnerableTime + 1].Position).y;
 }
 
 void AutoLoop_Main(ObjectMaster * a1) {
@@ -87,7 +93,7 @@ void AutoLoop_Main(ObjectMaster * a1) {
 				break;
 			}
 
-			TransformSpline(GetCharacterObject(a1->Data1->NextAction), loopdata->LoopList[a1->Data1->InvulnerableTime].Position, loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position, a1->Data1->Scale.x);
+			TransformSpline(GetCharacterObject(a1->Data1->NextAction)->Data1, loopdata->LoopList[a1->Data1->InvulnerableTime].Position, loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position, a1->Data1->Scale.x);
 			player->Rotation.y = fPositionToRotation(&loopdata->LoopList[a1->Data1->InvulnerableTime].Position, &loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position).y;
 			a1->Data1->Position = player->Position;
 
@@ -117,7 +123,7 @@ void BoulderPath(ObjectMaster *a1) {
 		if (a1->Data1->InvulnerableTime < loopdata->Count) {
 			if (GameState != 16) {
 				a1->Data1->Scale.x = a1->Data1->Scale.x + (loopdata->TotalDist / loopdata->LoopList[a1->Data1->InvulnerableTime].Dist) / loopdata->TotalDist * 8;
-				TransformSpline(a1, loopdata->LoopList[a1->Data1->InvulnerableTime].Position, loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position, a1->Data1->Scale.x);
+				TransformSpline(a1->Data1, loopdata->LoopList[a1->Data1->InvulnerableTime].Position, loopdata->LoopList[a1->Data1->InvulnerableTime + 1].Position, a1->Data1->Scale.x);
 				if (loopdata->LoopList[a1->Data1->InvulnerableTime].Ang_Y != 0) a1->Data1->Rotation.y = loopdata->LoopList[a1->Data1->InvulnerableTime].Ang_Y;
 				if (a1->Data1->Scale.x > 1) { a1->Data1->Scale.x = 0; a1->Data1->InvulnerableTime++; }
 				a1->Data1->Rotation.x += 1500;

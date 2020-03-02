@@ -50,7 +50,6 @@ extern uint8_t killcount;
 
 void ElevatePlayer(uint8_t slot);
 bool IsPointInCollision(NJS_VECTOR* pos, float radius);
-void TransformSpline(ObjectMaster * a1, NJS_VECTOR orig, NJS_VECTOR dest, float state);
 void DoBall(uint8_t id);
 
 void ObjReel(ObjectMaster *a1);

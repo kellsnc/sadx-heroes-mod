@@ -273,7 +273,7 @@ void MysticCart(ObjectMaster * a1) {
 		if (ControllerPointers[entity->Index - 1]->HeldButtons & Buttons_Down) speed -= 6;
 
 		entity->Scale.x = entity->Scale.x + (loopdata->TotalDist / loopdata->LoopList[entity->InvulnerableTime].Dist) / loopdata->TotalDist * speed;
-		TransformSpline(a1, loopdata->LoopList[entity->InvulnerableTime].Position, loopdata->LoopList[entity->InvulnerableTime + 1].Position, a1->Data1->Scale.x);
+		TransformSpline(a1->Data1, loopdata->LoopList[entity->InvulnerableTime].Position, loopdata->LoopList[entity->InvulnerableTime + 1].Position, a1->Data1->Scale.x);
 		a1->Data1->Rotation = fPositionToRotation(&loopdata->LoopList[entity->InvulnerableTime].Position, &loopdata->LoopList[entity->InvulnerableTime + 1].Position);
 		a1->Data1->Rotation.z = 0;
 

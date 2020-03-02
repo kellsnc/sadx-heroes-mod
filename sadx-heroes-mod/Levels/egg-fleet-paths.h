@@ -1308,7 +1308,7 @@ Loop EF_PropPath1_Entries[] = {
 	{ 0, 0, 0, { -6000,  2528.249,  -8297.6 } },
 };
 
-LoopHead EF_PropPath1 = { 0, LengthOfArray<int16_t>(EF_PropPath1_Entries), 10441.30547f, EF_PropPath1_Entries, Propeller_Main };
+LoopHead EF_PropPath1 = { 0, LengthOfArray<int16_t>(EF_PropPath1_Entries), 10441.30547f, EF_PropPath1_Entries, PropellerPath };
 
 Loop EF_PropPath2_Entries[] = {
 	{ 0, 0, 74.588, { -4930,  340.3953,  -9121 } },
@@ -1454,7 +1454,7 @@ Loop EF_PropPath2_Entries[] = {
 	{ 0, 0, 0, { -6000,  2528.249,  -8297.6 } },
 };
 
-LoopHead EF_PropPath2 = { 0, LengthOfArray<int16_t>(EF_PropPath2_Entries), 10441.30547f, EF_PropPath2_Entries, Propeller_Main };
+LoopHead EF_PropPath2 = { 0, LengthOfArray<int16_t>(EF_PropPath2_Entries), 10441.30547f, EF_PropPath2_Entries, PropellerPath };
 
 Loop EF_PropPath3_Entries[] = {
 	{ 0, 0, 78.05363, { -8169.233,  -4742.518,  -34960.18 } },
@@ -1560,7 +1560,7 @@ Loop EF_PropPath3_Entries[] = {
 	{ 0, 0, 0, { -9513.344,  -4111.445,  -38371.16 } },
 };
 
-LoopHead EF_PropPath3 = { 0, LengthOfArray<int16_t>(EF_PropPath3_Entries), 7802.32372f, EF_PropPath3_Entries, Propeller_Main };
+LoopHead EF_PropPath3 = { 0, LengthOfArray<int16_t>(EF_PropPath3_Entries), 7802.32372f, EF_PropPath3_Entries, PropellerPath };
 
 LoopHead* EggFleetPathList[] = {
 	&EF_IntroPath,

@@ -16,7 +16,6 @@
 #include "LandTableInfo.h"
 #include "ModelInfo.h"
 #include "AnimationFile.h"
-#include "GameObject.h"
 
 //Common mod headers
 #include "mod.h"
