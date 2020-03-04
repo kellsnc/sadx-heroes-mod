@@ -2,6 +2,7 @@
 
 ModelInfo * EF_CANNON1;
 ModelInfo * EF_BULLETS;
+ModelInfo * EF_PROPPLR;
 
 void LoadExplosion(NJS_VECTOR* position) {
 	ObjectMaster* temp = LoadObject(LoadObj_Data1, 3, (ObjectFuncPtr)0x4AC920);

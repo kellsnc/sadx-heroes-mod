@@ -14,12 +14,15 @@ void EggFleet_InitObjects() {
 	EF_SKYMDLS = LoadObjectModel(EF_SKYMDLS, "EF_SKYMDLS");
 	EF_CANNON1 = LoadObjectModel(EF_CANNON1, "EF_CANNON1");
 	EF_BULLETS = LoadObjectModel(EF_BULLETS, "EF_BULLETS");
+	EF_PROPPLR = LoadObjectModel(EF_PROPPLR, "EF_PROPPLR");
+	PropellerModel = EF_PROPPLR->getmodel();
 }
 
 void EggFleet_Delete(ObjectMaster *a1) {
 	EF_SKYMDLS = FreeMDL(EF_SKYMDLS);
 	EF_CANNON1 = FreeMDL(EF_CANNON1);
 	EF_BULLETS = FreeMDL(EF_BULLETS);
+	EF_PROPPLR = FreeMDL(EF_PROPPLR);
 
 	LevelHandler_Delete(a1);
 }
