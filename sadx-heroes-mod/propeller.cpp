@@ -153,7 +153,7 @@ void Propeller_Main(ObjectMaster* obj) {
 
 inline void Propeller_Init(ObjectMaster* obj, char player) {
 	ObjectMaster* child = LoadChildObject(LoadObj_Data1, Propeller_Main, obj);
-	child->Data1->CharIndex = player - 1;
+	child->Data1->CharIndex = player;
 	child->Data1->LoopData = obj->Data1->LoopData;
 	child->Data1->Position = obj->Data1->Position;
 	child->Data1->Object = obj->Data1->Object;
@@ -163,7 +163,7 @@ inline void Propeller_Init(ObjectMaster* obj, char player) {
 }
 
 void PropellerPath_Display(ObjectMaster* obj) {
-	if (!MissedFrames && IsPlayerInsideSphere(&obj->Data1->Position, 1000)) {
+	if (!MissedFrames && IsPlayerInsideSphere(&obj->Data1->Position, 3000)) {
 		EntityData1* data = obj->Data1;
 
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
@@ -233,22 +233,31 @@ void PropellerPath(ObjectMaster* obj) {
 
 		break;
 	case PropellerAction_CheckForPlayer:
-		if (IsPlayerInsideSphere(&obj->Data1->Position, 1000)) {
-			if (data->Object->pos[1] < -100000 || data->Object->pos[1] == 0) {
-				data->Object->pos[1] = GetGroundYPosition(data->Position.x, data->Position.y, data->Position.z, &data->Rotation);
+		player = IsPlayerInsideSphere_(&obj->Data1->Position, 3000);
+
+		if (player) {
+			player -= 1;
+
+			if (IsSpecificPlayerInSphere(&obj->Data1->Position, 300, player)) {
+				if (!obj->field_30) {
+					data->Object->pos[1] = GetGroundYPosition(data->Position.x, data->Position.y, data->Position.z, &data->Rotation);
+				}
+
+				PropellerPath_DynCol(obj);
+				AddToCollisionList(data);
+			}
+			else {
+				data->Object->pos[1] = obj->Data1->Position.y - 40;
 			}
 			
 			NJS_VECTOR pos = { data->Position.x, data->Position.y - 21, data->Position.z };
-			player = IsPlayerInsideSphere_(&pos, 10);
 
-			if (player) {
+			if (IsSpecificPlayerInSphere(&pos, 10, player)) {
 				Propeller_Init(obj, player);
 				data->Action = PropellerAction_Attached;
 			}
 
 			obj->DisplaySub(obj);
-			PropellerPath_DynCol(obj);
-			AddToCollisionList(data);
 		}
 
 		break;

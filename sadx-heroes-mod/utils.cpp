@@ -50,7 +50,7 @@ ModelInfo* LoadCharacterModel(const char *name) {
 }
 
 //Free Object File
-ModelInfo* FreeMDL(ModelInfo * pointer) {
+ModelInfo* FreeMDL(ModelInfo* pointer) {
 	if (GameState == 9 || (GameState == 8 && Lives == 0)) {
 		PrintDebug("[SHM] Freeing model: %s... \n", pointer->getdescription().c_str());
 		delete(pointer);
@@ -90,7 +90,7 @@ AnimationFile* LoadCharacterAnim(const char *name) {
 }
 
 //Free Animation File
-void FreeANM(AnimationFile * pointer) {
+void FreeANM(AnimationFile* pointer) {
 	if (pointer) {
 		delete(pointer);
 	}
@@ -118,13 +118,13 @@ void FreeANMFiles(AnimationFile** Files, int size) {
 }
 
 //Basic drawing call
-void DrawObjModel(ObjectMaster *a1, NJS_MODEL_SADX *m, bool scalable) {
+void DrawObjModel(ObjectMaster* obj, NJS_MODEL_SADX *m, bool scalable) {
 	if (!MissedFrames) {
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
 		njPushMatrix(0);
-		njTranslateV(0, &a1->Data1->Position);
-		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
-		if (scalable) njScale(nullptr, a1->Data1->Scale.x, a1->Data1->Scale.y, a1->Data1->Scale.z);
+		njTranslateV(0, &obj->Data1->Position);
+		njRotateXYZ(nullptr, obj->Data1->Rotation.x, obj->Data1->Rotation.y, obj->Data1->Rotation.z);
+		if (scalable) njScale(nullptr, obj->Data1->Scale.x, obj->Data1->Scale.y, obj->Data1->Scale.z);
 		DrawQueueDepthBias = -6000.0f;
 		njDrawModel_SADX(m);
 		DrawQueueDepthBias = 0;
@@ -133,26 +133,26 @@ void DrawObjModel(ObjectMaster *a1, NJS_MODEL_SADX *m, bool scalable) {
 }
 
 //Global display sub calling a generic drawing call
-void displaySub_Global(ObjectMaster *a1) {
-	DrawObjModel(a1, a1->Data1->Object->basicdxmodel, false);
+void displaySub_Global(ObjectMaster* obj) {
+	DrawObjModel(obj, obj->Data1->Object->basicdxmodel, false);
 }
 
 //Global mainsub for object that just display their model
-void mainSub_Global(ObjectMaster *a1) {
-	if (!ClipSetObject(a1)) {
-		displaySub_Global(a1);
+void mainSub_Global(ObjectMaster* obj) {
+	if (!ClipSetObject(obj)) {
+		displaySub_Global(obj);
 	}
 }
 
 /*	Add complex/dynamic collisions to an object, limited to 255 collisions at a time
 	Delete itself if the global delete sub is used	*/
-void DynCol_Add(ObjectMaster *a1, uint8_t col) {
+void DynCol_Add(ObjectMaster* obj, uint8_t col) {
 	/*	0 is static
 	1 is moving (refresh the colision every frame)
 	2 is static, scalable
 	3 is moving, scalable	*/
 
-	EntityData1 * original = a1->Data1;
+	EntityData1 * original = obj->Data1;
 	NJS_OBJECT *colobject;
 
 	colobject = ObjectArray_GetFreeObject(); //The collision is a separate object, we add it to the list of object
@@ -177,14 +177,14 @@ void DynCol_Add(ObjectMaster *a1, uint8_t col) {
 	colobject->pos[1] = original->Position.y;
 	colobject->pos[2] = original->Position.z;
 
-	colobject->basicdxmodel = a1->Data1->Object->basicdxmodel; //object it will use as a collision
-	a1->Data1->LoopData = (Loop*)colobject; //pointer to the collision object into our original object
+	colobject->basicdxmodel = obj->Data1->Object->basicdxmodel; //object it will use as a collision
+	obj->Data1->LoopData = (Loop*)colobject; //pointer to the collision object into our original object
 
-	if (col == 0 || col == 2) DynamicCOL_Add(ColFlags_Solid, a1, colobject); //Solid
-	else if (col == 1 || col == 3) DynamicCOL_Add((ColFlags)0x8000000, a1, colobject); //Dynamic, solid
-	else if (col == 4) DynamicCOL_Add((ColFlags)0x8000001, a1, colobject);
-	else if (col == 5) DynamicCOL_Add(ColFlags_Water, a1, colobject);
-	else if (col == 6) DynamicCOL_Add((ColFlags)(0x8000000 | ColFlags_Solid | ColFlags_Hurt), a1, colobject);
+	if (col == 0 || col == 2) DynamicCOL_Add(ColFlags_Solid, obj, colobject); //Solid
+	else if (col == 1 || col == 3) DynamicCOL_Add((ColFlags)0x8000000, obj, colobject); //Dynamic, solid
+	else if (col == 4) DynamicCOL_Add((ColFlags)0x8000001, obj, colobject);
+	else if (col == 5) DynamicCOL_Add(ColFlags_Water, obj, colobject);
+	else if (col == 6) DynamicCOL_Add((ColFlags)(0x8000000 | ColFlags_Solid | ColFlags_Hurt), obj, colobject);
 }
 
 //Sphere check functions
@@ -211,39 +211,38 @@ bool IsSpecificPlayerInSphere(NJS_VECTOR* center, float radius, uint8_t player) 
 }
 
 //Clean dynamic collisions
-void DynCol_Delete(ObjectMaster *a1) {
-	if (a1->Data1->LoopData)
+void DynCol_Delete(ObjectMaster* obj) {
+	if (obj->Data1->LoopData)
 	{
-		DynamicCOL_Remove(a1, (NJS_OBJECT*)a1->Data1->LoopData);
-		ObjectArray_Remove((NJS_OBJECT*)a1->Data1->LoopData);
+		DynamicCOL_Remove(obj, (NJS_OBJECT*)obj->Data1->LoopData);
+		ObjectArray_Remove((NJS_OBJECT*)obj->Data1->LoopData);
+		obj->Data1->LoopData = nullptr;
 	}
 }
 
 //Only allocate dynamic collision within radius
-bool DynColRadius(ObjectMaster *a1, float radius, uint8_t col) {
-	if (IsPlayerInsideSphere_(&a1->Data1->Position, radius)) {
-		if (!a1->Data1->LoopData) {
-			DynCol_Add(a1, col);
+bool DynColRadius(ObjectMaster* obj, float radius, uint8_t col) {
+	if (IsPlayerInsideSphere_(&obj->Data1->Position, radius)) {
+		if (!obj->Data1->LoopData) {
+			DynCol_Add(obj, col);
 			return 2;
 		}
 		return true;
 	}
-	else if (a1->Data1->LoopData) {
-		DynamicCOL_Remove(a1, (NJS_OBJECT*)a1->Data1->LoopData);
-		ObjectArray_Remove((NJS_OBJECT*)a1->Data1->LoopData);
-		a1->Data1->LoopData = nullptr;
+	else {
+		DynCol_Delete(obj);
 	}
 
 	return false;
 }
 
-bool DynColRadiusAuto(ObjectMaster *a1, uint8_t col) {
+bool DynColRadiusAuto(ObjectMaster* obj, uint8_t col) {
 	//Use the model radius
-	return DynColRadius(a1, a1->Data1->Object->basicdxmodel->r + 50, col);
+	return DynColRadius(obj, obj->Data1->Object->basicdxmodel->r + 50, col);
 }
 
 //Shift uv of models, requires a SH_UVSHIFT struct
-void AnimateUV(SH_UVSHIFT *UVSHIFT, int size) {
+void AnimateUV(SH_UVSHIFT* UVSHIFT, int size) {
 	if (GameState != 16) {
 		for (int j = 0; j < size; ++j) {
 			if (UVSHIFT[j].List == nullptr) continue;

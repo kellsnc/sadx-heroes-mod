@@ -46,7 +46,7 @@ void EggFleetHandler(ObjectMaster *a1) {
 		entity->Position = { 500, 4230, 5320 };
 		//entity->Position = { -9501.797, -4170.793, -38106.13 };
 		entity->Position = { -8169.233,  -4742.518,  -34860.18 };
-		entity->Position = { -4930,  340.3953,  -9121 };
+		entity->Position = { -7520,  -3007.982,  -29300 };
 	}
 	else {
 
