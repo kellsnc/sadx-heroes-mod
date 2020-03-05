@@ -32,6 +32,7 @@ enum HeroesSounds {
 	CommonSound_FlyPunchBegin,
 	CommonSound_FlyPunchHit,
 	CommonSound_RailHit,
+	CommonSound_Propeller,
 	LevelSound_Sea_Seagul = 10200,
 	LevelSound_Sea_RuinStart,
 	LevelSound_Sea_RuinEnd,

@@ -2,11 +2,16 @@
 
 NJS_OBJECT* PropellerModel = nullptr;
 
+CollisionData Prop_col {
+	0, 0, 0x77, 0, 0x800400,{ 0, -21, 0 },{ 1, 1, 1 }, 0, 0
+};
+
 enum PropellerActions {
 	PropellerAction_Init,
 	PropellerAction_CheckForPlayer,
 	PropellerAction_Attached,
-	PropellerAction_CheckUpAndDown
+	PropellerAction_CheckUpAndDown,
+	PropellerAction_Detach
 };
 
 NJS_VECTOR Propeller_GetHandlePoint(EntityData1* data, CharObj2* co2) {
@@ -17,7 +22,7 @@ NJS_VECTOR Propeller_GetHandlePoint(EntityData1* data, CharObj2* co2) {
 	njRotateY(0, data->Rotation.y + 0x4000);
 	njRotateZ(0, data->Rotation.z);
 	njRotateX(0, data->Rotation.x);
-	njTranslate(0, 0, -21 - co2->PhysicsData.CollisionSize + data->Scale.z, 0);
+	njTranslate(0, 0, -20 - co2->PhysicsData.CollisionSize + data->Scale.z, 0);
 	njGetTranslation(_nj_current_matrix_ptr_, &point);
 	njPopMatrix(1u);
 	return point;
@@ -26,7 +31,7 @@ NJS_VECTOR Propeller_GetHandlePoint(EntityData1* data, CharObj2* co2) {
 void Propeller_SetPlayerStatus(EntityData1* entity, CharObj2* co2) {
 	switch (entity->CharID) {
 	case Characters_Sonic:
-		if ((co2->Upgrades & Upgrades_SuperSonic) == 0) co2->AnimationThing.Index = 47;
+		if ((co2->Upgrades & Upgrades_SuperSonic) == 0) co2->AnimationThing.Index = 80;
 		else  co2->AnimationThing.Index = 141;
 		break;
 	case Characters_Tails: co2->AnimationThing.Index = 100; break;
@@ -36,6 +41,28 @@ void Propeller_SetPlayerStatus(EntityData1* entity, CharObj2* co2) {
 
 	co2->Speed = { 0, 0, 0 };
 	entity->Status = 0;
+}
+
+void Propeller_SetPlayerFalling(EntityData1* entity, CharObj2* co2) {
+	switch (entity->CharID) {
+	case Characters_Sonic:
+		if ((co2->Upgrades & Upgrades_SuperSonic) == 0) co2->AnimationThing.Index = 18;
+		else  co2->AnimationThing.Index = 141;
+		entity->Action = 8;
+		break;
+	case Characters_Amy: 
+		co2->AnimationThing.Index = 18;
+		entity->Action = 8; 
+		break;
+	case Characters_Gamma: 
+		co2->AnimationThing.Index = 16;
+		entity->Action = 4;
+		break;
+	default:
+		co2->AnimationThing.Index = 19;
+		entity->Action = 6;
+		break;
+	}
 }
 
 void Propeller_Delete(ObjectMaster* obj) {
@@ -51,11 +78,7 @@ void Propeller_Display(ObjectMaster* obj) {
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
 		njPushMatrix(0);
 		njTranslateV(0, &data->Position);
-
-		njRotateY(0, -data->Rotation.y - 0x4000);
-		njRotateZ(0, data->Rotation.z);
-		njRotateX(0, data->Rotation.x);
-
+		njRotateXYZ(0, data->Rotation.x, -data->Rotation.y - 0x4000, data->Rotation.z);
 		njTranslate(0, 0, -21 + data->Scale.z, 0);
 
 		njDrawModel_SADX(data->Object->child->basicdxmodel);
@@ -81,7 +104,7 @@ void Propeller_Main(ObjectMaster* obj) {
 
 		data->Scale.y += 0x500;
 
-		if (point < path->Count - 3) {
+		if (point < path->Count - 2 && data->Action != PropellerAction_Detach) {
 			Propeller_SetPlayerStatus(player, co2);
 			player->Position = Propeller_GetHandlePoint(data, co2);
 			player->Rotation = data->Rotation;
@@ -94,6 +117,12 @@ void Propeller_Main(ObjectMaster* obj) {
 				}
 				break;
 			case PropellerAction_CheckUpAndDown:
+				if (PressedButtons[data->CharIndex] & Buttons_A) {
+					data->Action = PropellerAction_Detach;
+					Propeller_SetPlayerFalling(player, co2);
+					return;
+				}
+
 				if (HeldButtons2[data->CharIndex] & Buttons_Up) {
 					data->Scale.z = 81;
 				}
@@ -109,6 +138,10 @@ void Propeller_Main(ObjectMaster* obj) {
 		}
 		else {
 			data->Scale.z += 3;
+
+			if (point >= path->Count - 2) {
+				Propeller_SetPlayerFalling(player, co2);
+			}
 
 			if (point == path->Count) {
 				DeleteObject_(obj);
@@ -126,18 +159,17 @@ inline void Propeller_Init(ObjectMaster* obj, char player) {
 	child->Data1->Object = obj->Data1->Object;
 	child->DisplaySub = Propeller_Display;
 	child->DeleteSub = Propeller_Delete;
+	PlayHeroesSound_Entity(CommonSound_Propeller, child, 500, true);
 }
 
 void PropellerPath_Display(ObjectMaster* obj) {
 	if (!MissedFrames && IsPlayerInsideSphere(&obj->Data1->Position, 1000)) {
 		EntityData1* data = obj->Data1;
 
-		Rotation3 rot = { 0, 0, 0 };
-		float pos = GetGroundYPosition(data->Position.x, data->Position.y, data->Position.z, &data->Rotation);
-
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
 		njPushMatrix(0);
 		njTranslate(0, data->Position.x, data->Object->pos[1], data->Position.z);
+		njRotateXYZ(0, data->Rotation.x, -data->Rotation.y - 0x4000, data->Rotation.z);
 
 		njDrawModel_SADX(data->Object->basicdxmodel);
 
@@ -150,20 +182,34 @@ void PropellerPath_Display(ObjectMaster* obj) {
 }
 
 void PropellerPath_DynCol(ObjectMaster* obj) {
-	EntityData1* original = obj->Data1;
-	NJS_OBJECT* colobject;
+	if (IsPlayerInsideSphere_(&obj->Data1->Position, 50)) {
+		if (!obj->field_30) {
+			EntityData1* data = obj->Data1;
+			NJS_OBJECT* colobject;
+			
+			colobject = ObjectArray_GetFreeObject();
 
-	colobject = ObjectArray_GetFreeObject();
+			colobject->scl[0] = 1.0;
+			colobject->scl[1] = 1.0;
+			colobject->scl[2] = 1.0;
 
-	colobject->scl[0] = 1.0;
-	colobject->scl[1] = 1.0;
-	colobject->scl[2] = 1.0;
-	colobject->pos[0] = original->Position.x;
-	colobject->pos[1] = obj->Data1->Object->pos[1];
-	colobject->pos[2] = original->Position.z;
-	colobject->basicdxmodel = obj->Data1->Object->basicdxmodel;
+			colobject->pos[0] = data->Position.x;
+			colobject->pos[1] = obj->Data1->Object->pos[1];
+			colobject->pos[2] = data->Position.z;
+			colobject->ang[0] = data->Rotation.x;
+			colobject->ang[2] = data->Rotation.z;
 
-	DynamicCOL_Add(ColFlags_Solid, obj, colobject);
+			colobject->basicdxmodel = obj->Data1->Object->basicdxmodel;
+			obj->field_30 = (int)colobject;
+
+			DynamicCOL_Add(ColFlags_Solid, obj, colobject);
+		}
+	}
+	else if (obj->field_30){
+		DynamicCOL_Remove(obj, (NJS_OBJECT*)obj->field_30);
+		ObjectArray_Remove((NJS_OBJECT*)obj->field_30);
+		obj->field_30 = 0;
+	}
 }
 
 void PropellerPath(ObjectMaster* obj) {
@@ -176,17 +222,22 @@ void PropellerPath(ObjectMaster* obj) {
 	case PropellerAction_Init:
 		if (GameState == 15) {
 			obj->DisplaySub = PropellerPath_Display;
+			
 			data->Action = PropellerAction_CheckForPlayer;
 			data->Position = path->LoopList->Position;
 			data->Rotation.y = fPositionToRotation(&path->LoopList->Position, &path->LoopList[1].Position).y;
 			data->Object = PropellerModel;
-			data->Object->pos[1] = GetGroundYPosition(data->Position.x, data->Position.y, data->Position.z, &data->Rotation);
-			PropellerPath_DynCol(obj);
+
+			Collision_Init(obj, &Prop_col, 1, 2u);
 		}
 
 		break;
 	case PropellerAction_CheckForPlayer:
 		if (IsPlayerInsideSphere(&obj->Data1->Position, 1000)) {
+			if (data->Object->pos[1] < -100000 || data->Object->pos[1] == 0) {
+				data->Object->pos[1] = GetGroundYPosition(data->Position.x, data->Position.y, data->Position.z, &data->Rotation);
+			}
+			
 			NJS_VECTOR pos = { data->Position.x, data->Position.y - 21, data->Position.z };
 			player = IsPlayerInsideSphere_(&pos, 10);
 
@@ -196,6 +247,8 @@ void PropellerPath(ObjectMaster* obj) {
 			}
 
 			obj->DisplaySub(obj);
+			PropellerPath_DynCol(obj);
+			AddToCollisionList(data);
 		}
 
 		break;
