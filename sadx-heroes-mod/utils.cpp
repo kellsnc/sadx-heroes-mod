@@ -210,6 +210,39 @@ bool IsSpecificPlayerInSphere(NJS_VECTOR* center, float radius, uint8_t player) 
 	else return false;
 }
 
+//Update the dyncol data
+void DynCol_Update(EntityData1* data, uint8_t type) {
+	NJS_OBJECT* col = (NJS_OBJECT*)data->LoopData;
+	
+	if (col) {
+		switch (type) {
+		case 0:
+posy: 
+			col->pos[1] = data->Position.y;
+			break;
+		case 1:
+posxyz:
+			col->pos[0] = data->Position.x;
+			col->pos[1] = data->Position.y;
+			col->pos[2] = data->Position.z;
+			break;
+		case 2:
+			col->ang[1] = data->Rotation.y;
+			goto posy;
+		case 3:
+			col->ang[0] = data->Rotation.x;
+			col->ang[1] = data->Rotation.y;
+			col->ang[2] = data->Rotation.z;
+			goto posy;
+		case 4:
+			col->ang[0] = data->Rotation.x;
+			col->ang[1] = data->Rotation.y;
+			col->ang[2] = data->Rotation.z;
+			goto posxyz;
+		}
+	}
+}
+
 //Clean dynamic collisions
 void DynCol_Delete(ObjectMaster* obj) {
 	if (obj->Data1->LoopData)
@@ -226,7 +259,7 @@ bool DynColRadius(ObjectMaster* obj, float radius, uint8_t col) {
 		if (!obj->Data1->LoopData) {
 			DynCol_Add(obj, col);
 			return 2;
-		}
+ 		}
 		return true;
 	}
 	else {

@@ -25,3 +25,5 @@ SH_ANIMTEXS EggFleetAnimTexs[]{
 extern ModelInfo * EF_CANNON1;
 extern ModelInfo * EF_BULLETS;
 extern ModelInfo * EF_PROPPLR;
+extern ModelInfo * EF_BGSHIPS;
+extern ModelInfo * EF_PLTFRMS;

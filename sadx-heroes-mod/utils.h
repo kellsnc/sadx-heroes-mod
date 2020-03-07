@@ -19,6 +19,7 @@ void DrawObjModel(ObjectMaster* a1, NJS_MODEL_SADX* m, bool scalable);
 void displaySub_Global(ObjectMaster* a1);
 void mainSub_Global(ObjectMaster* a1);
 void DynCol_Add(ObjectMaster* a1, uint8_t col);
+void DynCol_Update(EntityData1* data, uint8_t type);
 void DynCol_Delete(ObjectMaster* a1);
 bool DynColRadius(ObjectMaster* a1, float radius, uint8_t col);
 bool DynColRadiusAuto(ObjectMaster* a1, uint8_t col);

@@ -3,6 +3,8 @@
 ModelInfo * EF_CANNON1;
 ModelInfo * EF_BULLETS;
 ModelInfo * EF_PROPPLR;
+ModelInfo * EF_BGSHIPS;
+ModelInfo * EF_PLTFRMS;
 
 void LoadExplosion(NJS_VECTOR* position) {
 	ObjectMaster* temp = LoadObject(LoadObj_Data1, 3, (ObjectFuncPtr)0x4AC920);
@@ -189,6 +191,130 @@ void EFCannon(ObjectMaster* a1) {
 	a1->MainSub = EFCannon_Main;
 }
 
+enum EFPlatforms_Actions {
+	EFPlatformAction_Init,
+	EFPlatformAction_Move,
+	EFPlatformAction_Reach,
+	EFPlatformAction_Still
+};
+
+NJS_VECTOR Platform_GetPoint(NJS_VECTOR* orig, Rotation3* rot, float dest) {
+	NJS_VECTOR point;
+
+	njPushMatrix(_nj_unit_matrix_);
+	njTranslateV(0, orig);
+	if (rot) njRotateXYZ(0, rot->x, rot->y, rot->z);
+	njTranslate(0, 0, dest, 0);
+	njGetTranslation(_nj_current_matrix_ptr_, &point);
+	njPopMatrix(1u);
+
+	return point;
+}
+
+void ECPlatforms_Display(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1;
+
+	if (!MissedFrames) {
+		njSetTexture(CurrentLevelTexlist);
+		njPushMatrix(0);
+		njTranslateV(0, &data->Position);
+		njRotateXYZ(nullptr, data->Rotation.x, data->Rotation.y, data->Rotation.z);
+		njDrawModel_SADX(data->Object->basicdxmodel);
+		njPopMatrix(1);
+	}
+}
+
+void EFPLatforms_Move(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1;
+	
+	float dist = GetDistance(&data->Position, &data->Scale);
+	dist = 20 - dist;
+	data->field_A += 5 + dist;
+
+	float pos = (float)data->field_A / 100;
+	
+	if (pos >= 60) {
+		data->field_A = -2000;
+		pos = -20;
+	}
+	else if (pos > 20) {
+		pos = -pos + 40;
+	}
+
+	data->Position = Platform_GetPoint(&data->Scale, &data->Rotation, pos);
+
+	DynCol_Update(data, 1);
+}
+
+void EFPlatforms_Reach(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1;
+
+	float dist = GetDistance(&data->Position, &data->Scale);
+	dist = 60 - dist;
+	data->field_A += 5 + dist;
+
+	float pos = (float)data->field_A / 100;
+
+	if (pos >= 60) {
+		data->Action = EFPlatformAction_Still;
+	}
+
+	data->Position = Platform_GetPoint(&data->Scale, &data->Rotation, pos);
+
+	DynCol_Update(data, 1);
+}
+
+void EFPlatforms(ObjectMaster* obj) {
+	if (ClipSetObject(obj)) return;
+
+	EntityData1* data = obj->Data1;
+
+	switch (data->Action) {
+	case EFPlatformAction_Init:
+		data->Object = EF_PLTFRMS->getmodel();
+		data->Object->basicdxmodel->r = 80;
+
+		if (data->Scale.x == 1) {
+			data->Object = data->Object->child;
+			data->Object->basicdxmodel->r = 100;
+			data->Action = EFPlatformAction_Reach;
+			data->Scale.x = 0;
+		}
+		else {
+			data->Action = EFPlatformAction_Move;
+		}
+
+		obj->DisplaySub = ECPlatforms_Display;
+		obj->DeleteSub = DynCol_Delete;
+
+		if (data->Scale.y == 1) {
+			data->Action = EFPlatformAction_Still;
+			data->Scale.y = 0;
+		}
+		else {
+			data->Scale = data->Position;
+		}
+		
+		if (data->Action == EFPlatformAction_Move){
+			data->field_A = (short)(rand() % 40 * 100);
+			data->Position = Platform_GetPoint(&data->Scale, &data->Rotation, (float)data->field_A / 100);
+		}
+
+		return;
+	case EFPlatformAction_Move:
+		EFPLatforms_Move(obj);
+		break;
+	case EFPlatformAction_Reach:
+		EFPlatforms_Reach(obj);
+		break;
+	case EFPlatformAction_Still:
+		break;
+	}
+
+	DynColRadiusAuto(obj, 1);
+	obj->DisplaySub(obj);
+}
+
 PVMEntry EggFleetObjectTextures[] = {
 	{ "E_SAI", &E_SAI_TEXLIST },
 	{ "E_AMENBO", &E_AMENBO_TEXLIST },
@@ -267,7 +393,8 @@ ObjectListEntry EggFleetObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1560000, 0, OBJCASE, "OBJ CASE" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1360000, 0, &ObjReel, "OBJREEL" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1060000, 0, ObjFan, "OBJFAN" },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1060000, 0, EFCannon, "EFCannon" }
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1060000, 0, EFCannon, "EFCannon" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, 0, EFPlatforms, "EFPlatforms" },
 };
 ObjectList EggFleetObjectList = { arraylengthandptrT(EggFleetObjectList_list, int) };
 

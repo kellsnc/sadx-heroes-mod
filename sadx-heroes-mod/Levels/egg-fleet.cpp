@@ -3,7 +3,7 @@
 #include "egg-fleet-deathzones.h"
 #include "egg-fleet-paths.h"
 
-ModelInfo * EF_SKYMDLS;
+ModelInfo* EF_SKYMDLS;
 
 MusicInfo EggFleetMusic = { "egg-fleet", 1 };
 int eggfleetmusicid = 81;
@@ -12,17 +12,21 @@ void EggFleetObjects_Init();
 
 void EggFleet_InitObjects() {
 	EF_SKYMDLS = LoadObjectModel(EF_SKYMDLS, "EF_SKYMDLS");
+	EF_BGSHIPS = LoadObjectModel(EF_BGSHIPS, "EF_BGSHIPS");
 	EF_CANNON1 = LoadObjectModel(EF_CANNON1, "EF_CANNON1");
 	EF_BULLETS = LoadObjectModel(EF_BULLETS, "EF_BULLETS");
 	EF_PROPPLR = LoadObjectModel(EF_PROPPLR, "EF_PROPPLR");
+	EF_PLTFRMS = LoadObjectModel(EF_PLTFRMS, "EF_PLTFRMS");
 	PropellerModel = EF_PROPPLR->getmodel();
 }
 
 void EggFleet_Delete(ObjectMaster *a1) {
 	EF_SKYMDLS = FreeMDL(EF_SKYMDLS);
+	EF_BGSHIPS = FreeMDL(EF_BGSHIPS);
 	EF_CANNON1 = FreeMDL(EF_CANNON1);
 	EF_BULLETS = FreeMDL(EF_BULLETS);
 	EF_PROPPLR = FreeMDL(EF_PROPPLR);
+	EF_PLTFRMS = FreeMDL(EF_PLTFRMS);
 
 	LevelHandler_Delete(a1);
 }
@@ -46,7 +50,7 @@ void EggFleetHandler(ObjectMaster *a1) {
 		entity->Position = { 500, 4230, 5320 };
 		//entity->Position = { -9501.797, -4170.793, -38106.13 };
 		entity->Position = { -8169.233,  -4742.518,  -34860.18 };
-		entity->Position = { -7520,  -3007.982,  -29300 };
+		entity->Position = { -2791.664, 814.6249, -4323.295 };
 	}
 	else {
 
