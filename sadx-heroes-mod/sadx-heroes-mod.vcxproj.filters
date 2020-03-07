@@ -305,5 +305,8 @@
     <ClInclude Include="paths.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Levels\egg-fleet-objects.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

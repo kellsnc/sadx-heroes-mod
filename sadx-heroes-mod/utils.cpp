@@ -275,6 +275,11 @@ bool DynColRadiusAuto(ObjectMaster* obj, uint8_t col) {
 }
 
 //Shift uv of models, requires a SH_UVSHIFT struct
+void AddUVList(SH_UVSHIFT* UVSHIFT, int id, NJS_MODEL_SADX* model, int mesh) {
+	UVSHIFT[id].List = model->meshsets[mesh].vertuv;
+	UVSHIFT[id].Size = model->meshsets[mesh].nbMesh * 3;
+}
+
 void AnimateUV(SH_UVSHIFT* UVSHIFT, int size) {
 	if (GameState != 16) {
 		for (int j = 0; j < size; ++j) {
@@ -313,8 +318,7 @@ bool CheckModelDisplay(SOI_LIST item) {
 			return true;
 		}
 		else {
-			if (IsPlayerInsideSphere(&item.Position, item.DrawDistance) == true)
-				return true;
+			return IsPlayerInsideSphere(&item.Position, item.DrawDistance);
 		}
 	}
 	return false;

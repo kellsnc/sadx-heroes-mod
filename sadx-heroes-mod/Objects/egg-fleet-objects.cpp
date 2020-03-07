@@ -1,10 +1,14 @@
 #include "stdafx.h"
+#include "egg-fleet-objects.h"
 
 ModelInfo * EF_CANNON1;
 ModelInfo * EF_BULLETS;
 ModelInfo * EF_PROPPLR;
 ModelInfo * EF_BGSHIPS;
 ModelInfo * EF_PLTFRMS;
+ModelInfo * EF_PIPLINE;
+ModelInfo * EF_ENDRAIL;
+ModelInfo * EF_OBJSHIP;
 
 void LoadExplosion(NJS_VECTOR* position) {
 	ObjectMaster* temp = LoadObject(LoadObj_Data1, 3, (ObjectFuncPtr)0x4AC920);
@@ -277,8 +281,11 @@ void EFPlatforms(ObjectMaster* obj) {
 		if (data->Scale.x == 1) {
 			data->Object = data->Object->child;
 			data->Object->basicdxmodel->r = 100;
-			data->Action = EFPlatformAction_Reach;
 			data->Scale.x = 0;
+		}
+		
+		if (data->Scale.x == 2) {
+			data->Action = EFPlatformAction_Reach;
 		}
 		else {
 			data->Action = EFPlatformAction_Move;
@@ -307,12 +314,192 @@ void EFPlatforms(ObjectMaster* obj) {
 	case EFPlatformAction_Reach:
 		EFPlatforms_Reach(obj);
 		break;
-	case EFPlatformAction_Still:
-		break;
 	}
 
 	DynColRadiusAuto(obj, 1);
 	obj->DisplaySub(obj);
+}
+
+void EFPipeline_Display(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1;
+
+	if (!MissedFrames) {
+		njSetTexture(CurrentLevelTexlist);
+		njPushMatrix(0);
+		njTranslateV(0, &data->Position);
+		njRotateXYZ(nullptr, data->Rotation.x, data->Rotation.y, data->Rotation.z);
+		njDrawModel_SADX(data->Object->basicdxmodel);
+		njDrawModel_SADX(data->Object->child->basicdxmodel);
+		njPopMatrix(1);
+	}
+}
+
+void EFPipeLine_Collision(ObjectMaster* obj) {
+	DynColRadiusAuto(obj, 0);
+}
+
+void EFPipeline(ObjectMaster* obj) {
+	if (ClipSetObject(obj)) return;
+
+	EntityData1* data = obj->Data1;
+	
+	if (data->Action == 0) {
+		obj->DisplaySub = EFPipeline_Display;
+		data->Object = EF_PIPLINE->getmodel();
+		data->Object->basicdxmodel->r = 300;
+		data->Object->child->basicdxmodel->r = 300;
+		data->Action = 1;
+		
+		ObjectMaster* child = LoadChildObject(LoadObj_Data1, EFPipeLine_Collision, obj);
+		child->Data1->Position = data->Position;
+		child->Data1->Rotation = data->Rotation;
+		child->Data1->Object = data->Object->child;
+		child->DeleteSub = DynCol_Delete;
+	} 
+	else {
+		DynColRadiusAuto(obj, 0);
+		obj->DisplaySub(obj);
+		RunObjectChildren(obj);
+	}
+}
+
+void EFRailends(ObjectMaster* obj) {
+	if (obj->field_30 == 0) {
+		obj->DisplaySub = obj->MainSub;
+		obj->field_30 = 1;
+	}
+
+	if (!DroppedFrames) {
+		for (int i = 0; i < LengthOfArray(EggFleet_RailEnds); ++i) {
+			SOI_LIST item = EggFleet_RailEnds[i];
+			
+			if (IsPlayerInsideSphere_(&item.Position, 5000.0f)) {
+				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+				njPushMatrix(0);
+				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
+				njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);
+
+				if (item.DrawDistance == 1) {
+					EF_ENDRAIL->getmodel()->basicdxmodel->mats->attr_texId = 30;
+				}
+				else if (item.DrawDistance == 2) {
+					EF_ENDRAIL->getmodel()->basicdxmodel->mats->attr_texId = 34;
+				}
+
+				njDrawModel_SADX(EF_ENDRAIL->getmodel()->child->basicdxmodel);
+				njDrawModel_SADX(EF_ENDRAIL->getmodel()->basicdxmodel);
+
+				njPopMatrix(1u);
+			}
+		}
+	}
+}
+
+enum EFDoorActions {
+	EFDoorAction_Init,
+	EFDoorAction_CloseDoor,
+	EFDoorAction_Closed,
+	EFDoorAction_OpenDoor,
+	EFDoorAction_Opened
+};
+
+void EFShipDoor_Display(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1;
+
+	if (!MissedFrames) {
+		njSetTexture(CurrentLevelTexlist);
+		njPushMatrix(0);
+		njTranslateV(0, &data->Position);
+		njRotateXYZ(nullptr, data->Rotation.x, data->Rotation.y, data->Rotation.z);
+		njDrawModel_SADX(data->Object->basicdxmodel);
+		njTranslate(0, 0, data->Scale.y, 0);
+		njDrawModel_SADX(data->Object->child->basicdxmodel);
+		njPopMatrix(1);
+	}
+}
+
+void EFShipDoor_Collision(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1;
+	EntityData1* parent = obj->Parent->Data1;
+	
+	switch (parent->Action) {
+	case EFDoorAction_CloseDoor:
+	case EFDoorAction_OpenDoor:
+		data->Position = Platform_GetPoint(&parent->Position, &parent->Rotation, parent->Scale.y);
+		DynCol_Update(obj->Data1, 1);
+		break;
+	}
+
+	DynColRadiusAuto(obj, 1);
+}
+
+void EFShipDoor(ObjectMaster* obj) {
+	if (ClipSetObject(obj)) return;
+
+	EntityData1* data = obj->Data1;
+	
+	switch (data->Action) {
+	case EFDoorAction_Init:
+		obj->DisplaySub = EFShipDoor_Display;
+		data->Object = EF_OBJSHIP->getmodel();
+		data->Object->basicdxmodel->r = 200;
+		data->Object->child->basicdxmodel->r = 150;
+		data->Action = 1;
+		data->Scale.y = -159;
+
+		LoadChildObject(LoadObj_Data1, EFShipDoor_Collision, obj);
+		obj->Child->Data1->Position = data->Position;
+		obj->Child->Data1->Rotation = data->Rotation;
+		obj->Child->Data1->Object = data->Object->child;
+		obj->Child->DeleteSub = DynCol_Delete;
+		
+		if (obj->SETData.SETData->SETEntry->Properties.x == 1) {
+			data->Action = EFDoorAction_Opened;
+			obj->Child->Data1->Position = Platform_GetPoint(&data->Position, &data->Rotation, data->Scale.y);
+		}
+		else {
+			data->Action = EFDoorAction_CloseDoor;
+		}
+
+		return;
+	case EFDoorAction_CloseDoor:
+		if (IsPlayerInsideSphere_(&data->Position, 800) == 0) break;
+
+		if (data->Scale.y < 0) {
+			data->Scale.y += 3;
+		}
+		else {
+			data->Action = EFDoorAction_Closed;
+			data->Scale.y = 0;
+		}
+
+		break;
+	case EFDoorAction_Closed:
+		if (PressedButtons[0] & Buttons_C) {
+			data->Action = EFDoorAction_OpenDoor;
+			obj->SETData.SETData->SETEntry->Properties.x = 1;
+		}
+
+		break;
+	case EFDoorAction_OpenDoor:
+		if (data->Scale.y > -159) {
+			data->Scale.y -= 1;
+		}
+		else {
+			data->Action = EFDoorAction_Opened;
+			data->Scale.y = -158.5;
+		}
+
+		break;
+	}
+
+	DynColRadiusAuto(obj, 0);
+	obj->DisplaySub(obj);
+	RunObjectChildren(obj);
+}
+
+void EFShipConveyor(ObjectMaster* obj) {
+
 }
 
 PVMEntry EggFleetObjectTextures[] = {
@@ -395,6 +582,9 @@ ObjectListEntry EggFleetObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1060000, 0, ObjFan, "OBJFAN" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1060000, 0, EFCannon, "EFCannon" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, 0, EFPlatforms, "EFPlatforms" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, 0, EFPipeline, "EFPipeline" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, 0, EFShipDoor, "EFShipDoor" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1060000, 0, EFShipConveyor, "EFShipConveyor" },
 };
 ObjectList EggFleetObjectList = { arraylengthandptrT(EggFleetObjectList_list, int) };
 

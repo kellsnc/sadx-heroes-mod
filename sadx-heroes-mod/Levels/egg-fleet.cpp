@@ -17,6 +17,13 @@ void EggFleet_InitObjects() {
 	EF_BULLETS = LoadObjectModel(EF_BULLETS, "EF_BULLETS");
 	EF_PROPPLR = LoadObjectModel(EF_PROPPLR, "EF_PROPPLR");
 	EF_PLTFRMS = LoadObjectModel(EF_PLTFRMS, "EF_PLTFRMS");
+	EF_PIPLINE = LoadObjectModel(EF_PIPLINE, "EF_PIPLINE");
+	EF_ENDRAIL = LoadObjectModel(EF_ENDRAIL, "EF_ENDRAIL");
+	EF_OBJSHIP = LoadObjectModel(EF_OBJSHIP, "EF_OBJSHIP");
+	
+	LoadObject((LoadObj)0, 3, EFRailends);
+
+	AddUVList(EggFleet_UVSHIFT, 0, EF_PIPLINE->getmodel()->child->basicdxmodel, 0);
 	PropellerModel = EF_PROPPLR->getmodel();
 }
 
@@ -27,6 +34,9 @@ void EggFleet_Delete(ObjectMaster *a1) {
 	EF_BULLETS = FreeMDL(EF_BULLETS);
 	EF_PROPPLR = FreeMDL(EF_PROPPLR);
 	EF_PLTFRMS = FreeMDL(EF_PLTFRMS);
+	EF_PIPLINE = FreeMDL(EF_PIPLINE);
+	EF_ENDRAIL = FreeMDL(EF_ENDRAIL);
+	EF_OBJSHIP = FreeMDL(EF_OBJSHIP);
 
 	LevelHandler_Delete(a1);
 }
@@ -50,9 +60,10 @@ void EggFleetHandler(ObjectMaster *a1) {
 		entity->Position = { 500, 4230, 5320 };
 		//entity->Position = { -9501.797, -4170.793, -38106.13 };
 		entity->Position = { -8169.233,  -4742.518,  -34860.18 };
-		entity->Position = { -2791.664, 814.6249, -4323.295 };
+		entity->Position = { 49.95027, 278, -2008.7269 };
 	}
 	else {
+		AnimateUV(arrayptrandlength(EggFleet_UVSHIFT));
 
 		//temp until the ship breaker object is ported
 		NJS_VECTOR swap1 = { -5998.083, 3435.614, -13343.93 };

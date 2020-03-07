@@ -29,6 +29,7 @@ int IsPlayerInsideSphere_(NJS_VECTOR* center, float radius);
 bool IsSpecificPlayerInSphere(NJS_VECTOR* center, float radius, uint8_t player);
 bool IsPlayerInBox(NJS_VECTOR playerpos, NJS_VECTOR pos1, NJS_VECTOR pos2);
 
+void AddUVList(SH_UVSHIFT* UVSHIFT, int id, NJS_MODEL_SADX* model, int mesh);
 void AnimateUV(SH_UVSHIFT* UVSHIFT, int size);
 bool CheckModelDisplay(SOI_LIST item);
 bool CheckModelDisplay2(SOI_LIST2 item);

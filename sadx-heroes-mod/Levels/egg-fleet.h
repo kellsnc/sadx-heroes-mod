@@ -22,8 +22,18 @@ SH_ANIMTEXS EggFleetAnimTexs[]{
 	{ 41, 7,{ 14, 10, 8, 10, 8, 10, 8, 5 } }
 };
 
+SH_UVSHIFT EggFleet_UVSHIFT[]{
+	{ nullptr ,0,{ 0, 6 }, 1 },
+	{ nullptr ,0,{ 0, 6 }, 1 }
+};
+
+void EFRailends(ObjectMaster* a1);
+
 extern ModelInfo * EF_CANNON1;
 extern ModelInfo * EF_BULLETS;
 extern ModelInfo * EF_PROPPLR;
 extern ModelInfo * EF_BGSHIPS;
 extern ModelInfo * EF_PLTFRMS;
+extern ModelInfo * EF_PIPLINE;
+extern ModelInfo * EF_ENDRAIL;
+extern ModelInfo * EF_OBJSHIP;
