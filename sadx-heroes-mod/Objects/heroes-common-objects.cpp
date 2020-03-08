@@ -67,7 +67,7 @@ void ObjFan_Display(ObjectMaster *a1)
 		DrawQueueDepthBias = -6000.0f;
 		njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
 		njRotateXYZ(nullptr, 0, a1->Data1->Scale.z, 0);
-		njDrawModel_SADX(CO_COMNFAN->getmodel()->child->basicdxmodel);
+		njDrawModel_SADX(a1->Data1->Object->child->basicdxmodel);
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 	}
@@ -78,7 +78,7 @@ void ObjFan_Main(ObjectMaster *a1)
 	if (!ClipSetObject(a1)) {
 		DynColRadius(a1, 350, 0);
 
-		a1->Data1->Scale.z += a1->Data1->Scale.y;
+		a1->Data1->Scale.z -= a1->Data1->Scale.x * 60;
 
 		int slot = IsPlayerInsideSphere(&a1->Data1->Position, 45.0f);
 		if (slot > 0) {

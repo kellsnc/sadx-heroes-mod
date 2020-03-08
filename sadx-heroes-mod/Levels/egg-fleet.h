@@ -1,6 +1,6 @@
 #pragma once
 
-FogData EggFleet_Fog = { -3.0, -20000, 0x00FFFFFF, 1 };
+FogData EggFleet_Fog = { -3.0, -40000, 0x00FFFFFF, 1 };
 
 CHUNK_LIST EggFleetChunks[]{
 	{ 1,{ 0, 0, 0 },{ 0, 0, -2300 } },
@@ -22,12 +22,8 @@ SH_ANIMTEXS EggFleetAnimTexs[]{
 	{ 41, 7,{ 14, 10, 8, 10, 8, 10, 8, 5 } }
 };
 
-SH_UVSHIFT EggFleet_UVSHIFT[]{
-	{ nullptr ,0,{ 0, 6 }, 1 },
-	{ nullptr ,0,{ 0, 6 }, 1 }
-};
-
 void EFRailends(ObjectMaster* a1);
+void EFBgShips(ObjectMaster* obj);
 
 extern ModelInfo * EF_CANNON1;
 extern ModelInfo * EF_BULLETS;
@@ -37,3 +33,7 @@ extern ModelInfo * EF_PLTFRMS;
 extern ModelInfo * EF_PIPLINE;
 extern ModelInfo * EF_ENDRAIL;
 extern ModelInfo * EF_OBJSHIP;
+extern ModelInfo * EF_ANTENNA;
+extern ModelInfo * EF_BIGSHIP;
+extern ModelInfo * EF_DIRSGNS;
+extern ModelInfo * EF_SHPBRK1;

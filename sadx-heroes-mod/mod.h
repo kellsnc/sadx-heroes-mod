@@ -15,6 +15,7 @@ extern set_blend* set_blend_ptr;
 extern std::string modpath;
 extern HelperFunctions HelperFunctionsGlobal;
 
+FunctionPointer(void, DrawObject, (NJS_OBJECT*), 0x408530);
 FunctionPointer(float, GetGroundYPosition, (float x, float y, float z, Rotation3* rotation), 0x49E920);
 DataPointer(int, DroppedFrames, 0x03B1117C);
 DataPointer(int, FramerateSetting, 0x0389D7DC);
