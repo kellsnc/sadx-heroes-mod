@@ -52,6 +52,11 @@ void ElevatePlayer(uint8_t slot);
 bool IsPointInCollision(NJS_VECTOR* pos, float radius);
 void DoBall(uint8_t id);
 
+uint8_t Fans_IsSpecificPlayerInCylinder(EntityData1* entity, NJS_VECTOR* center, float radius, float height);
+uint8_t Fans_IsPlayerInCylinder(NJS_VECTOR* center, float radius, float height);
+void Fans_SetSpeedAndAnim(uint8_t player);
+void Fans_HandlePlayer(ObjectMaster* obj);
+
 void ObjReel(ObjectMaster *a1);
 void ObjFan(ObjectMaster *a1);
 void SHCameraSwitch(ObjectMaster *a1);

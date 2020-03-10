@@ -2,6 +2,7 @@
 #include "egg-fleet-objects.h"
 
 ModelInfo * EF_CANNON1;
+ModelInfo * EF_CANNON2;
 ModelInfo * EF_BULLETS;
 ModelInfo * EF_PROPPLR;
 ModelInfo * EF_BGSHIPS;
@@ -13,6 +14,12 @@ ModelInfo * EF_ANTENNA;
 ModelInfo * EF_BIGSHIP;
 ModelInfo * EF_DIRSGNS;
 ModelInfo * EF_SHPBRK1;
+ModelInfo * EF_BARRIER;
+ModelInfo * EF_CANBRK1;
+ModelInfo * EF_CANBRK2;
+ModelInfo * EF_CANDECO;
+ModelInfo * EF_EBIGFAN;
+ModelInfo * EF_EHELICE;
 
 void LoadExplosion(NJS_VECTOR* position) {
 	ObjectMaster* temp = LoadObject(LoadObj_Data1, 3, (ObjectFuncPtr)0x4AC920);
@@ -745,7 +752,7 @@ void EFBgShips(ObjectMaster* obj) {
 						DrawObject(EF_BIGSHIP->getmodel());
 					}
 					break;
-				case EFShipType_FarMoveTopR:
+				/*case EFShipType_FarMoveTopR:
 					njDrawModel_SADX(data->Object->basicdxmodel);
 					break;
 				case EFShipType_FarMoveSideR:
@@ -759,13 +766,77 @@ void EFBgShips(ObjectMaster* obj) {
 					break;
 				case EFShipType_FarMoveBig:
 					njDrawModel_SADX(data->Object->child->child->child->child->basicdxmodel);
-					break;
+					break;*/
 				}
 
 				ToggleStageFog();
 				njPopMatrix(1u);
 			}
 		}
+	}
+}
+
+void EFBigFans_Display(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1;
+
+	if (!MissedFrames) {
+		njSetTexture(CurrentLevelTexlist);
+		njPushMatrix(0);
+		njTranslateV(0, &data->Position);
+		njRotateXYZ(nullptr, data->Rotation.x, data->Rotation.y, data->Rotation.z);
+		njDrawModel_SADX(data->Object->basicdxmodel);
+		njRotateY(0, data->Scale.z);
+		njDrawModel_SADX(data->Object->child->basicdxmodel);
+		njRotateY(0, -data->Scale.z);
+		njDrawModel_SADX(data->Object->child->child->basicdxmodel);
+		njPopMatrix(1);
+	}
+}
+
+void EFBigFans_Collision(ObjectMaster* obj) {
+	DynColRadiusAuto(obj, 0);
+}
+
+void EFBigFans(ObjectMaster* obj) {
+	if (ClipSetObject(obj) || !EF_EBIGFAN) return;
+
+	EntityData1* data = obj->Data1;
+
+	if (data->Scale.y != 1) {
+		obj->MainSub = ObjFan;
+		return;
+	}
+
+	if (data->Action == 0) {
+		Collision_Init(obj, BigFans_col, 2, 1);
+		obj->DisplaySub = EFBigFans_Display;
+		data->Object = EF_EBIGFAN->getmodel();
+		data->Object->basicdxmodel->r = 300;
+		data->Action = 1;
+
+		ObjectMaster* child = LoadChildObject(LoadObj_Data1, EFBigFans_Collision, obj);
+		child->Data1->Position = data->Position;
+		child->Data1->Rotation = data->Rotation;
+		child->Data1->Object = data->Object->child->child;
+		child->Data1->Object->basicdxmodel->r = 300;
+		child->DeleteSub = DynCol_Delete;
+	}
+	else {
+		NJS_VECTOR temp = { data->Position.x, data->Position.y - 34, data->Position.z };
+		data->CharIndex = Fans_IsPlayerInCylinder(&temp, 130, data->Scale.x);
+		if (data->CharIndex) {
+			LoadChildObject(LoadObj_Data1, Fans_HandlePlayer, obj);
+			obj->Child->Data1->CharIndex = data->CharIndex - 1;
+			obj->Child->Data1->Position = temp;
+			obj->Child->Data1->Scale.x = data->Scale.x;
+			obj->Child->Data1->Scale.y = 130;
+		}
+
+		data->Scale.z -= data->Scale.x * 80;
+
+		DynColRadiusAuto(obj, 0);
+		obj->DisplaySub(obj);
+		RunObjectChildren(obj);
 	}
 }
 
@@ -846,7 +917,7 @@ ObjectListEntry EggFleetObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, SHCameraSwitch, "SH CAM SW" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1560000, 0, OBJCASE, "OBJ CASE" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1360000, 0, ObjReel, "OBJREEL" },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1060000, 0, ObjFan, "OBJFAN" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 4060000, 0, EFBigFans, "OBJFAN" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1060000, 0, EFCannon, "EFCannon" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, 0, EFPlatforms, "EFPlatforms" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, 0, EFPipeline, "EFPipeline" },

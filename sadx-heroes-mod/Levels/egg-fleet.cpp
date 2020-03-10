@@ -14,6 +14,7 @@ void EggFleet_InitObjects() {
 	EF_SKYMDLS = LoadObjectModel(EF_SKYMDLS, "EF_SKYMDLS");
 	EF_BGSHIPS = LoadObjectModel(EF_BGSHIPS, "EF_BGSHIPS");
 	EF_CANNON1 = LoadObjectModel(EF_CANNON1, "EF_CANNON1");
+	EF_CANNON2 = LoadObjectModel(EF_CANNON2, "EF_CANNON2");
 	EF_BULLETS = LoadObjectModel(EF_BULLETS, "EF_BULLETS");
 	EF_PROPPLR = LoadObjectModel(EF_PROPPLR, "EF_PROPPLR");
 	EF_PLTFRMS = LoadObjectModel(EF_PLTFRMS, "EF_PLTFRMS");
@@ -24,6 +25,12 @@ void EggFleet_InitObjects() {
 	EF_BIGSHIP = LoadObjectModel(EF_BIGSHIP, "EF_BIGSHIP");
 	EF_DIRSGNS = LoadObjectModel(EF_DIRSGNS, "EF_DIRSGNS");
 	EF_SHPBRK1 = LoadObjectModel(EF_SHPBRK1, "EF_SHPBRK1");
+	EF_BARRIER = LoadObjectModel(EF_BARRIER, "EF_BARRIER");
+	EF_CANBRK1 = LoadObjectModel(EF_CANBRK1, "EF_CANBRK1");
+	EF_CANBRK2 = LoadObjectModel(EF_CANBRK2, "EF_CANBRK2");
+	EF_CANDECO = LoadObjectModel(EF_CANDECO, "EF_CANDECO");
+	EF_EBIGFAN = LoadObjectModel(EF_EBIGFAN, "EF_EBIGFAN");
+	EF_EHELICE = LoadObjectModel(EF_EHELICE, "EF_EHELICE");
 	
 	LoadObject((LoadObj)0, 3, EFRailends);
 	LoadObject(LoadObj_Data1, 3, EFBgShips);
@@ -35,6 +42,7 @@ void EggFleet_Delete(ObjectMaster *a1) {
 	EF_SKYMDLS = FreeMDL(EF_SKYMDLS);
 	EF_BGSHIPS = FreeMDL(EF_BGSHIPS);
 	EF_CANNON1 = FreeMDL(EF_CANNON1);
+	EF_CANNON2 = FreeMDL(EF_CANNON2);
 	EF_BULLETS = FreeMDL(EF_BULLETS);
 	EF_PROPPLR = FreeMDL(EF_PROPPLR);
 	EF_PLTFRMS = FreeMDL(EF_PLTFRMS);
@@ -45,7 +53,13 @@ void EggFleet_Delete(ObjectMaster *a1) {
 	EF_BIGSHIP = FreeMDL(EF_BIGSHIP);
 	EF_DIRSGNS = FreeMDL(EF_DIRSGNS);
 	EF_SHPBRK1 = FreeMDL(EF_SHPBRK1);
-
+	EF_BARRIER = FreeMDL(EF_BARRIER);
+	EF_CANBRK1 = FreeMDL(EF_CANBRK1);
+	EF_CANBRK2 = FreeMDL(EF_CANBRK2);
+	EF_CANDECO = FreeMDL(EF_CANDECO);
+	EF_EBIGFAN = FreeMDL(EF_EBIGFAN);
+	EF_EHELICE = FreeMDL(EF_EHELICE);
+	
 	LevelHandler_Delete(a1);
 }
 
@@ -68,7 +82,7 @@ void EggFleetHandler(ObjectMaster *a1) {
 		entity->Position = { 500, 4230, 5320 };
 		//entity->Position = { -9501.797, -4170.793, -38106.13 };
 		entity->Position = { -8169.233,  -4742.518,  -34860.18 };
-		entity->Position = { 252.8638, 2601.375, 941.0077 };
+		entity->Position = { -7004.627, 841.3749, -16349.14 };
 	}
 	else {
 		ChunkHandler("EF", EggFleetChunks, LengthOfArray(EggFleetChunks), entity->Position);

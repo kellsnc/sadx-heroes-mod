@@ -206,8 +206,7 @@ int IsPlayerInsideSphere_(NJS_VECTOR* center, float radius) {
 }
 
 bool IsSpecificPlayerInSphere(NJS_VECTOR* center, float radius, uint8_t player) {
-	if (IsPlayerInsideSphere_(center, radius) == player + 1) return true;
-	else return false;
+	return IsPlayerInsideSphere_(center, radius) == player + 1;
 }
 
 //Update the dyncol data

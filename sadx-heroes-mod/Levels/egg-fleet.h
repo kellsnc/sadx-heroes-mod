@@ -26,6 +26,7 @@ void EFRailends(ObjectMaster* a1);
 void EFBgShips(ObjectMaster* obj);
 
 extern ModelInfo * EF_CANNON1;
+extern ModelInfo * EF_CANNON2;
 extern ModelInfo * EF_BULLETS;
 extern ModelInfo * EF_PROPPLR;
 extern ModelInfo * EF_BGSHIPS;
@@ -37,3 +38,9 @@ extern ModelInfo * EF_ANTENNA;
 extern ModelInfo * EF_BIGSHIP;
 extern ModelInfo * EF_DIRSGNS;
 extern ModelInfo * EF_SHPBRK1;
+extern ModelInfo * EF_BARRIER;
+extern ModelInfo * EF_CANBRK1;
+extern ModelInfo * EF_CANBRK2;
+extern ModelInfo * EF_CANDECO;
+extern ModelInfo * EF_EBIGFAN;
+extern ModelInfo * EF_EHELICE;

@@ -57,6 +57,84 @@ void SHCameraSwitch(ObjectMaster *a1)
 	}
 }
 
+uint8_t Fans_IsSpecificPlayerInCylinder(EntityData1* entity, NJS_VECTOR* center, float radius, float height) {
+	NJS_VECTOR* pos = &entity->Position;
+
+	if ((powf(pos->x - center->x, 2) + pow(pos->z - center->z, 2)) <= pow(radius, 2) &&
+		pos->y > center->y&& pos->y < center->y + height * 50) {
+		return entity->CharIndex + 1;
+	}
+
+	return 0;
+}
+
+uint8_t Fans_IsPlayerInCylinder(NJS_VECTOR* center, float radius, float height) {
+	for (uint8_t p = 0; p < MaxPlayers; ++p) {
+		EntityData1* entity = EntityData1Ptrs[p];
+		if (entity && entity->field_A < 120) {
+			return Fans_IsSpecificPlayerInCylinder(entity, center, radius, height);
+		}
+	}
+
+	return 0;
+}
+
+void Fans_SetSpeedAndAnim(uint8_t player) {
+	EntityData1* entity = EntityData1Ptrs[player];
+	CharObj2* co2 = CharObj2Ptrs[player];
+
+	co2->Speed.y += 0.1;
+	entity->Status = 0;
+
+	if (GetCharacterID(0) == Characters_Sonic && (co2->Upgrades & Upgrades_SuperSonic) == 0) {
+		co2->AnimationThing.Index = 26;
+	}
+	else if (GetCharacterID(0) == Characters_Tails) {
+		co2->AnimationThing.Index = 33;
+	}
+	else if (GetCharacterID(0) == Characters_Knuckles) {
+		co2->AnimationThing.Index = 34;
+	}
+}
+
+void Fans_HandlePlayer(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1;
+	EntityData1* entity = EntityData1Ptrs[data->CharIndex];
+	CharObj2* co2 = CharObj2Ptrs[data->CharIndex];
+
+	if (!entity) {
+		DeleteObject_(obj);
+		return;
+	}
+
+	if (entity->field_A < 120) entity->field_A = 130;
+
+	if (Fans_IsSpecificPlayerInCylinder(entity, &data->Position, data->Scale.y, data->Scale.x)) {
+		Fans_SetSpeedAndAnim(data->CharIndex);
+	}
+	else {
+		data->Scale.z += 0.06f;
+		CharObj2Ptrs[data->CharIndex]->Speed.y += data->Scale.z;
+
+		entity->field_A = 131;
+
+		if (entity->Status & Status_Ground) {
+			DeleteObject_(obj);
+			entity->field_A = 0;
+		}
+		else {
+			if (data->Scale.z > 0) data->Scale.z = 0;
+			data->Scale.z -= 0.07f;
+			co2->Speed.y = data->Scale.z;
+
+			if (data->Scale.z < -1.5f) {
+				DeleteObject_(obj);
+				entity->field_A = 0;
+			}
+		}
+	}
+}
+
 void ObjFan_Display(ObjectMaster *a1)
 {
 	if (!MissedFrames) {
