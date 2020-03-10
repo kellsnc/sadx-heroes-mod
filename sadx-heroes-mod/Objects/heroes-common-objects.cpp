@@ -61,7 +61,7 @@ uint8_t Fans_IsSpecificPlayerInCylinder(EntityData1* entity, NJS_VECTOR* center,
 	NJS_VECTOR* pos = &entity->Position;
 
 	if ((powf(pos->x - center->x, 2) + pow(pos->z - center->z, 2)) <= pow(radius, 2) &&
-		pos->y > center->y&& pos->y < center->y + height * 50) {
+		pos->y > center->y && pos->y < center->y + height * 35) {
 		return entity->CharIndex + 1;
 	}
 
@@ -151,48 +151,33 @@ void ObjFan_Display(ObjectMaster *a1)
 	}
 }
 
-void ObjFan_Main(ObjectMaster *a1)
+void ObjFan(ObjectMaster *obj)
 {
-	if (!ClipSetObject(a1)) {
-		DynColRadius(a1, 350, 0);
+	if (ClipSetObject(obj) || !CO_COMNFAN) return;
 
-		a1->Data1->Scale.z -= a1->Data1->Scale.x * 60;
+	EntityData1* data = obj->Data1;
 
-		int slot = IsPlayerInsideSphere(&a1->Data1->Position, 45.0f);
-		if (slot > 0) {
-			EntityData1 *entity = EntityData1Ptrs[slot - 1];
-			CharObj2 *co2 = CharObj2Ptrs[slot - 1];
-			if (co2 != NULL) {
-				co2->Speed.x = 0; co2->Speed.z = 0;
-				entity->Rotation.x = 0;
-				entity->Rotation.z = 0;
-				co2->Speed.y = a1->Data1->Scale.x;
-				if (GetCharacterID(0) == Characters_Sonic && (co2->Upgrades & Upgrades_SuperSonic) == 0) {
-					co2->AnimationThing.Index = 26;
-					entity->Status = 0;
-				}
-				else if (GetCharacterID(0) == Characters_Tails) {
-					co2->AnimationThing.Index = 33;
-					entity->Status = 0;
-				}
-				else if (GetCharacterID(0) == Characters_Knuckles) {
-					co2->AnimationThing.Index = 34;
-					entity->Status = 0;
-				}
-			}
+	if (data->Action == 0) {
+		obj->DisplaySub = ObjFan_Display;
+		data->Object = CO_COMNFAN->getmodel();
+		data->Action = 1;
+	}
+	else {
+		data->CharIndex = Fans_IsPlayerInCylinder(&data->Position, 45.5f, data->Scale.x);
+		if (data->CharIndex) {
+			LoadChildObject(LoadObj_Data1, Fans_HandlePlayer, obj);
+			obj->Child->Data1->CharIndex = data->CharIndex - 1;
+			obj->Child->Data1->Position = data->Position;
+			obj->Child->Data1->Scale.x = data->Scale.x;
+			obj->Child->Data1->Scale.y = 45.5f;
 		}
 
-		ObjFan_Display(a1);
+		data->Scale.z -= data->Scale.x * 80;
+
+		DynColRadius(obj, 350, 0);
+		obj->DisplaySub(obj);
+		RunObjectChildren(obj);
 	}
-}
-
-void ObjFan(ObjectMaster *a1)
-{
-	a1->Data1->Object = CO_COMNFAN->getmodel();
-
-	a1->MainSub = &ObjFan_Main;
-	a1->DisplaySub = &ObjFan_Display;
-	a1->DeleteSub = &DynCol_Delete;
 }
 
 void ObjReel_Display(ObjectMaster *a1)

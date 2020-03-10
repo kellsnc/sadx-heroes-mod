@@ -144,6 +144,13 @@ void mainSub_Global(ObjectMaster* obj) {
 	}
 }
 
+void mainSub_DyncolGlobal(ObjectMaster* obj) {
+	if (!ClipSetObject(obj)) {
+		displaySub_Global(obj);
+		DynColRadiusAuto(obj, 0);
+	}
+}
+
 /*	Add complex/dynamic collisions to an object, limited to 255 collisions at a time
 	Delete itself if the global delete sub is used	*/
 void DynCol_Add(ObjectMaster* obj, uint8_t col) {

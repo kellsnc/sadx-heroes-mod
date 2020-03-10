@@ -18,6 +18,7 @@ void FreeANMFiles(AnimationFile** Files, int size);
 void DrawObjModel(ObjectMaster* a1, NJS_MODEL_SADX* m, bool scalable);
 void displaySub_Global(ObjectMaster* a1);
 void mainSub_Global(ObjectMaster* a1);
+void mainSub_DyncolGlobal(ObjectMaster* obj);
 void DynCol_Add(ObjectMaster* a1, uint8_t col);
 void DynCol_Update(EntityData1* data, uint8_t type);
 void DynCol_Delete(ObjectMaster* a1);
