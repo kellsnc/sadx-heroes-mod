@@ -19,6 +19,7 @@ void HCWarp_Display(ObjectMaster *a1) {
 		njScale(nullptr, 1.5f, 1.5f, 1.5f);
 		DrawQueueDepthBias = -6000.0f;
 		njDrawModel_SADX(HC_SPKWARP->getmodel()->basicdxmodel);
+		
 		if (a1->Data1->Action < 2) {
 			njTranslate(0, 0, 8, 0);
 			njRotateY(0, a1->Data1->Rotation.y);
@@ -29,32 +30,36 @@ void HCWarp_Display(ObjectMaster *a1) {
 			njTranslate(0, 0, 5, 0);
 			njDrawModel_SADX(HC_SPKWARP->getmodel()->child->basicdxmodel);
 		}
+
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 	}
 }
 
-void HCWarp_Main(ObjectMaster *a1) {
-	if (!ClipSetObject(a1)) {
-		ObjectData2 *od2 = (ObjectData2*)a1->Data2;
-		if (a1->Data1->Action == 0) {
-			a1->Data1->Rotation.y += 100;
+void HCWarp_Main(ObjectMaster *obj) {
+	EntityData1* data = obj->Data1;
 
-			od2->vector_a = a1->Data1->Position;
+	if (!ClipSetObject(obj)) {
+		ObjectData2 *od2 = (ObjectData2*)obj->Data2;
+
+		if (data->Action == 0) {
+			data->Rotation.y += 100;
+
+			od2->vector_a = data->Position;
 			od2->vector_a.y += 10;
 
-			if (IsPlayerInsideSphere(&od2->vector_a, 15) == 1) {
+			if (GetCollidingEntityA(data) || GetCollidingEntityB(data)) {
 				PlayHeroesSound(LevelSound_Mys_Warp1);
 				EntityData1 *entity = EntityData1Ptrs[0];
 				od2->vector_a = entity->Position;
-				a1->Data1->Action = 1;
+				data->Action = 1;
 			}
 		}
 
-		if (a1->Data1->Action == 1) {
+		if (data->Action == 1) {
 			EntityData1 *entity = EntityData1Ptrs[0];
 			entity->Position = od2->vector_a;
-			if (a1->Data1->Rotation.z = 2) od2->vector_a.y += 0.05f;
+			if (data->Rotation.z == 2) od2->vector_a.y += 0.05f;
 			else od2->vector_a.y -= 0.05f;
 
 			entity->Status = 0;
@@ -66,8 +71,8 @@ void HCWarp_Main(ObjectMaster *a1) {
 			else if (GetCharacterID(0) == Characters_Tails || GetCharacterID(0) == Characters_Knuckles) {
 				co2->AnimationThing.Index = 19;
 			}
-			if (a1->Data1->NextAction < 100) { 
-				a1->Data1->NextAction += 1;
+			if (data->NextAction < 100) {
+				data->NextAction += 1;
 
 				if (IsLantern) {
 					set_specular_blend_ptr(0, 4);
@@ -77,43 +82,43 @@ void HCWarp_Main(ObjectMaster *a1) {
 					set_specular_blend_ptr(7, 4);
 				}
 				
-				hclight = a1->Data1->NextAction;
+				hclight = data->NextAction;
 				hclight /= 100;
 				if (IsLantern) set_specular_blend_factor_ptr(hclight);
 			}
 			else {
-				if (a1->Data1->Scale.x != 0) {
+				if (data->Scale.x != 0) {
 
-					if (CurrentLevel == HeroesLevelID_MysticMansion && a1->Data1->Rotation.z == 2) {
-						entity->Position.x += a1->Data1->Scale.x;
-						entity->Position.y += a1->Data1->Scale.y;
-						entity->Position.z += a1->Data1->Scale.z;
+					if (CurrentLevel == HeroesLevelID_MysticMansion && data->Rotation.z == 2) {
+						entity->Position.x += data->Scale.x;
+						entity->Position.y += data->Scale.y;
+						entity->Position.z += data->Scale.z;
 					}
 					else {
-						entity->Position = a1->Data1->Scale;
+						entity->Position = data->Scale;
 					}
 
 					PlayHeroesSound(LevelSound_Mys_Warp2);
-					if (a1->Data1->Rotation.z == 1) Camera_Data1->Position = entity->Position;
+					if (data->Rotation.z == 1) Camera_Data1->Position = entity->Position;
 				}
-				a1->Data1->Action = 2;
+				data->Action = 2;
 			}
 		}
 
-		if (a1->Data1->Action == 2) {
+		if (data->Action == 2) {
 			if (hclight > 0) {
 				hclight -= 0.05f;
 				if (IsLantern) set_specular_blend_factor_ptr(hclight);
 			}
 			else {
-				if (a1->Data1->Rotation.z == 2) a1->Data1->Action = 0;
-				else a1->Data1->Action = 3;
+				if (data->Rotation.z == 2) data->Action = 0;
+				else data->Action = 3;
 				if (IsLantern) set_blend_ptr(-1, -1);
 			}
 		}
 
-		AddToCollisionList(a1->Data1);
-		HCWarp_Display(a1);
+		AddToCollisionList(data);
+		HCWarp_Display(obj);
 	}
 }
 
