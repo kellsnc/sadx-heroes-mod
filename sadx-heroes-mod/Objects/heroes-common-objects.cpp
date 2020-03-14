@@ -62,7 +62,7 @@ uint8_t Fans_IsSpecificPlayerInCylinder(EntityData1* entity, NJS_VECTOR* center,
 
 	if ((powf(pos->x - center->x, 2) + pow(pos->z - center->z, 2)) <= pow(radius, 2) &&
 		pos->y > center->y && pos->y < center->y + height * 35) {
-		return entity->CharIndex + 1;
+		return true;
 	}
 
 	return 0;
@@ -72,7 +72,7 @@ uint8_t Fans_IsPlayerInCylinder(NJS_VECTOR* center, float radius, float height) 
 	for (uint8_t p = 0; p < MaxPlayers; ++p) {
 		EntityData1* entity = EntityData1Ptrs[p];
 		if (entity && entity->field_A < 120) {
-			return Fans_IsSpecificPlayerInCylinder(entity, center, radius, height);
+			if (Fans_IsSpecificPlayerInCylinder(entity, center, radius, height)) return p + 1;
 		}
 	}
 

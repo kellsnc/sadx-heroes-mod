@@ -278,7 +278,7 @@ void EFShipDoor(ObjectMaster* obj) {
 		obj->Child->Data1->Object = data->Object->child;
 		obj->Child->DeleteSub = DynCol_Delete;
 		
-		if (obj->SETData.SETData->SETEntry->Properties.x == 1) {
+		if (IsSwitchPressed(data->Scale.x)) {
 			data->Action = EFDoorAction_Opened;
 			obj->Child->Data1->Position = Platform_GetPoint(&data->Position, &data->Rotation, data->Scale.y);
 		}
@@ -300,9 +300,8 @@ void EFShipDoor(ObjectMaster* obj) {
 
 		break;
 	case EFDoorAction_Closed:
-		if (PressedButtons[0] & Buttons_C) {
+		if (IsSwitchPressed(data->Scale.x)) {
 			data->Action = EFDoorAction_OpenDoor;
-			obj->SETData.SETData->SETEntry->Properties.x = 1;
 		}
 
 		break;
@@ -608,10 +607,6 @@ void EFBigFans_Display(ObjectMaster* obj) {
 	}
 }
 
-void EFBigFans_Collision(ObjectMaster* obj) {
-	DynColRadiusAuto(obj, 0);
-}
-
 void EFBigFans(ObjectMaster* obj) {
 	if (ClipSetObject(obj) || !EF_EBIGFAN) return;
 
@@ -628,7 +623,7 @@ void EFBigFans(ObjectMaster* obj) {
 		data->Object->basicdxmodel->r = 300;
 		data->Action = 1;
 
-		ObjectMaster* child = LoadChildObject(LoadObj_Data1, EFBigFans_Collision, obj);
+		ObjectMaster* child = LoadChildObject(LoadObj_Data1, mainSub_Dyncol, obj);
 		child->Data1->Position = data->Position;
 		child->Data1->Rotation = data->Rotation;
 		child->Data1->Object = data->Object->child->child;
@@ -735,9 +730,7 @@ void ObjectBreaker_Display(ObjectMaster* obj) {
 		njTranslateV(0, &data->Position);
 		njRotateXYZ(nullptr, data->Rotation.x, data->Rotation.y, data->Rotation.z);
 		njRotateX(0, data->InvulnerableTime * 100);
-
 		njDrawModel_SADX(data->Object->basicdxmodel);
-
 		njPopMatrix(1);
 	}
 }
@@ -813,66 +806,98 @@ void ObjectBreaker(ObjectMaster* obj) {
 	}
 }
 
-enum ECBarrierActions {
-	ECBarrierAction_Init,
-	ECBarrierAction_CheckCol,
-	ECBarrierAction_Destroy
-};
-
-CollisionData EFBarrier_Col[] {
-	{ 0, 0, 0x77, 0, 0, {-5, 6, 0}, { 15, 15, 0} },
-	{ 0, 0, 0x77, 0, 0, {5, 6, 0}, { 15, 15, 0} },
+CollisionData EFBarrier_Col {
+	0, 3, 0x77, 0, 0x800400, {0, 6, 0}, { 15, 15, 0}
 };
 
 void ECBarrier(ObjectMaster* obj) {
 	if (ClipSetObject(obj)) return;
 
 	EntityData1* data = obj->Data1;
-	EntityData1* colent = nullptr;
-	ObjectMaster* temp = nullptr;
 
-	switch (data->Action) {
-	case ECBarrierAction_Init:
-		data->Action = ECBarrierAction_CheckCol;
+	if (data->Action == 0) {
+		data->Action = 1;
 		data->Object = EF_BARRIER->getmodel();
 		data->Object->basicdxmodel->r = 50;
 		obj->DisplaySub = displaySub_Global;
 		obj->DeleteSub = DynCol_Delete;
-		Collision_Init(obj, EFBarrier_Col, 2, 1);
-
-		break;
-	case ECBarrierAction_CheckCol:
-		colent = GetCollidingEntityA(data);
+		AllocateObjectData2(obj, obj->Data1);
+		Collision_Init(obj, &EFBarrier_Col, 1, 2);
+	}
+	else {
+		EntityData1* colent = GetCollidingEntityA(data);
+		EntityData1* colent2 = GetCollidingEntityB(data);
 
 		AddToCollisionList(data);
 		DynColRadiusAuto(obj, 0);
 		obj->DisplaySub(obj);
 
-		if (colent && colent->Status & Status_Attack) {
-			
+		if (colent2 || (colent && colent->Status & Status_Attack)) {
 			DynCol_Delete(obj);
 			obj->DisplaySub = nullptr;
 			obj->SETData.SETData->Flags = 1;
 			DeleteObject_(obj);
 
-			temp = LoadObject(LoadObj_Data1, 5, ObjectBreaker);
+			ObjectMaster* temp = LoadObject(LoadObj_Data1, 5, ObjectBreaker);
 			temp->Data1->Position = data->Position;
 			temp->Data1->Rotation = data->Rotation;
 			temp->Data1->Object = data->Object->child;
 		}
+	}
+}
 
-		break;
+void Bomb_Main_r(ObjectMaster* obj);
+Trampoline Bomb_Main_t(0x4AB120, 0x4AB127, Bomb_Main_r);
+void Bomb_Main_r(ObjectMaster* obj) {
+	if (obj->Data1->Action == 2 && !obj->Parent) {
+		EntityData1* data = obj->Data1;
+		ObjectData* od2 = (ObjectData*)obj->Data2;
+		CollisionData* col;
+		float v3;
+
+		col = data->CollisionInfo->CollisionArray + 1;
+		if (data->InvulnerableTime % 2)
+		{
+			SetMaterialAndSpriteColor_Float(data->Scale.y, 1.0, 0.0, 0.0);
+		}
+		else
+		{
+			SetMaterialAndSpriteColor_Float(data->Scale.y, 0.5, 0.5, 0.0);
+		}
+		if (data->Scale.x >= 25.0)
+		{
+			v3 = data->Scale.y - 0.050000001;
+			data->Scale.y = v3;
+			if (v3 < -1.0)
+			{
+				od2->ActionBackup = data->Action;
+				data->Action = 3;
+				data->InvulnerableTime = 0;
+			}
+			data->Rotation.y += 256;
+			ClampGlobalColorThing_Thing();
+		}
+		else
+		{
+			data->Scale.x = data->Scale.x + 1.0;
+			col->scale.x = col->scale.x + 1.0;
+			data->Rotation.y += 256;
+			ClampGlobalColorThing_Thing();
+		}
+	}
+	else {
+		ObjectFunc(original, Bomb_Main_t.Target());
+		original(obj);
 	}
 }
 
 void LoadExplosion(NJS_VECTOR* position) {
-	ObjectMaster* temp = LoadObject(LoadObj_Data1, 3, (ObjectFuncPtr)0x4AC920);
-	temp->Data1->Position = *position;
+	ObjectMaster* temp = LoadObject(LoadObj_Data1, 3, Bomb_Init);
 	temp->MainSub(temp);
+
+	temp->Data1->Position = *position;
 	temp->Data1->Action = 1;
 	temp->Data1->InvulnerableTime = 150;
-	temp->Parent = LoadObject(LoadObj_Data1, 3, (ObjectFuncPtr)0x4AC920);
-	temp->Parent->Data1->Position = { 9999999, 9999999, 9999999 };
 }
 
 void EFBullet_Display(ObjectMaster* obj) {
@@ -883,23 +908,43 @@ void EFBullet_Display(ObjectMaster* obj) {
 			njSetTexture(CurrentLevelTexlist);
 			njPushMatrix(0);
 			njTranslateV(0, &data->Position);
-			njRotateXYZ(nullptr, data->Rotation.y, obj->Parent->Data1->Rotation.y, 0);
+			njRotateXYZ(nullptr, data->Rotation.x, data->Rotation.y, data->Rotation.z);
+			if (data->Scale.x == 1) njScale(0, 0.5f, 0.5f, 0.5f);
 			DrawQueueDepthBias = -6000.0f;
 			njDrawModel_SADX(data->Object->basicdxmodel);
 			njDrawModel_SADX(data->Object->child->basicdxmodel);
 			DrawQueueDepthBias = 0;
 			njPopMatrix(1u);
 
-			njPushMatrix(0);
-			njTranslateV(0, &data->Scale);
-			njRotateXYZ(nullptr, data->Rotation.x, 0, data->Rotation.z);
-			njScale(0, 0.3f, 0.3f, 0.3f);
-			DrawQueueDepthBias = -6000.0f;
-			njDrawModel_SADX(data->Object->child->child->basicdxmodel);
-			DrawQueueDepthBias = 0;
-			njPopMatrix(1u);
+			if (data->Unknown) {
+				njPushMatrix(0);
+				njTranslateV(0, &data->Scale);
+
+				Rotation3 rot;
+				GetGroundYPosition(data->Scale.x, data->Scale.y + 10, data->Scale.z, &rot);
+				njRotateXYZ(nullptr, rot.x, 0, rot.z);
+
+				njScale(0, 0.3f, 0.3f, 0.3f);
+				DrawQueueDepthBias = -6000.0f;
+				njDrawModel_SADX(data->Object->child->child->basicdxmodel);
+				DrawQueueDepthBias = 0;
+				njPopMatrix(1u);
+			}
 		}
 	}
+}
+
+NJS_VECTOR EFCannon2_GetPoint(NJS_VECTOR* orig, Rotation3* rot, float xpos, float ypos, float zpos) {
+	NJS_VECTOR point;
+
+	njPushMatrix(_nj_unit_matrix_);
+	njTranslateV(0, orig);
+	njRotateXYZ(0, rot->x, rot->y, rot->z);
+	njTranslate(0, xpos, ypos, zpos);
+	njGetTranslation(_nj_current_matrix_ptr_, &point);
+	njPopMatrix(1u);
+
+	return point;
 }
 
 void EFBullet(ObjectMaster* obj) {
@@ -911,31 +956,34 @@ void EFBullet(ObjectMaster* obj) {
 		obj->DisplaySub = EFBullet_Display;
 		data->Object = EF_BULLETS->getmodel();
 		data->Action = 1;
-		data->Rotation.y = 0;
+		
 		Collision_Init(obj, (CollisionData*)0x223B3D8, 1, 4u);
 		break;
 	case 1:
-		if (++data->field_A > 105) {
+		if (++data->field_A > 105 || GetCollidingEntityA(data)) {
 			LoadExplosion(&data->Position);
 			DeleteObject_(obj);
 			return;
 		}
 		else {
-			temp = data->Scale;
-			temp.y = data->Position.y + 100;
-			temp = GetPathPosition(&temp, &data->Scale, (float)data->field_A / 100);
+			if (data->Scale.x == 1 || data->Scale.x == 2) {
+				data->Position = GetPathPosition(&data->Position, &EFCannon2_GetPoint(&data->Position, &data->Rotation, 0, 0, 50), (float)data->field_A / 800);
+			}
+			else {
+				temp = data->Scale;
+				temp.y = data->Position.y + 100;
+				temp = GetPathPosition(&temp, &data->Scale, (float)data->field_A / 100);
 
-			data->Position = GetPathPosition(&data->Position, &temp, (float)data->field_A / 800);
-			data->Rotation.y = fPositionToRotation(&data->Position, &temp).x;
-
-			DrawShadow(data, 4);
-
-			AddToCollisionList(data);
+				data->Position = GetPathPosition(&data->Position, &temp, (float)data->field_A / 800);
+				data->Rotation.x = fPositionToRotation(&data->Position, &temp).x;
+			}
 		}
 
 		break;
 	}
 
+	DrawShadow(data, 4);
+	AddToCollisionList(data);
 	obj->DisplaySub(obj);
 }
 
@@ -946,17 +994,29 @@ enum EFCannonActions {
 	EFCannonAction_Bullet,
 };
 
+CollisionData EFCannon1_Col[]{
+	{ 0, 0, 0x77, 0, 0x800400, {0, 50, 0}, {25, 25, 0} },
+	{ 0, 2, 0x77, 0, 0, {0, 0, 0}, {25, 50, 0} },
+	{ 0, 2, 0x77, 0, 0, {0, 25, 0}, {25, 50, 0} }
+};
+
+CollisionData EFCannon2_Col {
+	0, 3, 0x77, 0, 0x800400, {0, 0, 0}, {25, 25, 25}
+};
+
 void EFCannon2_Display(ObjectMaster* obj) {
-
-}
-
-void EFCannon2_Main(ObjectMaster* obj) {
-	if (ClipSetObject(obj)) return;
-
 	EntityData1* data = obj->Data1;
 
-	obj->DisplaySub(obj);
-	DynColRadius(obj, 50, 0);
+	if (!MissedFrames) {
+		njSetTexture(CurrentLevelTexlist);
+		njPushMatrix(0);
+		njTranslateV(0, &data->Position);
+		njRotateXYZ(nullptr, 0, data->Rotation.y, 0);
+		njDrawModel_SADX(data->Object->basicdxmodel);
+		njTranslate(0, 0, 10, 0);
+		njDrawModel_SADX(data->Object->child->basicdxmodel);
+		njPopMatrix(1u);
+	}
 }
 
 void EFCannon1_Display(ObjectMaster* obj) {
@@ -966,18 +1026,28 @@ void EFCannon1_Display(ObjectMaster* obj) {
 		njSetTexture(CurrentLevelTexlist);
 		njPushMatrix(0);
 		njTranslateV(0, &data->Position);
-		njRotateXYZ(nullptr, 0, data->Rotation.y, 0);
-		DrawQueueDepthBias = -6000.0f;
-		if (!data->Unknown) njDrawModel_SADX(data->Object->basicdxmodel);
+		njRotateY(nullptr, data->Rotation.y);
+		
+		if (!data->Unknown) {
+			njRotateXYZ(nullptr, data->Rotation.x, 0, data->Rotation.z);
+			njDrawModel_SADX(data->Object->basicdxmodel);
+			njRotateXYZ(nullptr, -data->Rotation.x, 0, -data->Rotation.z);
+		}
+
 		njTranslate(0, 0, 40, 0);
+
+		njRotateXYZ(nullptr, data->Rotation.x, 0, data->Rotation.z);
 		njDrawModel_SADX(data->Object->child->basicdxmodel);
+		njRotateXYZ(nullptr, -data->Rotation.x, 0, -data->Rotation.z);
+
 		njTranslate(0, 0, 20, 0);
-		njRotateXYZ(nullptr, data->Rotation.x, 0, 0);
+
+		njRotateXYZ(nullptr, data->Rotation.x, 0, data->Rotation.z);
+		njRotateX(nullptr, data->field_A);
 		njDrawModel_SADX(data->Object->child->child->basicdxmodel);
-		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 
-		if (data->Scale.x && data->InvulnerableTime && IsPlayerInsideSphere(&data->Position, 400)) {
+		if (data->Unknown == 0 && data->InvulnerableTime && IsPlayerInsideSphere(&data->Position, 400)) {
 			njPushMatrix(0);
 			njTranslateV(0, &data->Scale);
 			Rotation3* rot = &EntityData1Ptrs[data->CharIndex]->Rotation;
@@ -991,22 +1061,101 @@ void EFCannon1_Display(ObjectMaster* obj) {
 	}
 }
 
+bool EFCannon_Explode(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1;
+
+	if (CheckObjectDamage(data)) {
+		if (++obj->Data1->NextAction < 3) {
+			return false;
+		}
+
+		ObjectMaster* temp = LoadObject(LoadObj_Data1, 5, ObjectBreaker);
+		temp->Data1->Position = data->Position;
+		temp->Data1->Rotation = data->Rotation;
+
+		if (obj->DisplaySub == EFCannon1_Display) {
+			temp->Data1->Object = EF_CANBRK1->getmodel()->child;
+		}
+		else {
+			temp->Data1->Object = EF_CANBRK2->getmodel()->child;
+		}
+
+		DynCol_Delete(obj);
+		obj->DisplaySub = nullptr;
+		obj->SETData.SETData->Flags = 1;
+		DeleteObject_(obj);
+
+		return true;
+	}
+
+	return false;
+}
+
+void EFCannon2_Fire(EntityData1* data, float xpos) {
+	ObjectMaster* bullet = LoadObject(LoadObj_Data1, 3, EFBullet);
+	bullet->Data1->Position = EFCannon2_GetPoint(&data->Position, &data->Rotation, xpos, 10, 80);
+	bullet->Data1->Rotation = data->Rotation;
+	bullet->Data1->Scale.x = 1;
+}
+
+void EFCannon1_Fire(EntityData1* data) {
+	ObjectMaster* bullet = LoadObject(LoadObj_Data1, 3, EFBullet);
+	bullet->Data1->Position = EFCannon2_GetPoint(&data->Position, &data->Rotation, 0, 60, 10);
+	bullet->Data1->Rotation = data->Rotation;
+	bullet->Data1->Scale.x = 2;
+}
+
+void EFCannon2_Main(ObjectMaster* obj) {
+	if (ClipSetObject(obj) || EFCannon_Explode(obj)) return;
+
+	EntityData1* data = obj->Data1;
+
+	switch (data->Action) {
+	case EFConveyorAction_Run:
+		//Detect if the player is in front of the cannon
+		if (IsPlayerInsideSphere_(&EFCannon2_GetPoint(&data->Position, &data->Rotation, 0, 10, 150), 100)) {
+			EFCannon2_Fire(data, -10);
+			EFCannon2_Fire(data, 10);
+			data->Action = EFCannonAction_Bullet;
+		}
+
+		break;
+	case EFCannonAction_Bullet:
+		if (++data->InvulnerableTime > 160) {
+			data->Action = EFConveyorAction_Run;
+			data->InvulnerableTime = 0;
+		}
+	}
+
+	obj->DisplaySub(obj);
+	AddToCollisionList(data);
+	DynColRadius(obj, 50, 0);
+	RunObjectChildren(obj);
+}
+
 void EFCannon1_Main(ObjectMaster* obj) {
-	if (ClipSetObject(obj)) return;
+	if (ClipSetObject(obj) || EFCannon_Explode(obj)) return;
 
 	EntityData1* data = obj->Data1;
 	uint8_t player = 0;
 	
 	if (data->Action >= EFCannonAction_Seek) {
-		player = IsPlayerInsideSphere_(&data->Position, 300);
+		if (data->Unknown == 1 || data->Unknown == 2) {
+			player = IsPlayerInsideSphere_(&EFCannon2_GetPoint(&data->Position, &data->Rotation, 0, 10, 120), 150);
+		}
+		else {
+			player = IsPlayerInsideSphere_(&data->Position, 300);
+		}
+
 		if (player) {
 			data->CharIndex = player - 1;
-			NJS_VECTOR* playerpos = &EntityData1Ptrs[player - 1]->Position;
+			EntityData1* playerdata = EntityData1Ptrs[player - 1];
+			NJS_VECTOR* playerpos = &playerdata->Position;
 
 			if (data->Action == EFCannonAction_Seek) {
 				if (++data->InvulnerableTime < 80) {
 					// cannon face front
-					if (data->Rotation.x != 0) data->Rotation.x -= 10;
+					if (data->field_A != 0) data->field_A -= 10;
 
 					// rotate towards player
 					data->field_A += 1;
@@ -1021,11 +1170,22 @@ void EFCannon1_Main(ObjectMaster* obj) {
 
 					data->Scale.y = CharObj2Ptrs[player - 1]->_struct_a3.DistanceMax + 0.3;
 
-					data->Rotation.y = -fPositionToRotation(&data->Position, &data->Scale).y + 0x4000;
+					if (data->Unknown == 0) {
+						data->Rotation.y = -fPositionToRotation(&data->Position, &data->Scale).y + 0x4000;
+					}
 				}
 				else {
 					data->InvulnerableTime = 0;
 					data->Action = EFCannonAction_Shoot;
+
+					if (data->Unknown == 1) {
+						data->Scale = EFCannon2_GetPoint(&data->Position, &data->Rotation, 0, 50, 130);
+						Rotation3 temp = { 0, 0, 0 };
+						data->Scale.y = GetGroundYPosition(data->Scale.x, data->Scale.y, data->Scale.z, &temp);
+					}
+					else if (data->Unknown == 2) {
+						EFCannon1_Fire(data);
+					}
 				}
 			}
 		}
@@ -1036,14 +1196,23 @@ void EFCannon1_Main(ObjectMaster* obj) {
 
 	switch (data->Action) {
 	case EFCannonAction_Shoot:
-		if (data->Rotation.x >= -5000) data->Rotation.x -= 400;
+		if (data->Unknown == 2) {
+			if (++data->InvulnerableTime > 120) {
+				data->InvulnerableTime = 0;
+				data->Action = EFCannonAction_Seek;
+			}
+			
+			break;
+		}
+
+		if (data->field_A >= -5000) data->field_A -= 400;
 		else {
 			if (EntityData1Ptrs[player - 1]) {
-				LoadChildObject(LoadObj_Data1, EFBullet, obj);
-				obj->Child->Data1->Position = data->Position;
-				obj->Child->Data1->Position.y += 60;
-				obj->Child->Data1->Rotation = EntityData1Ptrs[player - 1]->Rotation;
-				obj->Child->Data1->Scale = data->Scale;
+				ObjectMaster* bullet = LoadObject(LoadObj_Data1, 3, EFBullet);
+				bullet->Data1->Position = EFCannon2_GetPoint(&data->Position, &data->Rotation, 0, 60, 0);
+				bullet->Data1->Rotation.y = -fPositionToRotation(&data->Position, &data->Scale).y + 0x4000;
+				bullet->Data1->Scale = data->Scale;
+				if (data->Unknown == 0) bullet->Data1->Unknown = 1;
 				data->Scale.x = 0;
 				data->Action = EFCannonAction_Bullet;
 			}
@@ -1053,46 +1222,80 @@ void EFCannon1_Main(ObjectMaster* obj) {
 		}
 		break;
 	case EFCannonAction_Bullet:
-		if (obj->Child) RunObjectChildren(obj);
+		if (++data->InvulnerableTime < 60) break;
 		else {
-			if (data->Rotation.x <= 0) data->Rotation.x += 50;
+			if (data->field_A <= 0) data->field_A += 50;
 			else {
+				data->InvulnerableTime = 0;
 				data->Action = EFCannonAction_Seek;
 			}
 		}
 	}
 
 	obj->DisplaySub(obj);
-	DynColRadius(obj, 50, 0);
+	AddToCollisionList(data);
+	RunObjectChildren(obj);
+}
+
+void EFCannon_Collision(ObjectMaster* obj) {
+	if (DynColRadiusAuto(obj, 1)) {
+		EntityData1* data = obj->Data1;
+		EntityData1* parent = obj->Parent->Data1;
+
+		data->Position.x = parent->Position.x;
+		data->Position.z = parent->Position.z;
+
+		data->Rotation = parent->Rotation;
+
+		DynCol_Update(data, 4);
+	}
 }
 
 void EFCannon(ObjectMaster* obj) {
 	if (ClipSetObject(obj)) return;
 
 	EntityData1* data = obj->Data1;
-
+	
 	if (data->Action == EFCannonAction_Init) {
-		
-		data->Object = EF_CANNON1->getmodel();
 		data->Action = EFCannonAction_Seek;
-		obj->DisplaySub = EFCannon1_Display;
-		obj->MainSub = EFCannon1_Main;
+		AllocateObjectData2(obj, obj->Data1);
 
-		data->Scale.x = 1;
-		if (data->Scale.x) {
-			if (data->Scale.x == 1) {
+		if (data->Scale.x < 3) {
+			data->Object = EF_CANNON1->getmodel();
+			obj->DisplaySub = EFCannon1_Display;
+			obj->MainSub = EFCannon1_Main;
+			
+			if (data->Scale.x >= 1) {
 				data->Position.y -= 45;
+				Collision_Init(obj, EFCannon1_Col, 1, 3);
+			}
+			else {
+				Collision_Init(obj, EFCannon1_Col, 3, 3);
 			}
 
-			if (data->Scale.x == 2) {
-				data->Object = EF_CANNON2->getmodel();
-				obj->DisplaySub = EFCannon2_Display;
-				obj->MainSub = EFCannon2_Main;
+			ObjectMaster* child = LoadSubDynCol(obj, data->Object->child->child, 1, 100);
+			if (child) {
+				child->MainSub = EFCannon_Collision;
+				child->Data1->Position.y += 60;
 			}
-
-			data->Unknown = data->Scale.x;
-			data->Scale.x = 0;
 		}
+		else {
+			data->Object = EF_CANNON2->getmodel();
+			data->Object->basicdxmodel->r = 50;
+			obj->DisplaySub = EFCannon2_Display;
+			obj->MainSub = EFCannon2_Main;
+
+			Collision_Init(obj, &EFCannon2_Col, 1, 3);
+
+			ObjectMaster* child = LoadSubDynCol(obj, data->Object->child, 1, 100);
+			if (child) {
+				child->MainSub = EFCannon_Collision;
+				child->Data1->Position.y += 10;
+			}
+		}
+
+		data->Unknown = data->Scale.x;
+		data->Scale.x = 0;
 	}
 }
 

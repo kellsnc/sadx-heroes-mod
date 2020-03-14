@@ -83,7 +83,7 @@ void EggFleetHandler(ObjectMaster *a1) {
 		//entity->Position = { -9501.797, -4170.793, -38106.13 };
 		/*entity->Position = { -8169.233,  -4742.518,  -34860.18 };
 		entity->Position = { -7004.627, 841.3749, -16349.14 };*/
-		/*entity->Position = { -7964.454, 1097.875, -19403.42 };*/
+		entity->Position = { -7790.621, 710.023, -22655.12 };
 	}
 	else {
 		ChunkHandler("EF", EggFleetChunks, LengthOfArray(EggFleetChunks), entity->Position);

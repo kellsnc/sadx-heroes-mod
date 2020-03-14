@@ -151,6 +151,31 @@ void mainSub_DyncolGlobal(ObjectMaster* obj) {
 	}
 }
 
+void mainSub_Dyncol(ObjectMaster* obj) {
+	DynColRadiusAuto(obj, obj->Data1->Index);
+}
+
+ObjectMaster* LoadSubDynCol(ObjectMaster* obj, NJS_OBJECT* model, uint8_t col, float radius) {
+	ObjectMaster* child = LoadChildObject(LoadObj_Data1, mainSub_Dyncol, obj);
+
+	if (child) {
+		EntityData1* data = obj->Data1;
+
+		child->Data1->Position = data->Position;
+		child->Data1->Rotation = data->Rotation;
+
+		child->Data1->Index = col;
+		child->Data1->Object = model;
+		child->Data1->Object->basicdxmodel->r = radius;
+
+		child->DeleteSub = DynCol_Delete;
+
+		return child;
+	}
+
+	return nullptr;
+}
+
 /*	Add complex/dynamic collisions to an object, limited to 255 collisions at a time
 	Delete itself if the global delete sub is used	*/
 void DynCol_Add(ObjectMaster* obj, uint8_t col) {
@@ -278,6 +303,29 @@ bool DynColRadius(ObjectMaster* obj, float radius, uint8_t col) {
 bool DynColRadiusAuto(ObjectMaster* obj, uint8_t col) {
 	//Use the model radius
 	return DynColRadius(obj, obj->Data1->Object->basicdxmodel->r + 50, col);
+}
+
+//Check if an entity is in the object collision
+bool CheckObjectDamage(EntityData1* data) {
+	EntityData1* colent = GetCollidingEntityA(data);
+	
+	if (colent) {
+		if (colent->Status & Status_Attack) {
+			EnemyBounceThing(colent->CharIndex, 0, 2, 2);
+			return true;
+		}
+	}
+
+	if (GetCollidingEntityB(data) || CheckBombPowerupRadius(&data->Position)) {
+		return true;
+	}
+
+	if (bombsize && GetDistance(&bombpos, &data->Position) < bombsize) {
+		bombsize = 0;
+		return true;
+	}
+
+	return false;
 }
 
 //Shift uv of models, requires a SH_UVSHIFT struct

@@ -19,6 +19,8 @@ void DrawObjModel(ObjectMaster* a1, NJS_MODEL_SADX* m, bool scalable);
 void displaySub_Global(ObjectMaster* a1);
 void mainSub_Global(ObjectMaster* a1);
 void mainSub_DyncolGlobal(ObjectMaster* obj);
+void mainSub_Dyncol(ObjectMaster* obj);
+ObjectMaster* LoadSubDynCol(ObjectMaster* obj, NJS_OBJECT* model, uint8_t col, float radius);
 void DynCol_Add(ObjectMaster* a1, uint8_t col);
 void DynCol_Update(EntityData1* data, uint8_t type);
 void DynCol_Delete(ObjectMaster* a1);
@@ -29,6 +31,8 @@ bool IsPointInsideSphere(NJS_VECTOR* center, NJS_VECTOR* pos, float radius);
 int IsPlayerInsideSphere_(NJS_VECTOR* center, float radius);
 bool IsSpecificPlayerInSphere(NJS_VECTOR* center, float radius, uint8_t player);
 bool IsPlayerInBox(NJS_VECTOR playerpos, NJS_VECTOR pos1, NJS_VECTOR pos2);
+
+bool CheckObjectDamage(EntityData1* data);
 
 void AddUVList(SH_UVSHIFT* UVSHIFT, int id, NJS_MODEL_SADX* model, int mesh);
 void AnimateUV(SH_UVSHIFT* UVSHIFT, int size);

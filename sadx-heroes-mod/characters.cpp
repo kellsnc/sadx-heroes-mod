@@ -15,7 +15,6 @@ int CurrentPlayer;
 ModelInfo* CharMdls[2];
 CollisionData Tornado_Col = { 0, 0, 0, 0, 0, { 0.0f, 0.0f, 0.0f }, { 20, 0.0f, 0.0f }, 0, 0 };
 
-DataPointer(NJS_VECTOR, bombpos, 0x3C5AB24);
 float bombsize;
 
 ObjectFuncPtr DisplayFuncs[]{
@@ -815,10 +814,10 @@ bool OhNoImDead2(EntityData1 *a1, ObjectData2 *a2) {
 			|| a1->CollisionInfo->CollidingObject->Object->MainSub == NinjaObj) return 1;
 	}
 
-	float i = GetDistance(&bombpos, &a1->Position);
-
-	if (GetDistance(&bombpos, &a1->Position) < bombsize) 
+	if (bombsize && GetDistance(&bombpos, &a1->Position) < bombsize) {
+		bombsize = 0;
 		return 1;
+	}
 
 	FunctionPointer(bool, original, (EntityData1 *a1, ObjectData2 *a2), OhNoImDead2_t.Target());
 	return original(a1, a2);
