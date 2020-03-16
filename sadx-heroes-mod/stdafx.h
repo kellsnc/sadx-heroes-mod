@@ -25,3 +25,4 @@
 #include "characters.h"
 #include "sounds.h"
 #include "paths.h"
+#include "enemies.h"

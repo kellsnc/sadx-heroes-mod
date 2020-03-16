@@ -94,7 +94,7 @@ void EggFleetHandler(ObjectMaster *obj) {
 		}
 		else if (co2->Speed.y < 4) {
 			if (++obj->Data1->InvulnerableTime == 800) {
-				GameState = 7;
+				GameState = GameState_Death;
 			}
 		}
 	}

@@ -257,6 +257,8 @@ void __cdecl ForceAct()
 	QueueDrawingState = 2;
 	sub_40D3B0();
 
+	IsHeroesLevel = false;
+
 	if (CurrentLevel == 5 && EnableMysticMansion) CurrentLevel = HeroesLevelID_MysticMansion;
 
 	if (CurrentLevel) {
@@ -283,13 +285,9 @@ void __cdecl ForceAct()
 				LoadLevelTextures(GetLevelAndAct());
 			}
 		}
-		else {
-			IsHeroesLevel = false;
-		}
 	}
-	else {
-		IsHeroesLevel = false;
-	}
+
+	Enemies_CheckEnemiesSwap();
 }
 
 //Fog

@@ -92,6 +92,8 @@
     <ClCompile Include="Characters\tails.cpp" />
     <ClCompile Include="Characters\vector.cpp" />
     <ClCompile Include="collision.cpp" />
+    <ClCompile Include="enemies.cpp" />
+    <ClCompile Include="Enemies\eggpawn.cpp" />
     <ClCompile Include="Objects\bingo-highway-objects.cpp" />
     <ClCompile Include="Levels\bingo-highway.cpp" />
     <ClCompile Include="Objects\casino-common-objects.cpp" />
@@ -134,6 +136,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="enemies.h" />
     <ClInclude Include="Levels\bingo-highway.h" />
     <ClInclude Include="Levels\casino-park.h" />
     <ClInclude Include="characters.h" />

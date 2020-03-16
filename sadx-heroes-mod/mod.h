@@ -161,4 +161,12 @@ enum CollisionShapes {
     CollisionShape_Capsule = 5
 };
 
+enum GameStates {
+    GameState_Restart = 7,
+    GameState_Death,
+    GameState_ExitLevel,
+    GameState_Ingame = 15,
+    GameSate_Paused,
+};
+
 #define MaxPlayers 8

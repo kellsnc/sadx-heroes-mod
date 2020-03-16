@@ -31,6 +31,9 @@
     <Filter Include="Source Files\Paths">
       <UniqueIdentifier>{fe2ceefe-e5b4-470c-be08-8dca5ae87250}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Enemies">
+      <UniqueIdentifier>{f528f24c-5f3a-417d-8247-75dfcf0ac0d2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="mod.cpp">
@@ -174,6 +177,12 @@
     <ClCompile Include="propeller.cpp">
       <Filter>Source Files\Paths</Filter>
     </ClCompile>
+    <ClCompile Include="Enemies\eggpawn.cpp">
+      <Filter>Source Files\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="enemies.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -304,6 +313,9 @@
     </ClInclude>
     <ClInclude Include="Levels\egg-fleet-objects.h">
       <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="enemies.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

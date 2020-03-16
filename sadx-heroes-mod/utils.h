@@ -5,13 +5,18 @@ ModelInfo* LoadMDL(const char* type, const char* name);
 ModelInfo* LoadCommonModel(const char* name);
 ModelInfo* LoadObjectModel(ModelInfo* ptr, const char* name);
 ModelInfo* LoadCharacterModel(const char* name);
+ModelInfo* LoadEnemyModel(const char* name);
 ModelInfo* FreeMDL(ModelInfo* pointer);
 
 AnimationFile* LoadANM(const char* type, const char* name);
 AnimationFile* LoadObjectAnim(const char* name);
 AnimationFile* LoadCharacterAnim(const char* name);
-
+AnimationFile* LoadEnemyAnim(const char* name);
 void FreeANM(AnimationFile* pointer);
+
+void LoadModelListFuncPtr(const char** names, int count, ModelInfo** anms, ModelInfo* (*func)(const char*));
+void LoadAnimListFuncPtr(const char** names, int count, AnimationFile** anms, AnimationFile* (*func)(const char*));
+void FillAnimDataTable(AnimationFile** animfiles, AnimData* animdata, int count, NJS_OBJECT* obj);
 void FreeMDLFiles(ModelInfo** Files, int size);
 void FreeANMFiles(AnimationFile** Files, int size);
 
@@ -42,6 +47,7 @@ bool CheckModelDisplay2(SOI_LIST2 item);
 float GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest);
 NJS_VECTOR GetPathPosition(NJS_VECTOR* orig, NJS_VECTOR* dest, float state);
 Rotation3 fPositionToRotation(NJS_VECTOR* orig, NJS_VECTOR* point);
+float GetGroundPositionEntity(EntityData1* data, bool rot);
 
 FastcallFunctionPointer(void, DrawChunkModel_, (Sint32* a1, Sint16* a2), 0x7917F0);
 void DrawChunkModel(NJS_CNK_MODEL* model);

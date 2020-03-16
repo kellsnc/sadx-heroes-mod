@@ -49,6 +49,17 @@ ModelInfo* LoadCharacterModel(const char *name) {
 	return LoadMDL("characters", name);
 }
 
+ModelInfo* LoadEnemyModel(const char* name) {
+	PrintDebug("[SHM] Loading enemy model: %s... ", name);
+	return LoadMDL("enemies", name);
+}
+
+void LoadModelListFuncPtr(const char** names, int count, ModelInfo** mdls, ModelInfo* (*func)(const char*)) {
+	for (int i = 0; i < count; ++i) {
+		mdls[i] = func(names[i]);
+	}
+}
+
 //Free Object File
 ModelInfo* FreeMDL(ModelInfo* pointer) {
 	if (GameState == 9 || (GameState == 8 && Lives == 0)) {
@@ -89,6 +100,28 @@ AnimationFile* LoadCharacterAnim(const char *name) {
 	return LoadANM("characters", name);
 }
 
+AnimationFile* LoadEnemyAnim(const char* name) {
+	PrintDebug("[SHM] Loading enemy animation: %s... ", name);
+	return LoadANM("enemies", name);
+}
+
+void LoadAnimListFuncPtr(const char** names, int count, AnimationFile** anms, AnimationFile* (*func)(const char*)) {
+	for (int i = 0; i < count; ++i) {
+		anms[i] = func(names[i]);
+	}
+}
+
+void FillAnimDataTable(AnimationFile** animfiles, AnimData* animdata, int count, NJS_OBJECT* obj) {
+	for (uint8_t i = 0; i < count; ++i) {
+		if (animfiles[i] == nullptr) continue;
+		animdata[i].Animation = new NJS_ACTION;
+		animdata[i].Animation->object = obj;
+		animdata[i].Animation->motion = animfiles[i]->getmotion();
+		animdata[i].NextAnim = i;
+		animdata[i].AnimationSpeed = 0.5f;
+	}
+}
+
 //Free Animation File
 void FreeANM(AnimationFile* pointer) {
 	if (pointer) {
@@ -98,7 +131,7 @@ void FreeANM(AnimationFile* pointer) {
 
 //Free a list of files
 void FreeMDLFiles(ModelInfo** Files, int size) {
-	PrintDebug("[SHM] Freeing %s models... ", std::to_string(size).c_str());
+	PrintDebug("[SHM] Freeing %s models... \n", std::to_string(size).c_str());
 
 	for (int i = 0; i < size; ++i) {
 		FreeMDL(Files[i]);
@@ -416,6 +449,34 @@ Rotation3 fPositionToRotation(NJS_VECTOR* orig, NJS_VECTOR* point) {
 	result.y = -(atan2(dist.x, dist.z) * 65536.0 * 0.1591549762031479) + 0x4000;
 
 	return result;
+}
+
+float GetGroundPositionEntity(EntityData1* data, bool rot) {
+	WriteData<5>((void*)0x49F201, 0x90);
+	WriteData<5>((void*)0x49F1C0, 0x90);
+	WriteData<5>((void*)0x49F43D, 0x90);
+
+	struct_a3 dyncolinfo;
+
+	data->Position.y += 10;
+	RunEntityIntersections(data, &dyncolinfo);
+	data->Position.y -= 10;
+
+	WriteCall((void*)0x49F201, SpawnRipples);
+	WriteCall((void*)0x49F1C0, SpawnSplashParticles);
+	WriteCall((void*)0x49F43D, (ObjectFuncPtr)0x49F0B0); //DrawCharacterShadow
+
+	if (dyncolinfo.ColFlagsB & (ColFlags_Solid)) {
+		if (dyncolinfo.DistanceMax > -1000000) {
+			if (rot == true) {
+				data->Rotation = { dyncolinfo.ShadowRotationX, data->Rotation.y, dyncolinfo.ShadowRotationY };
+			}
+
+			return dyncolinfo.DistanceMax;
+		}
+	}
+
+	return -1000000;
 }
 
 void DrawChunkModel(NJS_CNK_MODEL* model)
