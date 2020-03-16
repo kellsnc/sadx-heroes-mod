@@ -153,7 +153,7 @@ void HangCastleHandler(ObjectMaster * a1) {
 			AnimateTextures(HangCastleAnimTexs, LengthOfArray(HangCastleAnimTexs));
 			AnimateUV(HangCastle_UVShift, LengthOfArray(HangCastle_UVShift));
 
-			if (chunkswapped) {
+			if (ChunkSwapped) {
 				if (CurrentChunk == 2 || CurrentChunk == 6 || CurrentChunk == 8 || CurrentChunk == 10 || CurrentChunk == 11) {
 					CurrentSong = MusicIDs_lstwrld2;
 					CasinoLightRotation_Z = 0x8000;
@@ -165,8 +165,6 @@ void HangCastleHandler(ObjectMaster * a1) {
 					LastSong = MusicIDs_lstwrld1;
 				}
 			}
-
-			chunkswapped = false;
 
 			break;
 		}

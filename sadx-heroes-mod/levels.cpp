@@ -16,7 +16,6 @@ static bool EnableSpecialStages = true;
 bool NoMysticMusic = false;
 bool NoPinball = false;
 bool EnableFog = true;
-bool chunkswapped = false;
 bool IsHeroesLevel = false;
 
 LandTable** CurrentLandAddress;

@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "egg-fleet.h"
-#include "egg-fleet-deathzones.h"
 #include "egg-fleet-paths.h"
 
 ModelInfo* EF_SKYMDLS;
@@ -63,13 +62,13 @@ void EggFleet_Delete(ObjectMaster *a1) {
 	LevelHandler_Delete(a1);
 }
 
-void EggFleetHandler(ObjectMaster *a1) {
+void EggFleetHandler(ObjectMaster *obj) {
 	EntityData1 *entity = EntityData1Ptrs[0];
 	CharObj2 * co2 = CharObj2Ptrs[0];
 
-	if (a1->Data1->Action == 0) {
-		a1->Data1->Action = 1;
-		a1->DeleteSub = EggFleet_Delete;
+	if (obj->Data1->Action == 0) {
+		obj->Data1->Action = 1;
+		obj->DeleteSub = EggFleet_Delete;
 
 		SetFog(&EggFleet_Fog);
 
@@ -83,11 +82,21 @@ void EggFleetHandler(ObjectMaster *a1) {
 		//entity->Position = { -9501.797, -4170.793, -38106.13 };
 		/*entity->Position = { -8169.233,  -4742.518,  -34860.18 };
 		entity->Position = { -7004.627, 841.3749, -16349.14 };*/
-		entity->Position = { -7790.621, 710.023, -22655.12 };
+		entity->Position = { -2852.121, 835.9999, -4345.02 };
 	}
 	else {
 		ChunkHandler("EF", EggFleetChunks, LengthOfArray(EggFleetChunks), entity->Position);
 		AnimateTextures(EggFleetAnimTexs, LengthOfArray(EggFleetAnimTexs));
+		
+		// kill the player if he falls for too long
+		if (entity->Status & Status_Ground || co2->AnimationThing.Index < 4 || co2->AnimationThing.Index > 19) {
+			obj->Data1->InvulnerableTime = 0;
+		}
+		else if (co2->Speed.y < 4) {
+			if (++obj->Data1->InvulnerableTime == 800) {
+				GameState = 7;
+			}
+		}
 	}
 }
 
@@ -137,7 +146,7 @@ void EggFleet_Init(const char *path, const HelperFunctions &helperFunctions) {
 
 	//Load the level handler
 	SkyboxObjects[HeroesLevelID_EggFleet] = EggFleetSkybox;
-	DeathZoneList[HeroesLevelID_EggFleet][0] = EggFleetDeathZones;
+	DeathZoneList[HeroesLevelID_EggFleet][0] = nullptr;
 
 	EggFleetObjects_Init();
 }

@@ -138,7 +138,6 @@
     <ClInclude Include="Levels\casino-park.h" />
     <ClInclude Include="characters.h" />
     <ClInclude Include="Levels\bingo-highway-paths.h" />
-    <ClInclude Include="Levels\egg-fleet-deathzones.h" />
     <ClInclude Include="Levels\egg-fleet-objects.h" />
     <ClInclude Include="Levels\egg-fleet-paths.h" />
     <ClInclude Include="Objects\casino-common-objects.h" />

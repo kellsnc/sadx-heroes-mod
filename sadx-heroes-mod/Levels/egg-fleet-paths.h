@@ -2043,7 +2043,7 @@ Loop EF_CamPath3_Entries[] = {
 LoopHead EF_CamPath3 = { 0, LengthOfArray<int16_t>(EF_CamPath3_Entries), 7802.32372f, EF_CamPath3_Entries, (ObjectFuncPtr)0x613460 };
 
 LoopHead* EggFleetPathList[] = {
-	&EF_IntroPath,
+	/*&EF_IntroPath,*/
 	&EF_RailPath1,
 	&EF_RailPath2,
 	&EF_RailPath3,

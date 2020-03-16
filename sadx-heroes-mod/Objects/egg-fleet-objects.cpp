@@ -21,6 +21,19 @@ ModelInfo * EF_CANDECO;
 ModelInfo * EF_EBIGFAN;
 ModelInfo * EF_EHELICE;
 
+NJS_VECTOR Entity_GetPoint(NJS_VECTOR* orig, Rotation3* rot, float xpos, float ypos, float zpos) {
+	NJS_VECTOR point;
+
+	njPushMatrix(_nj_unit_matrix_);
+	njTranslateV(0, orig);
+	njRotateXYZ(0, rot->x, rot->y, rot->z);
+	njTranslate(0, xpos, ypos, zpos);
+	njGetTranslation(_nj_current_matrix_ptr_, &point);
+	njPopMatrix(1u);
+
+	return point;
+}
+
 enum EFPlatforms_Actions {
 	EFPlatformAction_Init,
 	EFPlatformAction_Move,
@@ -117,6 +130,11 @@ void EFPlatforms(ObjectMaster* obj) {
 			data->Action = EFPlatformAction_Move;
 		}
 
+		if (data->Scale.z == 1) {
+			data->CharID = data->Scale.z;
+			data->Scale.z = 0;
+		}
+
 		obj->DisplaySub = ECPlatforms_Display;
 		obj->DeleteSub = DynCol_Delete;
 
@@ -136,6 +154,24 @@ void EFPlatforms(ObjectMaster* obj) {
 		return;
 	case EFPlatformAction_Move:
 		EFPLatforms_Move(obj);
+
+		if (data->CharID && ObjectInRange(&EntityData1Ptrs[0]->Position, data->Position.x, data->Position.y, data->Position.z, 168100)) {
+			switch (data->CharID) {
+			case 1:
+				if (!obj->Child) {
+					LoadChildObject(LoadObj_Data1, Spring_Main, obj)->Data1->Scale.x = 6;
+				}
+
+				obj->Child->Data1->Position = Entity_GetPoint(&data->Position, &data->Rotation, 0, 0, -50);
+				break;
+			}
+			
+			RunObjectChildren(obj);
+		}
+		else {
+			if (obj->Child) DeleteChildObjects(obj);
+		}
+		
 		break;
 	case EFPlatformAction_Reach:
 		EFPlatforms_Reach(obj);
@@ -283,6 +319,7 @@ void EFShipDoor(ObjectMaster* obj) {
 			obj->Child->Data1->Position = Platform_GetPoint(&data->Position, &data->Rotation, data->Scale.y);
 		}
 		else {
+			//3D Sound
 			data->Action = EFDoorAction_CloseDoor;
 		}
 
@@ -295,6 +332,7 @@ void EFShipDoor(ObjectMaster* obj) {
 		}
 		else {
 			data->Action = EFDoorAction_Closed;
+			//3D Sound
 			data->Scale.y = 0;
 		}
 
@@ -311,6 +349,8 @@ void EFShipDoor(ObjectMaster* obj) {
 		}
 		else {
 			data->Action = EFDoorAction_Opened;
+
+			//3D Sound
 			data->Scale.y = -158.5;
 		}
 
@@ -539,10 +579,16 @@ void EFBgShips(ObjectMaster* obj) {
 		obj->DisplaySub = obj->MainSub;
 		data->Object = EF_BGSHIPS->getmodel();
 		data->Action = 1;
+
+		//3D Sound
 	}
 
 	if (GameState != 16) {
 		data->Position.z += 0.5f;
+
+		if (ChunkSwapped == true) {
+			data->Position.z = 0;
+		}
 	}
 
 	if (!DroppedFrames) {
@@ -623,6 +669,8 @@ void EFBigFans(ObjectMaster* obj) {
 		data->Object->basicdxmodel->r = 300;
 		data->Action = 1;
 
+		//3D Sound
+
 		ObjectMaster* child = LoadChildObject(LoadObj_Data1, mainSub_Dyncol, obj);
 		child->Data1->Position = data->Position;
 		child->Data1->Rotation = data->Rotation;
@@ -687,11 +735,16 @@ void EFHelice(ObjectMaster* obj) {
 		data->Object = EF_EHELICE->getmodel();
 		data->Action = 1;
 
+		//3D Sound
+
 		Collision_Init(obj, EFHelice_Col, 2, 5);
 	}
 	else {
-		data->Scale.z += 1200;
+		if (data->Scale.x) {
+			if (CurrentChunk != data->Scale.x) return;
+		}
 
+		data->Scale.z += 1200;
 		AddToCollisionList(data);
 		obj->DisplaySub(obj);
 		RunObjectChildren(obj);
@@ -793,6 +846,8 @@ void ObjectBreaker(ObjectMaster* obj) {
 				break;
 			}
 		}
+
+		//3D Sound
 
 		data->Action = 1;
 	}
@@ -934,19 +989,6 @@ void EFBullet_Display(ObjectMaster* obj) {
 	}
 }
 
-NJS_VECTOR EFCannon2_GetPoint(NJS_VECTOR* orig, Rotation3* rot, float xpos, float ypos, float zpos) {
-	NJS_VECTOR point;
-
-	njPushMatrix(_nj_unit_matrix_);
-	njTranslateV(0, orig);
-	njRotateXYZ(0, rot->x, rot->y, rot->z);
-	njTranslate(0, xpos, ypos, zpos);
-	njGetTranslation(_nj_current_matrix_ptr_, &point);
-	njPopMatrix(1u);
-
-	return point;
-}
-
 void EFBullet(ObjectMaster* obj) {
 	NJS_VECTOR temp;
 	EntityData1* data = obj->Data1;
@@ -956,6 +998,8 @@ void EFBullet(ObjectMaster* obj) {
 		obj->DisplaySub = EFBullet_Display;
 		data->Object = EF_BULLETS->getmodel();
 		data->Action = 1;
+
+		//3D Sound
 		
 		Collision_Init(obj, (CollisionData*)0x223B3D8, 1, 4u);
 		break;
@@ -967,7 +1011,7 @@ void EFBullet(ObjectMaster* obj) {
 		}
 		else {
 			if (data->Scale.x == 1 || data->Scale.x == 2) {
-				data->Position = GetPathPosition(&data->Position, &EFCannon2_GetPoint(&data->Position, &data->Rotation, 0, 0, 50), (float)data->field_A / 800);
+				data->Position = GetPathPosition(&data->Position, &Entity_GetPoint(&data->Position, &data->Rotation, 0, 0, 50), (float)data->field_A / 800);
 			}
 			else {
 				temp = data->Scale;
@@ -1093,14 +1137,14 @@ bool EFCannon_Explode(ObjectMaster* obj) {
 
 void EFCannon2_Fire(EntityData1* data, float xpos) {
 	ObjectMaster* bullet = LoadObject(LoadObj_Data1, 3, EFBullet);
-	bullet->Data1->Position = EFCannon2_GetPoint(&data->Position, &data->Rotation, xpos, 10, 80);
+	bullet->Data1->Position = Entity_GetPoint(&data->Position, &data->Rotation, xpos, 10, 80);
 	bullet->Data1->Rotation = data->Rotation;
 	bullet->Data1->Scale.x = 1;
 }
 
 void EFCannon1_Fire(EntityData1* data) {
 	ObjectMaster* bullet = LoadObject(LoadObj_Data1, 3, EFBullet);
-	bullet->Data1->Position = EFCannon2_GetPoint(&data->Position, &data->Rotation, 0, 60, 10);
+	bullet->Data1->Position = Entity_GetPoint(&data->Position, &data->Rotation, 0, 60, 10);
 	bullet->Data1->Rotation = data->Rotation;
 	bullet->Data1->Scale.x = 2;
 }
@@ -1113,7 +1157,7 @@ void EFCannon2_Main(ObjectMaster* obj) {
 	switch (data->Action) {
 	case EFConveyorAction_Run:
 		//Detect if the player is in front of the cannon
-		if (IsPlayerInsideSphere_(&EFCannon2_GetPoint(&data->Position, &data->Rotation, 0, 10, 150), 100)) {
+		if (IsPlayerInsideSphere_(&Entity_GetPoint(&data->Position, &data->Rotation, 0, 10, 150), 100)) {
 			EFCannon2_Fire(data, -10);
 			EFCannon2_Fire(data, 10);
 			data->Action = EFCannonAction_Bullet;
@@ -1141,7 +1185,7 @@ void EFCannon1_Main(ObjectMaster* obj) {
 	
 	if (data->Action >= EFCannonAction_Seek) {
 		if (data->Unknown == 1 || data->Unknown == 2) {
-			player = IsPlayerInsideSphere_(&EFCannon2_GetPoint(&data->Position, &data->Rotation, 0, 10, 120), 150);
+			player = IsPlayerInsideSphere_(&Entity_GetPoint(&data->Position, &data->Rotation, 0, 10, 120), 150);
 		}
 		else {
 			player = IsPlayerInsideSphere_(&data->Position, 300);
@@ -1179,7 +1223,7 @@ void EFCannon1_Main(ObjectMaster* obj) {
 					data->Action = EFCannonAction_Shoot;
 
 					if (data->Unknown == 1) {
-						data->Scale = EFCannon2_GetPoint(&data->Position, &data->Rotation, 0, 50, 130);
+						data->Scale = Entity_GetPoint(&data->Position, &data->Rotation, 0, 50, 130);
 						Rotation3 temp = { 0, 0, 0 };
 						data->Scale.y = GetGroundYPosition(data->Scale.x, data->Scale.y, data->Scale.z, &temp);
 					}
@@ -1209,7 +1253,7 @@ void EFCannon1_Main(ObjectMaster* obj) {
 		else {
 			if (EntityData1Ptrs[player - 1]) {
 				ObjectMaster* bullet = LoadObject(LoadObj_Data1, 3, EFBullet);
-				bullet->Data1->Position = EFCannon2_GetPoint(&data->Position, &data->Rotation, 0, 60, 0);
+				bullet->Data1->Position = Entity_GetPoint(&data->Position, &data->Rotation, 0, 60, 0);
 				bullet->Data1->Rotation.y = -fPositionToRotation(&data->Position, &data->Scale).y + 0x4000;
 				bullet->Data1->Scale = data->Scale;
 				if (data->Unknown == 0) bullet->Data1->Unknown = 1;

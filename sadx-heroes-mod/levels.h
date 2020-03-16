@@ -36,7 +36,6 @@ extern NJS_MATERIAL matlist_col[1];
 extern NJS_MATERIAL matlist_waterfall[1];
 
 extern LandTable** CurrentLandAddress;
-extern bool chunkswapped;
 extern bool IsHeroesLevel;
 
 void AnimateTexlist(SH_ANIMTEXS *list, Int listcount, NJS_TEXLIST* texlist);

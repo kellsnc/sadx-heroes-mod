@@ -127,8 +127,6 @@ void MysticMansionHandler(ObjectMaster * a1) {
 				MysticMansion_MusicHandler();
 				a1->Data1->InvulnerableTime = 0;
 			}
-
-			chunkswapped = false;
 			
 			break;
 		}

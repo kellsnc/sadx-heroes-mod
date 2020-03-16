@@ -293,9 +293,6 @@
     <ClInclude Include="Objects\seaside-hill-objects.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="Levels\egg-fleet-deathzones.h">
-      <Filter>Header Files\Levels</Filter>
-    </ClInclude>
     <ClInclude Include="Levels\egg-fleet-paths.h">
       <Filter>Header Files\Levels</Filter>
     </ClInclude>

@@ -99,4 +99,66 @@ struct ObjectData
     NJS_MATRIX matrix;
 };
 
+struct enemywk {
+    int unk0;
+    NJS_VECTOR velo;
+    NJS_VECTOR acc;
+    Angle ang_aim;
+    Angle ang_spd;
+    float radius;
+    float height;
+    float weight;
+    ObjectMaster* lock_tp;
+    void(__cdecl* dest_org)(ObjectMaster*);
+    char pnum;
+    char old_mode;
+    char old_smode;
+    __int16 aim_num;
+    unsigned __int16 flag;
+    NJS_VECTOR home;
+    NJS_VECTOR aim;
+    NJS_VECTOR pre;
+    NJS_VECTOR force;
+    NJS_VECTOR norm;
+    NJS_ARGB argb;
+    NJS_VECTOR colli_center;
+    float colli_top;
+    float colli_radius;
+    float colli_bottom;
+    float cliff_height;
+    float bound_side;
+    float bound_floor;
+    float bound_friction;
+    float bound_ceiling;
+    int bound_add_angle;
+    float shadow_scl;
+    float shadow_scl_ratio;
+    int shadow;
+    float buyoscale;
+    int angx_spd;
+    int angy_spd;
+    int angz_spd;
+    int sub_angle[8];
+    int aim_angle;
+    int view_angle;
+    float view_range;
+    float hear_range;
+    float nframe;
+    float pframe;
+    float lframe;
+    float link_ratio;
+    float link_spd;
+    NJS_ACTION* actp;
+    NJS_ACTION* linkactp;
+    NJS_MATRIX matrix;
+};
+
+enum CollisionShapes {
+    CollisionShape_Sphere,
+    CollisionShape_Cylinder,
+    CollisionShape_Cube,
+    CollisionShape_Cone,
+    CollisionShape_Capsule = 5
+};
+
 #define MaxPlayers 8
