@@ -253,8 +253,12 @@ void DynCol_Add(ObjectMaster* obj, uint8_t col) {
 }
 
 //Sphere check functions
+float GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest) {
+	return sqrtf(powf(dest->x - orig->x, 2) + powf(dest->y - orig->y, 2) + powf(dest->z - orig->z, 2));
+}
+
 bool IsPointInsideSphere(NJS_VECTOR* center, NJS_VECTOR* pos, float radius) {
-	return (powf(pos->x - center->x, 2) + pow(pos->y - center->y, 2) + pow(pos->z - center->z, 2)) <= pow(radius, 2);
+	return GetDistance(center, pos) <= radius;
 }
 
 int IsPlayerInsideSphere_(NJS_VECTOR* center, float radius) {
@@ -272,6 +276,10 @@ int IsPlayerInsideSphere_(NJS_VECTOR* center, float radius) {
 
 bool IsSpecificPlayerInSphere(NJS_VECTOR* center, float radius, uint8_t player) {
 	return IsPlayerInsideSphere_(center, radius) == player + 1;
+}
+
+bool AreSpheresColliding(NJS_VECTOR* sphereA, float radiusA, NJS_VECTOR* sphereB, float radiusB) {
+	return GetDistance(sphereB, sphereA) < (radiusA + radiusB);
 }
 
 //Update the dyncol data
@@ -424,11 +432,6 @@ bool CheckModelDisplay2(SOI_LIST2 item) {
 	return false;
 }
 
-//Distance checks
-float GetDistance(NJS_VECTOR* orig, NJS_VECTOR* dest) {
-	return sqrtf(powf(dest->x - orig->x, 2) + powf(dest->y - orig->y, 2) + powf(dest->z - orig->z, 2));
-}
-
 //Position functions
 NJS_VECTOR GetPathPosition(NJS_VECTOR* orig, NJS_VECTOR* dest, float state) {
 	NJS_VECTOR result;
@@ -458,9 +461,9 @@ float GetGroundPositionEntity(EntityData1* data, bool rot) {
 
 	struct_a3 dyncolinfo;
 
-	data->Position.y += 10;
+	data->Position.y += 20;
 	RunEntityIntersections(data, &dyncolinfo);
-	data->Position.y -= 10;
+	data->Position.y -= 20;
 
 	WriteCall((void*)0x49F201, SpawnRipples);
 	WriteCall((void*)0x49F1C0, SpawnSplashParticles);
