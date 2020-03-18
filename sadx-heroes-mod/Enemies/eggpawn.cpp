@@ -11,6 +11,8 @@ AnimData		EggPawnAnimData[ANM_COUNT];
 
 NJS_TEXNAME EGGPAWN_TEXNAMES[15];
 NJS_TEXLIST EGGPAWN_TEXLIST = { arrayptrandlength(EGGPAWN_TEXNAMES) };
+NJS_TEXNAME CURRENTEGGPAWNEGGPAWN_TEXNAMES[2];
+NJS_TEXLIST CURRENTEGGPAWN_TEXLIST = { arrayptrandlength(CURRENTEGGPAWNEGGPAWN_TEXNAMES) };
 
 NJS_MATRIX EggPawnMatrices[4];
 
@@ -156,15 +158,15 @@ void EggPawn_DrawCallback(NJS_OBJECT* object) {
 void EggPawn_SetVariant(EntityData1* data, PawnCustomData* pawndata) {
 	switch (pawndata->pawntype) {
 	case EggPawnType::Purple:
-		EGGPAWN_TEXLIST.textures[1].texaddr = EGGPAWN_TEXLIST.textures[4].texaddr;
+		CURRENTEGGPAWN_TEXLIST.textures[1] = EGGPAWN_TEXLIST.textures[4];
 		break;
 	case EggPawnType::Turquoise:
 	case EggPawnType::Blue:
-		EGGPAWN_TEXLIST.textures[1].texaddr = EGGPAWN_TEXLIST.textures[10].texaddr;
+		CURRENTEGGPAWN_TEXLIST.textures[1] = EGGPAWN_TEXLIST.textures[10];
 		break;
 	}
 	
-	EGGPAWN_TEXLIST.textures[0].texaddr = EGGPAWN_TEXLIST.textures[(int)pawndata->pawntype].texaddr;
+	CURRENTEGGPAWN_TEXLIST.textures[0] = EGGPAWN_TEXLIST.textures[(int)pawndata->pawntype];
 }
 
 //Draw the extra models some variants have
@@ -191,6 +193,11 @@ void EggPawn_DrawVariantModels(EntityData1* data, PawnCustomData* pawndata) {
 	}
 }
 
+inline void EggPawn_SetDefaultTextures() {
+	CURRENTEGGPAWN_TEXLIST.textures[0] = EGGPAWN_TEXLIST.textures[0];
+	CURRENTEGGPAWN_TEXLIST.textures[1] = EGGPAWN_TEXLIST.textures[1];
+}
+
 void EggPawn_Display(ObjectMaster* obj) {
 	if (MissedFrames || obj->Data1->Status == 1) return;
 
@@ -203,14 +210,15 @@ void EggPawn_Display(ObjectMaster* obj) {
 	}
 	
 	NJS_MODEL_SADX* body = nullptr;
-
+	
+	//the turquoise variant changes the whole body
 	if (pawndata->pawntype == EggPawnType::Turquoise) {
 		body = data->Object->child->child->child->basicdxmodel;
 		data->Object->child->child->child->basicdxmodel = EggPawnMdls[3]->getmodel()->basicdxmodel;
 	}
 
 	Direct3D_PerformLighting(6);
-	njSetTexture(&EGGPAWN_TEXLIST);
+	njSetTexture(&CURRENTEGGPAWN_TEXLIST);
 	njPushMatrix(0);
 	njTranslateV(0, &data->Position);
 	njRotateXYZ(0, data->Rotation.x, data->Rotation.y, data->Rotation.z);
@@ -227,9 +235,9 @@ void EggPawn_Display(ObjectMaster* obj) {
 	Direct3D_PerformLighting(0);
 	DrawShadow(data, 2);
 
-	EGGPAWN_TEXLIST.textures[0].texaddr = pawndata->origtex1;
-	EGGPAWN_TEXLIST.textures[1].texaddr = pawndata->origtex2;
+	EggPawn_SetDefaultTextures();
 
+	//set back the original body if modified
 	if (body) data->Object->child->child->child->basicdxmodel = body;
 }
 
@@ -535,6 +543,8 @@ void EggPawn_Init(ObjectMaster* obj) {
 		if (IsEggPawnInitialized == false) {
 			IsEggPawnInitialized = true;
 			EggPawn_LoadFiles();
+
+			EggPawn_SetDefaultTextures();
 		}
 
 		//	Init the enemy handler (used for Gamma's missile, Sonic's attacks)
@@ -560,9 +570,6 @@ void EggPawn_Init(ObjectMaster* obj) {
 		else {
 			data->Object = EggPawnMdls[0]->getmodel();
 		}
-
-		pawndata->origtex1 = EGGPAWN_TEXLIST.textures[0].texaddr;
-		pawndata->origtex2 = EGGPAWN_TEXLIST.textures[1].texaddr;
 
 		//	Reset the object properties
 		data->Position.y -= 4;
