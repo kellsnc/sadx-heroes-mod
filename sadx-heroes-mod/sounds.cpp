@@ -140,24 +140,16 @@ void PlayDelayedHeroesSound(int ID, int time) {
 }
 
 void PlayHeroesSoundQueue(int ID, ObjectMaster* obj, NJS_VECTOR* pos, float dist, bool loop, float volume, float pitch) {
-	if (pos) {
-		if (!IsPlayerInsideSphere_(pos, dist)) {
-			return;
-		}
-	}
-	else {
-		if (!IsPlayerInsideSphere_(&obj->Data1->Position, dist)) {
-			return;
-		}
-	}
-	
 	int entryID = GetFreeSoundEntry();
 
 	if (entryID > -1) {
 		SoundListEntries[entryID].id = ID;
 		SoundListEntries[entryID].obj = obj;
 		SoundListEntries[entryID].dist = dist;
-		SoundListEntries[entryID].volumeA = GetVolumeRange(&obj->Data1->Position, dist);
+
+		if (obj) SoundListEntries[entryID].volumeA = GetVolumeRange(&obj->Data1->Position, dist);
+		else if (pos) SoundListEntries[entryID].volumeA = GetVolumeRange(pos, dist);
+		
 		if (volume) SoundListEntries[entryID].volumeB = volume;
 		if (pitch) SoundListEntries[entryID].pitch = pitch;
 		if (pos) SoundListEntries[entryID].position = pos;
@@ -171,8 +163,17 @@ void PlayHeroesSound_Entity(int ID, ObjectMaster* obj, float dist, bool loop) {
 	PlayHeroesSoundQueue(ID, obj, NULL, dist, loop, NULL, NULL);
 }
 
+void PlayHeroesSound_EntityAndVolume(int ID, ObjectMaster* obj, float dist, float volume, bool loop) {
+	dist *= 2;
+	PlayHeroesSoundQueue(ID, obj, NULL, dist, loop, volume, NULL);
+}
+
 void PlayHeroesSound_EntityAndPos(int ID, ObjectMaster* obj, NJS_VECTOR* pos, float dist, float volume, bool loop) {
 	PlayHeroesSoundQueue(ID, obj, pos, dist, loop, volume, NULL);
+}
+
+void PlayHeroesSound_Pos(int ID, NJS_VECTOR* pos, float dist, float volume, bool loop) {
+	PlayHeroesSoundQueue(ID, nullptr, pos, dist, loop, volume, NULL);
 }
 
 void Sounds_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config) {
@@ -208,13 +209,26 @@ void Sounds_OnFrame() {
 				SoundListEntries[i].stream = NULL;
 				continue;
 			}
-			
+
 			if (SoundListEntries[i].dist > 0) {
 				if (SoundListEntries[i].position) {
-					SoundListEntries[i].volumeA = GetVolumeRange(SoundListEntries[i].position, SoundListEntries[i].dist);
+					if (!IsPlayerInsideSphere_(SoundListEntries[i].position, SoundListEntries[i].dist)) {
+						SoundListEntries[i].volumeA = 0;
+					}
+					else {
+						SoundListEntries[i].volumeA = GetVolumeRange(SoundListEntries[i].position, SoundListEntries[i].dist);
+					}
+
+					
 				}
 				else {
-					SoundListEntries[i].volumeA = GetVolumeRange(&SoundListEntries[i].obj->Data1->Position, SoundListEntries[i].dist);
+					if (!IsPlayerInsideSphere_(&SoundListEntries[i].obj->Data1->Position, SoundListEntries[i].dist)) {
+						SoundListEntries[i].volumeA = 0;
+					}
+					else {
+						SoundListEntries[i].volumeA = GetVolumeRange(&SoundListEntries[i].obj->Data1->Position, SoundListEntries[i].dist);
+					}
+					
 				}
 
 				if (SoundListEntries[i].volumeB) {

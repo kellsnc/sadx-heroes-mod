@@ -225,6 +225,7 @@ void MysticCart(ObjectMaster * a1) {
 		entity->Index = IsPlayerInsideSphere(&loopdata->LoopList[0].Position, loopdata->Unknown_0);
 		if (entity->Index != 0) {
 			entity->Action = 2;
+			PlayHeroesSound_EntityAndPos(LevelSound_Mys_Char, a1, &EntityData1Ptrs[entity->Index - 1]->Position, 300, 0.5f, true);
 		}
 	}
 	

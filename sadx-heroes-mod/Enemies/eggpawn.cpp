@@ -608,6 +608,7 @@ bool EggPawn_CheckDamage(EntityData1* data, PawnCustomData* pawndata) {
 			}
 
 			if (pawndata->damage < check) {
+				PlayHeroesSound_Pos(CommonSound_Explosion, &data->Position, 300, 2, false);
 				++pawndata->damage;
 				return false;
 			}
@@ -615,7 +616,7 @@ bool EggPawn_CheckDamage(EntityData1* data, PawnCustomData* pawndata) {
 
 		Score += 100;
 
-		// 3D Sound
+		PlayHeroesSound_Pos(CommonSound_Explosion, &data->Position, 300, 5, false);
 		LoadObjectBreaker(&data->Position, &data->Rotation, data->Object->child->child, &EGGPAWN_TEXLIST);
 
 		return true;
@@ -666,12 +667,11 @@ void EggPawn_Main(ObjectMaster* obj) {
 
 			if (IsPlayerInsideSphere_(&data->Position, 100)) {
 
-				// Load icon "!"
-				// 3D sound
-
 				pawndata->pawnanim = EggPawnAnim::PANIC;
 
 				if (data->Unknown == 1) {
+					// Load icon "!"
+					PlayHeroesSound_Entity(CommonSound_Detect1, obj, 200, false);
 					data->Action = EggPawnAction_Check;
 				}
 			}
@@ -697,7 +697,6 @@ void EggPawn_Main(ObjectMaster* obj) {
 				data->NextAction = 0;
 
 				// Load Icon "!"
-				// 3D sound
 
 				if (pawndata->pawnweapon >= EggPawnWeapon::Pistol) {
 					data->Action = EggPawnAction_Aim;
