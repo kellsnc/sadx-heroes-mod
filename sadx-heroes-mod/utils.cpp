@@ -482,6 +482,19 @@ float GetGroundPositionEntity(EntityData1* data, bool rot) {
 	return -1000000;
 }
 
+NJS_VECTOR UnitMatrix_GetPoint(NJS_VECTOR* orig, Rotation3* rot, float x, float y, float z) {
+	NJS_VECTOR point;
+
+	njPushMatrix(_nj_unit_matrix_);
+	njTranslateV(0, orig);
+	if (rot) njRotateXYZ(0, rot->x, rot->y, rot->z);
+	njTranslate(0, x, y, z);
+	njGetTranslation(_nj_current_matrix_ptr_, &point);
+	njPopMatrix(1u);
+
+	return point;
+}
+
 void DrawChunkModel(NJS_CNK_MODEL* model)
 {
 	DrawChunkModel_(model->vlist, model->plist);

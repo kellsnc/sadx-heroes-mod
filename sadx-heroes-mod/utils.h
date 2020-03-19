@@ -49,6 +49,7 @@ bool CheckModelDisplay2(SOI_LIST2 item);
 NJS_VECTOR GetPathPosition(NJS_VECTOR* orig, NJS_VECTOR* dest, float state);
 Rotation3 fPositionToRotation(NJS_VECTOR* orig, NJS_VECTOR* point);
 float GetGroundPositionEntity(EntityData1* data, bool rot);
+NJS_VECTOR UnitMatrix_GetPoint(NJS_VECTOR* orig, Rotation3* rot, float x, float y, float z);
 
 FastcallFunctionPointer(void, DrawChunkModel_, (Sint32* a1, Sint16* a2), 0x7917F0);
 void DrawChunkModel(NJS_CNK_MODEL* model);

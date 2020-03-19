@@ -53,6 +53,8 @@ bool IsPointInCollision(NJS_VECTOR* pos, float radius);
 void DoBall(uint8_t id);
 
 void ObjectBreaker(ObjectMaster* obj);
+void LoadObjectBreaker(NJS_VECTOR* pos, Rotation3* rot, NJS_OBJECT* obj, NJS_TEXLIST* tex);
+void LoadModelBroken(NJS_VECTOR* pos, Rotation3* dir, NJS_OBJECT* model, NJS_TEXLIST* tex);
 
 uint8_t Fans_IsSpecificPlayerInCylinder(EntityData1* entity, NJS_VECTOR* center, float radius, float height);
 uint8_t Fans_IsPlayerInCylinder(NJS_VECTOR* center, float radius, float height);
