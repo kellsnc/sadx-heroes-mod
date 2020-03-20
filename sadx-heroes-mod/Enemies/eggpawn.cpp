@@ -11,8 +11,8 @@ AnimData		EggPawnAnimData[ANM_COUNT];
 
 NJS_TEXNAME EGGPAWN_TEXNAMES[15];
 NJS_TEXLIST EGGPAWN_TEXLIST = { arrayptrandlength(EGGPAWN_TEXNAMES) };
-NJS_TEXNAME CURRENTEGGPAWNEGGPAWN_TEXNAMES[2];
-NJS_TEXLIST CURRENTEGGPAWN_TEXLIST = { arrayptrandlength(CURRENTEGGPAWNEGGPAWN_TEXNAMES) };
+NJS_TEXNAME CURRENTEGGPAWN_TEXNAMES[2];
+NJS_TEXLIST CURRENTEGGPAWN_TEXLIST = { arrayptrandlength(CURRENTEGGPAWN_TEXNAMES) };
 
 NJS_MATRIX EggPawnMatrices[4];
 
@@ -614,6 +614,7 @@ bool EggPawn_CheckDamage(EntityData1* data, PawnCustomData* pawndata) {
 			}
 		}
 
+		SpawnAnimal(2, PosToVector(data->Position));
 		Score += 100;
 
 		PlayHeroesSound_Pos(CommonSound_Explosion, &data->Position, 300, 5, false);
@@ -755,7 +756,7 @@ void EggPawn_Main(ObjectMaster* obj) {
 			break;
 		}
 
-		PlayHeroesAnimation(obj, data->Index, EggPawnAnimData, 0, frame);
+		PlayHeroesAnimation(obj, (uint8_t)pawndata->pawnanim, EggPawnAnimData, 0, frame);
 		AddToCollisionList(data);
 	}
 	else {
@@ -767,7 +768,7 @@ void EggPawn_Main(ObjectMaster* obj) {
 	RunObjectChildren(obj);
 }
 
-void EggPawn_LoadFiles() {
+inline void EggPawn_LoadFiles() {
 	LoadPVM("eggpawn", &EGGPAWN_TEXLIST);
 	LoadModelListFuncPtr(arrayptrandlength(EggPawnMdlNames), EggPawnMdls, LoadEnemyModel);
 	LoadAnimListFuncPtr(arrayptrandlength(EggPawnAnmNames), EggPawnAnms, LoadEnemyAnim);
@@ -776,7 +777,7 @@ void EggPawn_LoadFiles() {
 
 void EggPawn_Init(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1;
-
+	
 	//	If the configs are ok, load an Egg Pawn
 	if (Enemies_CanSwap) {
 

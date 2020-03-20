@@ -122,20 +122,22 @@ void ObjectBreaker(ObjectMaster* obj) {
 		NJS_OBJECT* child = data->Object;
 		while (1) {
 			if (child) {
-				LoadChildObject(LoadObj_Data1, ObjectBreaker_Main, obj);
-				obj->Child->Data1->Position.x = data->Position.x + child->pos[0];
-				obj->Child->Data1->Position.y = data->Position.y + child->pos[1];
-				obj->Child->Data1->Position.z = data->Position.z + child->pos[2];
-				obj->Child->Data1->Rotation = fPositionToRotation(&data->Position, &obj->Child->Data1->Position);
-				obj->Child->Data1->Object = child;
-				obj->Child->DisplaySub = ObjectBreaker_Display;
+				if (child->basicdxmodel) {
+					LoadChildObject(LoadObj_Data1, ObjectBreaker_Main, obj);
+					obj->Child->Data1->Position.x = data->Position.x + child->pos[0];
+					obj->Child->Data1->Position.y = data->Position.y + child->pos[1];
+					obj->Child->Data1->Position.z = data->Position.z + child->pos[2];
+					obj->Child->Data1->Rotation = fPositionToRotation(&data->Position, &obj->Child->Data1->Position);
+					obj->Child->Data1->Object = child;
+					obj->Child->DisplaySub = ObjectBreaker_Display;
 
-				Collision_Init(obj->Child, &ObjBrkr_Col, 1, 4u);
+					Collision_Init(obj->Child, &ObjBrkr_Col, 1, 4u);
 
-				if (data->LoopData) {
-					obj->Child->Data1->LoopData = data->LoopData;
+					if (data->LoopData) {
+						obj->Child->Data1->LoopData = data->LoopData;
+					}
 				}
-
+				
 				if (child->child) child = child->child;
 				else if (child->sibling) child = child->sibling;
 				else child = nullptr;

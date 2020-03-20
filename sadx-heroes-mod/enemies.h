@@ -11,3 +11,5 @@ extern bool Enemies_CanSwap;
 
 extern Trampoline* KikiTrampoline;
 void EggPawn_Init(ObjectMaster* obj);
+
+void e2000_Init(ObjectMaster* obj);

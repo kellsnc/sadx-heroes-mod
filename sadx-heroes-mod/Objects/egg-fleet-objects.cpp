@@ -1266,7 +1266,8 @@ ObjectListEntry EggFleetObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2060000, 0, EFRailSign, "EFRailSign" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, 0, EFMissilePods, "EFMissilePods" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, 0, EFHelice, "EFHelice" },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, 0, ECBarrier, "ECBarrier" }
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, 0, ECBarrier, "ECBarrier" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1560000, 0, e2000_Init, "E2000" },
 };
 ObjectList EggFleetObjectList = { arraylengthandptrT(EggFleetObjectList_list, int) };
 

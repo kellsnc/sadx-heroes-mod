@@ -24,6 +24,7 @@ DataArray(int, HeldButtons2, 0x3B0E3A8, 8);
 ObjectFunc(Bomb_Init, 0x4AC920);
 ObjectFunc(UpdateSetDataAndDelete, 0x46C150);
 FunctionPointer(bool, CheckBombPowerupRadius, (NJS_VECTOR* pos), 0x4C0550);
+FunctionPointer(EntityData1*, SpawnAnimal, (int unknown, float x, float y, float z), 0x4BE610);
 
 extern float bombsize;
 
@@ -117,3 +118,4 @@ enum GameStates {
 };
 
 #define MaxPlayers 8
+#define PosToVector(data) data.x, data.y, data.z
