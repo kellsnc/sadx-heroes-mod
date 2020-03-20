@@ -9,9 +9,9 @@ ModelInfo*		e2000Mdls[MDL_COUNT];
 AnimationFile*	e2000Anms[ANM_COUNT];
 AnimData		e2000AnimData[ANM_COUNT];
 
-NJS_TEXNAME E2000_TEXNAMES[9];
+NJS_TEXNAME E2000_TEXNAMES[11];
 NJS_TEXLIST E2000_TEXLIST = { arrayptrandlength(E2000_TEXNAMES) };
-NJS_TEXNAME CURRENTE2000_TEXNAMES[5];
+NJS_TEXNAME CURRENTE2000_TEXNAMES[3];
 NJS_TEXLIST CURRENTE2000_TEXLIST = { arrayptrandlength(CURRENTE2000_TEXNAMES) };
 
 NJS_MATRIX e2000Matrices[5];
@@ -23,15 +23,15 @@ CollisionData e2000CollisionData[]{
 
 CollisionData LaserCollisionData[]{
 	{0, CollisionShape_Sphere, 0x77, 0x21, 0x2400, { 0, 0, -30}, {30, 30, 0}},
-	{0, CollisionShape_Sphere, 0x77, 0x21, 0x2400, { 0, 0, -60}, {30, 30, 0}},
-	{0, CollisionShape_Sphere, 0x77, 0x21, 0x2400, { 0, 0, -90}, {30, 30, 0}},
-	{0, CollisionShape_Sphere, 0x77, 0x21, 0x2400, { 0, 0, -120}, {30, 30, 0}},
-	{0, CollisionShape_Sphere, 0x77, 0x21, 0x2400, { 0, 0, -150}, {30, 30, 0}},
-	{0, CollisionShape_Sphere, 0x77, 0x21, 0x2400, { 0, 0, -180}, {30, 30, 0}},
-	{0, CollisionShape_Sphere, 0x77, 0x21, 0x2400, { 0, 0, -210}, {30, 30, 0}},
-	{0, CollisionShape_Sphere, 0x77, 0x21, 0x2400, { 0, 0, -240}, {30, 30, 0}},
-	{0, CollisionShape_Sphere, 0x77, 0x21, 0x2400, { 0, 0, -270}, {30, 30, 0}},
-	{0, CollisionShape_Sphere, 0x77, 0x21, 0x2400, { 0, 0, -300}, {30, 30, 0}},
+	{0, CollisionShape_Sphere, 0x77, 0xE2, 0x2400, { 0, 0, -60}, {30, 30, 0}},
+	{0, CollisionShape_Sphere, 0x77, 0xE2, 0x2400, { 0, 0, -90}, {30, 30, 0}},
+	{0, CollisionShape_Sphere, 0x77, 0xE2, 0x2400, { 0, 0, -120}, {30, 30, 0}},
+	{0, CollisionShape_Sphere, 0x77, 0xE2, 0x2400, { 0, 0, -150}, {30, 30, 0}},
+	{0, CollisionShape_Sphere, 0x77, 0xE2, 0x2400, { 0, 0, -180}, {30, 30, 0}},
+	{0, CollisionShape_Sphere, 0x77, 0xE2, 0x2400, { 0, 0, -210}, {30, 30, 0}},
+	{0, CollisionShape_Sphere, 0x77, 0xE2, 0x2400, { 0, 0, -240}, {30, 30, 0}},
+	{0, CollisionShape_Sphere, 0x77, 0xE2, 0x2400, { 0, 0, -270}, {30, 30, 0}},
+	{0, CollisionShape_Sphere, 0x77, 0xE2, 0x2400, { 0, 0, -300}, {30, 30, 0}},
 };
 
 enum e2000Actions {
@@ -74,6 +74,7 @@ struct E2KCustomData {
 	e2000Type type;
 	float height;
 	char damage;
+	char switchid;
 };
 
 const char* e2000MdlNames[]{
@@ -177,9 +178,9 @@ inline void e2000_SetDefaultTextures() {
 }
 
 inline void e2000_SetVariantTextures() {
-	CURRENTE2000_TEXLIST.textures[0] = E2000_TEXLIST.textures[6];
-	CURRENTE2000_TEXLIST.textures[1] = E2000_TEXLIST.textures[7];
-	CURRENTE2000_TEXLIST.textures[2] = E2000_TEXLIST.textures[8];
+	CURRENTE2000_TEXLIST.textures[0] = E2000_TEXLIST.textures[8];
+	CURRENTE2000_TEXLIST.textures[1] = E2000_TEXLIST.textures[9];
+	CURRENTE2000_TEXLIST.textures[2] = E2000_TEXLIST.textures[10];
 }
 
 void e2000_DrawCallback(NJS_OBJECT* object) {
@@ -311,7 +312,7 @@ bool e2000_CheckDeath(EntityData1* data, E2KCustomData* e2kdata) {
 
 			return false;
 		}
-		
+
 		if (e2kdata->damage < 16) {
 			PlayHeroesSound_Pos(CommonSound_Explosion, &data->Position, 200, 1, false);
 			++e2kdata->damage;
@@ -325,7 +326,7 @@ bool e2000_CheckDeath(EntityData1* data, E2KCustomData* e2kdata) {
 			return false;
 		}
 
-		if (data->Scale.z) SwitchPressedStates[(int)data->Scale.z] = true;
+		if (e2kdata->switchid > 0) SwitchPressedStates[e2kdata->switchid] = true;
 
 		SpawnAnimal(2, PosToVector(data->Position));
 		SpawnAnimal(2, PosToVector(data->Position));
@@ -442,8 +443,8 @@ void e2000_Hover(EntityData1* data, E2KCustomData* e2kdata) {
 	NEXT:
 		e2kdata->anim = e2000Anim::HOVER;
 
-		if (IsPlayerInsideSphere_(&data->Position, 50)) {
-			if (rand() % 500 == 0) {
+		if (IsPlayerInsideSphere_(&data->Position, 100)) {
+			if (rand() % 300 == 0) {
 				data->Action = e2000Action_Shield;
 				data->Unknown = 0;
 				data->NextAction = 0;
@@ -597,20 +598,19 @@ void e2000_Init(ObjectMaster* obj) {
 	//	using the data in the setfile
 	e2kdata->startaction = (e2000Actions)(int)data->Scale.x;
 	e2kdata->type = (e2000Type)(int)data->Scale.y;
+	e2kdata->switchid = data->Scale.z;
 	e2kdata->height = data->Position.y;
 
 	data->Action = e2kdata->startaction;
 	data->Object = e2000Mdls[0]->getmodel();
 
 	e2000_SetDefaultTextures();
-	CURRENTE2000_TEXLIST.textures[3] = E2000_TEXLIST.textures[3];
-	CURRENTE2000_TEXLIST.textures[4] = E2000_TEXLIST.textures[4];
 
 	//	Reset the object properties
 	data->Position.y += 100;
 	data->Rotation = { 0, data->Rotation.y + 0x8000 , 0 };
-	data->Scale = { 0, 0, data->Scale.z };
-
+	data->Scale = { 0, 0, 0 };
+	
 	//	Object functions
 	obj->MainSub = e2000_Main;
 	obj->DisplaySub = e2000_Display;
