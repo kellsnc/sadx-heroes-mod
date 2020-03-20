@@ -163,6 +163,14 @@ void ObjFan(ObjectMaster *obj)
 		data->Action = 1;
 	}
 	else {
+		if (data->Scale.y > 0) {
+			if (IsSwitchPressed(data->Scale.y) == false) {
+				DynColRadius(obj, 350, 0);
+				obj->DisplaySub(obj);
+				return;
+			}
+		}
+
 		data->CharIndex = Fans_IsPlayerInCylinder(&data->Position, 45.5f, data->Scale.x);
 		if (data->CharIndex) {
 			LoadChildObject(LoadObj_Data1, Fans_HandlePlayer, obj);
