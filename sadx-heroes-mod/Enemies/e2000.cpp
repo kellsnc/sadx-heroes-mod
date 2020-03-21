@@ -160,10 +160,8 @@ void e2000_LoadLaser(EntityData1* data) {
 	SetCollisionInfoRadius(obj->Data1->CollisionInfo, 1000);
 }
 
-void e2000_Delete(ObjectMaster* obj) {
-	//Delete files if the level is exited, or the player has no life left.
-	if ((GameState == GameState_ExitLevel || (GameState == GameState_Death && Lives == 0))
-		&& IsE2000Initialized == true) {
+void e2000_DeleteFiles() {
+	if (IsE2000Initialized == true) {
 		IsE2000Initialized = false;
 		njReleaseTexture(&E2000_TEXLIST);
 		FreeMDLFiles(arrayptrandlength(e2000Mdls));
@@ -220,7 +218,7 @@ void e2000_DrawAir(EntityData1* data) {
 }
 
 void e2000_Display(ObjectMaster* obj) {
-	if (MissedFrames) return;
+	if (MissedFrames && obj->Data1->Action != e2000Action_Init) return;
 
 	EntityData1* data = obj->Data1;
 	E2KCustomData* e2kdata = (E2KCustomData*)obj->Data2;
@@ -614,5 +612,4 @@ void e2000_Init(ObjectMaster* obj) {
 	//	Object functions
 	obj->MainSub = e2000_Main;
 	obj->DisplaySub = e2000_Display;
-	obj->DeleteSub = e2000_Delete;
 }

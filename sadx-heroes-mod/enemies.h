@@ -11,5 +11,11 @@ extern bool Enemies_CanSwap;
 
 extern Trampoline* KikiTrampoline;
 void EggPawn_Init(ObjectMaster* obj);
+void EggPawn_DeleteFiles();
 
 void e2000_Init(ObjectMaster* obj);
+void e2000_DeleteFiles();
+
+void Flyer_Init(ObjectMaster* obj);
+void Flyer_Trigger(ObjectMaster* obj);
+void Flyer_DeleteFiles();

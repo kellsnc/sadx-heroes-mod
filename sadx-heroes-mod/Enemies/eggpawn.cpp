@@ -292,10 +292,8 @@ void EggPawnShield_Main(ObjectMaster* obj) {
 	obj->DisplaySub(obj);
 }
 
-void EggPawn_Delete(ObjectMaster* obj) {
-	//Delete files if the level is exited, or the player has no life left.
-	if ((GameState == GameState_ExitLevel || (GameState == GameState_Death && Lives == 0))
-		&& IsEggPawnInitialized == true) {
+void EggPawn_DeleteFiles() {
+	if (IsEggPawnInitialized == true) {
 		IsEggPawnInitialized = false;
 		njReleaseTexture(&EGGPAWN_TEXLIST);
 		FreeMDLFiles(arrayptrandlength(EggPawnMdls));
@@ -536,10 +534,6 @@ void EggPawn_RunForward(EntityData1* data, PawnCustomData* pawndata) {
 //	If the egg pawn intersect with an entity, it should be pushed from its center
 //	If there is no intersection and front point is not in the air, allow walking
 void EggPawn_CanMoveAndRunPushed(EntityData1* data, PawnCustomData* pawndata) {
-	if (data->Rotation.z < 0x7000 && data->Rotation.z < -0x7000) {
-		int i = 0;
-	}
-	
 	if (EggPawnCollide(data) == false) {
 		if (anim % 4 == 0 && (data->Action == EggPawnAction_Stand ||
 			data->Action == EggPawnAction_RunForward ||
@@ -779,7 +773,7 @@ void EggPawn_Init(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1;
 	
 	//	If the configs are ok, load an Egg Pawn
-	if (Enemies_CanSwap) {
+	if (Enemies_CanSwap || data->Scale.x == 99) {
 
 		//	Load the files only once
 		if (IsEggPawnInitialized == false) {
@@ -829,7 +823,6 @@ void EggPawn_Init(ObjectMaster* obj) {
 		//	Object functions
 		obj->MainSub = EggPawn_Main;
 		obj->DisplaySub = EggPawn_Display;
-		obj->DeleteSub = EggPawn_Delete;
 	}
 	else {
 		ObjectFunc(original, KikiTrampoline->Target()); // Otherwise, load a kiki.

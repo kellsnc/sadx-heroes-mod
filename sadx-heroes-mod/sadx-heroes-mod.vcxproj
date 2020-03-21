@@ -96,6 +96,7 @@
     <ClCompile Include="Enemies\e2000.cpp" />
     <ClCompile Include="Enemies\eggpawn.cpp" />
     <ClCompile Include="Enemies\enemies-common.cpp" />
+    <ClCompile Include="Enemies\flyer.cpp" />
     <ClCompile Include="Objects\bingo-highway-objects.cpp" />
     <ClCompile Include="Levels\bingo-highway.cpp" />
     <ClCompile Include="Objects\casino-common-objects.cpp" />

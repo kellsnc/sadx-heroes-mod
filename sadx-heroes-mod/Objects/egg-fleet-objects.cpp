@@ -1255,19 +1255,21 @@ ObjectListEntry EggFleetObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1360000, 0, ObjCannon, "CANNON" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 360000, 0, SHCameraSwitch, "SH CAM SW" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1560000, 0, OBJCASE, "OBJ CASE" },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1360000, 0, ObjReel, "OBJREEL" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1360000, 0, ObjReel, "OBJREEL" }, //45
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 4060000, 0, EFBigFans, "OBJFAN" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1060000, 0, EFCannon, "EFCannon" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, 0, EFPlatforms, "EFPlatforms" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, 0, EFPipeline, "EFPipeline" },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, 0, EFShipDoor, "EFShipDoor" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, 0, EFShipDoor, "EFShipDoor" }, //50
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1060000, 0, EFShipConveyor, "EFShipConveyor" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2060000, 0, EFAntenna, "EFAntenna" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2060000, 0, EFRailSign, "EFRailSign" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, 0, EFMissilePods, "EFMissilePods" },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, 0, EFHelice, "EFHelice" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, 0, EFHelice, "EFHelice" }, //55
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, 0, ECBarrier, "ECBarrier" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1560000, 0, e2000_Init, "E2000" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 10000000, 0, Flyer_Init, "Flyer" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1000000, 0, Flyer_Trigger, "Flyer Trigger" },
 };
 ObjectList EggFleetObjectList = { arraylengthandptrT(EggFleetObjectList_list, int) };
 
