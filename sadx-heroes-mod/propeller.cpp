@@ -159,7 +159,7 @@ inline void Propeller_Init(ObjectMaster* obj, char player) {
 	child->Data1->Object = obj->Data1->Object;
 	child->DisplaySub = Propeller_Display;
 	child->DeleteSub = Propeller_Delete;
-	PlayHeroesSound_EntityAndPos(CommonSound_Propeller, obj, &EntityData1Ptrs[player]->Position, 500, 5, true);
+	PlayHeroesSound_EntityAndVolume(CommonSound_Propeller, child, 500, 5, true);
 }
 
 void PropellerPath_Display(ObjectMaster* obj) {

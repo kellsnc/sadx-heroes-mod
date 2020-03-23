@@ -98,6 +98,7 @@ struct PawnCustomData {
 	EggPawnType pawntype;
 	EggPawnWeapon pawnweapon;
 	EggPawnShield pawnshield;
+	float miny;
 	bool CanMove;
 	char damage;
 };
@@ -427,6 +428,10 @@ bool EggPawn_CheckRobotFalling(EntityData1* data, PawnCustomData* pawndata) {
 	if (y < -100000) {
 		data->Position.y - 100;
 	}
+	else if (pawndata->miny && (y + data->Position.y) < pawndata->miny) {
+		data->Position.y = pawndata->miny;
+		return true;
+	}
 
 	// make the robot fall
 	if (y < -3) {
@@ -546,6 +551,11 @@ void EggPawn_CanMoveAndRunPushed(EntityData1* data, PawnCustomData* pawndata) {
 			front = EggPawn_GetPoint(&data->Position, &data->Rotation, 20, 10);
 			y -= GetGroundYPosition(front.x, front.y, front.z, &temp);
 
+			if (y > -100000 && pawndata->miny && data->Position.y < pawndata->miny) {
+				pawndata->CanMove = true;
+				return;
+			}
+
 			if (y > -30 && y < 30) {
 				pawndata->CanMove = true;
 			}
@@ -628,7 +638,7 @@ void EggPawn_Main(ObjectMaster* obj) {
 	float frame = 0;
 	
 	//Run the logic if close enough
-	if (IsPlayerInsideSphere_(&data->Position, 500)) {
+	if (IsPlayerInsideSphere_(&data->Position, 500) && pawndata->pawnanim != EggPawnAnim::DROP2) {
 
 		//	Check if the enemy is destroyed by the player, or a player's object (missiles, hammer...)
 		if (EggPawn_CheckDamage(data, pawndata)) {
@@ -643,6 +653,12 @@ void EggPawn_Main(ObjectMaster* obj) {
 			if (EggPawn_CheckRobotFalling(data, pawndata) == true) { //if the robot isn't falling:
 				
 				data->Position.y = GetGroundPositionEntity(data, true);
+
+				if (pawndata->miny) {
+					data->Position.y = pawndata->miny;
+					data->Rotation.x = 0;
+					data->Rotation.z = 0;
+				}
 
 				EggPawn_WalkArround(data, pawndata);
 
@@ -794,7 +810,8 @@ void EggPawn_Init(ObjectMaster* obj) {
 		pawndata->pawnweapon =	(EggPawnWeapon)(int)data->Scale.y;
 		pawndata->pawnshield =	(EggPawnShield)(int)data->Scale.z;
 		pawndata->pawntype =	(EggPawnType)data->Rotation.x;
-		
+		pawndata->miny = data->Rotation.z;
+
 		data->Action = pawndata->startaction;
 
 		//	The King type is another model, swap

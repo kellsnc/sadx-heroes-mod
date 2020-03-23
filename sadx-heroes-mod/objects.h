@@ -69,6 +69,7 @@ void ObjCannon(ObjectMaster *a1);
 void ObjBoxW(ObjectMaster *a1);
 void OBJCASE(ObjectMaster *a1);
 void WaterfallObject(ObjectMaster *a1);
+void Laserdoor(ObjectMaster* obj);
 
 extern NJS_MATERIAL matlist_col[1];
 extern NJS_MATERIAL matlist_waterfall[1];

@@ -24,6 +24,7 @@ void EggFleet_InitObjects() {
 	EF_BIGSHIP = LoadObjectModel(EF_BIGSHIP, "EF_BIGSHIP");
 	EF_DIRSGNS = LoadObjectModel(EF_DIRSGNS, "EF_DIRSGNS");
 	EF_SHPBRK1 = LoadObjectModel(EF_SHPBRK1, "EF_SHPBRK1");
+	EF_SHPBRK2 = LoadObjectModel(EF_SHPBRK1, "EF_SHPBRK2");
 	EF_BARRIER = LoadObjectModel(EF_BARRIER, "EF_BARRIER");
 	EF_CANBRK1 = LoadObjectModel(EF_CANBRK1, "EF_CANBRK1");
 	EF_CANBRK2 = LoadObjectModel(EF_CANBRK2, "EF_CANBRK2");
@@ -52,6 +53,7 @@ void EggFleet_Delete(ObjectMaster *a1) {
 	EF_BIGSHIP = FreeMDL(EF_BIGSHIP);
 	EF_DIRSGNS = FreeMDL(EF_DIRSGNS);
 	EF_SHPBRK1 = FreeMDL(EF_SHPBRK1);
+	EF_SHPBRK2 = FreeMDL(EF_SHPBRK2);
 	EF_BARRIER = FreeMDL(EF_BARRIER);
 	EF_CANBRK1 = FreeMDL(EF_CANBRK1);
 	EF_CANBRK2 = FreeMDL(EF_CANBRK2);
@@ -79,13 +81,11 @@ void EggFleetHandler(ObjectMaster *obj) {
 		PlayMusic((MusicIDs)eggfleetmusicid);
 
 		entity->Position = { 500, 4230, 5320 };
-		//entity->Position = { -9501.797, -4170.793, -38106.13 };
-		/*entity->Position = { -8169.233,  -4742.518,  -34860.18 };
-		entity->Position = { -7004.627, 841.3749, -16349.14 };*/
 		entity->Position = { -4955.63916, 660.000000, -7245.75098 };
 		entity->Position = { 1, 5, -212.6692 };
-		//entity->Position = { -7022.25098, 841.003845, -16534.3379 }; 
-		entity->Position = { -5999.731, 2494.114, -8379.681 };
+		entity->Position = { -6001.799, 3435.489, -12710.38 };
+
+		SetCameraMode_(1);
 	}
 	else {
 		ChunkHandler("EF", EggFleetChunks, LengthOfArray(EggFleetChunks), entity->Position);
@@ -95,7 +95,7 @@ void EggFleetHandler(ObjectMaster *obj) {
 		if (entity->Status & Status_Ground || co2->AnimationThing.Index < 4 || co2->AnimationThing.Index > 19) {
 			obj->Data1->InvulnerableTime = 0;
 		}
-		else if (co2->Speed.y < 4) {
+		else if (co2->Speed.y < 4 && entity->field_A < 100) {
 			if (++obj->Data1->InvulnerableTime == 800) {
 				GameState = GameState_Death;
 			}

@@ -125,7 +125,7 @@ void e2000Laser_Main(ObjectMaster* obj) {
 		++data->field_A;
 	}
 
-	if (++data->InvulnerableTime > 400) {
+	if (++data->InvulnerableTime > 250) {
 		data->Scale.x -= 0.05f;
 
 		if (data->Scale.x <= 0) {
@@ -371,7 +371,7 @@ void e2000_Flying(EntityData1* data, E2KCustomData* e2kdata) {
 
 		break;
 	case e2000SubAction_Shoot:
-		if (++data->InvulnerableTime > 400) {
+		if (++data->InvulnerableTime > 250) {
 			data->NextAction = e2000SubAction_EndShoot;
 			data->InvulnerableTime = 0;
 		}
@@ -486,7 +486,7 @@ void e2000_Hover(EntityData1* data, E2KCustomData* e2kdata) {
 	case e2000SubAction_Shoot:
 		e2kdata->anim = e2000Anim::SHOTLOOP;
 
-		if (++data->InvulnerableTime > 400) {
+		if (++data->InvulnerableTime > 250) {
 			data->NextAction = e2000SubAction_EndShoot;
 			data->InvulnerableTime = 0;
 		}

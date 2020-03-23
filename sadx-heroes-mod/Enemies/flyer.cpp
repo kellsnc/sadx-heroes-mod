@@ -62,6 +62,8 @@ void Flyer_Main(ObjectMaster* obj) {
 		
 		if (FlyerTriggerID == obj->Data1->Scale.z || 0) {
 			data->Action = 1;
+			obj->DisplaySub = Flyer_Display;
+			PlayHeroesSound_EntityAndVolume(LevelSound_Egg_Engines, obj, 300, 3, true);
 		}
 	}
 	else {
@@ -186,9 +188,7 @@ void Flyer_Init(ObjectMaster* obj) {
 
 	data->Scale.x = 0;
 
-	//	Object functions
 	obj->MainSub = Flyer_Main;
-	obj->DisplaySub = Flyer_Display;
 }
 
 void Flyer_Trigger(ObjectMaster* obj) {

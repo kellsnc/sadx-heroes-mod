@@ -14,6 +14,7 @@ ModelInfo * EF_ANTENNA;
 ModelInfo * EF_BIGSHIP;
 ModelInfo * EF_DIRSGNS;
 ModelInfo * EF_SHPBRK1;
+ModelInfo * EF_SHPBRK2;
 ModelInfo * EF_BARRIER;
 ModelInfo * EF_CANBRK1;
 ModelInfo * EF_CANBRK2;
@@ -235,6 +236,8 @@ void EFRailends(ObjectMaster* obj) {
 		for (int i = 0; i < LengthOfArray(EggFleet_RailEnds); ++i) {
 			SOI_LIST item = EggFleet_RailEnds[i];
 			
+			if (EggFleet_RailEnds[i].Chunk > 0 && CurrentChunk != EggFleet_RailEnds[i].Chunk) continue;
+
 			if (IsPlayerInsideSphere_(&item.Position, 5000.0f)) {
 				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
 				njPushMatrix(0);
@@ -371,41 +374,81 @@ enum EFConveyorActions {
 	EFConveyorAction_Destroyed
 };
 
-void EFShipConveyor_Display(ObjectMaster* obj) {
+void EFBigShipControlRoom_Display(ObjectMaster* obj) {
+	if (MissedFrames) return;
+
+	EntityData1* data = obj->Data1; 
+
+	njSetTexture(CurrentLevelTexlist);
+
+	njPushMatrix(0);
+	njTranslateV(0, &data->Position);
+	Direct3D_PerformLighting(1);
+	njDrawModel_SADX(data->Object->basicdxmodel);
+	Direct3D_PerformLighting(0);
+	njPopMatrix(1);
+}
+
+void EFBigShipControlRoom_Main(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1;
 
-	if (!MissedFrames) {
-		njSetTexture(CurrentLevelTexlist);
+	if (data->Action == 0) {
+		DynColRadiusAuto(obj, 0);
+
+		if (obj->Parent->Data1->Action == EFConveyorAction_Destroy) {
+			data->Object = EF_SHPBRK1->getmodel()->child;
+			NJS_VECTOR temp = { data->Position.x, data->Position.y + 300, data->Position.z - 600 };
+			LoadObjectBreaker(&temp, &data->Rotation, EF_SHPBRK2->getmodel(), nullptr);
+			PlayHeroesSound(LevelSound_Egg_Boom1);
+			PlayHeroesSound(LevelSound_Egg_Boom2);
+
+			data->Action = 1;
+			DynCol_Delete(obj);
+		}
+	}
+
+	obj->DisplaySub(obj);
+}
+
+void EFShipConveyor_Display(ObjectMaster* obj) {
+	if (MissedFrames) return;
+	
+	EntityData1* data = obj->Data1;
+	njSetTexture(CurrentLevelTexlist);
+
+	if (IsPlayerInsideSphere_(&data->Position, 1500)) {
 		njPushMatrix(0);
 		njTranslateV(0, &data->Position);
-		njRotateXYZ(nullptr, data->Rotation.x, data->Rotation.y, data->Rotation.z);
-		njDrawModel_SADX(data->Object->basicdxmodel);
 		njDrawModel_SADX(data->Object->child->basicdxmodel);
 		njPopMatrix(1);
 	}
+
+	EFBigShipControlRoom_Display(obj);
 }
 
 void EFShipConveyor(ObjectMaster* obj) {
-	if (ClipSetObject(obj)) return;
-
 	EntityData1* data = obj->Data1;
 
-	switch (data->Action) {
-	case EFConveyorAction_Init:
+	if (ClipSetObject(obj)) return;
+
+	if (data->Action == EFConveyorAction_Init) {
 		obj->DisplaySub = EFShipConveyor_Display;
 		data->Object = EF_OBJSHIP->getmodel()->child->child;
 		data->Object->basicdxmodel->r = 500;
 
-		if (obj->SETData.SETData->SETEntry->Properties.y == 1) {
-			data->Action = EFConveyorAction_Destroyed;
-			obj->Child->Data1->Position = Platform_GetPoint(&data->Position, &data->Rotation, data->Scale.y);
-		}
-		else {
-			data->Action = EFConveyorAction_Run;
-		}
+		LoadChildObject(LoadObj_Data1, EFBigShipControlRoom_Main, obj);
+		obj->Child->Data1->Object = EF_SHPBRK1->getmodel();
+		obj->Child->Data1->Object->basicdxmodel->r = 2000;
+		obj->Child->DisplaySub = EFBigShipControlRoom_Display;
+		obj->Child->DeleteSub = DynCol_Delete;
+		obj->Child->Data1->Position.z -= 3;
+		data->Action = EFConveyorAction_Run;
 
-		return;
-	case EFConveyorAction_Run:
+		data->Index = 1;
+	}
+	else if (data->Action == EFConveyorAction_Run) {
+		if (IsPlayerInsideSphere_(&data->Position, 1500) == 0) return;
+
 		data->CharIndex = IsPlayerInsideSphere_(&data->Position, 400);
 
 		if (data->CharIndex) {
@@ -418,38 +461,51 @@ void EFShipConveyor(ObjectMaster* obj) {
 				player->Position.y < data->Position.y + 20 &&
 				player->Position.x > data->Position.x - 37 &&
 				player->Position.x < data->Position.x + 37) {
-				
+
+				SetCameraMode_(1);
+
 				if (CharObj2Ptrs[data->CharIndex]->SurfaceFlags & ColFlags_Solid) {
 					player->Position.z += 3; //push the player back
 				}
-				
-				if (player->Position.z < data->Position.z - 350) {
+
+				if (data->CharIndex == 0 && player->Position.z < data->Position.z - 350) {
 					if (data->Scale.x == 0) {
 						player->Position = { -7422, 3714, -13470 };
-						data->Scale = { -7899.938, 3433.604, -13462.01 };
+						data->Scale = { -7900.307, 3418.483, -13492.21 };
 					}
 					else {
 						player->Position = { -9497, -1835, -45280 };
 						data->Scale = { -9497, -1260, -48034 };
 					}
 
+					SetCameraMode_(0);
 					SwapChunk("EF", 7);
 					data->Action = EFConveyorAction_Destroy;
+					DynCol_Delete(obj);
 					return;
 				}
 			}
 		}
+		else {
+			data->Index = GetCameraMode_();
+		}
 
 		DynColRadiusAuto(obj, 0);
 		obj->DisplaySub(obj);
-
-		break;
-	case EFConveyorAction_Destroy:
-		EntityData1* player = EntityData1Ptrs[data->CharIndex];
-		TransformSpline(player, player->Position, data->Scale, (float)++data->field_A / 100);
-
-		break;
 	}
+	else if (data->Action == EFConveyorAction_Destroy) {
+		EntityData1* player = EntityData1Ptrs[data->CharIndex];
+		CharObj2Ptrs[0]->Speed = { 0, 0, 0 };
+		player->Position = GetPathPosition(&player->Position, &data->Scale, 0.05f);
+		player->Rotation.y = fPositionToRotation(&player->Position, &data->Scale).y;
+
+		if (player->field_A > 100) {
+			data->Action = EFConveyorAction_Destroyed;
+			SetCameraMode_(data->Index);
+		}
+	}
+
+	RunObjectChildren(obj);
 }
 
 void EFAntenna_Display(ObjectMaster* obj) {
@@ -1261,7 +1317,7 @@ ObjectListEntry EggFleetObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, 0, EFPlatforms, "EFPlatforms" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, 0, EFPipeline, "EFPipeline" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, 0, EFShipDoor, "EFShipDoor" }, //50
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1060000, 0, EFShipConveyor, "EFShipConveyor" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 5060000, 0, EFShipConveyor, "EFShipConveyor" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2060000, 0, EFAntenna, "EFAntenna" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2060000, 0, EFRailSign, "EFRailSign" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, 0, EFMissilePods, "EFMissilePods" },
@@ -1270,6 +1326,7 @@ ObjectListEntry EggFleetObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1560000, 0, e2000_Init, "E2000" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 10000000, 0, Flyer_Init, "Flyer" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1000000, 0, Flyer_Trigger, "Flyer Trigger" },
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1560000, 0, Laserdoor, "Laserdoor" } //60
 };
 ObjectList EggFleetObjectList = { arraylengthandptrT(EggFleetObjectList_list, int) };
 

@@ -469,7 +469,7 @@ float GetGroundPositionEntity(EntityData1* data, bool rot) {
 	WriteCall((void*)0x49F1C0, SpawnSplashParticles);
 	WriteCall((void*)0x49F43D, (ObjectFuncPtr)0x49F0B0); //DrawCharacterShadow
 
-	if (dyncolinfo.ColFlagsB & (ColFlags_Solid)) {
+	if (dyncolinfo.ColFlagsB & ColFlags_Solid) {
 		if (dyncolinfo.DistanceMax > -1000000) {
 			if (rot == true) {
 				data->Rotation = { dyncolinfo.ShadowRotationX, data->Rotation.y, dyncolinfo.ShadowRotationY };
@@ -495,6 +495,7 @@ NJS_VECTOR UnitMatrix_GetPoint(NJS_VECTOR* orig, Rotation3* rot, float x, float 
 	return point;
 }
 
+//Ninja stuff
 void DrawChunkModel(NJS_CNK_MODEL* model)
 {
 	DrawChunkModel_(model->vlist, model->plist);
@@ -516,4 +517,28 @@ void SetupWorldMatrix()
 	WorldMatrixBackup = WorldMatrix;
 	Direct3D_SetWorldTransform();
 	memcpy(_nj_current_matrix_ptr_, &ViewMatrix, sizeof(NJS_MATRIX));
+}
+
+void njTranslateX(float f) {
+	njTranslate(nullptr, f, 0, 0);
+}
+
+void njTranslateY(float f) {
+	njTranslate(nullptr, 0, f, 0);
+}
+
+void njTranslateZ(float f) {
+	njTranslate(nullptr, 0, 0, f);
+}
+
+void njScaleX(float f) {
+	njScale(nullptr, f, 1, 1);
+}
+
+void njScaleY(float f) {
+	njScale(nullptr, 1, f, 1);
+}
+
+void njScaleZ(float f) {
+	njScale(nullptr, 1, 1, f);
 }

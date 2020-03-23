@@ -26,6 +26,7 @@ ModelInfo * CO_LCHRAMP;
 ModelInfo * CO_LCKCASE;
 ModelInfo * CO_OCANNON;
 ModelInfo * CO_WOODBOX;
+ModelInfo * CO_OBJLASR;
 
 CollisionData Reel_col{
 	0, 0, 0x77, 0, 0x800400,{ 0, 0, 0 },{ 1, 1, 1 }, 0, 0
@@ -411,7 +412,7 @@ void ObjBalloon_Main(ObjectMaster *a1)
 	}
 }
 
-void __cdecl ObjBalloon(ObjectMaster *a1)
+void ObjBalloon(ObjectMaster *a1)
 {
 	a1->Data1->Scale.y = 3;
 	a1->Data1->Scale.z = 1;
@@ -420,7 +421,7 @@ void __cdecl ObjBalloon(ObjectMaster *a1)
 	a1->DisplaySub = &ObjBalloon_Display;
 }
 
-void __cdecl SHDashPanel(ObjectMaster *a1)
+void SHDashPanel(ObjectMaster *a1)
 {
 	if ((CurrentLevel == HeroesLevelID_CasinoPark || CurrentLevel == HeroesLevelID_BingoHighway) && a1->Data1->Scale.z == 1) {
 		CPDashPanel(a1);
@@ -455,7 +456,7 @@ void __cdecl SHDashPanel(ObjectMaster *a1)
 	}
 }
 
-void __cdecl SHDashHoop(ObjectMaster *a1)
+void SHDashHoop(ObjectMaster *a1)
 {
 	EntityData1 *v1 = a1->Data1;
 	Rotation3 Angle = v1->Rotation;
@@ -653,7 +654,7 @@ void ObjCannon_Main(ObjectMaster *a1)
 	}
 }
 
-void __cdecl ObjCannon(ObjectMaster *a1)
+void ObjCannon(ObjectMaster *a1)
 {
 	a1->Data1->NextAction = 0;
 
@@ -662,7 +663,7 @@ void __cdecl ObjCannon(ObjectMaster *a1)
 	a1->DeleteSub = &DynCol_Delete;
 }
 
-void __cdecl SHLaunchRamp(ObjectMaster *a1)
+void SHLaunchRamp(ObjectMaster *a1)
 {
 	if (!MissedFrames) {
 		njSetTexture(&SHCommonTextures);
@@ -727,7 +728,7 @@ void OBJCASE_Main(ObjectMaster *a1) {
 	}
 }
 
-void __cdecl OBJCASE(ObjectMaster *a1)
+void OBJCASE(ObjectMaster *a1)
 {
 	if (a1->Data1->Scale.y == 1 || IsSwitchPressed(a1->Data1->Scale.x)) {
 		a1->Data1->Action = 2;
@@ -798,12 +799,12 @@ void Capsule_Main_r(ObjectMaster *a1)
 	}
 }
 
-void __cdecl Capsule_Load_r(ObjectMaster *a1) {
+void Capsule_Load_r(ObjectMaster *a1) {
 	a1->DisplaySub = Capsule_Display_r;
 	a1->MainSub = Capsule_Main_r;
 }
 
-void __cdecl ObjBox_Display(ObjectMaster* a1)
+void ObjBox_Display(ObjectMaster* a1)
 {
 	if (!MissedFrames && a1->Data1->Action != 2 && IsPlayerInsideSphere(&a1->Data1->Position, a1->SETData.SETData->Distance / 1000)) {
 		njSetTexture(&SHCommonTextures);
@@ -857,7 +858,7 @@ void __cdecl ObjBox_Display(ObjectMaster* a1)
 	}
 }
 
-void __cdecl ObjBoxW(ObjectMaster *a1)
+void ObjBoxW(ObjectMaster *a1)
 {
 	uint8_t type = a1->Data1->Scale.x;
 
@@ -906,6 +907,88 @@ void __cdecl ObjBoxW(ObjectMaster *a1)
 	}
 }
 
+CollisionData Laser_col{
+	0, CollisionShape_Cone, 0x77, 0xE2, 0x800400,{ 0, 0, 0 },{ 0, 4, 4 }, 0, 0
+};
+
+//	Draw the laser object
+void ObjLaser_Display(ObjectMaster* obj) {
+	if (!MissedFrames) {
+		EntityData1* data = obj->Data1;
+
+		njSetTexture(&SHCommonTextures);
+
+		njPushMatrix(0);
+		njTranslateV(0, &data->Position);
+		njRotateXYZ(nullptr, data->Rotation.x, data->Rotation.y, data->Rotation.z);
+
+		njTranslateX(data->Scale.x);
+		njRotateZ(nullptr, 0x4000);
+		njDrawModel_SADX(data->Object->basicdxmodel);
+		njRotateZ(nullptr, 0xC000);
+
+		njTranslateX(-(data->Scale.x * 2));
+		njRotateZ(nullptr, 0xC000);
+		njDrawModel_SADX(data->Object->basicdxmodel);
+		
+		if (anim % 2 == 0 && data->Action != 2) {
+			njRotateZ(nullptr, 0x4000);
+			njTranslateX(data->Scale.x);
+			njRotateZ(nullptr, 0x4000);
+			njScaleY(5 + (data->Scale.x / 10));
+			njDrawModel_SADX(data->Object->child->basicdxmodel);
+		}
+		
+		njPopMatrix(1u);
+	}
+}
+
+// A laser that hurts the player
+// Param x: width, y: switch id, z: on/off
+void ObjLaser_Main(ObjectMaster* obj) {
+	if (obj->Parent == nullptr && ClipSetObject(obj)) return;
+	EntityData1* data = obj->Data1;
+
+	if (data->Action == 0) {
+		data->Action = 1;
+		data->Object = CO_OBJLASR->getmodel();
+		obj->DisplaySub = ObjLaser_Display;
+
+		Collision_Init(obj, &Laser_col, 1, 4);
+		data->CollisionInfo->CollisionArray->scale.x = data->Scale.x * 2;
+	}
+	else if (data->Scale.y && data->Action == 1) {
+		if (IsSwitchPressed((int)data->Scale.y)) {
+			Collision_Free(obj);
+			data->Action = 2;
+		}
+	}
+
+	AddToCollisionList(data);
+	obj->DisplaySub(obj);
+}
+
+// Load several laser objects
+// Param x: width, y: count, z: switch id
+void Laserdoor(ObjectMaster* obj) {
+	if (ClipSetObject(obj)) return;
+	EntityData1* data = obj->Data1;
+
+	while (data->Scale.y + 1) {
+
+		EntityData1* child = LoadChildObject(LoadObj_Data1, ObjLaser_Main, obj)->Data1;
+		child->Scale.x = data->Scale.x; //width
+		child->Scale.y = data->Scale.z; //switch id
+		child->Position = data->Position;
+		child->Rotation = data->Rotation;
+
+		data->Position.y += 20;
+		--data->Scale.y;
+	}
+
+	RunObjectChildren(obj);
+}
+
 void CommonObjects_Sounds(int ID, void *a2, int a3, void *a4) {
 	switch (ID) {
 	case 738:
@@ -942,6 +1025,7 @@ void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions
 	CO_LCKCASE = LoadCommonModel("CO_LCKCASE");
 	CO_OCANNON = LoadCommonModel("CO_OCANNON");
 	CO_WOODBOX = LoadCommonModel("CO_WOODBOX");
+	CO_OBJLASR = LoadCommonModel("CO_OBJLASR");
 
 	if (config->getBool("3- Objects", "GoalRing", true)) {
 		WriteJump((void*)0x46B170, Capsule_Load_r);

@@ -56,3 +56,10 @@ void DrawChunkModel(NJS_CNK_MODEL* model);
 void njCnkAction_Queue(NJS_ACTION* action, float frame, QueuedModelFlagsB flags);
 void njCnkAction(NJS_ACTION* action, float frame);
 void SetupWorldMatrix();
+
+void njTranslateX(float f);
+void njTranslateY(float f);
+void njTranslateZ(float f);
+void njScaleX(float f);
+void njScaleY(float f);
+void njScaleZ(float f);

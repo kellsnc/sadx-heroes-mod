@@ -38,6 +38,7 @@ extern ModelInfo * EF_ANTENNA;
 extern ModelInfo * EF_BIGSHIP;
 extern ModelInfo * EF_DIRSGNS;
 extern ModelInfo * EF_SHPBRK1;
+extern ModelInfo * EF_SHPBRK2;
 extern ModelInfo * EF_BARRIER;
 extern ModelInfo * EF_CANBRK1;
 extern ModelInfo * EF_CANBRK2;
