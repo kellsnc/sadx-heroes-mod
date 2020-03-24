@@ -618,6 +618,9 @@ bool EggPawn_CheckDamage(EntityData1* data, PawnCustomData* pawndata) {
 			}
 		}
 
+		EntityData1* player = GetCollidingEntityA(data);
+		if (player) EnemyBounceThing(player->CharIndex, 0, 2, -1);
+		
 		SpawnAnimal(2, PosToVector(data->Position));
 		Score += 100;
 

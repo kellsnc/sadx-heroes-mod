@@ -476,7 +476,7 @@ void AutoPathsMovs() {
 
 					//dirty jump fix because it doesn't work for some reason
 					if (PressedButtons[slot] == Buttons_A || HeldButtons2[slot] == Buttons_A) {
-						players[slot]->Position.y += 1;
+						players[slot]->Position.y += 3;
 						co2->Speed.y = 2;
 					}
 

@@ -228,12 +228,7 @@ void PlayHeroesAnimation(ObjectMaster* obj, uint8_t ID, AnimData* animdata, floa
 void CharactersCommon_Delete(ObjectMaster* obj) {
 	HeroesChars[obj->Data1->CharIndex] = nullptr;
 	
-	if (GameState == 15) {
-		njReleaseTexture((NJS_TEXLIST*)obj->Data1->LoopData);
-		UnloadFilesFuncs[obj->Data1->CharID - 9]();
-		CharFilesLoaded[obj->Data1->CharID - 9] = false;
-	}
-	else if (GameState == 9 || (GameState == 8 && Lives == 0)) {
+	if (GameState == GameState_ExitLevel || (GameState == GameState_Death && Lives == 0)) {
 		int character = obj->Data1->CharID;
 		bool ArethereOthers = false;
 
@@ -248,6 +243,11 @@ void CharactersCommon_Delete(ObjectMaster* obj) {
 			UnloadFilesFuncs[obj->Data1->CharID - 9]();
 			CharFilesLoaded[character - 9] = false;
 		}
+	}
+	else if (GameState != GameState_Restart && GameState != GameState_Death) {
+		njReleaseTexture((NJS_TEXLIST*)obj->Data1->LoopData);
+		UnloadFilesFuncs[obj->Data1->CharID - 9]();
+		CharFilesLoaded[obj->Data1->CharID - 9] = false;
 	}
 	
 	/*ObjectMaster* playerobj = PlayerPtrs[obj->Data1->CharIndex];
@@ -374,6 +374,11 @@ bool CharactersCommon_Init(ObjectMaster* obj, const char* name, NJS_TEXLIST* tex
 			return true;
 		}
 		
+		return false;
+	}
+
+	if (!playerobj) {
+		DeleteObject_(obj);
 		return false;
 	}
 
