@@ -14,6 +14,7 @@ static bool EnableEggFleet = true;
 static bool EnableSpecialStages = true;
 
 static bool EnableFog = true;
+static bool IsHeroesLevel = false;
 
 bool NoMysticMusic = false;
 bool NoPinball = false;
@@ -37,6 +38,10 @@ StartPosition Heroes_StartPositions[]{
 	{ HeroesLevelID_EggFleet, 0,{ 500, 4230, 5320 }, 0xBFFF },
 	{ HeroesLevelID_SpecialStages, 0,{ 200, 0, 0 }, 0xBFFF }
 };
+
+bool IsCurrentHeroesLevel() {
+	return IsHeroesLevel;
+}
 
 //Chunk system
 bool ForceWhiteDiffuse(NJS_MATERIAL* material, Uint32 flags)

@@ -822,11 +822,11 @@ void EggPawn_Init(ObjectMaster* obj) {
 			data->Object = EggPawnMdls[0]->getmodel();
 		}
 
-		if (pawndata->pawnweapon > EggPawnWeapon::None) {
+		if (pawndata->pawnweapon > EggPawnWeapon::None && pawndata->pawnweapon <= EggPawnWeapon::Cannon) {
 			LoadChildObject(LoadObj_Data1, EggPawnWeapon_Main, obj);
 		}
 
-		if (pawndata->pawnshield > EggPawnShield::None) {
+		if (pawndata->pawnshield > EggPawnShield::None && pawndata->pawnshield <= EggPawnShield::Rock) {
 			LoadChildObject(LoadObj_Data1, EggPawnShield_Main, obj);
 		}
 

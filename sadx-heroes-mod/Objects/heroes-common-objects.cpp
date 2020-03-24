@@ -1001,7 +1001,7 @@ void CommonObjects_Sounds(int ID, void *a2, int a3, void *a4) {
 }
 
 void CasinoObjects_Sounds(int ID, void *a2, int a3, void *a4) {
-	if (IsHeroesLevel && CurrentLevel != LevelIDs_Casinopolis) {
+	if (IsCurrentHeroesLevel() && CurrentLevel != LevelIDs_Casinopolis) {
 		switch (ID) {
 		case 245:
 			PlayHeroesSound(LevelSound_Csn_Bumper1);

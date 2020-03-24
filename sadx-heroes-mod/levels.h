@@ -36,7 +36,7 @@ extern NJS_MATERIAL matlist_col[1];
 extern NJS_MATERIAL matlist_waterfall[1];
 extern LandTable** CurrentLandAddress;
 
-static bool IsHeroesLevel = false;
+bool IsCurrentHeroesLevel();
 
 void AnimateTexlist(SH_ANIMTEXS *list, Int listcount, NJS_TEXLIST* texlist);
 void AnimateTextures(SH_ANIMTEXS *list, Int listcount);

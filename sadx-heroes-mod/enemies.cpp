@@ -20,7 +20,7 @@ void Enemies_CheckEnemiesSwap() {
 	if (EnableEnemiesSAStages == true) {
 		Enemies_CanSwap = true;
 	}
-	else if (IsHeroesLevel == true) {
+	else if (IsCurrentHeroesLevel() == true) {
 		Enemies_CanSwap = true;
 	}
 	else {
