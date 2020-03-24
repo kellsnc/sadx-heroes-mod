@@ -34,9 +34,9 @@ DataArray(Rotation3, LevelGlobalColors, 0x90BFE8, 42);
 
 extern NJS_MATERIAL matlist_col[1];
 extern NJS_MATERIAL matlist_waterfall[1];
-
 extern LandTable** CurrentLandAddress;
-extern bool IsHeroesLevel;
+
+static bool IsHeroesLevel = false;
 
 void AnimateTexlist(SH_ANIMTEXS *list, Int listcount, NJS_TEXLIST* texlist);
 void AnimateTextures(SH_ANIMTEXS *list, Int listcount);

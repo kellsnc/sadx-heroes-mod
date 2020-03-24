@@ -72,6 +72,10 @@ void EggFleetHandler(ObjectMaster *obj) {
 		obj->Data1->Action = 1;
 		obj->DeleteSub = EggFleet_Delete;
 
+		// fix a weird lighting issue
+		Obj_SkyDeck(obj); 
+		DeleteChildObjects(obj);
+
 		SetFog(&EggFleet_Fog);
 
 		EggFleet_InitObjects();
@@ -80,10 +84,13 @@ void EggFleetHandler(ObjectMaster *obj) {
 
 		PlayMusic((MusicIDs)eggfleetmusicid);
 
-		entity->Position = { 500, 4230, 5320 };
-		entity->Position = { -4955.63916, 660.000000, -7245.75098 };
-		entity->Position = { 1, 5, -212.6692 };
-		entity->Position = { -6001.799, 3435.489, -12710.38 };
+		if (RestartLevel.Position.x == 0) {
+			entity->Position = { 500, 4230, 5320 };
+		}
+
+		//entity->Position = { -4955.63916, 660.000000, -7245.75098 };
+		/*entity->Position = { 1, 5, -212.6692 };
+		entity->Position = { -6001.799, 3435.489, -12710.38 };*/
 
 		SetCameraMode_(1);
 	}
@@ -103,21 +110,12 @@ void EggFleetHandler(ObjectMaster *obj) {
 	}
 }
 
-void EggFleetSkybox(ObjectMaster *a1) {
-	if (a1->Data1->Action == 0) {
-		a1->Data1->Action = 1;
-		a1->DisplaySub = a1->MainSub;
+void EggFleetSkybox(ObjectMaster *obj) {
+	if (obj->Data1->Action == 0) {
+		obj->Data1->Action = 1;
+		obj->DisplaySub = obj->MainSub;
 
-		HeroesSkybox_Main(a1);
-
-		return;
-	}
-	else if (a1->Data1->Action == 1) {
-		DeleteObjectMaster(CurrentLevelObject);
-		CurrentLevelObject = LoadObject(LoadObj_Data1, 1, EggFleetHandler);
-		a1->Data1->Action = 2;
-
-		return;
+		HeroesSkybox_Main(obj);
 	}
 
 	if (!MissedFrames) {
@@ -149,6 +147,7 @@ void EggFleet_Init(const char *path, const HelperFunctions &helperFunctions) {
 
 	//Load the level handler
 	SkyboxObjects[HeroesLevelID_EggFleet] = EggFleetSkybox;
+	LevelObjects[HeroesLevelID_EggFleet] = EggFleetHandler;
 	DeathZoneList[HeroesLevelID_EggFleet][0] = nullptr;
 
 	EggFleetObjects_Init();

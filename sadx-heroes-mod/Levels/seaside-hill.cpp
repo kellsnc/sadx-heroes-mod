@@ -112,8 +112,6 @@ void SeasideHillHandler(ObjectMaster * a1) {
 			CurrentLevelTexlist = &BEACH01_TEXLIST;
 			CurrentLandAddress = (LandTable**)0x97DA28;
 			matlist_waterfall[0].attr_texId = 87;
-
-			if (entity->Position.z > -6264) LoadLevelFile("SH", 16);
 		}
 		else {
 			//Sea Gate

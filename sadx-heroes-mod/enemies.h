@@ -2,6 +2,7 @@
 
 void Enemies_Init(const char* path, const HelperFunctions& helperFunctions, const IniFile* config);
 void Enemies_CheckEnemiesSwap();
+void DeleteCustomEnemies();
 
 void LoadExplosion(NJS_VECTOR* position);
 void LoadMissile(NJS_VECTOR* pos, Rotation3* dir, float scale);

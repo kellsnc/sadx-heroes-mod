@@ -46,9 +46,12 @@ void Propeller_SetPlayerStatus(EntityData1* entity, CharObj2* co2) {
 void Propeller_SetPlayerFalling(EntityData1* entity, CharObj2* co2) {
 	switch (entity->CharID) {
 	case Characters_Sonic:
-		if ((co2->Upgrades & Upgrades_SuperSonic) == 0) co2->AnimationThing.Index = 18;
-		else  co2->AnimationThing.Index = 141;
-		entity->Action = 8;
+		if ((co2->Upgrades & Upgrades_SuperSonic) == 0) {
+			co2->AnimationThing.Index = 18;
+			entity->Action = 8;
+		}
+		else co2->AnimationThing.Index = 141;
+		
 		break;
 	case Characters_Amy: 
 		co2->AnimationThing.Index = 18;

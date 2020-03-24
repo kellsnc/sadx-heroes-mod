@@ -28,12 +28,7 @@ void Enemies_CheckEnemiesSwap() {
 	}
 }
 
-void DeleteAllObjects_r();
-Trampoline DeleteAllObjects_t((int)DeleteAllObjects, (int)DeleteAllObjects + 0x9, DeleteAllObjects_r);
-void DeleteAllObjects_r() {
-	VoidFunc(original, DeleteAllObjects_t.Target());
-	original();
-
+void DeleteCustomEnemies() {
 	EggPawn_DeleteFiles();
 	e2000_DeleteFiles();
 	Flyer_DeleteFiles();

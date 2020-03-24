@@ -168,6 +168,8 @@ void Sonic_Act1_r(EntityData1 *entity1, EntityData2 *entity2, CharObj2 *obj2) {
 void sub_473CE0(ObjectMaster* obj);
 Trampoline sub_473CE0_t(0x473CE0, 0x473CE8, sub_473CE0);
 void sub_473CE0(ObjectMaster* obj) {
+	if (GameState != GameState_Ingame) return;
+
 	if (EntityData1Ptrs[obj->Data1->CharIndex]->CharID != Characters_Knuckles) {
 		DeleteObject_(obj);
 		return;

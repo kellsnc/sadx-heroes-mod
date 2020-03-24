@@ -1316,7 +1316,7 @@ ObjectListEntry EggFleetObjectList_list[] = {
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 1060000, 0, EFCannon, "EFCannon" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, 0, EFPlatforms, "EFPlatforms" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, 0, EFPipeline, "EFPipeline" },
-	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 3060000, 0, EFShipDoor, "EFShipDoor" }, //50
+	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2060000, 0, EFShipDoor, "EFShipDoor" }, //50
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 5060000, 0, EFShipConveyor, "EFShipConveyor" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2060000, 0, EFAntenna, "EFAntenna" },
 	{ LoadObj_Data1, ObjIndex_Stage, DistObj_UseDist, 2060000, 0, EFRailSign, "EFRailSign" },

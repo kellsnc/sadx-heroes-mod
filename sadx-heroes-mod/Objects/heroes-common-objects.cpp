@@ -164,7 +164,7 @@ void ObjFan(ObjectMaster *obj)
 		data->Action = 1;
 	}
 	else {
-		if (data->Scale.y > 0) {
+		if (CurrentLevel == HeroesLevelID_EggFleet && data->Scale.y > 0) {
 			if (IsSwitchPressed(data->Scale.y) == false) {
 				DynColRadius(obj, 350, 0);
 				obj->DisplaySub(obj);

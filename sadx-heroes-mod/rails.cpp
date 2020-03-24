@@ -65,18 +65,20 @@ void RailPath_CharStatus(EntityData1* PlayerEntity, CharObj2* co2) {
 
 	switch (PlayerEntity->CharID) {
 	case Characters_Sonic:
-		co2->AnimationThing.Index = 102; //snowboard animation
+		if (SuperSonicFlag == 0) {
+			co2->AnimationThing.Index = 102; //snowboard animation
 
-		if (btn & Buttons_Left) {
-			co2->AnimationThing.Index = 103; //lean left
+			if (btn & Buttons_Left) {
+				co2->AnimationThing.Index = 103; //lean left
+			}
+			else if (btn & Buttons_Right) {
+				co2->AnimationThing.Index = 104; //lean right
+			}
+			else if (btn & Buttons_X) {
+				co2->AnimationThing.Index = 124;
+			}
 		}
-		else if (btn & Buttons_Right) {
-			co2->AnimationThing.Index = 104; //lean right
-		}
-		else if (btn & Buttons_X) {
-			co2->AnimationThing.Index = 124;
-		}
-
+		
 		break;
 	case Characters_Tails:
 		PlayerEntity->Action = 48;
@@ -99,7 +101,10 @@ void RailPath_Detach(EntityData1* entity, EntityData1* PlayerEntity, CharObj2* c
 
 		switch (id) {
 		case Characters_Sonic:
-			co2->AnimationThing.Index = 120;
+			if (SuperSonicFlag == 0) {
+				co2->AnimationThing.Index = 120;
+			}
+			
 			break;
 		}
 		break;
@@ -129,7 +134,10 @@ void RailPath_Detach(EntityData1* entity, EntityData1* PlayerEntity, CharObj2* c
 	case DetachType_Death:
 		switch (id) {
 		case Characters_Sonic:
-			co2->AnimationThing.Index = 86;
+			if (SuperSonicFlag == 0) {
+				co2->AnimationThing.Index = 86;
+			}
+			
 			break;
 		case Characters_Tails:
 			co2->AnimationThing.Index = 28;

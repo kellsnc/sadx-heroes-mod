@@ -25,6 +25,9 @@ ObjectFunc(Bomb_Init, 0x4AC920);
 ObjectFunc(UpdateSetDataAndDelete, 0x46C150);
 FunctionPointer(bool, CheckBombPowerupRadius, (NJS_VECTOR* pos), 0x4C0550);
 FunctionPointer(EntityData1*, SpawnAnimal, (int unknown, float x, float y, float z), 0x4BE610);
+VoidFunc(sub_40D3B0, 0x40D3B0);
+FunctionPointer(void, DrawModelBlend_IsVisible, (NJS_MODEL_SADX* model, QueuedModelFlagsB blend, float radius_scale), 0x4094D0);
+FunctionPointer(void, DrawSimpleModel_IsVisible, (NJS_MODEL_SADX* model, float scale), 0x407A00);
 
 extern float bombsize;
 

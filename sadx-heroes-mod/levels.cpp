@@ -13,19 +13,15 @@ static bool EnableMysticMansion = true;
 static bool EnableEggFleet = true;
 static bool EnableSpecialStages = true;
 
+static bool EnableFog = true;
+
 bool NoMysticMusic = false;
 bool NoPinball = false;
-bool EnableFog = true;
-bool IsHeroesLevel = false;
 
-LandTable** CurrentLandAddress;
+LandTable** CurrentLandAddress = nullptr;
 
-LandTableInfo *info = nullptr;
-LandTableInfo *oldinfo = nullptr;
-
-VoidFunc(sub_40D3B0, 0x40D3B0);
-FunctionPointer(void, DrawModelBlend_IsVisible, (NJS_MODEL_SADX *model, QueuedModelFlagsB blend, float radius_scale), 0x4094D0);
-FunctionPointer(void, DrawSimpleModel_IsVisible, (NJS_MODEL_SADX *model, float scale), 0x407A00);
+LandTableInfo* info		= nullptr;
+LandTableInfo* oldinfo	= nullptr;
 
 StartPosition Heroes_StartPositions[]{
 	{ HeroesLevelID_SeasideHill, 0,{ 0, 6.800581f, 5.217285f }, 0xBFFF },
@@ -141,21 +137,19 @@ void SwapChunk(const char* shortname, int chunknb) {
 }
 
 void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size, NJS_VECTOR pos) {
-	if (!DroppedFrames && anim % 4 == 0) {
-		for (Int i = 0; i < size; ++i) {
-			if (chunklist[i].Chunk != CurrentChunk) {
-				EntityData1 *entity = EntityData1Ptrs[0];
-				if (entity != nullptr) {
-					if (((chunklist[i].Position1.x == 0 || pos.x < chunklist[i].Position1.x)) &&
-						((chunklist[i].Position1.y == 0 || pos.y < chunklist[i].Position1.y)) &&
-						((chunklist[i].Position1.z == 0 || pos.z < chunklist[i].Position1.z)) &&
-						((chunklist[i].Position2.x == 0 || pos.x > chunklist[i].Position2.x)) &&
-						((chunklist[i].Position2.y == 0 || pos.y > chunklist[i].Position2.y)) &&
-						((chunklist[i].Position2.z == 0 || pos.z > chunklist[i].Position2.z))) {
+	for (Int i = 0; i < size; ++i) {
+		if (chunklist[i].Chunk != CurrentChunk) {
+			EntityData1 *entity = EntityData1Ptrs[0];
+			if (entity != nullptr) {
+				if (((chunklist[i].Position1.x == 0 || pos.x < chunklist[i].Position1.x)) &&
+					((chunklist[i].Position1.y == 0 || pos.y < chunklist[i].Position1.y)) &&
+					((chunklist[i].Position1.z == 0 || pos.z < chunklist[i].Position1.z)) &&
+					((chunklist[i].Position2.x == 0 || pos.x > chunklist[i].Position2.x)) &&
+					((chunklist[i].Position2.y == 0 || pos.y > chunklist[i].Position2.y)) &&
+					((chunklist[i].Position2.z == 0 || pos.z > chunklist[i].Position2.z))) {
 
-						SwapChunk(level, chunklist[i].Chunk);
-						break;
-					}
+					SwapChunk(level, chunklist[i].Chunk);
+					break;
 				}
 			}
 		}
@@ -168,6 +162,8 @@ void LevelHandler_Delete(ObjectMaster * a1) {
 	delete oldinfo;
 	oldinfo = nullptr;
 	anim = 0;
+
+	DeleteCustomEnemies();
 
 	for (uint16_t i = 0; i < SETTable_Count; ++i) {
 		if (CurrentSetFile[i].Properties.z == 1
@@ -309,7 +305,7 @@ void __cdecl DrawLandTableFog(NJS_MODEL_SADX *a1)
 	}
 	else
 	{
-		if (IsHeroesLevel && a1->mats[0].attrflags & NJD_FLAG_IGNORE_LIGHT) {
+		if (IsHeroesLevel == true && a1->mats[0].attrflags & NJD_FLAG_IGNORE_LIGHT) {
 			DisableFog();
 			DrawSimpleModel_IsVisible(a1, 1.0);
 			ToggleStageFog();

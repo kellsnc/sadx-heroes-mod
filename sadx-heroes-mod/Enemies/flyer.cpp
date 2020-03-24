@@ -56,7 +56,7 @@ void Flyer_Display(ObjectMaster* obj) {
 void Flyer_Main(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1;
 	ObjectData* data2 = (ObjectData*)obj->Data2;
-
+	
 	if (data->Action == 0) {
 		if (ClipSetObject(obj)) return;
 		
@@ -69,6 +69,8 @@ void Flyer_Main(ObjectMaster* obj) {
 	else {
 		if (OhNoImDead(data, (ObjectData2*)data2)) {
 			LoadObjectBreaker(&data->Position, &data->Rotation, FlyerMdl->getmodel()->child, &FLYER_TEXLIST);
+			PlayHeroesSound_Pos(CommonSound_Explosion, &data->Position, 300, 5, false);
+
 			Score += 400;
 			UpdateSetDataAndDelete(obj);
 			
