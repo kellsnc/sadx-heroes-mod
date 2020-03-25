@@ -120,7 +120,7 @@ void EFPlatforms(ObjectMaster* obj) {
 
 		if (data->Scale.x == 1) {
 			data->Object = data->Object->child;
-			data->Object->basicdxmodel->r = 100;
+			data->Object->basicdxmodel->r = 1000;
 			data->Scale.x = 0;
 		}
 		
@@ -164,6 +164,13 @@ void EFPlatforms(ObjectMaster* obj) {
 				}
 
 				obj->Child->Data1->Position = Entity_GetPoint(&data->Position, &data->Rotation, 0, 0, -50);
+				break;
+			case 2:
+				if (!obj->Child) {
+					LoadChildObject(LoadObj_Data1, Spring_Main, obj)->Data1->Scale.x = 8;
+				}
+
+				obj->Child->Data1->Position = data->Position;
 				break;
 			}
 			
@@ -476,6 +483,7 @@ void EFShipConveyor(ObjectMaster* obj) {
 					else {
 						player->Position = { -9497, -1835, -45280 };
 						data->Scale = { -9497, -1260, -48034 };
+						LoadLevelResults();
 					}
 
 					SetCameraMode_(0);
@@ -664,7 +672,7 @@ void EFBgShips(ObjectMaster* obj) {
 
 				switch ((int)item.DrawDistance) {
 				case EFShipType_LargeShip:
-					if (IsPlayerInsideSphere_(&item.Position, 10000.0f)) {
+					if (CurrentChunk < 10 && IsPlayerInsideSphere_(&item.Position, 10000.0f)) {
 						DrawObject(EF_BIGSHIP->getmodel());
 					}
 					break;
@@ -944,7 +952,7 @@ void EFCannon2_Display(ObjectMaster* obj) {
 		njSetTexture(CurrentLevelTexlist);
 		njPushMatrix(0);
 		njTranslateV(0, &data->Position);
-		njRotateXYZ(nullptr, 0, data->Rotation.y, 0);
+		njRotateXYZ(nullptr, data->Rotation.x, data->Rotation.y, data->Rotation.z);
 		njDrawModel_SADX(data->Object->basicdxmodel);
 		njTranslate(0, 0, 10, 0);
 		njDrawModel_SADX(data->Object->child->basicdxmodel);
@@ -959,23 +967,19 @@ void EFCannon1_Display(ObjectMaster* obj) {
 		njSetTexture(CurrentLevelTexlist);
 		njPushMatrix(0);
 		njTranslateV(0, &data->Position);
-		njRotateY(nullptr, data->Rotation.y);
+		njRotateX(0, data->Rotation.x);
+		njRotateY(0, data->Rotation.y);
 		
 		if (!data->Unknown) {
-			njRotateXYZ(nullptr, data->Rotation.x, 0, data->Rotation.z);
 			njDrawModel_SADX(data->Object->basicdxmodel);
-			njRotateXYZ(nullptr, -data->Rotation.x, 0, -data->Rotation.z);
 		}
 
 		njTranslate(0, 0, 40, 0);
 
-		njRotateXYZ(nullptr, data->Rotation.x, 0, data->Rotation.z);
 		njDrawModel_SADX(data->Object->child->basicdxmodel);
-		njRotateXYZ(nullptr, -data->Rotation.x, 0, -data->Rotation.z);
 
 		njTranslate(0, 0, 20, 0);
 
-		njRotateXYZ(nullptr, data->Rotation.x, 0, data->Rotation.z);
 		njRotateX(nullptr, data->field_A);
 		njDrawModel_SADX(data->Object->child->child->basicdxmodel);
 		njPopMatrix(1u);
@@ -1041,15 +1045,24 @@ void EFCannon1_Fire(EntityData1* data) {
 	bullet->Data1->Scale.x = 2;
 }
 
+void EFCanon_SetHeight(EntityData1* data) {
+	float y = GetGroundYPosition(data->Position.x, data->Position.y + 20, data->Position.z, &data->Rotation);
+	if (y > -10000) {
+		data->Position.y = y;
+	}
+}
+
 void EFCannon2_Main(ObjectMaster* obj) {
 	if (ClipSetObject(obj) || EFCannon_Explode(obj)) return;
 
 	EntityData1* data = obj->Data1;
 
+	if (data->CharID == 1) EFCanon_SetHeight(data);
+
 	switch (data->Action) {
 	case EFConveyorAction_Run:
 		//Detect if the player is in front of the cannon
-		if (IsPlayerInsideSphere_(&Entity_GetPoint(&data->Position, &data->Rotation, 0, 10, 150), 100)) {
+		if (IsPlayerInsideSphere_(&Entity_GetPoint(&data->Position, &data->Rotation, 0, 10, 150), 150)) {
 			EFCannon2_Fire(data, -10);
 			EFCannon2_Fire(data, 10);
 			data->Action = EFCannonAction_Bullet;
@@ -1074,6 +1087,8 @@ void EFCannon1_Main(ObjectMaster* obj) {
 
 	EntityData1* data = obj->Data1;
 	uint8_t player = 0;
+
+	if (data->CharID == 1) EFCanon_SetHeight(data);
 	
 	if (data->Action >= EFCannonAction_Seek) {
 		if (data->Unknown == 1 || data->Unknown == 2) {
@@ -1231,7 +1246,9 @@ void EFCannon(ObjectMaster* obj) {
 		}
 
 		data->Unknown = data->Scale.x;
+		data->CharID = data->Scale.z;
 		data->Scale.x = 0;
+		data->Scale.z = 0;
 	}
 }
 

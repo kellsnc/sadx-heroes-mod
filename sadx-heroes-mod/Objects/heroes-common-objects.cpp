@@ -656,8 +656,6 @@ void ObjCannon_Main(ObjectMaster *a1)
 
 void ObjCannon(ObjectMaster *a1)
 {
-	a1->Data1->NextAction = 0;
-
 	a1->MainSub = &ObjCannon_Main;
 	a1->DisplaySub = &ObjCannon_Display;
 	a1->DeleteSub = &DynCol_Delete;

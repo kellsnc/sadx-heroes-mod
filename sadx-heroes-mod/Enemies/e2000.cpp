@@ -334,6 +334,8 @@ bool e2000_CheckDeath(EntityData1* data, E2KCustomData* e2kdata) {
  		LoadObjectBreaker(&data->Position, &data->Rotation, data->Object->child, &E2000_TEXLIST);
 		return true;
 	}
+
+	return false;
 }
 
 void e2000_Flying(EntityData1* data, E2KCustomData* e2kdata) {
@@ -355,7 +357,7 @@ void e2000_Flying(EntityData1* data, E2KCustomData* e2kdata) {
 
 		break;
 	case e2000SubAction_Search:
-		data->CharIndex = IsPlayerInsideSphere_(&data->Position, 700);
+		data->CharIndex = IsPlayerInsideSphere_(&data->Position, 300);
 
 		if (data->CharIndex) {
 			data->Rotation.y = -fPositionToRotation(&data->Position, &EntityData1Ptrs[data->CharIndex - 1]->Position).y - 0x4000;
@@ -450,7 +452,7 @@ void e2000_Hover(EntityData1* data, E2KCustomData* e2kdata) {
 			}
 		}
 
-		data->CharIndex = IsPlayerInsideSphere_(&data->Position, 700);
+		data->CharIndex = IsPlayerInsideSphere_(&data->Position, 300);
 		if (data->CharIndex) {
 			data->Rotation.y = -fPositionToRotation(&data->Position, &EntityData1Ptrs[data->CharIndex - 1]->Position).y - 0x4000;
 

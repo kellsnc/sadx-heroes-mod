@@ -88,10 +88,6 @@ void EggFleetHandler(ObjectMaster *obj) {
 			entity->Position = { 500, 4230, 5320 };
 		}
 
-		//entity->Position = { -4955.63916, 660.000000, -7245.75098 };
-		/*entity->Position = { 1, 5, -212.6692 };
-		entity->Position = { -6001.799, 3435.489, -12710.38 };*/
-
 		SetCameraMode_(1);
 	}
 	else {
@@ -104,7 +100,7 @@ void EggFleetHandler(ObjectMaster *obj) {
 		}
 		else if (co2->Speed.y < 4 && entity->field_A < 100) {
 			if (++obj->Data1->InvulnerableTime == 800) {
-				GameState = GameState_Death;
+				KillPlayer(0);
 			}
 		}
 	}

@@ -28,6 +28,7 @@ FunctionPointer(EntityData1*, SpawnAnimal, (int unknown, float x, float y, float
 VoidFunc(sub_40D3B0, 0x40D3B0);
 FunctionPointer(void, DrawModelBlend_IsVisible, (NJS_MODEL_SADX* model, QueuedModelFlagsB blend, float radius_scale), 0x4094D0);
 FunctionPointer(void, DrawSimpleModel_IsVisible, (NJS_MODEL_SADX* model, float scale), 0x407A00);
+FunctionPointer(void, KillPlayer, (uint8_t ID), 0x440CD0);
 
 extern float bombsize;
 
