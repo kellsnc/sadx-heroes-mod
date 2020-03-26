@@ -160,17 +160,17 @@ void EFPlatforms(ObjectMaster* obj) {
 			switch (data->CharID) {
 			case 1:
 				if (!obj->Child) {
-					LoadChildObject(LoadObj_Data1, Spring_Main, obj)->Data1->Scale.x = 6;
+					LoadChildObject(LoadObj_Data1, Spring_Main, obj)->Data1->Scale.y = 2;
 				}
 
 				obj->Child->Data1->Position = Entity_GetPoint(&data->Position, &data->Rotation, 0, 0, -50);
 				break;
 			case 2:
 				if (!obj->Child) {
-					LoadChildObject(LoadObj_Data1, Spring_Main, obj)->Data1->Scale.x = 8;
+					LoadChildObject(LoadObj_Data1, Spring_Main, obj)->Data1->Scale.y = 3;
 				}
 
-				obj->Child->Data1->Position = data->Position;
+				obj->Child->Data1->Position = Entity_GetPoint(&data->Position, &data->Rotation, 0, 10, 0);
 				break;
 			}
 			
