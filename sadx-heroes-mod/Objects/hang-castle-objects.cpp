@@ -162,6 +162,7 @@ void HCTree(ObjectMaster *a1)
 
 	a1->MainSub = &HCTree_Main;
 	a1->DisplaySub = &HCTree_Display;
+	a1->DeleteSub = DynCol_Delete;
 }
 
 void HCPlantA_Display(ObjectMaster *a1) {

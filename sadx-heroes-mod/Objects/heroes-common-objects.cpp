@@ -160,6 +160,7 @@ void ObjFan(ObjectMaster *obj)
 
 	if (data->Action == 0) {
 		obj->DisplaySub = ObjFan_Display;
+		obj->DeleteSub = DynCol_Delete;
 		data->Object = CO_COMNFAN->getmodel();
 		data->Action = 1;
 	}
@@ -323,9 +324,9 @@ void ObjReel(ObjectMaster *a1)
 	a1->Data1->Scale.y = 0;
 	Collision_Init(a1, &Reel_col, 1, 2u);
 
-	a1->MainSub = &ObjReel_Main;
-	a1->DisplaySub = &ObjReel_Display;
-	a1->DeleteSub = &DynCol_Delete;
+	a1->MainSub = ObjReel_Main;
+	a1->DisplaySub = ObjReel_Display;
+	a1->DeleteSub = DynCol_Delete;
 }
 
 void WaterfallObject(ObjectMaster *a1) {
@@ -631,6 +632,7 @@ void ObjCannon_Main(ObjectMaster *a1)
 				EntityData1 *entity = EntityData1Ptrs[a1->Data1->Status];
 				CharObj2 *co2 = CharObj2Ptrs[a1->Data1->Status];
 				entity->Rotation.y = a1->Data1->Rotation.y - 0x4000;
+				if (CurrentLevel == HeroesLevelID_EggFleet) entity->Rotation.y += 0x8000;
 				co2->Speed.x = a1->Data1->Scale.x;
 				co2->Speed.y = a1->Data1->Scale.y;
 				PlayHeroesSound(CommonSound_CannonLch);
@@ -638,7 +640,8 @@ void ObjCannon_Main(ObjectMaster *a1)
 
 			DoBall(a1->Data1->Status);
 		}
-
+		
+		
 		if (a1->Data1->Action == 5) {
 			if (a1->Data1->NextAction < 101) {
 				a1->Data1->Rotation.x += 100;

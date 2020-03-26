@@ -229,14 +229,14 @@ void HCDoor_Main(ObjectMaster *a1) {
 	}
 }
 
-void HCDoor(ObjectMaster *a1)
+void HCDoor(ObjectMaster* a1)
 {
 	a1->Data1->Object = &CP_DOORCOL;
 	if (a1->Data1->Scale.z == 1) a1->Data1->Action = 2;
 
-	a1->MainSub = &HCDoor_Main;
-	a1->DisplaySub = &HCDoor_Display;
-	a1->DeleteSub = &DynCol_Delete;
+	a1->MainSub = HCDoor_Main;
+	a1->DisplaySub = HCDoor_Display;
+	a1->DeleteSub = DynCol_Delete;
 }
 
 void HCTorch_Display(ObjectMaster *a1) {
@@ -300,9 +300,9 @@ void HCTorch(ObjectMaster *a1)
 		a1->Data1->Scale.z = 2;
 	}
 
-	a1->MainSub = &HCTorch_Main;
-	a1->DisplaySub = &HCTorch_Display;
-	a1->DeleteSub = &DynCol_Delete;
+	a1->MainSub = HCTorch_Main;
+	a1->DisplaySub = HCTorch_Display;
+	a1->DeleteSub = DynCol_Delete;
 }
 
 void HCWall_Display(ObjectMaster *a1)
@@ -408,9 +408,9 @@ void HCWall(ObjectMaster *a1)
 		}
 	}
 
-	a1->MainSub = &HCWall_Main;
-	a1->DisplaySub = &HCWall_Display;
-	a1->DeleteSub = &DynCol_Delete;
+	a1->MainSub = HCWall_Main;
+	a1->DisplaySub = HCWall_Display;
+	a1->DeleteSub = DynCol_Delete;
 }
 
 void HCPlatform_Display(ObjectMaster *a1) {
@@ -555,7 +555,7 @@ void HCPlatform(ObjectMaster *a1)
 		od2->vector_b = a1->Data1->Scale; //dest
 	}
 
-	a1->MainSub = &HCPlatform_Main;
-	a1->DisplaySub = &HCPlatform_Display;
-	a1->DeleteSub = &DynCol_Delete;
+	a1->MainSub = HCPlatform_Main;
+	a1->DisplaySub = HCPlatform_Display;
+	a1->DeleteSub = DynCol_Delete;
 }

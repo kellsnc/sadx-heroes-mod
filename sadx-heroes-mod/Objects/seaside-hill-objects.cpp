@@ -56,6 +56,7 @@ void SHWaterfalls(ObjectMaster *a1) {
 			ObjectMaster *obj;
 			obj = LoadObject(LoadObj_Data1, 4, WaterfallObject);
 			obj->DisplaySub = WaterfallObject;
+			obj->DeleteSub = DynCol_Delete;
 			obj->Data1->Position = item.Position;
 
 			obj->Data1->Rotation.x = item.Rotation[0];
@@ -139,9 +140,9 @@ void __cdecl SHMovingPltfrms(ObjectMaster *a1)
 	a1->Data1->Action = (char)a1->Data1->Scale.x;
 	a1->Data1->Scale.x = a1->Data1->Position.y;
 
-	a1->MainSub = &SHMovingPltfrms_Main;
-	a1->DisplaySub = &SHMovingPltfrms_Display;
-	a1->DeleteSub = &DynCol_Delete;
+	a1->MainSub = SHMovingPltfrms_Main;
+	a1->DisplaySub = SHMovingPltfrms_Display;
+	a1->DeleteSub = DynCol_Delete;
 }
 
 void __cdecl SHRuinTrigger(ObjectMaster *a1)
@@ -168,9 +169,9 @@ void __cdecl SHPlatforms(ObjectMaster *a1)
 {
 	a1->Data1->Object = SH_PLATFOR->getmodel();
 
-	a1->MainSub = &SHPlatforms_Main;
-	a1->DisplaySub = &SHPlatforms_Main;
-	a1->DeleteSub = &DynCol_Delete;
+	a1->MainSub = SHPlatforms_Main;
+	a1->DisplaySub = SHPlatforms_Main;
+	a1->DeleteSub = DynCol_Delete;
 }
 
 void Flags_Reset() {
@@ -259,9 +260,9 @@ void __cdecl SHSpikes(ObjectMaster *a1)
 	a1->Data1->Object = SH_POLFLAG->getmodel();
 	a1->Data1->Scale.y = 0;
 
-	a1->MainSub = &SHSpikes_Main;
-	a1->DisplaySub = &SHSpikes_Display;
-	a1->DeleteSub = &DynCol_Delete;
+	a1->MainSub = SHSpikes_Main;
+	a1->DisplaySub = SHSpikes_Display;
+	a1->DeleteSub = DynCol_Delete;
 }
 
 PVMEntry SeasideHillObjectTextures[] = {

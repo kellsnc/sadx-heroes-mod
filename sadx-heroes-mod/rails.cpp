@@ -82,6 +82,19 @@ void RailPath_CharStatus(EntityData1* PlayerEntity, CharObj2* co2) {
 		break;
 	case Characters_Tails:
 		PlayerEntity->Action = 48;
+		
+		co2->AnimationThing.Index = 107; //snowboard animation
+
+		if (btn & Buttons_Left) {
+			co2->AnimationThing.Index = 112; //lean left
+		}
+		else if (btn & Buttons_Right) {
+			co2->AnimationThing.Index = 113; //lean right
+		}
+		else if (btn & Buttons_X) {
+			co2->AnimationThing.Index = 108;
+		}
+
 		break;
 	}
 }

@@ -53,6 +53,26 @@ void Flyer_Display(ObjectMaster* obj) {
 	DrawShadow(data, 2);
 }
 
+NJS_VECTOR Flyer_GetPoint(NJS_VECTOR* orig, NJS_VECTOR* start, NJS_VECTOR* end, Angle y, float state) {
+	NJS_VECTOR point;
+	NJS_VECTOR start2;
+	NJS_VECTOR end2;
+
+	njPushMatrix(_nj_unit_matrix_);
+	njTranslateV(nullptr, orig);
+	njRotateY(nullptr, y);
+	njCalcPoint(0, start, &start2);
+	njPopMatrix(1u);
+
+	njPushMatrix(_nj_unit_matrix_);
+	njTranslateV(nullptr, orig);
+	njRotateY(nullptr, y);
+	njCalcPoint(0, end, &end2);
+	njPopMatrix(1u);
+
+	return GetPathPosition(&start2, &end2, state);
+}
+
 void Flyer_Main(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1;
 	ObjectData* data2 = (ObjectData*)obj->Data2;
@@ -60,7 +80,7 @@ void Flyer_Main(ObjectMaster* obj) {
 	if (data->Action == 0) {
 		if (ClipSetObject(obj)) return;
 		
-		if (FlyerTriggerID == obj->Data1->Scale.z || 0) {
+		if (FlyerTriggerID == obj->Data1->Scale.z) {
 			data->Action = 1;
 			obj->DisplaySub = Flyer_Display;
 			PlayHeroesSound_EntityAndVolume(LevelSound_Egg_Engines, obj, 300, 3, true);
@@ -100,12 +120,17 @@ void Flyer_Main(ObjectMaster* obj) {
 		NJS_VECTOR* end = (NJS_VECTOR*)pos[data->field_A + 1].key;
 		Rotation3* rot = (Rotation3*)ang[data->field_A].key;
 
-		data->Position = GetPathPosition(start, end, data->Scale.y);
 		data->Rotation = *rot;
-		
-		njAddVector(&data->Position, &data2->StartPosition);
-		//EntityData1Ptrs[0]->Position = data->Position;
 
+		if (data2->field_0) {
+			data->Position = Flyer_GetPoint(&data2->StartPosition, start, end, data2->field_0, data->Scale.y);
+			data->Rotation.y += data2->field_0;
+		}
+		else {
+			data->Position = GetPathPosition(start, end, data->Scale.y);
+			njAddVector(&data->Position, &data2->StartPosition);
+		}
+		
 		PlayHeroesAnimation(obj, 0, &FlyerAnimData, 0, 0);
 		AddToCollisionList(data);
 		obj->DisplaySub(obj);
@@ -185,10 +210,12 @@ void Flyer_Init(ObjectMaster* obj) {
 	}
 	else {
 		data->LoopData = (Loop*)CurrentLevelPath[path - LengthOfArray(CommonPaths)]->getmotion();
-		data->NextAction = 1;
 	}
 
-	data->Scale.x = 0;
+	if (data->Rotation.y) {
+		ObjectData* data2 = (ObjectData*)obj->Data2;
+		data2->field_0 = data->Rotation.y;
+	}
 
 	obj->MainSub = Flyer_Main;
 }

@@ -215,6 +215,7 @@ void EFPipeline(ObjectMaster* obj) {
 	
 	if (data->Action == 0) {
 		obj->DisplaySub = EFPipeline_Display;
+		obj->DeleteSub = DynCol_Delete;
 		data->Object = EF_PIPLINE->getmodel();
 		data->Object->basicdxmodel->r = 300;
 		data->Object->child->basicdxmodel->r = 300;
@@ -313,6 +314,7 @@ void EFShipDoor(ObjectMaster* obj) {
 	switch (data->Action) {
 	case EFDoorAction_Init:
 		obj->DisplaySub = EFShipDoor_Display;
+		obj->DeleteSub = DynCol_Delete;
 		data->Object = EF_OBJSHIP->getmodel();
 		data->Object->basicdxmodel->r = 200;
 		data->Object->child->basicdxmodel->r = 150;
@@ -440,6 +442,7 @@ void EFShipConveyor(ObjectMaster* obj) {
 
 	if (data->Action == EFConveyorAction_Init) {
 		obj->DisplaySub = EFShipConveyor_Display;
+		obj->DeleteSub = DynCol_Delete;
 		data->Object = EF_OBJSHIP->getmodel()->child->child;
 		data->Object->basicdxmodel->r = 500;
 
@@ -546,6 +549,7 @@ void EFAntenna(ObjectMaster* obj) {
 
 	if (data->Action == 0) {
 		obj->DisplaySub = EFAntenna_Display;
+		obj->DeleteSub = DynCol_Delete;
 		data->Object = EF_ANTENNA->getmodel();
 		data->Object->basicdxmodel->r = 50;
 
@@ -588,6 +592,7 @@ void EFRailSign(ObjectMaster* obj) {
 
 	if (data->Action == 0) {
 		obj->DisplaySub = EFRailSign_Display;
+		obj->DeleteSub = DynCol_Delete;
 		data->Object = EF_DIRSGNS->getmodel()->child;
 		data->Object->basicdxmodel->r = 50;
 
@@ -729,6 +734,7 @@ void EFBigFans(ObjectMaster* obj) {
 
 	if (data->Action == 0) {
 		obj->DisplaySub = EFBigFans_Display;
+		obj->DeleteSub = DynCol_Delete;
 		data->Object = EF_EBIGFAN->getmodel();
 		data->Object->basicdxmodel->r = 300;
 		data->Action = 1;
@@ -763,6 +769,7 @@ void EFBigFans(ObjectMaster* obj) {
 
 void EFMissilePods(ObjectMaster* obj) {
 	obj->MainSub = mainSub_DyncolGlobal;
+	obj->DeleteSub = DynCol_Delete;
 	obj->DisplaySub = displaySub_Global;
 	obj->Data1->Object = EF_CANDECO->getmodel();
 	obj->Data1->Object->basicdxmodel->r = 50;

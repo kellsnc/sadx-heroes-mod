@@ -31,7 +31,10 @@ void EggFleet_InitObjects() {
 	EF_CANDECO = LoadObjectModel(EF_CANDECO, "EF_CANDECO");
 	EF_EBIGFAN = LoadObjectModel(EF_EBIGFAN, "EF_EBIGFAN");
 	EF_EHELICE = LoadObjectModel(EF_EHELICE, "EF_EHELICE");
-	
+
+	AddUVList(EggFleet_UVShift, 0, EF_OBJSHIP->getmodel()->child->child->child->basicdxmodel, 0);
+	AddUVList(EggFleet_UVShift, 1, EF_PIPLINE->getmodel()->child->basicdxmodel, 0);
+
 	LoadObject((LoadObj)0, 3, EFRailends);
 	LoadObject(LoadObj_Data1, 3, EFBgShips);
 
@@ -93,7 +96,8 @@ void EggFleetHandler(ObjectMaster *obj) {
 	else {
 		ChunkHandler("EF", EggFleetChunks, LengthOfArray(EggFleetChunks), entity->Position);
 		AnimateTextures(EggFleetAnimTexs, LengthOfArray(EggFleetAnimTexs));
-		
+		AnimateUV(EggFleet_UVShift, LengthOfArray(EggFleet_UVShift));
+
 		// kill the player if he falls for too long
 		if (entity->Status & Status_Ground || co2->AnimationThing.Index < 4 || co2->AnimationThing.Index > 19) {
 			obj->Data1->InvulnerableTime = 0;

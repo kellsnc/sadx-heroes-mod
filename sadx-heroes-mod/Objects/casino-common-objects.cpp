@@ -273,9 +273,9 @@ void CPDice(ObjectMaster *a1)
 		}
 	}
 
-	a1->MainSub = &CPDice_Main;
-	a1->DisplaySub = &CPDice_Display;
-	a1->DeleteSub = &DynCol_Delete;
+	a1->MainSub = CPDice_Main;
+	a1->DisplaySub = CPDice_Display;
+	a1->DeleteSub = DynCol_Delete;
 }
 
 void CPGlass(ObjectMaster *a1) {
@@ -920,9 +920,9 @@ void CPDoor(ObjectMaster *a1)
 	}
 	a1->Data1->Object = &CP_DOORCOL;
 
-	a1->MainSub = &CPDoor_Main;
-	a1->DisplaySub = &CPDoor_Display;
-	a1->DeleteSub = &DynCol_Delete;
+	a1->MainSub = CPDoor_Main;
+	a1->DisplaySub = CPDoor_Display;
+	a1->DeleteSub = DynCol_Delete;
 }
 
 void CPRoulette_Display(ObjectMaster *a1) {
@@ -957,7 +957,7 @@ void CPRoulette(ObjectMaster *a1)
 	if (CurrentLevel == HeroesLevelID_CasinoPark) a1->Data1->Object = CP_RURETTO->getmodel();
 	else a1->Data1->Object = &BH_ROURETTE;
 
-	a1->MainSub = &CPRoulette_Main;
-	a1->DisplaySub = &CPRoulette_Display;
-	a1->DeleteSub = &DynCol_Delete;
+	a1->MainSub = CPRoulette_Main;
+	a1->DisplaySub = CPRoulette_Display;
+	a1->DeleteSub = DynCol_Delete;
 }

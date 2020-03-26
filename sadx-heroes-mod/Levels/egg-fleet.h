@@ -23,6 +23,11 @@ SH_ANIMTEXS EggFleetAnimTexs[]{
 	{ 41, 7,{ 14, 10, 8, 10, 8, 10, 8, 5 } }
 };
 
+SH_UVSHIFT EggFleet_UVShift[]{
+	{ nullptr,0,{ 0, 20 } },
+	{ nullptr,0,{ 0, 10 } }
+};
+
 void EFRailends(ObjectMaster* a1);
 void EFBgShips(ObjectMaster* obj);
 

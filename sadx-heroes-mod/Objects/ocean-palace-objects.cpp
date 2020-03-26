@@ -194,9 +194,9 @@ void OPPOLE(ObjectMaster *a1)
 	if (a1->Data1->Scale.x == 1) a1->Data1->Object = OP_POLFLAG->getmodel()->child;
 	else a1->Data1->Object = OP_POLFLAG->getmodel();
 
-	a1->MainSub = &OPPOLE_Main;
-	a1->DisplaySub = &OPPOLE_Main;
-	a1->DeleteSub = &DynCol_Delete;
+	a1->MainSub = OPPOLE_Main;
+	a1->DisplaySub = OPPOLE_Main;
+	a1->DeleteSub = DynCol_Delete;
 }
 
 void OP_AnimFix() {
