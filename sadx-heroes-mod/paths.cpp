@@ -16,6 +16,46 @@ void PathHandler(EntityData1* entity, LoopHead* path, float speed) {
 	entity->Rotation.y = fPositionToRotation(&path->LoopList[ entity->InvulnerableTime].Position, &path->LoopList[ entity->InvulnerableTime + 1].Position).y;
 }
 
+bool Path_GetDirection(EntityData1* PlayerEntity, LoopHead* loophead, uint16_t point) {
+	//the rail is 2-directional, we need to check wheter we're going forward or backward
+	//we get a point in front of sonic, one behind, and check which one is closer to the forward point
+	Loop* LoopPoint = &loophead->LoopList[point];
+	Loop* NextPoint = &loophead->LoopList[point + 1];
+
+	NJS_VECTOR dir = { 20, 0, 0 };
+
+	//we extend the next point pos for precision
+	NJS_VECTOR NextPosExt;
+	njPushMatrix(_nj_unit_matrix_);
+	njTranslateV(0, &NextPoint->Position);
+	NJS_VECTOR pos = { NextPoint->Position.x, LoopPoint->Position.y, NextPoint->Position.z };
+	njRotateXYZ(0, -LoopPoint->Ang_X, -fPositionToRotation(&LoopPoint->Position, &pos).y, -LoopPoint->Ang_Y);
+	njCalcPoint(0, &dir, &NextPosExt);
+	njPopMatrix(1u);
+
+	//we get our points
+	NJS_VECTOR front;
+	NJS_VECTOR back;
+
+	njPushMatrix(_nj_unit_matrix_);
+	njTranslateV(0, &PlayerEntity->Position);
+	njRotateY(0, -PlayerEntity->Rotation.y);
+
+	dir.x = 5;
+	njCalcPoint(0, &dir, &front);
+	float frontdist = GetDistance(&front, &NextPosExt);
+
+	dir.x = -5;
+	njCalcPoint(0, &dir, &back);
+	float backdist = GetDistance(&back, &NextPosExt);
+
+	njPopMatrix(1u);
+
+	//we compare them to the extended point
+	if (frontdist < backdist) return false;
+	else return true;
+}
+
 void AutoLoop_Main(ObjectMaster * a1) {
 	LoopHead * loopdata = (LoopHead*)a1->Data1->LoopData; //current rail
 	EntityData1 * entity = a1->Data1; //we can store data in this

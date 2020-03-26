@@ -1,23 +1,10 @@
 #include "stdafx.h"
 
-enum PlayerStates {
-	PlayerState_OnRail = 125,
-	PlayerState_SwapLeft,
-	PlayerState_SwapRight
-};
-
 enum RailStates {
 	RailState_Running,
 	RailState_Swap,
 	RailState_Swapping,
 	RailState_Deleting
-};
-
-enum DetachTypes {
-	DetachType_RailEnd,
-	DetachType_Fall,
-	DetachType_Jump,
-	DetachType_Death
 };
 
 enum RailSounds {
@@ -107,7 +94,7 @@ void RailPath_Detach(EntityData1* entity, EntityData1* PlayerEntity, CharObj2* c
 	int id = PlayerEntity->CharID;
 
 	switch (type) {
-	case DetachType_RailEnd:
+	case DetachType_End:
 	case DetachType_Fall:
 		co2->Speed.x = entity->Scale.z / 2;
 		co2->Speed.y = 1;
@@ -257,7 +244,7 @@ void RailPath_PerformPath(EntityData1* entity, EntityData1* PlayerEntity, CharOb
 
 	//Detach from rail if at the end
 	if (point == end) {
-		RailPath_Detach(entity, PlayerEntity, co2, DetachType_RailEnd);
+		RailPath_Detach(entity, PlayerEntity, co2, DetachType_End);
 		return;
 	}
 
@@ -364,46 +351,6 @@ float RailPath_GetSpeed(CharObj2* co2) {
 	else return speed;
 }
 
-bool RailPath_GetDirection(EntityData1* PlayerEntity, LoopHead* loophead, uint16_t point) {
-	//the rail is 2-directional, we need to check wheter we're going forward or backward
-	//we get a point in front of sonic, one behind, and check which one is closer to the forward point
-	Loop* LoopPoint = &loophead->LoopList[point];
-	Loop* NextPoint = &loophead->LoopList[point + 1];
-
-	NJS_VECTOR dir = { 20, 0, 0 };
-
-	//we extend the next point pos for precision
-	NJS_VECTOR NextPosExt;
-	njPushMatrix(_nj_unit_matrix_);
-	njTranslateV(0, &NextPoint->Position);
-	NJS_VECTOR pos = { NextPoint->Position.x, LoopPoint->Position.y, NextPoint->Position.z };
-	njRotateXYZ(0, -LoopPoint->Ang_X, -fPositionToRotation(&LoopPoint->Position, &pos).y, -LoopPoint->Ang_Y);
-	njCalcPoint(0, &dir, &NextPosExt);
-	njPopMatrix(1u);
-
-	//we get our points
-	NJS_VECTOR front;
-	NJS_VECTOR back;
-
-	njPushMatrix(_nj_unit_matrix_);
-	njTranslateV(0, &PlayerEntity->Position);
-	njRotateY(0, -PlayerEntity->Rotation.y);
-
-	dir.x = 5;
-	njCalcPoint(0, &dir, &front);
-	float frontdist = GetDistance(&front, &NextPosExt);
-
-	dir.x = -5;
-	njCalcPoint(0, &dir, &back);
-	float backdist = GetDistance(&back, &NextPosExt);
-
-	njPopMatrix(1u);
-
-	//we compare them to the extended point
-	if (frontdist < backdist) return false;
-	else return true;
-}
-
 void __cdecl RailPath_Exec(ObjectMaster* obj) {
 	EntityData1* entity = obj->Data1;
 	uint8_t id = obj->Data1->CharIndex;
@@ -463,7 +410,7 @@ EntityData1* RailPath_LoadRail(EntityData1* PlayerEntity, LoopHead* loophead, ui
 	//Get the direction and start speed
 	execentity->Scale.z = RailPath_GetSpeed(co2);
 	if ((loophead->Unknown_0 & RailType_ForceForward) != RailType_ForceForward)
-		execentity->CharID = RailPath_GetDirection(PlayerEntity, loophead, point);
+		execentity->CharID = Path_GetDirection(PlayerEntity, loophead, point);
 
 	//Set character status
 	RailPath_CharStatus(PlayerEntity, co2);

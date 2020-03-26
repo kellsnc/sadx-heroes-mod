@@ -192,6 +192,9 @@
     <ClCompile Include="Enemies\flyer.cpp">
       <Filter>Source Files\Enemies</Filter>
     </ClCompile>
+    <ClCompile Include="loop.cpp">
+      <Filter>Source Files\Paths</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
