@@ -123,19 +123,20 @@ VoidFunction UnloadFilesFuncs[]{
 	UnloadVectorFiles
 };
 
+Trampoline* Knuckles_Trampoline = nullptr;
+Trampoline* Tails_Trampoline = nullptr;
+Trampoline* Sonic_Trampoline = nullptr;
+
 //Store the current player id at the start of their function
 //to get which character triggered a sound, as PlaySound doesn't keep track of the entity
-void Knuckles_Main_r(ObjectMaster* obj);
-Trampoline Knuckles_Main_t((int)Knuckles_Main, (int)Knuckles_Main + 0x8, Knuckles_Main_r);
+
 void Knuckles_Main_r(ObjectMaster* obj) {
 	CurrentPlayer = obj->Data1->CharIndex;
 
-	ObjectFunc(original, Knuckles_Main_t.Target());
+	ObjectFunc(original, Knuckles_Trampoline->Target());
 	original(obj);
 }
 
-void Tails_Main_r(ObjectMaster* obj);
-Trampoline Tails_Main_t((int)Tails_Main, (int)Tails_Main + 0x12, Tails_Main_r);
 void Tails_Main_r(ObjectMaster* obj) {
 	CurrentPlayer = obj->Data1->CharIndex;
 
@@ -146,7 +147,7 @@ void Tails_Main_r(ObjectMaster* obj) {
 		WriteData((char*)0x45BF7F, (char)0x99);
 	}
 
-	ObjectFunc(original, Tails_Main_t.Target());
+	ObjectFunc(original, Tails_Trampoline->Target());
 	original(obj);
 
 	if (P2SoundsEnabled && HeroesChars[obj->Data1->CharIndex]) {
@@ -156,12 +157,10 @@ void Tails_Main_r(ObjectMaster* obj) {
 	}
 }
 
-void Sonic_Act1_r(EntityData1 *entity1, EntityData2 *entity2, CharObj2 *obj2);
-Trampoline Sonic_Act1_t((int)Sonic_Act1, (int)Sonic_Act1 + 0x8, Sonic_Act1_r);
 void Sonic_Act1_r(EntityData1 *entity1, EntityData2 *entity2, CharObj2 *obj2) {
 	CurrentPlayer = entity1->CharIndex;
 
-	FunctionPointer(void, original, (EntityData1 *entity1, EntityData2 *entity2, CharObj2 *obj2), Sonic_Act1_t.Target());
+	FunctionPointer(void, original, (EntityData1 *entity1, EntityData2 *entity2, CharObj2 *obj2), Sonic_Trampoline->Target());
 	original(entity1, entity2, obj2);
 }
 
@@ -961,6 +960,10 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 		WriteCall((void*)0x492DD4, PlaySound_HeroesChar); //hurt
 		WriteCall((void*)0x492DD4, PlaySound_HeroesChar); //hurt
 		WriteCall((void*)0x446A26, PlaySound_HeroesChar); //death
+
+		Sonic_Trampoline = new Trampoline((int)Sonic_Act1, (int)Sonic_Act1 + 0x8, Sonic_Act1_r);
+		Tails_Trampoline = new Trampoline((int)Tails_Main, (int)Tails_Main + 0x12, Tails_Main_r);
+		Knuckles_Trampoline = new Trampoline((int)Knuckles_Main, (int)Knuckles_Main + 0x8, Knuckles_Main_r);
 
 		//Common special effects
 		CharMdls[1] = LoadObjectModel(CharMdls[1], "effect_tornado");
