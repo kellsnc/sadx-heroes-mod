@@ -62,7 +62,7 @@ uint8_t Fans_IsSpecificPlayerInCylinder(EntityData1* entity, NJS_VECTOR* center,
 	NJS_VECTOR* pos = &entity->Position;
 
 	if ((powf(pos->x - center->x, 2) + pow(pos->z - center->z, 2)) <= pow(radius, 2) &&
-		pos->y > center->y && pos->y < center->y + height * 35) {
+		pos->y > center->y && pos->y < center->y + height * 40) {
 		return true;
 	}
 
@@ -114,6 +114,11 @@ void Fans_HandlePlayer(ObjectMaster* obj) {
 		Fans_SetSpeedAndAnim(data->CharIndex);
 	}
 	else {
+		if (entity->CollisionInfo->CollidingObject || entity->Status & Status_Ball) {
+			DeleteObject_(obj);
+			return;
+		}
+
 		data->Scale.z += 0.06f;
 		CharObj2Ptrs[data->CharIndex]->Speed.y += data->Scale.z;
 

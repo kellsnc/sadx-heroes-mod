@@ -37,6 +37,8 @@ extern NJS_MATERIAL matlist_waterfall[1];
 extern LandTable** CurrentLandAddress;
 
 bool IsCurrentHeroesLevel();
+bool IsNoPinballEnabled();
+bool IsNoMysticMusicEnabled();
 
 void AnimateTexlist(SH_ANIMTEXS *list, Int listcount, NJS_TEXLIST* texlist);
 void AnimateTextures(SH_ANIMTEXS *list, Int listcount);

@@ -259,6 +259,7 @@ void MysticCart(ObjectMaster * a1) {
 		else {
 			entity->NextAction = 0;
 			entity->Action = 3;
+			PlayHeroesSound_EntityAndVolume(LevelSound_Mys_Char, a1, 300, 2, true);
 		}
 	}
 
@@ -275,7 +276,7 @@ void MysticCart(ObjectMaster * a1) {
 
 		entity->Scale.x = entity->Scale.x + (loopdata->TotalDist / loopdata->LoopList[entity->InvulnerableTime].Dist) / loopdata->TotalDist * speed;
 		TransformSpline(a1->Data1, loopdata->LoopList[entity->InvulnerableTime].Position, loopdata->LoopList[entity->InvulnerableTime + 1].Position, a1->Data1->Scale.x);
-		a1->Data1->Rotation = fPositionToRotation(&loopdata->LoopList[entity->InvulnerableTime].Position, &loopdata->LoopList[entity->InvulnerableTime + 1].Position);
+		a1->Data1->Rotation.y = fPositionToRotation(&loopdata->LoopList[entity->InvulnerableTime].Position, &loopdata->LoopList[entity->InvulnerableTime + 1].Position).y;
 		a1->Data1->Rotation.z = 0;
 
 		player->Position = entity->Position;
@@ -290,7 +291,9 @@ void MysticCart(ObjectMaster * a1) {
 
 		if (IsPlayerInsideSphere(&loopdata->LoopList[loopdata->Count - 1].Position, 20) == entity->Index) {
 			entity->Action = 4;
-			
+			entity->Status = Status_KillSound;
+			PlayHeroesSound(CommonSound_CannonLch);
+
 			co2->Speed.y = 1;
 			co2->Speed.x = 4;
 		}

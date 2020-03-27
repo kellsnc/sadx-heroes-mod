@@ -13,9 +13,8 @@ static bool EnableMysticMansion = true;
 static bool EnableEggFleet = true;
 static bool EnableSpecialStages = true;
 
-static bool EnableFog = true;
-static bool IsHeroesLevel = false;
-
+bool EnableFog = true;
+bool IsHeroesLevel = false;
 bool NoMysticMusic = false;
 bool NoPinball = false;
 
@@ -41,6 +40,14 @@ StartPosition Heroes_StartPositions[]{
 
 bool IsCurrentHeroesLevel() {
 	return IsHeroesLevel;
+}
+
+bool IsNoPinballEnabled() {
+	return NoPinball;
+}
+
+bool IsNoMysticMusicEnabled() {
+	return NoMysticMusic;
 }
 
 //Chunk system

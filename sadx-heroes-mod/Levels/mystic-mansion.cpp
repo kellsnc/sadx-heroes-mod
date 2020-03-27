@@ -144,7 +144,7 @@ void MysticMansion_Init(const char *path, const HelperFunctions &helperFunctions
 	MusicList[MusicIDs_finaleg1].Name = "mystic-mansion";
 	DefaultLight(HeroesLevelID_MysticMansion);
 
-	if (helperFunctions.Version >= 9 && !NoMysticMusic) {
+	if (helperFunctions.Version >= 9 && IsNoMysticMusicEnabled() == true) {
 		musicid = helperFunctions.RegisterMusicFile(MysticMansionMusics[0]);
 		helperFunctions.RegisterMusicFile(MysticMansionMusics[1]);
 		helperFunctions.RegisterMusicFile(MysticMansionMusics[2]);

@@ -2,7 +2,6 @@
 
 extern uint8_t SlotState = 0;
 
-extern bool NoPinball;
 extern bool inSlot;
 
 bool IsRolling = false;
@@ -91,7 +90,7 @@ void PinTablePhysics() {
 
 		if (i == 0) {
 			if (entity && co2) {
-				if (!NoPinball && ((GetCharacterID(i) == Characters_Sonic && (co2->Upgrades & Upgrades_SuperSonic) == 0) || GetCharacterID(i) == Characters_Tails)) {
+				if (IsNoPinballEnabled() == false && ((GetCharacterID(i) == Characters_Sonic && (co2->Upgrades & Upgrades_SuperSonic) == 0) || GetCharacterID(i) == Characters_Tails)) {
 					/* On pintable */
 					if (co2->SurfaceFlags == 0x81 && EntityData1Ptrs[0] == entity) IsPinRolling = true;
 

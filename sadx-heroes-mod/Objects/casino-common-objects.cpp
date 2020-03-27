@@ -314,14 +314,10 @@ void CPGlass(ObjectMaster *a1) {
 void CPBobInAir_Main(ObjectMaster *a1) {
 	if (!ClipSetObject(a1)) {
 		a1->Data1->Rotation.y += 10;
-		a1->Data1->CharIndex = IsPlayerInsideSphere(&a1->Data1->Position, 12);
+		EntityData1* entity = GetCollidingEntityA(a1->Data1);
 
-		if (a1->Data1->CharIndex) {
-			EntityData1 *entity = EntityData1Ptrs[a1->Data1->CharIndex - 1];
-			CharObj2 *co2 = CharObj2Ptrs[a1->Data1->CharIndex - 1];
-
-			if ((entity->Position.y > a1->Data1->Position.y + 12)
-				|| (entity->Position.y < a1->Data1->Position.y - 12)) return;
+		if (entity) {
+			CharObj2 *co2 = CharObj2Ptrs[entity->CharIndex];
 
 			entity->Position = a1->Data1->Position;
 			entity->Position.y += 20;
@@ -340,8 +336,8 @@ void CPBobInAir_Main(ObjectMaster *a1) {
 
 			PlayHeroesSound(LevelSound_Csn_Bumper3);
 		}
-		else AddToCollisionList(a1->Data1);
-
+		
+		AddToCollisionList(a1->Data1);
 		a1->DisplaySub(a1);
 	}
 }
@@ -350,7 +346,7 @@ void CPBobInAir(ObjectMaster *a1)
 {
 	NJS_MATERIAL * material = CP_CSNOBOB->getmodel()->basicdxmodel->mats;
 
-	if (CurrentLevel == 3) {
+	if (CurrentLevel == HeroesLevelID_CasinoPark) {
 		material[0].attr_texId = 293;
 		material[1].attr_texId = 300;
 		material[2].attr_texId = 142;
@@ -366,7 +362,6 @@ void CPBobInAir(ObjectMaster *a1)
 
 	a1->MainSub = CPBobInAir_Main;
 	a1->DisplaySub = displaySub_Global;
-	a1->DeleteSub = DynCol_Delete;
 }
 
 void CPDashPanel(ObjectMaster *a1) {

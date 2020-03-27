@@ -264,7 +264,7 @@ void EggPawnShield_Main(ObjectMaster* obj) {
 		switch (pawndata->pawnshield) {
 		case EggPawnShield::Normal:
 			data->Object = EggPawnMdls[2]->getmodel()->child->child->child;
-			Collision_Init(obj, PawnShieldCollisionData, 1, 3);
+			Collision_Init(obj, PawnShieldCollisionData, 1, 4);
 			break;
 		case  EggPawnShield::Spike:
 			data->Object = EggPawnMdls[2]->getmodel()->child->child->child->child;
@@ -272,7 +272,7 @@ void EggPawnShield_Main(ObjectMaster* obj) {
 			break;
 		case  EggPawnShield::Rock:
 			data->Object = EggPawnMdls[2]->getmodel()->child->child->child->child->child;
-			Collision_Init(obj, PawnShieldCollisionData, 1, 3);
+			Collision_Init(obj, PawnShieldCollisionData, 1, 4);
 			break;
 		}
 
@@ -815,7 +815,13 @@ void EggPawn_Init(ObjectMaster* obj) {
 		pawndata->pawntype =	(EggPawnType)data->Rotation.x;
 		pawndata->miny = data->Rotation.z;
 
-		data->Action = pawndata->startaction;
+		if (data->Action == 1 && CurrentLevel != HeroesLevelID_EggFleet) {
+			data->Action = 0;
+		}
+		else {
+			data->Action = pawndata->startaction;
+		}
+		
 
 		//	The King type is another model, swap
 		if (pawndata->pawntype == EggPawnType::King) {
