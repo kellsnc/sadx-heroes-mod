@@ -815,7 +815,7 @@ void EggPawn_Init(ObjectMaster* obj) {
 		pawndata->pawntype =	(EggPawnType)data->Rotation.x;
 		pawndata->miny = data->Rotation.z;
 
-		if (data->Action == 1 && CurrentLevel != HeroesLevelID_EggFleet) {
+		if (data->Action == 1 && CurrentLevel != HeroesLevelID_EggFleet && IsCurrentHeroesLevel() == true) {
 			data->Action = 0;
 		}
 		else {

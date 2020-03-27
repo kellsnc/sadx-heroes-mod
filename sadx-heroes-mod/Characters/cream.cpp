@@ -378,23 +378,25 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 	case 2:
 		PlayerPtrs[data->CharIndex]->DisplaySub = CreamHeroes_Display;
 
-		if (playerco2->Speed.x < 2 && PressedButtons[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
+		if (playerdata->field_A < PlayerState_OnRail && playerco2->Speed.x < 2 && PressedButtons[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
 			playerdata->Action = 100;
 			data->Action = 3;
 			break;
 		}
 
-		if (anim == 34 && PressedButtons[data->CharIndex] & Buttons_X) {
-			PlayHeroesSound(CreamSound_FlyAttack);
-			data->field_A = 0;
-			data->Action = 4;
-		}
-
-		if (anim == 34 && PressedButtons[data->CharIndex] & Buttons_A) {
-			if (++data->field_A == 2) {
-				PlayHeroesSound(CreamSound_FlyUp);
+		if (CanDoTricks(playerdata)) {
+			if (anim == 34 && PressedButtons[data->CharIndex] & Buttons_X) {
+				PlayHeroesSound(CreamSound_FlyAttack);
 				data->field_A = 0;
-				playerco2->Speed.y = 2;
+				data->Action = 4;
+			}
+
+			if (anim == 34 && PressedButtons[data->CharIndex] & Buttons_A) {
+				if (++data->field_A == 2) {
+					PlayHeroesSound(CreamSound_FlyUp);
+					data->field_A = 0;
+					playerco2->Speed.y = 2;
+				}
 			}
 		}
 

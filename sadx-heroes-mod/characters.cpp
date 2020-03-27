@@ -4,9 +4,10 @@ uint8_t FlyCharEnabled;
 uint8_t SpeedCharEnabled;
 uint8_t PowerCharEnabled;
 
-bool CustomPhysics = true;
-bool JumpBallEnabled = true;
-bool P2SoundsEnabled = false;
+bool CustomPhysics		= true;
+bool CustomActions		= false;
+bool JumpBallEnabled	= true;
+bool P2SoundsEnabled	= false;
 
 ObjectMaster* HeroesChars[8];
 bool CharFilesLoaded[12];
@@ -538,6 +539,14 @@ NJS_VECTOR PowerAnims(EntityData1* data, EntityData1* playerdata, CharObj2* play
 	return { (float)anim, speed, state };
 }
 
+bool CanDoTricks(EntityData1* player) {
+	if (CustomActions == true && player->field_A < PlayerState_OnRail) {
+		return true;
+	}
+
+	return false;
+}
+
 //Speed characters tornado trick
 void TornadoObj(ObjectMaster* obj) {	
 	if (GameState != 16) {
@@ -900,6 +909,7 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 	const std::string PowerCharacter = config->getString("2- Characters", "PowerCharacter", "None");
 
 	CustomPhysics = config->getBool("2- Characters", "CustomPhysics", true);
+	CustomActions = config->getBool("2- Characters", "CustomActions", false);
 	JumpBallEnabled = config->getBool("2- Characters", "JumpBallEnabled", true);
 	P2SoundsEnabled = config->getBool("2- Characters", "P2SoundsEnabled", false);
 

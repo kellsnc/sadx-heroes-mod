@@ -166,17 +166,19 @@ void AmyHeroes_Main(ObjectMaster *obj) {
 	case 2:
 		PlayerPtrs[data->CharIndex]->DisplaySub = AmyHeroes_Display;
 
-		if (playerco2->Speed.x < 2 && PressedButtons[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
-			playerdata->Action = 5;
-			PlayHeroesSound(AmySound_Ya);
-			data->Action = 3;
-			break;
-		}
+		if (CanDoTricks(playerdata)) {
+			if (playerco2->Speed.x < 2 && PressedButtons[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
+				playerdata->Action = 5;
+				PlayHeroesSound(AmySound_Ya);
+				data->Action = 3;
+				break;
+			}
 
-		if (data->Index == 14 && (playerdata->Status & Status_Ground) != Status_Ground && PressedButtons[data->CharIndex] & Buttons_X) {
-			data->field_A = 0;
-			PlayHeroesSound(AmySound_Attack);
-			data->Action = 4;
+			if (data->Index == 14 && (playerdata->Status & Status_Ground) != Status_Ground && PressedButtons[data->CharIndex] & Buttons_X) {
+				data->field_A = 0;
+				PlayHeroesSound(AmySound_Attack);
+				data->Action = 4;
+			}
 		}
 
 		if (FrameCounterUnpaused % 20 == 0) data->field_A = 0;

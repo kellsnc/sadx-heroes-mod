@@ -310,16 +310,18 @@ void OmegaHeroes_Main(ObjectMaster *obj) {
 	case 2:
 		PlayerPtrs[data->CharIndex]->DisplaySub = OmegaHeroes_Display;
 
-		if (playerco2->Speed.x < 2 && HeldButtons2[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground && (HeldButtons2[data->CharIndex] & Buttons_A) != Buttons_A) {
-			data->field_A = 0;
-			playerdata->Action = 2;
-			data->Action = 3;
-			break;
-		}
+		if (CanDoTricks(playerdata)) {
+			if (playerco2->Speed.x < 2 && HeldButtons2[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground && (HeldButtons2[data->CharIndex] & Buttons_A) != Buttons_A) {
+				data->field_A = 0;
+				playerdata->Action = 2;
+				data->Action = 3;
+				break;
+			}
 
-		if (data->Index == 14 && (playerdata->Status & Status_Ground) != Status_Ground && PressedButtons[data->CharIndex] & Buttons_X) {
-			data->field_A = 0;
-			data->Action = 4;
+			if (data->Index == 14 && (playerdata->Status & Status_Ground) != Status_Ground && PressedButtons[data->CharIndex] & Buttons_X) {
+				data->field_A = 0;
+				data->Action = 4;
+			}
 		}
 
 		if (playerdata->Status & Status_Ground) data->field_A = 0;
