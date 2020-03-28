@@ -196,11 +196,11 @@ void Sounds_OnFrame() {
 			
 			HWND ActiveWindow = GetActiveWindow();
 
-  			if ((GameState == 16 || ActiveWindow != WindowHandle) && BASS_ChannelIsActive(stream) == BASS_ACTIVE_PLAYING) {
+  			if ((GameState == 16 /*|| ActiveWindow != WindowHandle*/) && BASS_ChannelIsActive(stream) == BASS_ACTIVE_PLAYING) {
 				BASS_ChannelPause(stream);
 			}
 			
-			if ((GameState != 16 && ActiveWindow == WindowHandle) && BASS_ChannelIsActive(stream) == BASS_ACTIVE_PAUSED) {
+			if ((GameState != 16 /*&& ActiveWindow == WindowHandle*/) && BASS_ChannelIsActive(stream) == BASS_ACTIVE_PAUSED) {
 				BASS_ChannelPlay(stream, false);
 			}
 

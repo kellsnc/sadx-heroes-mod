@@ -12,9 +12,9 @@ static bool EnableHangCastle = true;
 static bool EnableMysticMansion = true;
 static bool EnableEggFleet = true;
 static bool EnableSpecialStages = true;
+static bool IsHeroesLevel = false;
 
 bool EnableFog = true;
-bool IsHeroesLevel = false;
 bool NoMysticMusic = false;
 bool NoPinball = false;
 
@@ -258,6 +258,83 @@ void HeroesSkybox_Main(ObjectMaster *a1)
 	Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
 }
 
+int CountRings() {
+	int rings = 0;
+	int itemrings = 0;
+	int enemies = 0;
+	int falcons = 0;
+	int lives = 0;
+
+	if (SETTable && SETTable_Count > 0) {
+		for (int count = 0; count < SETTable_Count; ++count) {
+			SETEntry* setentry = &CurrentSetFile[count];
+			if (!setentry) continue;
+
+			ObjectFuncPtr current = CurrentObjectList->List[setentry->ObjectType].LoadSub;
+
+			if (current == Ring_Main) {
+				rings += 1;
+			}
+
+			if (current == RingGroup_Main) {
+				rings += setentry->Properties.x + 1;
+			}
+
+			if (current == ItemBox_Main || current == ItemBoxAir_Main) {
+				switch ((int)setentry->Properties.x)
+				{
+				case 2:
+					itemrings += 5;
+					break;
+				case 3:
+					itemrings += 10;
+					break;
+				case 4:
+					itemrings += 40;
+					break;
+				case 6:
+					lives += 1;
+				}
+			}
+
+			if (current == Kiki_Load || current == RhinoTank_Main || current == Sweep_Load
+				|| current == SpinnerA_Main || current == SpinnerB_Main || current == SpinnerC_Main
+				|| current == UnidusA_Main || current == UnidusB_Main || current == UnidusC_Main
+				|| current == Leon_Load || current == BoaBoa_Main || current == ESman
+				|| current == e2000_Init) {
+				enemies += 1;
+			}
+
+			if (current == Flyer_Init) {
+				falcons += 1;
+			}
+		}
+	}
+
+	lives;
+	enemies;
+	falcons;
+	itemrings += rings;
+	return rings;
+}
+
+void __cdecl LoadSETObjs_r() {
+	if (*(bool*)0x3C52464 == 0) {
+		CountRings();
+	}
+	
+	if (!EntityData1Ptrs[1] || EntityData1Ptrs[1]->CharID == Characters_Tails)
+	{
+		LoadSETObjs_NoP2OrDebugOrP2Tails();
+		*(bool*)0x3C52464 = 1;
+	}
+	else
+	{
+		LoadSETObjs_P2NotTailsAndNotDebug();
+		*(bool*)0x3C52464 = 1;
+	}
+}
+
 //We force acts here
 void __cdecl ForceAct()
 {
@@ -317,7 +394,7 @@ void __cdecl DrawLandTableFog(NJS_MODEL_SADX *a1)
 	}
 	else
 	{
-		if (IsHeroesLevel == true && a1->mats[0].attrflags & NJD_FLAG_IGNORE_LIGHT) {
+		if (IsCurrentHeroesLevel() == true && a1->mats[0].attrflags & NJD_FLAG_IGNORE_LIGHT) {
 			DisableFog();
 			DrawSimpleModel_IsVisible(a1, 1.0);
 			ToggleStageFog();
@@ -355,6 +432,7 @@ void Levels_Init(const char *path, const HelperFunctions &helperFunctions, const
 	
 	WriteJump((void*)0x406F00, ForceAct); //njReleaseTextureAll_
 	WriteJump((void*)0x40A140, DrawLandTableFog); //DrawLandTableObject_SimpleModel
+	//WriteJump(LoadSETObjs, LoadSETObjs_r);
 
 	if (EnableSeasideHill) SeasideHill_Init(path, helperFunctions);
 	if (EnableOceanPalace) OceanPalace_Init(path, helperFunctions);
