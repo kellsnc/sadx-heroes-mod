@@ -5,8 +5,10 @@ uint8_t SpeedCharEnabled;
 uint8_t PowerCharEnabled;
 
 bool CustomPhysics = true;
+bool CustomActions = false;
 bool JumpBallEnabled = true;
 bool P2SoundsEnabled = false;
+bool TeamSystem = false;
 
 ObjectMaster* HeroesChars[8];
 bool CharFilesLoaded[12];
@@ -15,7 +17,6 @@ int CurrentPlayer;
 ModelInfo* CharMdls[2];
 CollisionData Tornado_Col = { 0, 0, 0, 0, 0, { 0.0f, 0.0f, 0.0f }, { 20, 0.0f, 0.0f }, 0, 0 };
 
-DataPointer(NJS_VECTOR, bombpos, 0x3C5AB24);
 float bombsize;
 
 void Characters_OnFrame();
@@ -125,19 +126,20 @@ VoidFunction UnloadFilesFuncs[]{
 	UnloadVectorFiles
 };
 
+Trampoline* Knuckles_Trampoline = nullptr;
+Trampoline* Tails_Trampoline = nullptr;
+Trampoline* Sonic_Trampoline = nullptr;
+
 //Store the current player id at the start of their function
 //to get which character triggered a sound, as PlaySound doesn't keep track of the entity
-void Knuckles_Main_r(ObjectMaster* obj);
-Trampoline Knuckles_Main_t((int)Knuckles_Main, (int)Knuckles_Main + 0x8, Knuckles_Main_r);
+
 void Knuckles_Main_r(ObjectMaster* obj) {
 	CurrentPlayer = obj->Data1->CharIndex;
 
-	ObjectFunc(original, Knuckles_Main_t.Target());
+	ObjectFunc(original, Knuckles_Trampoline->Target());
 	original(obj);
 }
 
-void Tails_Main_r(ObjectMaster* obj);
-Trampoline Tails_Main_t((int)Tails_Main, (int)Tails_Main + 0x12, Tails_Main_r);
 void Tails_Main_r(ObjectMaster* obj) {
 	CurrentPlayer = obj->Data1->CharIndex;
 
@@ -148,7 +150,7 @@ void Tails_Main_r(ObjectMaster* obj) {
 		WriteData((char*)0x45BF7F, (char)0x99);
 	}
 
-	ObjectFunc(original, Tails_Main_t.Target());
+	ObjectFunc(original, Tails_Trampoline->Target());
 	original(obj);
 
 	if (P2SoundsEnabled && HeroesChars[obj->Data1->CharIndex]) {
@@ -158,12 +160,10 @@ void Tails_Main_r(ObjectMaster* obj) {
 	}
 }
 
-void Sonic_Act1_r(EntityData1 *entity1, EntityData2 *entity2, CharObj2 *obj2);
-Trampoline Sonic_Act1_t((int)Sonic_Act1, (int)Sonic_Act1 + 0x8, Sonic_Act1_r);
-void Sonic_Act1_r(EntityData1 *entity1, EntityData2 *entity2, CharObj2 *obj2) {
+void Sonic_Act1_r(EntityData1* entity1, EntityData2* entity2, CharObj2* obj2) {
 	CurrentPlayer = entity1->CharIndex;
 
-	FunctionPointer(void, original, (EntityData1 *entity1, EntityData2 *entity2, CharObj2 *obj2), Sonic_Act1_t.Target());
+	FunctionPointer(void, original, (EntityData1 * entity1, EntityData2 * entity2, CharObj2 * obj2), Sonic_Trampoline->Target());
 	original(entity1, entity2, obj2);
 }
 
@@ -171,6 +171,8 @@ void Sonic_Act1_r(EntityData1 *entity1, EntityData2 *entity2, CharObj2 *obj2) {
 void sub_473CE0(ObjectMaster* obj);
 Trampoline sub_473CE0_t(0x473CE0, 0x473CE8, sub_473CE0);
 void sub_473CE0(ObjectMaster* obj) {
+	if (GameState != GameState_Ingame) return;
+
 	if (EntityData1Ptrs[obj->Data1->CharIndex]->CharID != Characters_Knuckles) {
 		DeleteObject_(obj);
 		return;
@@ -179,7 +181,6 @@ void sub_473CE0(ObjectMaster* obj) {
 	ObjectFunc(original, sub_473CE0_t.Target());
 	original(obj);
 }
-
 //Character Animation like Sonic Heroes does
 void PlayHeroesAnimation(ObjectMaster* obj, uint8_t ID, AnimData* animdata, float forcespeed, float forcestate) {
 	EntityData1* data = obj->Data1;
@@ -551,6 +552,14 @@ NJS_VECTOR PowerAnims(EntityData1* data, EntityData1* playerdata, CharObj2* play
 	return { (float)anim, speed, state };
 }
 
+bool CanDoTricks(EntityData1* player) {
+	if (CustomActions == true && player->field_A < PlayerState_OnRail) {
+		return true;
+	}
+
+	return false;
+}
+
 //Speed characters tornado trick
 void TornadoObj(ObjectMaster* obj) {	
 	if (GameState != 16) {
@@ -623,7 +632,7 @@ void TornadoTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, En
 			tornado->Data1->CharID = data->CharID;
 			Collision_Init(tornado, &Tornado_Col, 1, 3u);
 
-			PlayHeroesSoundQueue(CommonSound_Tornado, tornado, 500, false);
+			PlayHeroesSound_Entity(CommonSound_Tornado, tornado, 500, false);
 		}
 		
 		playerco2->Powerups |= Powerups_Invincibility;
@@ -915,6 +924,7 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 	CustomPhysics = config->getBool("2- Characters", "CustomPhysics", true);
 	JumpBallEnabled = config->getBool("2- Characters", "JumpBallEnabled", true);
 	P2SoundsEnabled = config->getBool("2- Characters", "P2SoundsEnabled", false);
+	TeamSystem = config->getBool("2- Characters", "TeamSystem", false);
 
 	if (!SpeedCharacter.compare("Sonic")) {
 		SpeedCharEnabled = Characters_HeroesSonic;
@@ -964,7 +974,8 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 		WriteCall((void*)0x492DD4, PlaySound_HeroesChar); //hurt
 		WriteCall((void*)0x492DD4, PlaySound_HeroesChar); //hurt
 		WriteCall((void*)0x446A26, PlaySound_HeroesChar); //death
-
+		Sonic_Trampoline = new Trampoline((int)Sonic_Act1, (int)Sonic_Act1 + 0x8, Sonic_Act1_r);
+		
 		//Common special effects
 		CharMdls[1] = LoadObjectModel(CharMdls[1], "effect_tornado");
 
@@ -986,6 +997,7 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 		WriteCall((void*)0x45BE01, PlaySound_HeroesChar); //fly
 		WriteCall((void*)0x45BF8D, PlaySound_HeroesChar); //hurt
 		WriteCall((void*)0x446A49, PlaySound_HeroesChar); //death
+		Tails_Trampoline = new Trampoline((int)Tails_Main, (int)Tails_Main + 0x12, Tails_Main_r);
 	}
 
 	if (PowerCharEnabled) {
@@ -993,6 +1005,7 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 		WriteCall((void*)0x473766, PlaySound_HeroesChar); //jump
 		WriteCall((void*)0x4507AC, PlaySound_HeroesChar); //hurt
 		WriteCall((void*)0x446A49, PlaySound_HeroesChar); //death
+		Knuckles_Trampoline = new Trampoline((int)Knuckles_Main, (int)Knuckles_Main + 0x8, Knuckles_Main_r);
 	}
 
 	if (SpeedCharEnabled || FlyCharEnabled || PowerCharEnabled) {
@@ -1021,5 +1034,10 @@ void Characters_OnFrame() {
 			HeroesChars[player]->Data1->CharIndex = player;
 			HeroesChars[player]->Data1->CharID = PowerCharEnabled;
 		}
+	}
+
+	if (TeamSystem && SpeedCharEnabled && FlyCharEnabled && PowerCharEnabled) {
+		void GamePlay_OnFrame();
+		GamePlay_OnFrame();
 	}
 }
