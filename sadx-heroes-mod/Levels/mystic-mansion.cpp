@@ -127,8 +127,6 @@ void MysticMansionHandler(ObjectMaster * a1) {
 				MysticMansion_MusicHandler();
 				a1->Data1->InvulnerableTime = 0;
 			}
-
-			chunkswapped = false;
 			
 			break;
 		}
@@ -146,7 +144,7 @@ void MysticMansion_Init(const char *path, const HelperFunctions &helperFunctions
 	MusicList[MusicIDs_finaleg1].Name = "mystic-mansion";
 	DefaultLight(HeroesLevelID_MysticMansion);
 
-	if (helperFunctions.Version >= 9 && !NoMysticMusic) {
+	if (helperFunctions.Version >= 9 && IsNoMysticMusicEnabled() == true) {
 		musicid = helperFunctions.RegisterMusicFile(MysticMansionMusics[0]);
 		helperFunctions.RegisterMusicFile(MysticMansionMusics[1]);
 		helperFunctions.RegisterMusicFile(MysticMansionMusics[2]);
@@ -157,10 +155,9 @@ void MysticMansion_Init(const char *path, const HelperFunctions &helperFunctions
 
 	helperFunctions.RegisterPathList(MysticMansionPaths);
 
-	FinalEggDeathZones[0] = MysticMansionDeathZones;
-
 	LevelObjects[HeroesLevelID_MysticMansion] = MysticMansionHandler;
 	SkyboxObjects[HeroesLevelID_MysticMansion] = HeroesSkybox_Main;
+	DeathZoneList[HeroesLevelID_MysticMansion][0] = MysticMansionDeathZones;
 
 	MysticMansionObjects_Init();
 }

@@ -215,17 +215,19 @@ void EspioHeroes_Main(ObjectMaster *obj) {
 	case 2:
 		PlayerPtrs[data->CharIndex]->DisplaySub = EspioHeroes_Display;
 
-		if (HeldButtons2[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
-			playerdata->Action = 5;
-			PlayHeroesSound(EspioSound_Ya);
-			data->Action = 3;
-			break;
-		}
+		if (CanDoTricks(playerdata)) {
+			if (HeldButtons2[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
+				playerdata->Action = 5;
+				PlayHeroesSound(EspioSound_Ya);
+				data->Action = 3;
+				break;
+			}
 
-		if (data->Index == 14 && (playerdata->Status & Status_Ground) != Status_Ground && PressedButtons[data->CharIndex] & Buttons_X) {
-			data->field_A = 0;
-			PlayHeroesSound(EspioSound_Attack);
-			data->Action = 4;
+			if (data->Index == 14 && (playerdata->Status & Status_Ground) != Status_Ground && PressedButtons[data->CharIndex] & Buttons_X) {
+				data->field_A = 0;
+				PlayHeroesSound(EspioSound_Attack);
+				data->Action = 4;
+			}
 		}
 
 		if (FrameCounterUnpaused % 20 == 0) data->field_A = 0;

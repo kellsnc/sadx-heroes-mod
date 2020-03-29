@@ -28,6 +28,7 @@ void Levels_Init(const char *path, const HelperFunctions &helperFunctions, const
 void Objects_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config);
 void Characters_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config);
 void Sounds_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config);
+
 void CommonObjects_OnFrame();
 void Characters_OnFrame();
 void Sounds_OnFrame();
@@ -67,6 +68,7 @@ extern "C"
 		Objects_Init(path, helperFunctions, config);
 		Characters_Init(path, helperFunctions, config);
 		Sounds_Init(path, helperFunctions, config);
+		Enemies_Init(path, helperFunctions, config);
 		delete config;
 	}
 

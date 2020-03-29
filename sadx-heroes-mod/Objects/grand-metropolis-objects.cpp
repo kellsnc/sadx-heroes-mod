@@ -304,7 +304,7 @@ void GM_EnergyPaths_Display(ObjectMaster *a1) {
 		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
-		njRotateXYZ(nullptr, 0, a1->Data1->Rotation.y, 0);
+		njRotateY(nullptr, a1->Data1->Rotation.y);
 		njScale(nullptr, a1->Data1->Scale.z, 1, 1);
 		DrawQueueDepthBias = -6000.0f;
 		njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
@@ -328,14 +328,14 @@ void GM_EnergyPaths_Main(ObjectMaster *a1) {
 	}
 }
 
-void GM_EnergyPaths(ObjectMaster *a1)
+void GM_EnergyPaths(ObjectMaster *obj)
 {
-	if (a1->Data1->Scale.x == 1)  a1->Data1->Object = GM_GRFLUID->getmodel()->child;
-	else a1->Data1->Object = GM_GRFLUID->getmodel();
+	if (obj->Data1->Scale.x == 1)  obj->Data1->Object = GM_GRFLUID->getmodel()->child;
+	else obj->Data1->Object = GM_GRFLUID->getmodel();
 
-	a1->MainSub = &GM_EnergyPaths_Main;
-	a1->DisplaySub = &GM_EnergyPaths_Display;
-	a1->DeleteSub = &DynCol_Delete;
+	obj->MainSub = GM_EnergyPaths_Main;
+	obj->DisplaySub = GM_EnergyPaths_Display;
+	obj->DeleteSub = DynCol_Delete;
 }
 
 PVMEntry GrandMetropolisObjectTextures[] = {
@@ -462,15 +462,22 @@ void GrandMetropolisObjects_Init(const char *path) {
 
 void AutoPathsMovs() {
 	EntityData1 ** players = EntityData1Ptrs; //suport for 8 players, let's get all the pointers
-	for (uint8_t slot = 0; slot < 8; ++slot) {
+	for (uint8_t slot = 0; slot < MaxPlayers; ++slot) {
 		if (players[slot]) {
-			CharObj2 *co2 = CharObj2Ptrs[slot];
+			CharObj2* co2 = CharObj2Ptrs[slot];
+
 			if (co2) {
 				if (co2->SurfaceFlags == 0x8a1 || co2->SurfaceFlags == 0xA81 || 
 					co2->SurfaceFlags == 0x18000001 || co2->SurfaceFlags == 0x08000001) {
 					if (IsLantern) {
 						set_diffuse_blend_ptr(2, 4);
 						set_diffuse_blend_factor_ptr(0.3f);
+					}
+
+					//dirty jump fix because it doesn't work for some reason
+					if (PressedButtons[slot] == Buttons_A || HeldButtons2[slot] == Buttons_A) {
+						players[slot]->Position.y += 3;
+						co2->Speed.y = 2;
 					}
 
 					EntityData1 *entity = EntityData1Ptrs[slot];

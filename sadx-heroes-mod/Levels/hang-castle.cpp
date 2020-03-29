@@ -153,7 +153,7 @@ void HangCastleHandler(ObjectMaster * a1) {
 			AnimateTextures(HangCastleAnimTexs, LengthOfArray(HangCastleAnimTexs));
 			AnimateUV(HangCastle_UVShift, LengthOfArray(HangCastle_UVShift));
 
-			if (chunkswapped) {
+			if (ChunkSwapped) {
 				if (CurrentChunk == 2 || CurrentChunk == 6 || CurrentChunk == 8 || CurrentChunk == 10 || CurrentChunk == 11) {
 					CurrentSong = MusicIDs_lstwrld2;
 					CasinoLightRotation_Z = 0x8000;
@@ -165,8 +165,6 @@ void HangCastleHandler(ObjectMaster * a1) {
 					LastSong = MusicIDs_lstwrld1;
 				}
 			}
-
-			chunkswapped = false;
 
 			break;
 		}
@@ -189,10 +187,9 @@ void HangCastle_Init(const char *path, const HelperFunctions &helperFunctions) {
 		FogData_LostWorld1[i].Toggle = false;
 	}
 
-	LostWorldDeathZones[0] = HangCastleDeathZones;
-
 	LevelObjects[HeroesLevelID_HangCastle] = HangCastleHandler;
 	SkyboxObjects[HeroesLevelID_HangCastle] = HangCastleSkybox;
+	DeathZoneList[HeroesLevelID_HangCastle][0] = HangCastleDeathZones;
 
 	HangCastleObjects_Init(path);
 }

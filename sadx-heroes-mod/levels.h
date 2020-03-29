@@ -28,32 +28,22 @@ typedef struct {
 } SH_ANIMTEXS;
 
 DataArray(Rotation3, LevelGlobalColors, 0x90BFE8, 42);
-DataArray(DeathZone*, EmeraldCoastDeathZones, 0x102F8E8, 4);
-DataArray(DeathZone*, WindyValleyDeathZones, 0xBFD820, 3);
-DataArray(DeathZone*, TwinkleParkDeathZones, 0x26B3C58, 4);
-DataArray(DeathZone*, IceCapDeathZones, 0xE2FE4C, 4);
-DataArray(DeathZone*, SkyDeckDeathZones, 0x223082C, 3);
-DataArray(DeathZone*, CasinopolisDeathZones, 0x1D7E374, 4);
-DataArray(DeathZone*, LostWorldDeathZones, 0x2032108, 3);
-DataArray(DeathZone*, FinalEggDeathZones, 0x1A49218, 4);
 
 #define ReplacePVM(a, b) helperFunctions.ReplaceFile("system\\" a ".PVM", "system\\" b ".pvm")
 #define ReplaceBIN(a, b) helperFunctions.ReplaceFile("system\\" a ".BIN", "system\\" b ".bin")
 
 extern NJS_MATERIAL matlist_col[1];
 extern NJS_MATERIAL matlist_waterfall[1];
-
 extern LandTable** CurrentLandAddress;
-extern bool chunkswapped;
-extern bool IsHeroesLevel;
 
-void AutoLoop(ObjectMaster * a1);
-void RailPath(ObjectMaster * a1);
-void SlopePath(ObjectMaster * a1);
+bool IsCurrentHeroesLevel();
+bool IsNoPinballEnabled();
+bool IsNoMysticMusicEnabled();
 
 void AnimateTexlist(SH_ANIMTEXS *list, Int listcount, NJS_TEXLIST* texlist);
 void AnimateTextures(SH_ANIMTEXS *list, Int listcount);
 void LoadLevelFile(const char *shortname, int chunknb);
+void SwapChunk(const char* shortname, int chunknb);
 void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size, NJS_VECTOR pos);
 void SetFog(FogData * fog);
 void DefaultLight(HeroesLevelIDs levelid);

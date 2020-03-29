@@ -159,7 +159,7 @@ void RoadRock_Init(const char *path, const HelperFunctions &helperFunctions) {
 
 	MusicList[MusicIDs_wndyvly2].Name = "road-rock";
 
-	WindyValleyDeathZones[1] = RoadRockDeathZones;
+	DeathZoneList[HeroesLevelID_OceanPalace][1] = RoadRockDeathZones;
 }
 
 void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions) {
@@ -174,10 +174,9 @@ void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions) 
 
 	helperFunctions.RegisterPathList(OceanPalacePaths);
 
-	WindyValleyDeathZones[0] = SeasideHillDeathZones;
-
 	LevelObjects[HeroesLevelID_OceanPalace] = OceanPalaceHandler;
 	SkyboxObjects[HeroesLevelID_OceanPalace] = OceanPalaceSkybox;
+	DeathZoneList[HeroesLevelID_OceanPalace][0] = SeasideHillDeathZones;
 
 	RoadRock_Init(path, helperFunctions);
 	OceanPalaceObjects_Init(path);

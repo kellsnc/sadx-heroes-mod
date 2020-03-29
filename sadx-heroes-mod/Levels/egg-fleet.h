@@ -1,6 +1,6 @@
 #pragma once
 
-FogData EggFleet_Fog = { -3.0, -20000, 0x00FFFFFF, 1 };
+FogData EggFleet_Fog = { -3.0, -40000, 0x00FFFFFF, 1 };
 
 CHUNK_LIST EggFleetChunks[]{
 	{ 1,{ 0, 0, 0 },{ 0, 0, -2300 } },
@@ -10,22 +10,44 @@ CHUNK_LIST EggFleetChunks[]{
 	{ 3,{ -625, 0, -3700 },{ -3005, 0, -5409 } },
 	{ 4,{ -3005, 1201, -5109 },{ 0, 0, -8133 } },
 	{ 5,{ 0, 1201, -8133 },{ 0, 0, -9919 } },
-	{ 6,{ 0, 0, -8133 },{ 0, 2400, -12935 } },
+	{ 6,{ 0, 0, -8133 },{ 0, 2400, -12944 } },
+	{ 7,{ 0, 1350, -15650 },{ 0, 0, -17588 } },
+	{ 8,{ 0, 1350, -17588 },{ 0, 0, -21650 } },
+	{ 8,{ 0, 0, -18146 },{ 0, 2264, -22721 } },
+	{ 9,{ 0, 1350, -21650 },{ 0, 0, -28800 } },
+	{ 10,{ 0, 0, -28800  },{ 0, 0, -37965 } },
+	{ 11,{ -9370, 0, -37965  },{ 0, -4220, 0 } }
 };
 
 SH_ANIMTEXS EggFleetAnimTexs[]{
 	{ 41, 7,{ 14, 10, 8, 10, 8, 10, 8, 5 } }
 };
 
-DeathZone EggFleetDeathZones[] = {
-	{ 0 }
+SH_UVSHIFT EggFleet_UVShift[]{
+	{ nullptr,0,{ 0, 20 } },
+	{ nullptr,0,{ 0, 10 } }
 };
 
-LoopHead * EggFleetPathList[] = {
-	0
-};
-
-PathDataPtr EggFleetPaths = { LevelAndActIDs_SkyDeck1, EggFleetPathList };
+void EFRailends(ObjectMaster* a1);
+void EFBgShips(ObjectMaster* obj);
 
 extern ModelInfo * EF_CANNON1;
+extern ModelInfo * EF_CANNON2;
 extern ModelInfo * EF_BULLETS;
+extern ModelInfo * EF_PROPPLR;
+extern ModelInfo * EF_BGSHIPS;
+extern ModelInfo * EF_PLTFRMS;
+extern ModelInfo * EF_PIPLINE;
+extern ModelInfo * EF_ENDRAIL;
+extern ModelInfo * EF_OBJSHIP;
+extern ModelInfo * EF_ANTENNA;
+extern ModelInfo * EF_BIGSHIP;
+extern ModelInfo * EF_DIRSGNS;
+extern ModelInfo * EF_SHPBRK1;
+extern ModelInfo * EF_SHPBRK2;
+extern ModelInfo * EF_BARRIER;
+extern ModelInfo * EF_CANBRK1;
+extern ModelInfo * EF_CANBRK2;
+extern ModelInfo * EF_CANDECO;
+extern ModelInfo * EF_EBIGFAN;
+extern ModelInfo * EF_EHELICE;

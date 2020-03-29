@@ -133,6 +133,7 @@ void PPStep(ObjectMaster *a1) {
 	switch (a1->Data1->Action) {
 	case 0:
 		a1->DisplaySub = PPStep_Display;
+		a1->DeleteSub = DynCol_Delete;
 		a1->Data1->Action = 1;
 		break;
 	case 1:
@@ -242,6 +243,7 @@ void PPTankHandler(ObjectMaster *a1) {
 
 	a1->DisplaySub = PPTankHandler_Display;
 	a1->MainSub = PPTankHandler_Main;
+	a1->DeleteSub = DynCol_Delete;
 }
 
 void PPTrucks_Display(ObjectMaster *a1) {
@@ -301,7 +303,7 @@ void PathsFunction() {
 		}
 
 		EntityData1 ** players = EntityData1Ptrs;
-		for (uint8_t slot = 0; slot < 8; ++slot) {
+		for (uint8_t slot = 0; slot < MaxPlayers; ++slot) {
 			if (players[slot]) {
 				EntityData1 *entity = EntityData1Ptrs[slot];
 				bool elevate = false;
@@ -414,9 +416,9 @@ void PPPlatformsV(ObjectMaster *a1)
 {
 	a1->Data1->Object = PP_PLTFRMS->getmodel()->child;
 
-	a1->MainSub = &PPPlatformsV_Main;
-	a1->DisplaySub = &PPPlatformsV_Display;
-	a1->DeleteSub = &DynCol_Delete;
+	a1->MainSub = PPPlatformsV_Main;
+	a1->DisplaySub = PPPlatformsV_Display;
+	a1->DeleteSub = DynCol_Delete;
 }
 
 void PPPlatformsH_Display(ObjectMaster *a1)
@@ -483,9 +485,9 @@ void PPPlatformsH(ObjectMaster *a1)
 		a1->Data1->Scale.x = a1->Data1->Position.z;
 	}
 
-	a1->MainSub = &PPPlatformsH_Main;
-	a1->DisplaySub = &PPPlatformsH_Display;
-	a1->DeleteSub = &DynCol_Delete;
+	a1->MainSub = PPPlatformsH_Main;
+	a1->DisplaySub = PPPlatformsH_Display;
+	a1->DeleteSub = DynCol_Delete;
 }
 
 void PPElevator_Display(ObjectMaster *a1)
@@ -528,9 +530,9 @@ void PPElevator(ObjectMaster *a1)
 {
 	a1->Data1->Object = PP_ELEVATR->getmodel();
 
-	a1->MainSub = &PPElevator_Main;
-	a1->DisplaySub = &PPElevator_Display;
-	a1->DeleteSub = &DynCol_Delete;
+	a1->MainSub = PPElevator_Main;
+	a1->DisplaySub = PPElevator_Display;
+	a1->DeleteSub = DynCol_Delete;
 }
 
 void PPStopper_Display(ObjectMaster *a1)
@@ -572,9 +574,9 @@ void PPStopper(ObjectMaster *a1)
 	a1->Data1->Object = PP_ELEVATR->getmodel()->child;
 	a1->Data1->Action = 0;
 
-	a1->MainSub = &PPStopper_Main;
-	a1->DisplaySub = &PPStopper_Display;
-	a1->DeleteSub = &PPStopper_Delete;
+	a1->MainSub = PPStopper_Main;
+	a1->DisplaySub = PPStopper_Display;
+	a1->DeleteSub = PPStopper_Delete;
 }
 
 PVMEntry PowerPlantObjectTextures[] = {
@@ -710,7 +712,7 @@ void PowerPlantObjects_Init(const char *path) {
 
 void PPPathsHandler() {
 	EntityData1 ** players = EntityData1Ptrs;
-	for (uint8_t slot = 0; slot < 8; ++slot) {
+	for (uint8_t slot = 0; slot < MaxPlayers; ++slot) {
 		if (players[slot]) {
 			EntityData1 *entity = EntityData1Ptrs[slot];
 			CharObj2 *co2 = CharObj2Ptrs[slot];

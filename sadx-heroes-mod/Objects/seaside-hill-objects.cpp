@@ -56,6 +56,7 @@ void SHWaterfalls(ObjectMaster *a1) {
 			ObjectMaster *obj;
 			obj = LoadObject(LoadObj_Data1, 4, WaterfallObject);
 			obj->DisplaySub = WaterfallObject;
+			obj->DeleteSub = DynCol_Delete;
 			obj->Data1->Position = item.Position;
 
 			obj->Data1->Rotation.x = item.Rotation[0];
@@ -104,7 +105,7 @@ void SHMovingPltfrms_Main(ObjectMaster *a1) {
 					}
 					else if (a1->Data1->Position.y > a1->Data1->Scale.z) a1->Data1->Position.y -= 2;
 
-					if (a1->Data1->Position.y == a1->Data1->Scale.x - 2) PlayHeroesSoundQueue(LevelSound_Sea_RuinEnd, a1, 1000, 0);
+					if (a1->Data1->Position.y == a1->Data1->Scale.x - 2) PlayHeroesSound_Entity(LevelSound_Sea_RuinEnd, a1, 1000, 0);
 				}
 				else if (a1->Data1->Scale.x <= a1->Data1->Scale.z) {
 					if (a1->Data1->Position.y >= a1->Data1->Scale.z) {
@@ -112,8 +113,8 @@ void SHMovingPltfrms_Main(ObjectMaster *a1) {
 					}
 					else if (a1->Data1->Position.y < a1->Data1->Scale.z) a1->Data1->Position.y += 2;
 
-					if (a1->Data1->Position.y == a1->Data1->Scale.x + 2) PlayHeroesSoundQueue(LevelSound_Sea_RuinEnd, a1, 1000, 0);
-					if (a1->Data1->Position.y <= a1->Data1->Scale.z - 1 && a1->Data1->Position.y >= a1->Data1->Scale.z - 3) PlayHeroesSoundQueue(LevelSound_Sea_RuinEnd, a1, 1000, 0);
+					if (a1->Data1->Position.y == a1->Data1->Scale.x + 2) PlayHeroesSound_Entity(LevelSound_Sea_RuinEnd, a1, 1000, 0);
+					if (a1->Data1->Position.y <= a1->Data1->Scale.z - 1 && a1->Data1->Position.y >= a1->Data1->Scale.z - 3) PlayHeroesSound_Entity(LevelSound_Sea_RuinEnd, a1, 1000, 0);
 				}
 
 			}
@@ -139,9 +140,9 @@ void __cdecl SHMovingPltfrms(ObjectMaster *a1)
 	a1->Data1->Action = (char)a1->Data1->Scale.x;
 	a1->Data1->Scale.x = a1->Data1->Position.y;
 
-	a1->MainSub = &SHMovingPltfrms_Main;
-	a1->DisplaySub = &SHMovingPltfrms_Display;
-	a1->DeleteSub = &DynCol_Delete;
+	a1->MainSub = SHMovingPltfrms_Main;
+	a1->DisplaySub = SHMovingPltfrms_Display;
+	a1->DeleteSub = DynCol_Delete;
 }
 
 void __cdecl SHRuinTrigger(ObjectMaster *a1)
@@ -168,9 +169,9 @@ void __cdecl SHPlatforms(ObjectMaster *a1)
 {
 	a1->Data1->Object = SH_PLATFOR->getmodel();
 
-	a1->MainSub = &SHPlatforms_Main;
-	a1->DisplaySub = &SHPlatforms_Main;
-	a1->DeleteSub = &DynCol_Delete;
+	a1->MainSub = SHPlatforms_Main;
+	a1->DisplaySub = SHPlatforms_Main;
+	a1->DeleteSub = DynCol_Delete;
 }
 
 void Flags_Reset() {
@@ -259,9 +260,9 @@ void __cdecl SHSpikes(ObjectMaster *a1)
 	a1->Data1->Object = SH_POLFLAG->getmodel();
 	a1->Data1->Scale.y = 0;
 
-	a1->MainSub = &SHSpikes_Main;
-	a1->DisplaySub = &SHSpikes_Display;
-	a1->DeleteSub = &DynCol_Delete;
+	a1->MainSub = SHSpikes_Main;
+	a1->DisplaySub = SHSpikes_Display;
+	a1->DeleteSub = DynCol_Delete;
 }
 
 PVMEntry SeasideHillObjectTextures[] = {

@@ -12,21 +12,16 @@ static bool EnableHangCastle = true;
 static bool EnableMysticMansion = true;
 static bool EnableEggFleet = true;
 static bool EnableSpecialStages = true;
+static bool IsHeroesLevel = false;
 
+bool EnableFog = true;
 bool NoMysticMusic = false;
 bool NoPinball = false;
-bool EnableFog = true;
-bool chunkswapped = false;
-bool IsHeroesLevel = false;
 
-LandTable** CurrentLandAddress;
+LandTable** CurrentLandAddress = nullptr;
 
-LandTableInfo *info = nullptr;
-LandTableInfo *oldinfo = nullptr;
-
-VoidFunc(sub_40D3B0, 0x40D3B0);
-FunctionPointer(void, DrawModelBlend_IsVisible, (NJS_MODEL_SADX *model, QueuedModelFlagsB blend, float radius_scale), 0x4094D0);
-FunctionPointer(void, DrawSimpleModel_IsVisible, (NJS_MODEL_SADX *model, float scale), 0x407A00);
+LandTableInfo* info		= nullptr;
+LandTableInfo* oldinfo	= nullptr;
 
 StartPosition Heroes_StartPositions[]{
 	{ HeroesLevelID_SeasideHill, 0,{ 0, 6.800581f, 5.217285f }, 0xBFFF },
@@ -42,6 +37,18 @@ StartPosition Heroes_StartPositions[]{
 	{ HeroesLevelID_EggFleet, 0,{ 500, 4230, 5320 }, 0xBFFF },
 	{ HeroesLevelID_SpecialStages, 0,{ 200, 0, 0 }, 0xBFFF }
 };
+
+bool IsCurrentHeroesLevel() {
+	return IsHeroesLevel;
+}
+
+bool IsNoPinballEnabled() {
+	return NoPinball;
+}
+
+bool IsNoMysticMusicEnabled() {
+	return NoMysticMusic;
+}
 
 //Chunk system
 bool ForceWhiteDiffuse(NJS_MATERIAL* material, Uint32 flags)
@@ -92,7 +99,6 @@ void SwapCurrentLandTable() {
 		}
 	}
 
-	chunkswapped = true;
 	land->TexList = CurrentLevelTexlist;
 	land->AnimCount = 0;
 	WriteData((LandTable**)CurrentLandAddress, land);
@@ -128,31 +134,34 @@ void LoadLevelFile(const char *shortname, int chunknb) {
 
 	PrintDebug("Done. Loaded '"); PrintDebug(foo); PrintDebug("'. Swapping landtable... ");
 
-	CurrentChunk = chunknb;
 	SwapCurrentLandTable();
 	SetCurrentLandTable();
 
 	PrintDebug("Done. \n");
 }
 
-void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size, NJS_VECTOR pos) {
-	if (!DroppedFrames && anim % 4 == 0) {
-		for (Int i = 0; i < size; ++i) {
-			if (chunklist[i].Chunk != CurrentChunk) {
-				EntityData1 *entity = EntityData1Ptrs[0];
-				if (entity != nullptr) {
-					if (((chunklist[i].Position1.x == 0 || pos.x < chunklist[i].Position1.x)) &&
-						((chunklist[i].Position1.y == 0 || pos.y < chunklist[i].Position1.y)) &&
-						((chunklist[i].Position1.z == 0 || pos.z < chunklist[i].Position1.z)) &&
-						((chunklist[i].Position2.x == 0 || pos.x > chunklist[i].Position2.x)) &&
-						((chunklist[i].Position2.y == 0 || pos.y > chunklist[i].Position2.y)) &&
-						((chunklist[i].Position2.z == 0 || pos.z > chunklist[i].Position2.z))) {
+void SwapChunk(const char* shortname, int chunknb) {
+	if (CurrentChunk != chunknb) {
+		LoadLevelFile(shortname, chunknb);
+		CurrentChunk = chunknb;
+		ChunkSwapped = true;
+	}
+}
 
-						LoadLevelFile(level, chunklist[i].Chunk);
-						
-						ChunkSwapped = true;
-						break;
-					}
+void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size, NJS_VECTOR pos) {
+	for (Int i = 0; i < size; ++i) {
+		if (chunklist[i].Chunk != CurrentChunk) {
+			EntityData1 *entity = EntityData1Ptrs[0];
+			if (entity != nullptr) {
+				if (((chunklist[i].Position1.x == 0 || pos.x < chunklist[i].Position1.x)) &&
+					((chunklist[i].Position1.y == 0 || pos.y < chunklist[i].Position1.y)) &&
+					((chunklist[i].Position1.z == 0 || pos.z < chunklist[i].Position1.z)) &&
+					((chunklist[i].Position2.x == 0 || pos.x > chunklist[i].Position2.x)) &&
+					((chunklist[i].Position2.y == 0 || pos.y > chunklist[i].Position2.y)) &&
+					((chunklist[i].Position2.z == 0 || pos.z > chunklist[i].Position2.z))) {
+
+					SwapChunk(level, chunklist[i].Chunk);
+					break;
 				}
 			}
 		}
@@ -165,6 +174,8 @@ void LevelHandler_Delete(ObjectMaster * a1) {
 	delete oldinfo;
 	oldinfo = nullptr;
 	anim = 0;
+
+	DeleteCustomEnemies();
 
 	for (uint16_t i = 0; i < SETTable_Count; ++i) {
 		if (CurrentSetFile[i].Properties.z == 1
@@ -212,7 +223,7 @@ void SetStartLevelData(const HelperFunctions &helperFunctions, uint8_t character
 }
 
 void SetCharactersLevelData(const HelperFunctions &helperFunctions) {
-	for (uint8_t character = 0; character < 8; ++character) {
+	for (uint8_t character = 0; character < MaxPlayers; ++character) {
 		if (EnableSeasideHill) {
 			SetStartLevelData(helperFunctions, character, 0, HeroesLevelID_SeasideHill, 0);
 			SetStartLevelData(helperFunctions, character, 1, HeroesLevelID_SeasideHill, 1);
@@ -247,12 +258,91 @@ void HeroesSkybox_Main(ObjectMaster *a1)
 	Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
 }
 
+int CountRings() {
+	int rings = 0;
+	int itemrings = 0;
+	int enemies = 0;
+	int falcons = 0;
+	int lives = 0;
+
+	if (SETTable && SETTable_Count > 0) {
+		for (int count = 0; count < SETTable_Count; ++count) {
+			SETEntry* setentry = &CurrentSetFile[count];
+			if (!setentry) continue;
+
+			ObjectFuncPtr current = CurrentObjectList->List[setentry->ObjectType].LoadSub;
+
+			if (current == Ring_Main) {
+				rings += 1;
+			}
+
+			if (current == RingGroup_Main) {
+				rings += setentry->Properties.x + 1;
+			}
+
+			if (current == ItemBox_Main || current == ItemBoxAir_Main) {
+				switch ((int)setentry->Properties.x)
+				{
+				case 2:
+					itemrings += 5;
+					break;
+				case 3:
+					itemrings += 10;
+					break;
+				case 4:
+					itemrings += 40;
+					break;
+				case 6:
+					lives += 1;
+				}
+			}
+
+			if (current == Kiki_Load || current == RhinoTank_Main || current == Sweep_Load
+				|| current == SpinnerA_Main || current == SpinnerB_Main || current == SpinnerC_Main
+				|| current == UnidusA_Main || current == UnidusB_Main || current == UnidusC_Main
+				|| current == Leon_Load || current == BoaBoa_Main || current == ESman
+				|| current == e2000_Init) {
+				enemies += 1;
+			}
+
+			if (current == Flyer_Init) {
+				falcons += 1;
+			}
+		}
+	}
+
+	lives;
+	enemies;
+	falcons;
+	itemrings += rings;
+	return rings;
+}
+
+void __cdecl LoadSETObjs_r() {
+	if (*(bool*)0x3C52464 == 0) {
+		CountRings();
+	}
+	
+	if (!EntityData1Ptrs[1] || EntityData1Ptrs[1]->CharID == Characters_Tails)
+	{
+		LoadSETObjs_NoP2OrDebugOrP2Tails();
+		*(bool*)0x3C52464 = 1;
+	}
+	else
+	{
+		LoadSETObjs_P2NotTailsAndNotDebug();
+		*(bool*)0x3C52464 = 1;
+	}
+}
+
 //We force acts here
 void __cdecl ForceAct()
 {
 	njReleaseTextureAll();
 	QueueDrawingState = 2;
 	sub_40D3B0();
+
+	IsHeroesLevel = false;
 
 	if (CurrentLevel == 5 && EnableMysticMansion) CurrentLevel = HeroesLevelID_MysticMansion;
 
@@ -280,13 +370,9 @@ void __cdecl ForceAct()
 				LoadLevelTextures(GetLevelAndAct());
 			}
 		}
-		else {
-			IsHeroesLevel = false;
-		}
 	}
-	else {
-		IsHeroesLevel = false;
-	}
+
+	Enemies_CheckEnemiesSwap();
 }
 
 //Fog
@@ -308,7 +394,7 @@ void __cdecl DrawLandTableFog(NJS_MODEL_SADX *a1)
 	}
 	else
 	{
-		if (IsHeroesLevel && a1->mats[0].attrflags & NJD_FLAG_IGNORE_LIGHT) {
+		if (IsCurrentHeroesLevel() == true && a1->mats[0].attrflags & NJD_FLAG_IGNORE_LIGHT) {
 			DisableFog();
 			DrawSimpleModel_IsVisible(a1, 1.0);
 			ToggleStageFog();
@@ -346,6 +432,7 @@ void Levels_Init(const char *path, const HelperFunctions &helperFunctions, const
 	
 	WriteJump((void*)0x406F00, ForceAct); //njReleaseTextureAll_
 	WriteJump((void*)0x40A140, DrawLandTableFog); //DrawLandTableObject_SimpleModel
+	//WriteJump(LoadSETObjs, LoadSETObjs_r);
 
 	if (EnableSeasideHill) SeasideHill_Init(path, helperFunctions);
 	if (EnableOceanPalace) OceanPalace_Init(path, helperFunctions);

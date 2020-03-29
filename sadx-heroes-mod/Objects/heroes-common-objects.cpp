@@ -26,6 +26,7 @@ ModelInfo * CO_LCHRAMP;
 ModelInfo * CO_LCKCASE;
 ModelInfo * CO_OCANNON;
 ModelInfo * CO_WOODBOX;
+ModelInfo * CO_OBJLASR;
 
 CollisionData Reel_col{
 	0, 0, 0x77, 0, 0x800400,{ 0, 0, 0 },{ 1, 1, 1 }, 0, 0
@@ -57,6 +58,89 @@ void SHCameraSwitch(ObjectMaster *a1)
 	}
 }
 
+uint8_t Fans_IsSpecificPlayerInCylinder(EntityData1* entity, NJS_VECTOR* center, float radius, float height) {
+	NJS_VECTOR* pos = &entity->Position;
+
+	if ((powf(pos->x - center->x, 2) + pow(pos->z - center->z, 2)) <= pow(radius, 2) &&
+		pos->y > center->y && pos->y < center->y + height * 40) {
+		return true;
+	}
+
+	return 0;
+}
+
+uint8_t Fans_IsPlayerInCylinder(NJS_VECTOR* center, float radius, float height) {
+	for (uint8_t p = 0; p < MaxPlayers; ++p) {
+		EntityData1* entity = EntityData1Ptrs[p];
+		if (entity && entity->field_A < 120) {
+			if (Fans_IsSpecificPlayerInCylinder(entity, center, radius, height)) return p + 1;
+		}
+	}
+
+	return 0;
+}
+
+void Fans_SetSpeedAndAnim(uint8_t player) {
+	EntityData1* entity = EntityData1Ptrs[player];
+	CharObj2* co2 = CharObj2Ptrs[player];
+
+	co2->Speed.y += 0.1;
+	entity->Status = 0;
+
+	if (GetCharacterID(0) == Characters_Sonic && (co2->Upgrades & Upgrades_SuperSonic) == 0) {
+		co2->AnimationThing.Index = 26;
+	}
+	else if (GetCharacterID(0) == Characters_Tails) {
+		co2->AnimationThing.Index = 33;
+	}
+	else if (GetCharacterID(0) == Characters_Knuckles) {
+		co2->AnimationThing.Index = 34;
+	}
+}
+
+void Fans_HandlePlayer(ObjectMaster* obj) {
+	EntityData1* data = obj->Data1;
+	EntityData1* entity = EntityData1Ptrs[data->CharIndex];
+	CharObj2* co2 = CharObj2Ptrs[data->CharIndex];
+
+	if (!entity) {
+		DeleteObject_(obj);
+		return;
+	}
+
+	if (entity->field_A < 120) entity->field_A = 130;
+
+	if (Fans_IsSpecificPlayerInCylinder(entity, &data->Position, data->Scale.y, data->Scale.x)) {
+		Fans_SetSpeedAndAnim(data->CharIndex);
+	}
+	else {
+		if (entity->CollisionInfo->CollidingObject || entity->Status & Status_Ball) {
+			DeleteObject_(obj);
+			return;
+		}
+
+		data->Scale.z += 0.06f;
+		CharObj2Ptrs[data->CharIndex]->Speed.y += data->Scale.z;
+
+		entity->field_A = 131;
+
+		if (entity->Status & Status_Ground) {
+			DeleteObject_(obj);
+			entity->field_A = 0;
+		}
+		else {
+			if (data->Scale.z > 0) data->Scale.z = 0;
+			data->Scale.z -= 0.07f;
+			co2->Speed.y = data->Scale.z;
+
+			if (data->Scale.z < -1.5f) {
+				DeleteObject_(obj);
+				entity->field_A = 0;
+			}
+		}
+	}
+}
+
 void ObjFan_Display(ObjectMaster *a1)
 {
 	if (!MissedFrames) {
@@ -67,54 +151,48 @@ void ObjFan_Display(ObjectMaster *a1)
 		DrawQueueDepthBias = -6000.0f;
 		njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
 		njRotateXYZ(nullptr, 0, a1->Data1->Scale.z, 0);
-		njDrawModel_SADX(CO_COMNFAN->getmodel()->child->basicdxmodel);
+		njDrawModel_SADX(a1->Data1->Object->child->basicdxmodel);
 		DrawQueueDepthBias = 0;
 		njPopMatrix(1u);
 	}
 }
 
-void ObjFan_Main(ObjectMaster *a1)
+void ObjFan(ObjectMaster *obj)
 {
-	if (!ClipSetObject(a1)) {
-		DynColRadius(a1, 350, 0);
+	if (ClipSetObject(obj) || !CO_COMNFAN) return;
 
-		a1->Data1->Scale.z += a1->Data1->Scale.y;
+	EntityData1* data = obj->Data1;
 
-		int slot = IsPlayerInsideSphere(&a1->Data1->Position, 45.0f);
-		if (slot > 0) {
-			EntityData1 *entity = EntityData1Ptrs[slot - 1];
-			CharObj2 *co2 = CharObj2Ptrs[slot - 1];
-			if (co2 != NULL) {
-				co2->Speed.x = 0; co2->Speed.z = 0;
-				entity->Rotation.x = 0;
-				entity->Rotation.z = 0;
-				co2->Speed.y = a1->Data1->Scale.x;
-				if (GetCharacterID(0) == Characters_Sonic && (co2->Upgrades & Upgrades_SuperSonic) == 0) {
-					co2->AnimationThing.Index = 26;
-					entity->Status = 0;
-				}
-				else if (GetCharacterID(0) == Characters_Tails) {
-					co2->AnimationThing.Index = 33;
-					entity->Status = 0;
-				}
-				else if (GetCharacterID(0) == Characters_Knuckles) {
-					co2->AnimationThing.Index = 34;
-					entity->Status = 0;
-				}
+	if (data->Action == 0) {
+		obj->DisplaySub = ObjFan_Display;
+		obj->DeleteSub = DynCol_Delete;
+		data->Object = CO_COMNFAN->getmodel();
+		data->Action = 1;
+	}
+	else {
+		if (CurrentLevel == HeroesLevelID_EggFleet && data->Scale.y > 0) {
+			if (IsSwitchPressed(data->Scale.y) == false) {
+				DynColRadius(obj, 350, 0);
+				obj->DisplaySub(obj);
+				return;
 			}
 		}
 
-		ObjFan_Display(a1);
+		data->CharIndex = Fans_IsPlayerInCylinder(&data->Position, 45.5f, data->Scale.x);
+		if (data->CharIndex) {
+			LoadChildObject(LoadObj_Data1, Fans_HandlePlayer, obj);
+			obj->Child->Data1->CharIndex = data->CharIndex - 1;
+			obj->Child->Data1->Position = data->Position;
+			obj->Child->Data1->Scale.x = data->Scale.x;
+			obj->Child->Data1->Scale.y = 45.5f;
+		}
+
+		data->Scale.z -= data->Scale.x * 80;
+
+		DynColRadius(obj, 350, 0);
+		obj->DisplaySub(obj);
+		RunObjectChildren(obj);
 	}
-}
-
-void ObjFan(ObjectMaster *a1)
-{
-	a1->Data1->Object = CO_COMNFAN->getmodel();
-
-	a1->MainSub = &ObjFan_Main;
-	a1->DisplaySub = &ObjFan_Display;
-	a1->DeleteSub = &DynCol_Delete;
 }
 
 void ObjReel_Display(ObjectMaster *a1)
@@ -154,7 +232,7 @@ void ObjReel_Main(ObjectMaster *a1)
 
 		if (a1->Data1->Scale.y != 9) {
 			EntityData1 ** players = EntityData1Ptrs; //suport for 8 players, let's get all the pointers
-			for (uint8_t slot = 0; slot < 8; ++slot) {
+			for (uint8_t slot = 0; slot < MaxPlayers; ++slot) {
 				if (players[slot]) {
 					int temp = IsPlayerInsideSphere(pos, 10);
 					if (temp == slot + 1) a1->Data1->Scale.y = slot + 1;
@@ -235,7 +313,7 @@ void ObjReel_Main(ObjectMaster *a1)
 
 			if (a1->Data1->Position.y > min) {
 				a1->Data1->Position.y -= 1;
-				if (anim % 40) PlayHeroesSoundQueue(CommonSound_Pulley, a1, 300, 0);
+				if (anim % 40) PlayHeroesSound_Entity(CommonSound_Pulley, a1, 300, 0);
 			}
 		}
 
@@ -251,9 +329,9 @@ void ObjReel(ObjectMaster *a1)
 	a1->Data1->Scale.y = 0;
 	Collision_Init(a1, &Reel_col, 1, 2u);
 
-	a1->MainSub = &ObjReel_Main;
-	a1->DisplaySub = &ObjReel_Display;
-	a1->DeleteSub = &DynCol_Delete;
+	a1->MainSub = ObjReel_Main;
+	a1->DisplaySub = ObjReel_Display;
+	a1->DeleteSub = DynCol_Delete;
 }
 
 void WaterfallObject(ObjectMaster *a1) {
@@ -340,7 +418,7 @@ void ObjBalloon_Main(ObjectMaster *a1)
 	}
 }
 
-void __cdecl ObjBalloon(ObjectMaster *a1)
+void ObjBalloon(ObjectMaster *a1)
 {
 	a1->Data1->Scale.y = 3;
 	a1->Data1->Scale.z = 1;
@@ -349,7 +427,7 @@ void __cdecl ObjBalloon(ObjectMaster *a1)
 	a1->DisplaySub = &ObjBalloon_Display;
 }
 
-void __cdecl SHDashPanel(ObjectMaster *a1)
+void SHDashPanel(ObjectMaster *a1)
 {
 	if ((CurrentLevel == HeroesLevelID_CasinoPark || CurrentLevel == HeroesLevelID_BingoHighway) && a1->Data1->Scale.z == 1) {
 		CPDashPanel(a1);
@@ -384,7 +462,7 @@ void __cdecl SHDashPanel(ObjectMaster *a1)
 	}
 }
 
-void __cdecl SHDashHoop(ObjectMaster *a1)
+void SHDashHoop(ObjectMaster *a1)
 {
 	EntityData1 *v1 = a1->Data1;
 	Rotation3 Angle = v1->Rotation;
@@ -559,6 +637,7 @@ void ObjCannon_Main(ObjectMaster *a1)
 				EntityData1 *entity = EntityData1Ptrs[a1->Data1->Status];
 				CharObj2 *co2 = CharObj2Ptrs[a1->Data1->Status];
 				entity->Rotation.y = a1->Data1->Rotation.y - 0x4000;
+				if (CurrentLevel == HeroesLevelID_EggFleet) entity->Rotation.y += 0x8000;
 				co2->Speed.x = a1->Data1->Scale.x;
 				co2->Speed.y = a1->Data1->Scale.y;
 				PlayHeroesSound(CommonSound_CannonLch);
@@ -566,7 +645,8 @@ void ObjCannon_Main(ObjectMaster *a1)
 
 			DoBall(a1->Data1->Status);
 		}
-
+		
+		
 		if (a1->Data1->Action == 5) {
 			if (a1->Data1->NextAction < 101) {
 				a1->Data1->Rotation.x += 100;
@@ -582,16 +662,14 @@ void ObjCannon_Main(ObjectMaster *a1)
 	}
 }
 
-void __cdecl ObjCannon(ObjectMaster *a1)
+void ObjCannon(ObjectMaster *a1)
 {
-	a1->Data1->NextAction = 0;
-
 	a1->MainSub = &ObjCannon_Main;
 	a1->DisplaySub = &ObjCannon_Display;
 	a1->DeleteSub = &DynCol_Delete;
 }
 
-void __cdecl SHLaunchRamp(ObjectMaster *a1)
+void SHLaunchRamp(ObjectMaster *a1)
 {
 	if (!MissedFrames) {
 		njSetTexture(&SHCommonTextures);
@@ -656,7 +734,7 @@ void OBJCASE_Main(ObjectMaster *a1) {
 	}
 }
 
-void __cdecl OBJCASE(ObjectMaster *a1)
+void OBJCASE(ObjectMaster *a1)
 {
 	if (a1->Data1->Scale.y == 1 || IsSwitchPressed(a1->Data1->Scale.x)) {
 		a1->Data1->Action = 2;
@@ -720,19 +798,19 @@ void Capsule_Main_r(ObjectMaster *a1)
 		else {
 			v1->Scale.x = 1;
 
-			if (anim % 60 == 0) PlayHeroesSoundQueue(CommonSound_GoalRing, a1, 500, 0);
+			if (anim % 60 == 0) PlayHeroesSound_Entity(CommonSound_GoalRing, a1, 500, 0);
 		}
 
 		Capsule_Display_r(a1);
 	}
 }
 
-void __cdecl Capsule_Load_r(ObjectMaster *a1) {
+void Capsule_Load_r(ObjectMaster *a1) {
 	a1->DisplaySub = Capsule_Display_r;
 	a1->MainSub = Capsule_Main_r;
 }
 
-void __cdecl ObjBox_Display(ObjectMaster* a1)
+void ObjBox_Display(ObjectMaster* a1)
 {
 	if (!MissedFrames && a1->Data1->Action != 2 && IsPlayerInsideSphere(&a1->Data1->Position, a1->SETData.SETData->Distance / 1000)) {
 		njSetTexture(&SHCommonTextures);
@@ -786,7 +864,7 @@ void __cdecl ObjBox_Display(ObjectMaster* a1)
 	}
 }
 
-void __cdecl ObjBoxW(ObjectMaster *a1)
+void ObjBoxW(ObjectMaster *a1)
 {
 	uint8_t type = a1->Data1->Scale.x;
 
@@ -835,6 +913,88 @@ void __cdecl ObjBoxW(ObjectMaster *a1)
 	}
 }
 
+CollisionData Laser_col{
+	0, CollisionShape_Cone, 0x77, 0xE2, 0x800400,{ 0, 0, 0 },{ 0, 4, 4 }, 0, 0
+};
+
+//	Draw the laser object
+void ObjLaser_Display(ObjectMaster* obj) {
+	if (!MissedFrames) {
+		EntityData1* data = obj->Data1;
+
+		njSetTexture(&SHCommonTextures);
+
+		njPushMatrix(0);
+		njTranslateV(0, &data->Position);
+		njRotateXYZ(nullptr, data->Rotation.x, data->Rotation.y, data->Rotation.z);
+
+		njTranslateX(data->Scale.x);
+		njRotateZ(nullptr, 0x4000);
+		njDrawModel_SADX(data->Object->basicdxmodel);
+		njRotateZ(nullptr, 0xC000);
+
+		njTranslateX(-(data->Scale.x * 2));
+		njRotateZ(nullptr, 0xC000);
+		njDrawModel_SADX(data->Object->basicdxmodel);
+		
+		if (anim % 2 == 0 && data->Action != 2) {
+			njRotateZ(nullptr, 0x4000);
+			njTranslateX(data->Scale.x);
+			njRotateZ(nullptr, 0x4000);
+			njScaleY(5 + (data->Scale.x / 10));
+			njDrawModel_SADX(data->Object->child->basicdxmodel);
+		}
+		
+		njPopMatrix(1u);
+	}
+}
+
+// A laser that hurts the player
+// Param x: width, y: switch id, z: on/off
+void ObjLaser_Main(ObjectMaster* obj) {
+	if (obj->Parent == nullptr && ClipSetObject(obj)) return;
+	EntityData1* data = obj->Data1;
+
+	if (data->Action == 0) {
+		data->Action = 1;
+		data->Object = CO_OBJLASR->getmodel();
+		obj->DisplaySub = ObjLaser_Display;
+
+		Collision_Init(obj, &Laser_col, 1, 4);
+		data->CollisionInfo->CollisionArray->scale.x = data->Scale.x * 2;
+	}
+	else if (data->Scale.y && data->Action == 1) {
+		if (IsSwitchPressed((int)data->Scale.y)) {
+			Collision_Free(obj);
+			data->Action = 2;
+		}
+	}
+
+	AddToCollisionList(data);
+	obj->DisplaySub(obj);
+}
+
+// Load several laser objects
+// Param x: width, y: count, z: switch id
+void Laserdoor(ObjectMaster* obj) {
+	if (ClipSetObject(obj)) return;
+	EntityData1* data = obj->Data1;
+
+	while (data->Scale.y + 1) {
+
+		EntityData1* child = LoadChildObject(LoadObj_Data1, ObjLaser_Main, obj)->Data1;
+		child->Scale.x = data->Scale.x; //width
+		child->Scale.y = data->Scale.z; //switch id
+		child->Position = data->Position;
+		child->Rotation = data->Rotation;
+
+		data->Position.y += 20;
+		--data->Scale.y;
+	}
+
+	RunObjectChildren(obj);
+}
+
 void CommonObjects_Sounds(int ID, void *a2, int a3, void *a4) {
 	switch (ID) {
 	case 738:
@@ -847,7 +1007,7 @@ void CommonObjects_Sounds(int ID, void *a2, int a3, void *a4) {
 }
 
 void CasinoObjects_Sounds(int ID, void *a2, int a3, void *a4) {
-	if (IsHeroesLevel && CurrentLevel != LevelIDs_Casinopolis) {
+	if (IsCurrentHeroesLevel() && CurrentLevel != LevelIDs_Casinopolis) {
 		switch (ID) {
 		case 245:
 			PlayHeroesSound(LevelSound_Csn_Bumper1);
@@ -871,6 +1031,7 @@ void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions
 	CO_LCKCASE = LoadCommonModel("CO_LCKCASE");
 	CO_OCANNON = LoadCommonModel("CO_OCANNON");
 	CO_WOODBOX = LoadCommonModel("CO_WOODBOX");
+	CO_OBJLASR = LoadCommonModel("CO_OBJLASR");
 
 	if (config->getBool("3- Objects", "GoalRing", true)) {
 		WriteJump((void*)0x46B170, Capsule_Load_r);

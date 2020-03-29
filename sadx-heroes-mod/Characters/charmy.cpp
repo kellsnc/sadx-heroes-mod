@@ -183,24 +183,26 @@ void CharmyHeroes_Main(ObjectMaster *obj) {
 	case 2:
 		PlayerPtrs[data->CharIndex]->DisplaySub = CharmyHeroes_Display;
 
-		if (playerco2->Speed.x < 2 && PressedButtons[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
-			playerdata->Action = 100;
-			data->Action = 3;
-			break;
-		}
+		if (CanDoTricks(playerdata)) {
+			if (playerco2->Speed.x < 2 && PressedButtons[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
+				playerdata->Action = 100;
+				data->Action = 3;
+				break;
+			}
 
-		if (anim == 34 && PressedButtons[data->CharIndex] & Buttons_X) {
-			PlayHeroesSound(CharmySound_FlyAttack);
-			data->field_A = 0;
-			data->Action = 4;
-		}
-
-		if (anim == 34 && PressedButtons[data->CharIndex] & Buttons_A) {
-			if (++data->field_A == 2) {
-				PlayHeroesSound(CharmySound_FlyUp);
-				obj->Child->Data1->field_A = 1;
+			if (anim == 34 && PressedButtons[data->CharIndex] & Buttons_X) {
+				PlayHeroesSound(CharmySound_FlyAttack);
 				data->field_A = 0;
-				playerco2->Speed.y = 2;
+				data->Action = 4;
+			}
+
+			if (anim == 34 && PressedButtons[data->CharIndex] & Buttons_A) {
+				if (++data->field_A == 2) {
+					PlayHeroesSound(CharmySound_FlyUp);
+					obj->Child->Data1->field_A = 1;
+					data->field_A = 0;
+					playerco2->Speed.y = 2;
+				}
 			}
 		}
 

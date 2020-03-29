@@ -1,5 +1,7 @@
 #pragma once
 
+#define Status_KillSound 0x4000
+
 extern bool chrsounds;
 extern bool jmpsounds;
 extern bool flysounds;
@@ -7,7 +9,10 @@ extern bool envsounds;
 
 void PlayHeroesSound(int ID);
 void PlayDelayedHeroesSound(int ID, int time);
-void PlayHeroesSoundQueue(int ID, ObjectMaster* obj, float dist, bool loop);
+void PlayHeroesSound_Entity(int ID, ObjectMaster* obj, float dist, bool loop);
+void PlayHeroesSound_EntityAndPos(int ID, ObjectMaster* obj, NJS_VECTOR* pos, float dist, float volume, bool loop);
+void PlayHeroesSound_EntityAndVolume(int ID, ObjectMaster* obj, float dist, float volume, bool loop);
+void PlayHeroesSound_Pos(int ID, NJS_VECTOR* pos, float dist, float volume, bool loop);
 
 enum HeroesSounds {
 	CommonSound_DashPanel = 10100,
@@ -28,6 +33,13 @@ enum HeroesSounds {
 	CommonSound_Glide,
 	CommonSound_FlyPunchBegin,
 	CommonSound_FlyPunchHit,
+	CommonSound_RailHit,
+	CommonSound_Propeller,
+	CommonSound_Explosion,
+	CommonSound_Detect1,
+	CommonSound_Detect2,
+	CommonSound_Shoot1,
+	CommonSound_Shoot2,
 	LevelSound_Sea_Seagul = 10200,
 	LevelSound_Sea_RuinStart,
 	LevelSound_Sea_RuinEnd,
@@ -49,6 +61,13 @@ enum HeroesSounds {
 	LevelSound_Mys_MvPltf,
 	LevelSound_Mys_Warp1,
 	LevelSound_Mys_Warp2,
+	LevelSound_Mys_Char,
+	LevelSound_Egg_Door = 10280,
+	LevelSound_Egg_Boom1,
+	LevelSound_Egg_Boom2,
+	LevelSound_Egg_Boom3,
+	LevelSound_Egg_Engines,
+	LevelSound_Egg_Fan,
 	CreamSound_Attack = 10900,
 	CreamSound_FlyBegin,
 	CreamSound_FlyAttack,

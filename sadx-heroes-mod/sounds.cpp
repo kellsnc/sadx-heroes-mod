@@ -9,8 +9,10 @@ bool envsounds = true;
 typedef struct {
 	int				id;
 	float			dist;
-	float			volume;
+	float			volumeA;
+	float			volumeB;
 	float			pitch;
+	NJS_VECTOR*		position;
 	HSTREAM			stream;
 	ObjectMaster*	obj;
 } NSS_SOUNDENTRY;
@@ -25,7 +27,9 @@ int GetFreeSoundEntry() {
 			SoundListEntries[i].dist = 0;
 			SoundListEntries[i].obj = nullptr;
 			SoundListEntries[i].pitch = 0;
-			SoundListEntries[i].volume = 0.4f;
+			SoundListEntries[i].volumeA = 0.4f;
+			SoundListEntries[i].volumeB = 0;
+			SoundListEntries[i].position = NULL;
 			return i;
 		}
 	}
@@ -102,7 +106,7 @@ void PlaySoundChannelQueue(int ID, int entryID, bool loop) {
 	if (channel != 0)
 	{
 		BASS_ChannelPlay(channel, false);
-		BASS_ChannelSetAttribute(channel, BASS_ATTRIB_VOL, SoundListEntries[entryID].volume);
+		BASS_ChannelSetAttribute(channel, BASS_ATTRIB_VOL, SoundListEntries[entryID].volumeA);
 		if (loop) {
 			BASS_ChannelFlags(channel, BASS_SAMPLE_LOOP, BASS_SAMPLE_LOOP);
 		}
@@ -135,22 +139,41 @@ void PlayDelayedHeroesSound(int ID, int time) {
 	temp->Data1->Scale.y = time;
 }
 
-void PlayHeroesSoundQueue(int ID, ObjectMaster* obj, float dist, bool loop) {
-	if (obj && IsPlayerInsideSphere_(&obj->Data1->Position, dist * 2)) {
-		int entryID = GetFreeSoundEntry();
+void PlayHeroesSoundQueue(int ID, ObjectMaster* obj, NJS_VECTOR* pos, float dist, bool loop, float volume, float pitch) {
+	int entryID = GetFreeSoundEntry();
 
-		if (entryID > -1) {
-			SoundListEntries[entryID].id = ID;
-			SoundListEntries[entryID].obj = obj;
+	if (entryID > -1) {
+		SoundListEntries[entryID].id = ID;
+		SoundListEntries[entryID].obj = obj;
+		SoundListEntries[entryID].dist = dist;
 
-			if (dist > 0) {
-				SoundListEntries[entryID].dist = dist * 2;
-				SoundListEntries[entryID].volume = GetVolumeRange(&obj->Data1->Position, dist * 2);
-			}
+		if (obj) SoundListEntries[entryID].volumeA = GetVolumeRange(&obj->Data1->Position, dist);
+		else if (pos) SoundListEntries[entryID].volumeA = GetVolumeRange(pos, dist);
+		
+		if (volume) SoundListEntries[entryID].volumeB = volume;
+		if (pitch) SoundListEntries[entryID].pitch = pitch;
+		if (pos) SoundListEntries[entryID].position = pos;
 
-			PlaySoundChannelQueue(ID, entryID, loop);
-		}
+		PlaySoundChannelQueue(ID, entryID, loop);
 	}
+}
+
+void PlayHeroesSound_Entity(int ID, ObjectMaster* obj, float dist, bool loop) {
+	dist *= 2;
+	PlayHeroesSoundQueue(ID, obj, NULL, dist, loop, NULL, NULL);
+}
+
+void PlayHeroesSound_EntityAndVolume(int ID, ObjectMaster* obj, float dist, float volume, bool loop) {
+	dist *= 2;
+	PlayHeroesSoundQueue(ID, obj, NULL, dist, loop, volume, NULL);
+}
+
+void PlayHeroesSound_EntityAndPos(int ID, ObjectMaster* obj, NJS_VECTOR* pos, float dist, float volume, bool loop) {
+	PlayHeroesSoundQueue(ID, obj, pos, dist, loop, volume, NULL);
+}
+
+void PlayHeroesSound_Pos(int ID, NJS_VECTOR* pos, float dist, float volume, bool loop) {
+	PlayHeroesSoundQueue(ID, nullptr, pos, dist, loop, volume, NULL);
 }
 
 void Sounds_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config) {
@@ -171,23 +194,48 @@ void Sounds_OnFrame() {
 		if (SoundListEntries[i].stream != NULL) {
 			HSTREAM stream = SoundListEntries[i].stream;
 			
-  			if (GameState == 16 && BASS_ChannelIsActive(stream) == BASS_ACTIVE_PLAYING) {
+			HWND ActiveWindow = GetActiveWindow();
+
+  			if ((GameState == 16 /*|| ActiveWindow != WindowHandle*/) && BASS_ChannelIsActive(stream) == BASS_ACTIVE_PLAYING) {
 				BASS_ChannelPause(stream);
 			}
 			
-			if (GameState != 16 && BASS_ChannelIsActive(stream) == BASS_ACTIVE_PAUSED) {
+			if ((GameState != 16 /*&& ActiveWindow == WindowHandle*/) && BASS_ChannelIsActive(stream) == BASS_ACTIVE_PAUSED) {
 				BASS_ChannelPlay(stream, false);
 			}
-				
-			if (SoundListEntries[i].obj && !SoundListEntries[i].obj->Data1) {
-				FreeSoundStreamQueue(NULL, stream, NULL, NULL);
+
+			if (SoundListEntries[i].obj && (!SoundListEntries[i].obj->Data1 || SoundListEntries[i].obj->Data1->Status & Status_KillSound)) {
+            	FreeSoundStreamQueue(NULL, stream, NULL, NULL);
 				SoundListEntries[i].stream = NULL;
 				continue;
 			}
-			
+
 			if (SoundListEntries[i].dist > 0) {
-				SoundListEntries[i].volume = GetVolumeRange(&SoundListEntries[i].obj->Data1->Position, SoundListEntries[i].dist);
-				BASS_ChannelSetAttribute(stream, BASS_ATTRIB_VOL, SoundListEntries[i].volume);
+				if (SoundListEntries[i].position) {
+					if (!IsPlayerInsideSphere_(SoundListEntries[i].position, SoundListEntries[i].dist)) {
+						SoundListEntries[i].volumeA = 0;
+					}
+					else {
+						SoundListEntries[i].volumeA = GetVolumeRange(SoundListEntries[i].position, SoundListEntries[i].dist);
+					}
+
+					
+				}
+				else {
+					if (!IsPlayerInsideSphere_(&SoundListEntries[i].obj->Data1->Position, SoundListEntries[i].dist)) {
+						SoundListEntries[i].volumeA = 0;
+					}
+					else {
+						SoundListEntries[i].volumeA = GetVolumeRange(&SoundListEntries[i].obj->Data1->Position, SoundListEntries[i].dist);
+					}
+					
+				}
+
+				if (SoundListEntries[i].volumeB) {
+					SoundListEntries[i].volumeA *= SoundListEntries[i].volumeB;
+				}
+				
+				BASS_ChannelSetAttribute(stream, BASS_ATTRIB_VOL, SoundListEntries[i].volumeA);
 			}
 		}
 	}

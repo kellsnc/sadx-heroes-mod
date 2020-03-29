@@ -2,7 +2,6 @@
 
 extern uint8_t SlotState = 0;
 
-extern bool NoPinball;
 extern bool inSlot;
 
 bool IsRolling = false;
@@ -85,13 +84,13 @@ void PinTableCamera(EntityData1 *entity) {
 }
 
 void PinTablePhysics() {
-	for (uint8_t i = 0; i < 8; ++i) {
+	for (uint8_t i = 0; i < MaxPlayers; ++i) {
 		EntityData1 *entity = EntityData1Ptrs[i];
 		CharObj2 * co2 = CharObj2Ptrs[i];
 
 		if (i == 0) {
 			if (entity && co2) {
-				if (!NoPinball && ((GetCharacterID(i) == Characters_Sonic && (co2->Upgrades & Upgrades_SuperSonic) == 0) || GetCharacterID(i) == Characters_Tails)) {
+				if (IsNoPinballEnabled() == false && ((GetCharacterID(i) == Characters_Sonic && (co2->Upgrades & Upgrades_SuperSonic) == 0) || GetCharacterID(i) == Characters_Tails)) {
 					/* On pintable */
 					if (co2->SurfaceFlags == 0x81 && EntityData1Ptrs[0] == entity) IsPinRolling = true;
 

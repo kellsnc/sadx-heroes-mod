@@ -263,24 +263,26 @@ void TailsHeroes_Main(ObjectMaster *obj) {
 	case 2:
 		PlayerPtrs[data->CharIndex]->DisplaySub = TailsHeroes_Display;
 
-		if (playerco2->Speed.x < 2 && PressedButtons[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground && Rings >= 3) {
-			playerdata->Action = 100;
-			data->Action = 3;
-			break;
-		}
+		if (CanDoTricks(playerdata)) {
+			if (playerco2->Speed.x < 2 && PressedButtons[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground && Rings >= 3) {
+				playerdata->Action = 100;
+				data->Action = 3;
+				break;
+			}
 
-		if (anim == 34 && PressedButtons[data->CharIndex] & Buttons_X) {
-			PlayHeroesSound(TailsSound_FlyAttack);
-			data->field_A = 0;
-			data->Action = 4;
-		}
-
-		if (anim == 34 && PressedButtons[data->CharIndex] & Buttons_A) {
-			if (++data->field_A == 2) {
-				PlayHeroesSound(TailsSound_FlyUp);
-				obj->Child->Data1->field_A = 1;
+			if (anim == 34 && PressedButtons[data->CharIndex] & Buttons_X) {
+				PlayHeroesSound(TailsSound_FlyAttack);
 				data->field_A = 0;
-				playerco2->Speed.y = 2;
+				data->Action = 4;
+			}
+
+			if (anim == 34 && PressedButtons[data->CharIndex] & Buttons_A) {
+				if (++data->field_A == 2) {
+					PlayHeroesSound(TailsSound_FlyUp);
+					obj->Child->Data1->field_A = 1;
+					data->field_A = 0;
+					playerco2->Speed.y = 2;
+				}
 			}
 		}
 
@@ -414,8 +416,8 @@ void TailsHeroes_Main(ObjectMaster *obj) {
 		case 37: //flying
 		case 40:
 		case 41:
-			if (flysounds && FrameCounterUnpaused % 40 == 0)
-				PlayHeroesSoundQueue(TailsSound_Flying, playerobj, 50, 0);
+			if (flysounds && playerobj->Data1->CharIndex == EntityData1Ptrs[0]->CharIndex && FrameCounterUnpaused % 38 == 0)
+				PlayHeroesSound_Entity(TailsSound_Flying, playerobj, 50, 0);
 			anim = 34; //52 IF HOLDING PLAYER
 			if (HeldButtons2[data->CharIndex] & Buttons_A) speed = 0.8;
 			speed += playerco2->Speed.x * 0.5f;
