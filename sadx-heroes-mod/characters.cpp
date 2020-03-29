@@ -5,10 +5,11 @@ uint8_t SpeedCharEnabled;
 uint8_t PowerCharEnabled;
 
 bool CustomPhysics = true;
-bool CustomActions = false;
-bool JumpBallEnabled = true;
-bool P2SoundsEnabled = false;
-bool TeamSystem = false;
+
+static bool CustomActions = false;
+static bool JumpBallEnabled = true;
+static bool P2SoundsEnabled = false;
+static bool TeamSystem = false;
 
 ObjectMaster* HeroesChars[8];
 bool CharFilesLoaded[12];
@@ -17,7 +18,7 @@ int CurrentPlayer;
 ModelInfo* CharMdls[2];
 CollisionData Tornado_Col = { 0, 0, 0, 0, 0, { 0.0f, 0.0f, 0.0f }, { 20, 0.0f, 0.0f }, 0, 0 };
 
-float bombsize;
+float bombsize = 0;
 
 void Characters_OnFrame();
 
@@ -367,6 +368,7 @@ bool CharactersCommon_Init(ObjectMaster* obj, const char* name, NJS_TEXLIST* tex
 			LoadPVM(name, tex);
 		}
 
+		QueueDrawingState = 1;
 		data->LoopData = (Loop*)tex;
 
 		if (playerobj) return true;
@@ -378,6 +380,7 @@ bool CharactersCommon_Init(ObjectMaster* obj, const char* name, NJS_TEXLIST* tex
 			return true;
 		}
 		
+		QueueDrawingState = 1;
 		return false;
 	}
 
@@ -1035,6 +1038,8 @@ void Characters_OnFrame() {
 			HeroesChars[player]->Data1->CharID = PowerCharEnabled;
 		}
 	}
+
+	TeamSystem = true;
 
 	if (TeamSystem && SpeedCharEnabled && FlyCharEnabled && PowerCharEnabled) {
 		void GamePlay_OnFrame();

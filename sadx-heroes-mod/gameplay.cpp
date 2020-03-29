@@ -257,6 +257,7 @@ bool Team_SwapCharacter(ObjectMaster* obj, ObjectMaster* player) {
 			HeroesChars[player->Data1->CharIndex]->MainSub = MainFuncs[chara - 9];
 			HeroesChars[player->Data1->CharIndex]->Data1->CharID = chara;
 
+			QueueDrawingState = 1;
 			TeamSwapping = 3;
 			return true;
 		}
@@ -267,6 +268,8 @@ bool Team_SwapCharacter(ObjectMaster* obj, ObjectMaster* player) {
 				_HIBYTE(objdata->CollisionInfo->CollisionArray[i].field_2) &= 0xDFu;
 				objdata->CollisionInfo->CollisionArray[i].field_3 &= ~0x20u;
 			}
+
+			QueueDrawingState = 1;
 
 			objdata->Action = 2;
 			objdata2->CharacterData->Speed = data2->VelocityDirection;
@@ -314,10 +317,8 @@ void SideKickAI(ObjectMaster* obj) {
 			}
 
 			if (Team_SwapCharacter(obj, GetCharacterObject(childdata->CharIndex))) {
-				if (IsPlayerInsideSphere(&childdata->Position, 50)) {
-					childdata->Position = data->Scale;
-					childdata->Rotation = EntityData1Ptrs[0]->Rotation;
-				}
+				childdata->Position = data->Scale;
+				childdata->Rotation = EntityData1Ptrs[0]->Rotation;
 			}
 			else {
 				EntityData1* playerdata = EntityData1Ptrs[0];
@@ -343,6 +344,10 @@ void SideKickAI(ObjectMaster* obj) {
 				}
 				else {
 					AI_InAir(data, playerdata, childdata, botco2, dist, distplayer);
+				}
+
+				if (distplayer > 900) {
+					childdata->Position = data->Scale;
 				}
 			}
 			
