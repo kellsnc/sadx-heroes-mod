@@ -171,7 +171,7 @@ void HangCastleHandler(ObjectMaster * a1) {
 	}
 }
 
-void HangCastle_Init(const char *path, const HelperFunctions &helperFunctions) {
+void HangCastle_Init(const HelperFunctions &helperFunctions) {
 	ReplacePVM("RUIN01", "hang-castle");
 	ReplaceBIN("SET0700S", "hang-castle-set");
 	ReplaceBIN("CAM0700S", "heroes-cam");
@@ -191,5 +191,5 @@ void HangCastle_Init(const char *path, const HelperFunctions &helperFunctions) {
 	SkyboxObjects[HeroesLevelID_HangCastle] = HangCastleSkybox;
 	DeathZoneList[HeroesLevelID_HangCastle][0] = HangCastleDeathZones;
 
-	HangCastleObjects_Init(path);
+	HangCastleObjects_Init();
 }

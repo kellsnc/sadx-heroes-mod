@@ -387,7 +387,7 @@ ObjectListEntry SeasideHillObjectList_list[] = {
 
 ObjectList SeasideHillObjectList = { arraylengthandptrT(SeasideHillObjectList_list, int) };
 
-void SeasideHillObjects_Init(const char *path) {
+void SeasideHillObjects_Init() {
 	TexLists_Obj[HeroesLevelID_SeasideHill] = SeasideHillObjectTextures;
 	ObjLists[HeroesLevelID_SeasideHill * 8] =		&SeasideHillObjectList;
 	ObjLists[HeroesLevelID_SeasideHill * 8 + 1] =	&SeasideHillObjectList;

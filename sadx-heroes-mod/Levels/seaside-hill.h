@@ -51,7 +51,7 @@ SH_ANIMTEXS SeaGateAnimTexs[]{
 	{ 84, 19,{ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 } }
 };
 
-void SeasideHillObjects_Init(const char *path);
+void SeasideHillObjects_Init();
 void SeasideHillObjects_OnFrame(EntityData1 * entity);
 void SHFlowers(ObjectMaster *a1);
 void SHWaterfalls(ObjectMaster *a1);

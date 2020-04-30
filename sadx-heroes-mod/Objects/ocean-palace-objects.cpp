@@ -399,7 +399,7 @@ ObjectListEntry OceanPalaceObjectList_list[] = {
 };
 ObjectList OceanPalaceObjectList = { arraylengthandptrT(OceanPalaceObjectList_list, int) };
 
-void OceanPalaceObjects_Init(const char *path) {
+void OceanPalaceObjects_Init() {
 	TexLists_Obj[HeroesLevelID_OceanPalace] = OceanPalaceTextures;
 	ObjLists[HeroesLevelID_OceanPalace * 8] =		&OceanPalaceObjectList;
 	ObjLists[HeroesLevelID_OceanPalace * 8 + 1] =	&OceanPalaceObjectList;

@@ -87,7 +87,7 @@ void GrandMetropolisHandler(ObjectMaster * a1) {
 	}
 }
 
-void GrandMetropolis_Init(const char *path, const HelperFunctions &helperFunctions) {
+void GrandMetropolis_Init(const HelperFunctions &helperFunctions) {
 	ReplacePVM("CASINO01", "grand-metropolis");
 	ReplaceBIN("SET0900S", "grand-metropolis-set");
 	ReplaceBIN("SET0900M", "grand-metropolis-set-tails");
@@ -103,5 +103,5 @@ void GrandMetropolis_Init(const char *path, const HelperFunctions &helperFunctio
 	SkyboxObjects[HeroesLevelID_GrandMetropolis] = GrandMetropolisSkybox;
 	DeathZoneList[HeroesLevelID_GrandMetropolis][0] = GrandMetropolisDeathZones;
 
-	GrandMetropolisObjects_Init(path);
+	GrandMetropolisObjects_Init();
 }

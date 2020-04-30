@@ -59,7 +59,7 @@ SH_ANIMTEXS BingoHighwayAnimTexs[]{
 	{ 279, 5,{ 10, 10, 10, 10, 10, 10 } }
 };
 
-void BingoHighwayObjects_Init(const char *path);
+void BingoHighwayObjects_Init();
 void CasinoCommon_OnFrame();
 void CasinoCommon_Delete(ObjectMaster * a1);
 void CPGlass(ObjectMaster *a1);

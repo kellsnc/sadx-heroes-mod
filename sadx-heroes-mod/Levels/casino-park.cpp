@@ -67,7 +67,7 @@ void CasinoParkHandler(ObjectMaster * a1) {
 	}
 }
 
-void CasinoPark_Init(const char *path, const HelperFunctions &helperFunctions) {
+void CasinoPark_Init(const HelperFunctions &helperFunctions) {
 	ReplacePVM("TWINKLE01", "casino-park");
 	ReplaceBIN("SET0300S", "casino-park-set");
 	ReplaceBIN("CAM0300S", "heroes-cam");
@@ -82,5 +82,5 @@ void CasinoPark_Init(const char *path, const HelperFunctions &helperFunctions) {
 	SkyboxObjects[HeroesLevelID_CasinoPark] = CasinoSkybox;
 	DeathZoneList[HeroesLevelID_CasinoPark][0] = CasinoParkDeathZones;
 
-	CasinoParkObjects_Init(path);
+	CasinoParkObjects_Init();
 }

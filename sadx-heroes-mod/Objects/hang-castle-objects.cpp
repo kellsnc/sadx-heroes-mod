@@ -448,7 +448,7 @@ void HCFlags_Animate() {
 	}
 }
 
-void HangCastleObjects_Init(const char *path) {
+void HangCastleObjects_Init() {
 	TexLists_Obj[HeroesLevelID_HangCastle] = HangCastleObjectTextures;
 	ObjLists[HeroesLevelID_HangCastle * 8] = &HangCastleObjectList;
 }

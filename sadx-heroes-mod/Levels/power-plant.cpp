@@ -100,7 +100,7 @@ void PowerPlantHandler(ObjectMaster * a1) {
 	}
 }
 
-void PowerPlant_Init(const char *path, const HelperFunctions &helperFunctions) {
+void PowerPlant_Init(const HelperFunctions &helperFunctions) {
 	ReplacePVM("ICECAP01", "power-plant");
 	ReplaceBIN("SET0800S", "power-plant-set");
 	ReplaceBIN("SET0800M", "power-plant-set-tails");
@@ -116,5 +116,5 @@ void PowerPlant_Init(const char *path, const HelperFunctions &helperFunctions) {
 	SkyboxObjects[HeroesLevelID_PowerPlant] = PowerPlantSkybox;
 	DeathZoneList[HeroesLevelID_PowerPlant][0] = PowerPlantDeathZones;
 
-	PowerPlantObjects_Init(path);
+	PowerPlantObjects_Init();
 }

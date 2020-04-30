@@ -705,7 +705,7 @@ ObjectListEntry PowerPlantObjectList_list[] = {
 };
 ObjectList PowerPlantObjectList = { arraylengthandptrT(PowerPlantObjectList_list, int) };
 
-void PowerPlantObjects_Init(const char *path) {
+void PowerPlantObjects_Init() {
 	TexLists_Obj[HeroesLevelID_PowerPlant] = PowerPlantObjectTextures;
 	ObjLists[HeroesLevelID_PowerPlant * 8] = &PowerPlantObjectList;
 }

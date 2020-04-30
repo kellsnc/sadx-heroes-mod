@@ -52,7 +52,7 @@ void SpecialStagesHandler(ObjectMaster * a1) {
 	}
 }
 
-void SpecialStages_Init(const char *path, const HelperFunctions &helperFunctions) {
+void SpecialStages_Init( const HelperFunctions &helperFunctions) {
 	ReplacePVM("MINI_CART01", "special-stages");
 	ReplaceBIN("SETMCART00S", "special-stages");
 	ReplaceBIN("PL_Z0B", "special-stages-shaders");

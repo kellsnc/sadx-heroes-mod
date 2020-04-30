@@ -133,7 +133,7 @@ void EggFleetSkybox(ObjectMaster *obj) {
 	}
 }
 
-void EggFleet_Init(const char *path, const HelperFunctions &helperFunctions) {
+void EggFleet_Init(const HelperFunctions &helperFunctions) {
 	ReplacePVM("SKYDECK01", "egg-fleet");
 	ReplaceBIN("SET0600S", "egg-fleet-set");
 	ReplaceBIN("SET0600M", "egg-fleet-set-tails");

@@ -36,7 +36,7 @@ DeathZone HangCastleDeathZones[] = {
 { 0 }
 };
 
-void HangCastleObjects_Init(const char *path);
+void HangCastleObjects_Init();
 void HCSpiders(ObjectMaster *a1);
 void HCFlags_Reset();
 void HCFlags_Animate();

@@ -50,13 +50,16 @@ void DefaultLight(HeroesLevelIDs levelid);
 
 void HeroesSkybox_Main(ObjectMaster *a1);
 void LevelHandler_Delete(ObjectMaster * a1);
-void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions);
-void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions);
-void GrandMetropolis_Init(const char *path, const HelperFunctions &helperFunctions);
-void PowerPlant_Init(const char *path, const HelperFunctions &helperFunctions);
-void CasinoPark_Init(const char *path, const HelperFunctions &helperFunctions);
-void BingoHighway_Init(const char *path, const HelperFunctions &helperFunctions);
-void HangCastle_Init(const char *path, const HelperFunctions &helperFunctions);
-void MysticMansion_Init(const char *path, const HelperFunctions &helperFunctions);
-void EggFleet_Init(const char *path, const HelperFunctions &helperFunctions);
-void SpecialStages_Init(const char *path, const HelperFunctions &helperFunctions);
+
+void SeasideHill_Init(const HelperFunctions &helperFunctions);
+void SeaGate_Init(const HelperFunctions &helperFunctions);
+void OceanPalace_Init(const HelperFunctions &helperFunctions);
+void RoadRock_Init(const HelperFunctions &helperFunctions);
+void GrandMetropolis_Init(const HelperFunctions &helperFunctions);
+void PowerPlant_Init(const HelperFunctions &helperFunctions);
+void CasinoPark_Init(const HelperFunctions &helperFunctions);
+void BingoHighway_Init(const HelperFunctions &helperFunctions);
+void HangCastle_Init(const HelperFunctions &helperFunctions);
+void MysticMansion_Init(const HelperFunctions &helperFunctions);
+void EggFleet_Init(const HelperFunctions &helperFunctions);
+void SpecialStages_Init(const HelperFunctions &helperFunctions);

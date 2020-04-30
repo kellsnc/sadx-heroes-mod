@@ -74,7 +74,7 @@ void BingoHighwayHandler(ObjectMaster * a1) {
 	}
 }
 
-void BingoHighway_Init(const char *path, const HelperFunctions &helperFunctions) {
+void BingoHighway_Init(const HelperFunctions &helperFunctions) {
 	ReplacePVM("HIGHWAY01", "bingo-highway");
 	ReplaceBIN("SET0400S", "bingo-highway-set");
 	ReplaceBIN("SET0400M", "bingo-highway-set");
@@ -89,5 +89,5 @@ void BingoHighway_Init(const char *path, const HelperFunctions &helperFunctions)
 	LevelObjects[HeroesLevelID_BingoHighway] = BingoHighwayHandler;
 	SkyboxObjects[HeroesLevelID_BingoHighway] = CasinoSkybox;
 
-	BingoHighwayObjects_Init(path);
+	BingoHighwayObjects_Init();
 }

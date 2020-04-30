@@ -500,7 +500,7 @@ ObjectListEntry BingoHighwayObjectList_list[] = {
 };
 ObjectList BingoHighwayObjectList = { arraylengthandptrT(BingoHighwayObjectList_list, int) };
 
-void BingoHighwayObjects_Init(const char *path) {
+void BingoHighwayObjects_Init() {
 	TexLists_Obj[HeroesLevelID_BingoHighway] = BingoHighwayObjectTextures;
 	ObjLists[HeroesLevelID_BingoHighway * 8] = &BingoHighwayObjectList;
 }

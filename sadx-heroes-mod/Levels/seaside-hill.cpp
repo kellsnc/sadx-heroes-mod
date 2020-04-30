@@ -142,7 +142,7 @@ void SeasideHillHandler(ObjectMaster * a1) {
 	}
 }
 
-void SeaGate_Init(const char *path, const HelperFunctions &helperFunctions) {
+void SeaGate_Init(const HelperFunctions &helperFunctions) {
 	ReplacePVM("BEACH02", "sea-gate");
 	ReplaceBIN("SET0101S", "sea-gate-set-gamma");
 	ReplaceBIN("SET0101A", "sea-gate-set-amy");
@@ -156,7 +156,7 @@ void SeaGate_Init(const char *path, const HelperFunctions &helperFunctions) {
 	DeathZoneList[HeroesLevelID_SeasideHill][1] = nullptr;
 }
 
-void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions) {
+void SeasideHill_Init(const HelperFunctions &helperFunctions) {
 	//Initiliazing files
 	ReplacePVM("BEACH01", "seaside-hill");
 	ReplaceBIN("SET0100S", "seaside-hill-set");
@@ -174,6 +174,5 @@ void SeasideHill_Init(const char *path, const HelperFunctions &helperFunctions) 
 	SkyboxObjects[HeroesLevelID_SeasideHill] = SeasideHillSkybox;
 	DeathZoneList[HeroesLevelID_SeasideHill][0] = SeasideHillDeathZones;
 	
-	SeaGate_Init(path, helperFunctions);
-	SeasideHillObjects_Init(path);
+	SeasideHillObjects_Init();
 }

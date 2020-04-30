@@ -149,7 +149,7 @@ void OceanPalaceHandler(ObjectMaster * a1) {
 	}
 }
 
-void RoadRock_Init(const char *path, const HelperFunctions &helperFunctions) {
+void RoadRock_Init(const HelperFunctions &helperFunctions) {
 	ReplacePVM("WINDY02", "road-rock");
 	ReplaceBIN("SET0201B", "road-rock-set-big");
 	ReplaceBIN("SET0201A", "road-rock-set-amy");
@@ -162,7 +162,7 @@ void RoadRock_Init(const char *path, const HelperFunctions &helperFunctions) {
 	DeathZoneList[HeroesLevelID_OceanPalace][1] = RoadRockDeathZones;
 }
 
-void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions) {
+void OceanPalace_Init(const HelperFunctions &helperFunctions) {
 	ReplacePVM("WINDY01", "ocean-palace");
 	ReplaceBIN("SET0200S", "ocean-palace-set");
 	ReplaceBIN("SET0200M", "ocean-palace-set-tails");
@@ -178,6 +178,5 @@ void OceanPalace_Init(const char *path, const HelperFunctions &helperFunctions) 
 	SkyboxObjects[HeroesLevelID_OceanPalace] = OceanPalaceSkybox;
 	DeathZoneList[HeroesLevelID_OceanPalace][0] = SeasideHillDeathZones;
 
-	RoadRock_Init(path, helperFunctions);
-	OceanPalaceObjects_Init(path);
+	OceanPalaceObjects_Init();
 }

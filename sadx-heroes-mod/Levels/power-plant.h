@@ -33,7 +33,7 @@ DeathZone PowerPlantDeathZones[] = {
 	{ 0 }
 };
 
-void PowerPlantObjects_Init(const char *path);
+void PowerPlantObjects_Init();
 void PPPathsHandler();
 void PPSolarpnls(ObjectMaster *a1);
 void PPCranes(ObjectMaster *a1);

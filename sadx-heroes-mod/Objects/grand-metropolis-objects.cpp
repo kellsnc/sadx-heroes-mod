@@ -455,7 +455,7 @@ ObjectListEntry GrandMetropolisObjectList_list[] = {
 };
 ObjectList GrandMetropolisObjectList = { arraylengthandptrT(GrandMetropolisObjectList_list, int) };
 
-void GrandMetropolisObjects_Init(const char *path) {
+void GrandMetropolisObjects_Init() {
 	TexLists_Obj[HeroesLevelID_GrandMetropolis] = GrandMetropolisObjectTextures;
 	ObjLists[HeroesLevelID_GrandMetropolis * 8] = &GrandMetropolisObjectList;
 }

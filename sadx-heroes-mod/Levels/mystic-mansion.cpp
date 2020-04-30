@@ -133,7 +133,7 @@ void MysticMansionHandler(ObjectMaster * a1) {
 	}
 }
 
-void MysticMansion_Init(const char *path, const HelperFunctions &helperFunctions) {
+void MysticMansion_Init(const HelperFunctions &helperFunctions) {
 	ReplacePVM("FINALEGG1", "mystic-mansion");
 	ReplaceBIN("SET1000S", "mystic-mansion-set");
 	ReplaceBIN("SET1000M", "mystic-mansion-set-tails");
