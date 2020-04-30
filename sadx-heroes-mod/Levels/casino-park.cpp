@@ -83,4 +83,4 @@ void CasinoPark_Init(const HelperFunctions &helperFunctions) {
 	CasinoParkObjects_Init();
 }
 
-HeroesLevelData CasinoParkData = { HeroesLevelID_CasinoPark, 0, 0, "casino-park", "CP", nullptr, nullptr, CasinoPark_Init, { -8000, 2188, 0 } };
+HeroesLevelData CasinoParkData = { HeroesLevelID_CasinoPark, 0, 11, "casino-park", "CP", nullptr, nullptr, CasinoPark_Init, { -8000, 2188, 0 } };

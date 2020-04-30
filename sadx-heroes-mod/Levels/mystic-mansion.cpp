@@ -159,4 +159,4 @@ void MysticMansion_Init(const HelperFunctions &helperFunctions) {
 	MysticMansionObjects_Init();
 }
 
-HeroesLevelData MysticMansionData = { HeroesLevelID_MysticMansion, 0, 0, "mystic-mansion", "MM", nullptr, nullptr, MysticMansion_Init, { 0, 23, 777 } };
+HeroesLevelData MysticMansionData = { HeroesLevelID_MysticMansion, 0, LengthOfArray(MysticMansionChunks), "mystic-mansion", "MM", nullptr, nullptr, MysticMansion_Init, { 0, 23, 777 } };

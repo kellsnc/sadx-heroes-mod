@@ -90,4 +90,4 @@ void BingoHighway_Init(const HelperFunctions &helperFunctions) {
 	BingoHighwayObjects_Init();
 }
 
-HeroesLevelData BingoHighwayData = { HeroesLevelID_BingoHighway, 0, 0, "bingo-highway", "BH", nullptr, nullptr, BingoHighway_Init, { 7999, 2277, 472 } };
+HeroesLevelData BingoHighwayData = { HeroesLevelID_BingoHighway, 0, 12, "bingo-highway", "BH", nullptr, nullptr, BingoHighway_Init, { 7999, 2277, 472 } };

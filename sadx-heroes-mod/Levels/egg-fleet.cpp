@@ -149,4 +149,4 @@ void EggFleet_Init(const HelperFunctions &helperFunctions) {
 	EggFleetObjects_Init();
 }
 
-HeroesLevelData EggFleetData = { HeroesLevelID_EggFleet, 0, 0, "egg-fleet", "EF", nullptr, nullptr, EggFleet_Init, { 500, 4230, 5320 } };
+HeroesLevelData EggFleetData = { HeroesLevelID_EggFleet, 0, 11, "egg-fleet", "EF", nullptr, nullptr, EggFleet_Init, { 500, 4230, 5320 } };

@@ -152,8 +152,11 @@ void __cdecl LoadHeroesLevelFiles() {
 				HeroesLevelData* level = HeroesLevelList[i];
 				PrintDebug("[SHM] Loading %s files... ", level->name.c_str());
 
-				CurrentLandTable = LoadLevelGeometry(level->shortname, level->LevelID, level->Act, level->ChunkAmount);
-				CurrentLandTable->TexName = level->name.c_str();
+				if (level->ChunkAmount) {
+					CurrentLandTable = LoadLevelGeometry(level->shortname, level->LevelID, level->Act, level->ChunkAmount);
+					CurrentLandTable->TexName = level->name.c_str();
+				}
+				
 				level->loadfunc();
 
 				ReleaseCamFile();
