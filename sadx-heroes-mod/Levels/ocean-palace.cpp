@@ -177,3 +177,6 @@ void OceanPalace_Init(const HelperFunctions &helperFunctions) {
 
 	OceanPalaceObjects_Init();
 }
+
+HeroesLevelData OceanPalaceData = { HeroesLevelID_OceanPalace, 0, 0, "ocean-palace", "OP", nullptr, nullptr, OceanPalace_Init, { -8771, 1303, -2819.688f } };
+HeroesLevelData RoadRockData = { HeroesLevelID_OceanPalace, 1, 0, "road-rock", "RR", nullptr, nullptr, RoadRock_Init, { 0, 3020, 4462 } };

@@ -103,3 +103,5 @@ void GrandMetropolis_Init(const HelperFunctions &helperFunctions) {
 
 	GrandMetropolisObjects_Init();
 }
+
+HeroesLevelData GrandMetropolisData = { HeroesLevelID_GrandMetropolis, 0, 0, "grand-metropolis", "GM", nullptr, nullptr, GrandMetropolis_Init, { 0.5f, 70, 4125.8f } };

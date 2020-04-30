@@ -62,3 +62,5 @@ void SpecialStages_Init( const HelperFunctions &helperFunctions) {
 
 	SpecialStagesObjects_Init();
 }
+
+HeroesLevelData SpecialStagesData = { HeroesLevelID_SpecialStages, 0, 0, "special-stage", "SS", nullptr, nullptr, SpecialStages_Init, { 200, 0, 0 } };

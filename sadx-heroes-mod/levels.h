@@ -13,6 +13,18 @@ enum HeroesLevelIDs {
 	HeroesLevelID_SpecialStages = 35
 };
 
+struct HeroesLevelData {
+	HeroesLevelIDs	LevelID;
+	Uint8			Act;
+	Uint8			ChunkAmount;
+	std::string		name;
+	std::string		shortname;
+	VoidFuncPtr		loadfunc;
+	VoidFuncPtr		unloadfunc;
+	HelperFuncPtr	initfunc;
+	NJS_POINT3		startpos;
+};
+
 typedef struct {
 	uint8_t			Chunk;
 	NJS_VECTOR		Position1;
@@ -26,6 +38,19 @@ typedef struct {
 	int			cache;
 	Uint32		address;
 } SH_ANIMTEXS;
+
+extern HeroesLevelData SeasideHillData;
+extern HeroesLevelData SeaGateData;
+extern HeroesLevelData OceanPalaceData;
+extern HeroesLevelData RoadRockData;
+extern HeroesLevelData GrandMetropolisData;
+extern HeroesLevelData PowerPlantData;
+extern HeroesLevelData CasinoParkData;
+extern HeroesLevelData BingoHighwayData;
+extern HeroesLevelData HangCastleData;
+extern HeroesLevelData MysticMansionData;
+extern HeroesLevelData EggFleetData;
+extern HeroesLevelData SpecialStagesData;
 
 DataArray(Rotation3, LevelGlobalColors, 0x90BFE8, 42);
 
@@ -48,19 +73,3 @@ void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size, NJS_
 void SetFog(FogData * fog);
 
 void HeroesSkybox_Main(ObjectMaster *a1);
-
-void SeasideHill_Init(const HelperFunctions &helperFunctions);
-void SeasideHill_Load();
-void SeasideHill_Unload();
-
-void SeaGate_Init(const HelperFunctions &helperFunctions);
-void OceanPalace_Init(const HelperFunctions &helperFunctions);
-void RoadRock_Init(const HelperFunctions &helperFunctions);
-void GrandMetropolis_Init(const HelperFunctions &helperFunctions);
-void PowerPlant_Init(const HelperFunctions &helperFunctions);
-void CasinoPark_Init(const HelperFunctions &helperFunctions);
-void BingoHighway_Init(const HelperFunctions &helperFunctions);
-void HangCastle_Init(const HelperFunctions &helperFunctions);
-void MysticMansion_Init(const HelperFunctions &helperFunctions);
-void EggFleet_Init(const HelperFunctions &helperFunctions);
-void SpecialStages_Init(const HelperFunctions &helperFunctions);

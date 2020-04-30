@@ -115,3 +115,5 @@ void PowerPlant_Init(const HelperFunctions &helperFunctions) {
 
 	PowerPlantObjects_Init();
 }
+
+HeroesLevelData PowerPlantData = { HeroesLevelID_PowerPlant, 0, 0, "power-plant", "PP", nullptr, nullptr, PowerPlant_Init, { 2000, 1564, 63 } };

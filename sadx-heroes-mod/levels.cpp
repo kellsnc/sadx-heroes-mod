@@ -1,30 +1,18 @@
 #include "stdafx.h"
 
-struct HeroesLevelData {
-	HeroesLevelIDs	LevelID;
-	Uint8			Act;
-	Uint8			ChunkAmount;
-	std::string		name;
-	std::string		shortname;
-	VoidFuncPtr		loadfunc;
-	VoidFuncPtr		unloadfunc;
-	HelperFuncPtr	initfunc;
-	NJS_POINT3		startpos;
-};
-
-HeroesLevelData HeroesLevelList[]{
-	{ HeroesLevelID_SeasideHill, 0, 16, "seaside-hill", "SH", SeasideHill_Load, SeasideHill_Unload, SeasideHill_Init, { 0, 6.800581f, 5.217285f } },
-	{ HeroesLevelID_SeasideHill, 1, 0, "sea-gate", "SG", nullptr, nullptr, SeaGate_Init, { 6090, 30, 1000 } },
-	{ HeroesLevelID_OceanPalace, 0, 0, "ocean-palace", "OP", nullptr, nullptr, OceanPalace_Init, { -8771, 1303, -2819.688f } },
-	{ HeroesLevelID_OceanPalace, 1, 0, "road-rock", "RR", nullptr, nullptr, RoadRock_Init, { 0, 3020, 4462 } },
-	{ HeroesLevelID_GrandMetropolis, 0, 0, "grand-metropolis", "GM", nullptr, nullptr, GrandMetropolis_Init, { 0.5f, 70, 4125.8f } },
-	{ HeroesLevelID_PowerPlant, 0, 0, "power-plant", "PP", nullptr, nullptr, PowerPlant_Init, { 2000, 1564, 63 } },
-	{ HeroesLevelID_CasinoPark, 0, 0, "casino-park", "CP", nullptr, nullptr, CasinoPark_Init, { -8000, 2188, 0 } },
-	{ HeroesLevelID_BingoHighway, 0, 0, "bingo-highway", "BH", nullptr, nullptr, BingoHighway_Init, { 7999, 2277, 472 } },
-	{ HeroesLevelID_HangCastle, 0, 0, "hang-castle", "HG", nullptr, nullptr, HangCastle_Init, { 3999, 4000, 109 } },
-	{ HeroesLevelID_MysticMansion, 0, 0, "mystic-mansion", "MM", nullptr, nullptr, MysticMansion_Init, { 0, 23, 777 } },
-	{ HeroesLevelID_EggFleet, 0, 0, "egg-fleet", "EF", nullptr, nullptr, EggFleet_Init, { 500, 4230, 5320 } },
-	{ HeroesLevelID_SpecialStages, 0, 0, "special-stage", "SS", nullptr, nullptr, SpecialStages_Init, { 200, 0, 0 } }
+HeroesLevelData* HeroesLevelList[] {
+	&SeasideHillData,
+	&SeaGateData,
+	&OceanPalaceData,
+	&RoadRockData,
+	&GrandMetropolisData,
+	&PowerPlantData,
+	&CasinoParkData,
+	&BingoHighwayData,
+	&HangCastleData,
+	&MysticMansionData,
+	&EggFleetData,
+	&SpecialStagesData
 };
 
 static bool EnabledLevels[42] = { false };
@@ -160,8 +148,8 @@ void __cdecl LoadHeroesLevelFiles() {
 
 	if (IsCurrentHeroesLevel()) {
 		for (uint8_t i = 0; i < LengthOfArray(HeroesLevelList); ++i) {
-			if (CurrentLevel == HeroesLevelList[i].LevelID) {
-				HeroesLevelData* level = &HeroesLevelList[i];
+			if (CurrentLevel == HeroesLevelList[i]->LevelID) {
+				HeroesLevelData* level = HeroesLevelList[i];
 				PrintDebug("[SHM] Loading %s files... ", level->name.c_str());
 
 				CurrentLandTable = LoadLevelGeometry(level->shortname, level->LevelID, level->Act, level->ChunkAmount);
@@ -422,7 +410,7 @@ void __cdecl DrawLandTableFog(NJS_MODEL_SADX *a1)
 
 inline Uint8 GetLevelListID(HeroesLevelIDs id, Uint8 act) {
 	for (Uint8 i = 0; i < LengthOfArray(HeroesLevelList); ++i) {
-		if (HeroesLevelList[i].LevelID == id && HeroesLevelList[i].Act == act) {
+		if (HeroesLevelList[i]->LevelID == id && HeroesLevelList[i]->Act == act) {
 			return i;
 		}
 	}
@@ -448,7 +436,7 @@ void AddTrialEntry(unsigned char character, char level, char act, const HelperFu
 }
 
 void SetStartPositions(Uint8 id, const HelperFunctions& helperFunctions) {
-	HeroesLevelData* level = &HeroesLevelList[id];
+	HeroesLevelData* level = HeroesLevelList[id];
 	int levelid = level->LevelID;
 	int levelact = level->Act;
 
@@ -462,7 +450,7 @@ void SetStartPositions(Uint8 id, const HelperFunctions& helperFunctions) {
 }
 
 inline void InitLevelListData(Uint8 id, const HelperFunctions& helperFunctions) {
-	HeroesLevelList[id].initfunc(helperFunctions);
+	HeroesLevelList[id]->initfunc(helperFunctions);
 	SetStartPositions(id, helperFunctions);
 }
 

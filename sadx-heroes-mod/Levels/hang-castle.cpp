@@ -190,3 +190,5 @@ void HangCastle_Init(const HelperFunctions &helperFunctions) {
 
 	HangCastleObjects_Init();
 }
+
+HeroesLevelData HangCastleData = { HeroesLevelID_HangCastle, 0, 0, "hang-castle", "HG", nullptr, nullptr, HangCastle_Init, { 3999, 4000, 109 } };

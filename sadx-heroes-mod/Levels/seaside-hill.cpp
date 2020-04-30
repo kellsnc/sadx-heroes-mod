@@ -171,3 +171,6 @@ void SeasideHill_Init(const HelperFunctions &helperFunctions) {
 	
 	SeasideHillObjects_Init();
 }
+
+HeroesLevelData SeasideHillData = { HeroesLevelID_SeasideHill, 0, 16, "seaside-hill", "SH", SeasideHill_Load, SeasideHill_Unload, SeasideHill_Init, { 0, 6.800581f, 5.217285f } };
+HeroesLevelData SeaGateData = { HeroesLevelID_SeasideHill, 1, 0, "sea-gate", "SG", nullptr, nullptr, SeaGate_Init, { 6090, 30, 1000 } };
