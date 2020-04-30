@@ -39,11 +39,12 @@ void MysticMansionHandler(ObjectMaster * a1) {
 	CharObj2 * co2 = CharObj2Ptrs[0];
 
 	if (a1->Data1->Action == 0) {
-		InitializeSoundManager();
-		if (musicid) PlayMusic((MusicIDs)musicid);
-		else PlayMusic(MusicIDs_finaleg1);
-		SoundManager_Delete2();
-
+		if (musicid) {
+			InitializeSoundManager();
+			PlayMusic((MusicIDs)musicid);
+			SoundManager_Delete2();
+		}
+		
 		flamecount = 0;
 
 		for (uint16_t i = 0; i < SETTable_Count; ++i) {
@@ -53,9 +54,6 @@ void MysticMansionHandler(ObjectMaster * a1) {
 		a1->Data1->Action = 1;
 
 		if (CurrentAct == 0) {
-			CurrentLevelTexlist = (TexList*)0x1B98518;
-			CurrentLandAddress = (LandTable**)0x97DB48;
-			
 			LoadPVM("FINALEGG1", (TexList*)0x1B98518);
 			
 			if (IsLantern) set_shader_flags_ptr(ShaderFlags_Blend, true);
@@ -138,9 +136,7 @@ void MysticMansion_Init(const HelperFunctions &helperFunctions) {
 	ReplaceBIN("CAM1000S", "mystic-mansion-cam");
 	ReplaceBIN("PL_A0B", "mystic-mansion-shaders");
 
-	MusicList[MusicIDs_finaleg1].Name = "mystic-mansion";
-
-	if (helperFunctions.Version >= 9 && IsNoMysticMusicEnabled() == true) {
+	if (helperFunctions.Version >= 9 && IsNoMysticMusicEnabled() == false) {
 		musicid = helperFunctions.RegisterMusicFile(MysticMansionMusics[0]);
 		helperFunctions.RegisterMusicFile(MysticMansionMusics[1]);
 		helperFunctions.RegisterMusicFile(MysticMansionMusics[2]);

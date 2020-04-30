@@ -9,10 +9,6 @@ void BingoHighwayHandler(ObjectMaster * a1) {
 	CharObj2 * co2 = CharObj2Ptrs[0];
 
 	if (a1->Data1->Action == 0) {
-		InitializeSoundManager();
-		PlayMusic(MusicIDs_SpeedHighwaySpeedHighway);
-		SoundManager_Delete2();
-
 		a1->DeleteSub = CasinoCommon_Delete;
 		a1->Data1->Action = 1;
 	}
@@ -68,8 +64,6 @@ void BingoHighway_Load() {
 
 void BingoHighway_Init(const HelperFunctions &helperFunctions) {
 	ReplaceBIN("PL_40B", "bingo-highway-shaders");
-
-	MusicList[MusicIDs_highway1].Name = "bingo-highway";
 
 	helperFunctions.RegisterPathList(BingoHighwayPaths);
 

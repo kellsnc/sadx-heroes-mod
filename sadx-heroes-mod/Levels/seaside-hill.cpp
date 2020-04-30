@@ -8,7 +8,6 @@ static bool sh_trigger = true;
 
 void SeasideHillSkybox(ObjectMaster *a1) {
 	if (a1->Data1->Action == 0) {
-		a1->Data1->Action = 1;
 		a1->DisplaySub = a1->MainSub;
 		HeroesSkybox_Main(a1);
 	}
@@ -96,11 +95,6 @@ void SeasideHillHandler(ObjectMaster * a1) {
 		PlayCustomSound(LevelSound_Sea_Seagul);
 
 		if (CurrentAct == 0) {
-			//Seaside Hill
-			InitializeSoundManager();
-			PlayMusic(MusicIDs_EmeraldCoastAzureBlueWorld);
-			SoundManager_Delete2();
-
 			SH_FLOWERS = LoadObjectModel(SH_FLOWERS, "SH_FLOWERS");
 			SH_POLFLAG = LoadObjectModel(SH_POLFLAG, "SH_POLFLAG");
 			LoadObject(LoadObj_Data1, 3, SHFlowers);
@@ -108,13 +102,6 @@ void SeasideHillHandler(ObjectMaster * a1) {
 			matlist_waterfall[0].attr_texId = 87;
 		}
 		else {
-			//Sea Gate
-			InitializeSoundManager();
-			PlayMusic(MusicIDs_EmeraldCoastWindyAndRipply);
-			SoundManager_Delete2();
-			
-			CurrentLevelTexlist = &BEACH02_TEXLIST;
-			CurrentLandAddress = (LandTable**)0x97DA2C;
 			matlist_waterfall[0].attr_texId = 83;
 		}
 	}
@@ -139,8 +126,6 @@ void SeasideHillHandler(ObjectMaster * a1) {
 void SeaGate_Init(const HelperFunctions &helperFunctions) {
 	ReplaceBIN("PL_11B", "sea-gate-shaders");
 
-	MusicList[MusicIDs_ecoast2].Name = "sea-gate";
-
 	helperFunctions.RegisterPathList(SeaGatePaths);
 
 	DeathZoneList[HeroesLevelID_SeasideHill][1] = nullptr;
@@ -149,8 +134,6 @@ void SeaGate_Init(const HelperFunctions &helperFunctions) {
 void SeasideHill_Init(const HelperFunctions &helperFunctions) {
 	//Initiliazing files
 	ReplaceBIN("PL_10B", "seaside-hill-shaders");
-
-	MusicList[MusicIDs_ecoast1].Name = "seaside-hill";
 	
 	helperFunctions.RegisterPathList(SeasideHillPaths); //splines
 

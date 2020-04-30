@@ -10,10 +10,6 @@ void CasinoParkHandler(ObjectMaster * a1) {
 	CharObj2 * co2 = CharObj2Ptrs[0];
 
 	if (a1->Data1->Action == 0) {
-		InitializeSoundManager();
-		PlayMusic(MusicIDs_TwinkleParkTwinklePark);
-		SoundManager_Delete2();
-
 		a1->DeleteSub = CasinoCommon_Delete;
 		a1->Data1->Action = 1;
 
@@ -61,8 +57,6 @@ void CasinoPark_Load() {
 
 void CasinoPark_Init(const HelperFunctions &helperFunctions) {
 	ReplaceBIN("PL_30B", "casino-park-shaders");
-
-	MusicList[MusicIDs_twnklpk1].Name = "casino-park";
 
 	helperFunctions.RegisterPathList(CasinoParkPaths);
 

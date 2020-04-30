@@ -4,9 +4,6 @@
 
 ModelInfo* EF_SKYMDLS;
 
-MusicInfo EggFleetMusic = { "egg-fleet", 1 };
-int eggfleetmusicid = 81;
-
 void EggFleetSkybox(ObjectMaster* obj) {
 	if (!MissedFrames) {
 		if (obj->Data1->Action == 0) {
@@ -44,8 +41,6 @@ void EggFleetHandler(ObjectMaster *obj) {
 
 		LoadObject((LoadObj)0, 3, EFRailends);
 		LoadObject(LoadObj_Data1, 3, EFBgShips);
-
-		PlayMusic((MusicIDs)eggfleetmusicid);
 
 		if (RestartLevel.Position.x == 0) {
 			entity->Position = { 500, 4230, 5320 };
@@ -126,8 +121,7 @@ void EggFleet_Load() {
 void EggFleet_Init(const HelperFunctions &helperFunctions) {
 	ReplaceBIN("PL_60B", "egg-fleet-shaders");
 
-	eggfleetmusicid = helperFunctions.RegisterMusicFile(EggFleetMusic); //bgm
-	helperFunctions.RegisterPathList(EggFleetPaths); //splines
+	helperFunctions.RegisterPathList(EggFleetPaths);
 
 	//Load the level handler
 	SkyboxObjects[HeroesLevelID_EggFleet] = EggFleetSkybox;

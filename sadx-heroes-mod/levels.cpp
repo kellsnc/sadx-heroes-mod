@@ -21,13 +21,14 @@ static bool EnableFog		= true;
 static bool NoMysticMusic	= false;
 static bool NoPinball		= false;
 
-NJS_TEXNAME HeroesTexnames[64];
-NJS_TEXLIST HeroesTexlist = { arrayptrandlength(HeroesTexnames) };
+static NJS_TEXNAME HeroesTexnames[64];
+static NJS_TEXLIST HeroesTexlist = { arrayptrandlength(HeroesTexnames) };
 
 static std::vector<LandTableInfo*> CurrentChunks;
-LandTable HeroesLandTable = { 0, 0, 8, 0, nullptr, nullptr, NULL, &HeroesTexlist, 0, 0 };
+static LandTable HeroesLandTable = { 0, 0, 8, 0, nullptr, nullptr, NULL, &HeroesTexlist, 0, 0 };
+uint8_t CurrentChunk = 0;
 
-LandTable** CurrentLandAddress = nullptr;
+static int CurrentMusic = 0;
 
 // global variables return functions
 bool IsCurrentHeroesLevel() {
@@ -151,7 +152,6 @@ void __cdecl LoadHeroesLevelFiles() {
 				if (level->ChunkAmount) {
 					CurrentLandTable = LoadLevelGeometry(level->shortname, level->LevelID, level->Act, level->ChunkAmount);
 					CurrentLandTable->TexName = level->name.c_str();
-					CurrentLevelTexlist = &HeroesTexlist;
 				}
 				
 				level->loadfunc();
@@ -172,6 +172,8 @@ void __cdecl LoadHeroesLevelFiles() {
 
 				SetCurrentCamData(CurrentLevel);
 				SetCurrentSetData(CurrentLevel);
+
+				CurrentMusic = level->musicid;
 
 				PrintDebug("Done. \n");
 				return;
@@ -237,7 +239,7 @@ void LoadLevelFile(std::string name) {
 		}
 	}
 
-	land->TexList = CurrentLevelTexlist;
+	land->TexList = &HeroesTexlist;
 	land->AnimCount = 0;
 	
 	GeoLists[CurrentAct + 8 * CurrentLevel] = land;
@@ -280,6 +282,9 @@ void HeroesSkybox_Main(ObjectMaster *obj) {
 		SkyboxDrawDistance.Maximum = -36000.0f;
 		Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
 		obj->Data1->Action = 1;
+
+		InitializeSoundManager();
+		PlayMusic((MusicIDs)CurrentMusic);
 	}
 }
 
@@ -418,6 +423,11 @@ inline Uint8 GetLevelListID(HeroesLevelIDs id, Uint8 act) {
 	}
 }
 
+int SetLevelMusic(const char* name, const HelperFunctions& helperFunctions) {
+	MusicInfo MusicFile = { name, 1 };
+	return helperFunctions.RegisterMusicFile(MusicFile);
+}
+
 void DefaultHeroesLight(char level, char act) {
 	for (int i = 0; i < StageLightList_Length; ++i) {
 		if (StageLightList[i].level == level && StageLightList[i].act == act) {
@@ -453,6 +463,7 @@ void SetStartPositions(Uint8 id, const HelperFunctions& helperFunctions) {
 
 inline void InitLevelListData(Uint8 id, const HelperFunctions& helperFunctions) {
 	HeroesLevelList[id]->initfunc(helperFunctions);
+	HeroesLevelList[id]->musicid = SetLevelMusic(HeroesLevelList[id]->name.c_str(), helperFunctions);
 	SetStartPositions(id, helperFunctions);
 }
 

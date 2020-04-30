@@ -60,7 +60,7 @@ DataArray(Rotation3, LevelGlobalColors, 0x90BFE8, 42);
 
 extern NJS_MATERIAL matlist_col[1];
 extern NJS_MATERIAL matlist_waterfall[1];
-extern LandTable** CurrentLandAddress;
+extern uint8_t CurrentChunk;
 
 bool IsCurrentHeroesLevel();
 bool IsNoPinballEnabled();

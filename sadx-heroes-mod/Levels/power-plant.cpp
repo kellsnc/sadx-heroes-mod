@@ -30,10 +30,6 @@ void PowerPlantHandler(ObjectMaster * a1) {
 	CharObj2 * co2 = CharObj2Ptrs[0];
 
 	if (a1->Data1->Action == 0) {
-		InitializeSoundManager();
-		PlayMusic(MusicIDs_icecap1);
-		SoundManager_Delete2();
-
 		a1->Data1->Action = 1;
 
 		LoadObject(LoadObj_Data1, 3, PPSolarpnls);
@@ -94,8 +90,6 @@ void PowerPlant_Load() {
 
 void PowerPlant_Init(const HelperFunctions &helperFunctions) {
 	ReplaceBIN("PL_80B", "power-plant-shaders");
-
-	MusicList[MusicIDs_icecap1].Name = "power-plant";
 
 	helperFunctions.RegisterPathList(PowerPlantPaths);
 

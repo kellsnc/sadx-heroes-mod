@@ -59,23 +59,12 @@ void OceanPalaceHandler(ObjectMaster * a1) {
 		if (CurrentAct == 0) {
 			//Ocean Palace
 			PlayCustomSound(LevelSound_Sea_Seagul);
-			InitializeSoundManager();
-			PlayMusic(MusicIDs_WindyValleyWindyHill);
-			SoundManager_Delete2();
 			
 			LoadObject(LoadObj_Data1, 3, OPFlowers);
 			LoadObject(LoadObj_Data1, 3, OPFins_Main);
 			LoadObject(LoadObj_Data1, 3, OPBoulders);
 		}
 		else {
-			//Road Rock
-			InitializeSoundManager();
-			PlayMusic(MusicIDs_WindyValleyTornado);
-			SoundManager_Delete2();
-
-			CurrentLevelTexlist = &WINDY02_TEXLIST;
-			CurrentLandAddress = (LandTable**)0x97DA4C;
-			
 			LoadLevelFile("RR01");
 		}
 	}

@@ -13,13 +13,6 @@ void SpecialStagesHandler(ObjectMaster * a1) {
 	if (a1->Data1->Action == 0) {
 		a1->Data1->Action = 1;
 
-		InitializeSoundManager();
-		PlayMusic(MusicIDs_circuit);
-		SoundManager_Delete2();
-
-		CurrentLevelTexlist = (NJS_TEXLIST*)0xADF8A0;
-		CurrentLandAddress = &dword_97DBE8[160];
-
 		LoadObject(LoadObj_Data1, 3, SSWaves);
 
 		LoadLevelFile("SS01");
@@ -49,8 +42,6 @@ void SpecialStage_Load() {
 
 void SpecialStages_Init( const HelperFunctions &helperFunctions) {
 	ReplaceBIN("PL_Z0B", "special-stages-shaders");
-
-	MusicList[MusicIDs_circuit].Name = "special-stages";
 
 	WriteJump((void*)0x4DAA80, SpecialStagesHandler);
 	SkyboxObjects[HeroesLevelID_SpecialStages] = HeroesSkybox_Main;

@@ -19,8 +19,7 @@ bool IsLoaded = false;
 bool ChunkSwapped = false;
 
 unsigned int anim = 0;
-uint8_t CurrentChunk = 0;
-NJS_TEXLIST * CurrentLevelTexlist;
+
 
 static const Uint8 FREECAM_FIX[] = { 0x81, 0x0D };
 

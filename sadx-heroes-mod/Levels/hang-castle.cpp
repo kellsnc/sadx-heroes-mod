@@ -75,11 +75,6 @@ void HangCastleHandler(ObjectMaster * a1) {
 
 		LoadObject(LoadObj_Data1, 3, HCSpiders);
 		HCFlags_Reset();
-
-		if (CurrentAct == 0) {
-			CurrentLevelTexlist = &RUIN01_TEXLIST;
-			CurrentLandAddress = (LandTable**)0x97DAE8;
-		}
 	}
 	else {
 		HCFlags_Animate();

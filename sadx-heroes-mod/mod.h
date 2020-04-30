@@ -38,8 +38,6 @@ FunctionPointer(void, KillPlayer, (uint8_t ID), 0x440CD0);
 extern float bombsize;
 
 extern unsigned int anim;
-extern uint8_t CurrentChunk;
-extern NJS_TEXLIST * CurrentLevelTexlist;
 
 extern bool IsLoaded;
 extern bool ChunkSwapped;

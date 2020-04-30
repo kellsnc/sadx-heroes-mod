@@ -18,16 +18,9 @@ void GrandMetropolisHandler(ObjectMaster * a1) {
 	CharObj2 * co2 = CharObj2Ptrs[0];
 
 	if (a1->Data1->Action == 0) {
-		InitializeSoundManager();
-		PlayMusic(MusicIDs_casino1);
-		SoundManager_Delete2();
-
 		a1->Data1->Action = 1;
 
 		if (CurrentAct == 0) {
-			CurrentLevelTexlist = &CASINO01_TEXLIST;
-			CurrentLandAddress = (LandTable**)0x97DB28;
-
 			LoadObject(LoadObj_Data1, 3, GMPistons);
 			LoadObject(LoadObj_Data1, 3, GMCars);
 			LoadObject(LoadObj_Data1, 3, GMSky);
@@ -83,8 +76,6 @@ void GrandMetropolis_Load() {
 
 void GrandMetropolis_Init(const HelperFunctions &helperFunctions) {
 	ReplaceBIN("PL_90B", "grand-metropolis-shaders");
-
-	MusicList[MusicIDs_casino1].Name = "grand-metropolis";
 
 	helperFunctions.RegisterPathList(GrandMetropolisPaths);
 
