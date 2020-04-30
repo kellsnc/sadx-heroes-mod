@@ -34,46 +34,6 @@ void MysticMansion_MusicHandler() {
 	CurrentSong = musicid + nb - 1;
 }
 
-void MysticMansion_InitObjects() {
-	MM_SKELFAN = LoadObjectModel(MM_SKELFAN, "MM_SKELFAN");
-	MM_SPHERE1 = LoadObjectModel(MM_SPHERE1, "MM_SPHERE1");
-	MM_SPHERE2 = LoadObjectModel(MM_SPHERE2, "MM_SPHERE2");
-	MM_MYSTCAR = LoadObjectModel(MM_MYSTCAR, "MM_MYSTCAR");
-	MM_MOVPLAT = LoadObjectModel(MM_MOVPLAT, "MM_MOVPLAT");
-	MM_MYSDOOR = LoadObjectModel(MM_MYSDOOR, "MM_MYSDOOR");
-	MM_MYSWALL = LoadObjectModel(MM_MYSWALL, "MM_MYSWALL");
-	MM_TORCHES = LoadObjectModel(MM_TORCHES, "MM_TORCHES");
-	HC_SPKWARP = LoadObjectModel(HC_SPKWARP, "HC_SPKWARP");
-	HC_HFLAMES = LoadObjectModel(HC_HFLAMES, "HC_HFLAMES");
-	
-	MMMODELLIST[0] = MM_SPHERE1->getmodel()->basicdxmodel;
-	MMMODELLIST[1] = MM_SPHERE2->getmodel()->basicdxmodel;
-	MMMODELLIST[2] = HC_HFLAMES->getmodel()->basicdxmodel;
-	MMMODELLIST[3] = HC_HFLAMES->getmodel()->child->basicdxmodel;
-	MysticMansion_UVShift[0].List = MM_SPHERE1->getmodel()->basicdxmodel->meshsets[0].vertuv;
-	MysticMansion_UVShift[1].List = MM_SPHERE2->getmodel()->basicdxmodel->meshsets[0].vertuv;
-	MysticMansion_UVShift[0].Size = MM_SPHERE1->getmodel()->basicdxmodel->meshsets[0].nbMesh * 3;
-	MysticMansion_UVShift[1].Size = MM_SPHERE2->getmodel()->basicdxmodel->meshsets[0].nbMesh * 3;
-}
-
-void MysticMansion_Delete(ObjectMaster * a1) {
-	MM_SPHERE1 = FreeMDL(MM_SPHERE1);
-	MM_SPHERE2 = FreeMDL(MM_SPHERE2);
-	MM_SKELFAN = FreeMDL(MM_SKELFAN);
-	MM_MYSTCAR = FreeMDL(MM_MYSTCAR);
-	MM_MOVPLAT = FreeMDL(MM_MOVPLAT);
-	MM_MYSDOOR = FreeMDL(MM_MYSDOOR);
-	MM_MYSWALL = FreeMDL(MM_MYSWALL);
-	MM_TORCHES = FreeMDL(MM_TORCHES);
-	HC_SPKWARP = FreeMDL(HC_SPKWARP);
-	HC_HFLAMES = FreeMDL(HC_HFLAMES);
-
-	if (IsLantern) {
-		set_shader_flags_ptr(ShaderFlags_Blend, false);
-		set_blend_ptr(-1, -1);
-	}
-}
-
 void MysticMansionHandler(ObjectMaster * a1) {
 	EntityData1 *entity = EntityData1Ptrs[0];
 	CharObj2 * co2 = CharObj2Ptrs[0];
@@ -85,21 +45,19 @@ void MysticMansionHandler(ObjectMaster * a1) {
 		SoundManager_Delete2();
 
 		flamecount = 0;
+
 		for (uint16_t i = 0; i < SETTable_Count; ++i) {
 			if (CurrentSetFile[i].ObjectType == 53) flamecount += 1;
 		}
 
 		a1->Data1->Action = 1;
-		a1->DeleteSub = MysticMansion_Delete;
 
 		if (CurrentAct == 0) {
 			CurrentLevelTexlist = (TexList*)0x1B98518;
 			CurrentLandAddress = (LandTable**)0x97DB48;
 			
 			LoadPVM("FINALEGG1", (TexList*)0x1B98518);
-				
-			MysticMansion_InitObjects();
-
+			
 			if (IsLantern) set_shader_flags_ptr(ShaderFlags_Blend, true);
 		}
 	}
@@ -131,6 +89,47 @@ void MysticMansionHandler(ObjectMaster * a1) {
 	}
 }
 
+void MysticMansion_Unload() {
+	MM_SPHERE1 = FreeMDL(MM_SPHERE1);
+	MM_SPHERE2 = FreeMDL(MM_SPHERE2);
+	MM_SKELFAN = FreeMDL(MM_SKELFAN);
+	MM_MYSTCAR = FreeMDL(MM_MYSTCAR);
+	MM_MOVPLAT = FreeMDL(MM_MOVPLAT);
+	MM_MYSDOOR = FreeMDL(MM_MYSDOOR);
+	MM_MYSWALL = FreeMDL(MM_MYSWALL);
+	MM_TORCHES = FreeMDL(MM_TORCHES);
+	HC_SPKWARP = FreeMDL(HC_SPKWARP);
+	HC_HFLAMES = FreeMDL(HC_HFLAMES);
+
+	if (IsLantern) {
+		set_shader_flags_ptr(ShaderFlags_Blend, false);
+		set_blend_ptr(-1, -1);
+	}
+}
+
+void MysticMansion_Load() {
+	MM_SKELFAN = LoadObjectModel(MM_SKELFAN, "MM_SKELFAN");
+	MM_SPHERE1 = LoadObjectModel(MM_SPHERE1, "MM_SPHERE1");
+	MM_SPHERE2 = LoadObjectModel(MM_SPHERE2, "MM_SPHERE2");
+	MM_MYSTCAR = LoadObjectModel(MM_MYSTCAR, "MM_MYSTCAR");
+	MM_MOVPLAT = LoadObjectModel(MM_MOVPLAT, "MM_MOVPLAT");
+	MM_MYSDOOR = LoadObjectModel(MM_MYSDOOR, "MM_MYSDOOR");
+	MM_MYSWALL = LoadObjectModel(MM_MYSWALL, "MM_MYSWALL");
+	MM_TORCHES = LoadObjectModel(MM_TORCHES, "MM_TORCHES");
+	HC_SPKWARP = LoadObjectModel(HC_SPKWARP, "HC_SPKWARP");
+	HC_HFLAMES = LoadObjectModel(HC_HFLAMES, "HC_HFLAMES");
+
+	MMMODELLIST[0] = MM_SPHERE1->getmodel()->basicdxmodel;
+	MMMODELLIST[1] = MM_SPHERE2->getmodel()->basicdxmodel;
+	MMMODELLIST[2] = HC_HFLAMES->getmodel()->basicdxmodel;
+	MMMODELLIST[3] = HC_HFLAMES->getmodel()->child->basicdxmodel;
+
+	MysticMansion_UVShift[0].List = MM_SPHERE1->getmodel()->basicdxmodel->meshsets[0].vertuv;
+	MysticMansion_UVShift[1].List = MM_SPHERE2->getmodel()->basicdxmodel->meshsets[0].vertuv;
+	MysticMansion_UVShift[0].Size = MM_SPHERE1->getmodel()->basicdxmodel->meshsets[0].nbMesh * 3;
+	MysticMansion_UVShift[1].Size = MM_SPHERE2->getmodel()->basicdxmodel->meshsets[0].nbMesh * 3;
+}
+
 void MysticMansion_Init(const HelperFunctions &helperFunctions) {
 	ReplacePVM("FINALEGG1", "mystic-mansion");
 	ReplaceBIN("SET1000S", "mystic-mansion-set");
@@ -159,4 +158,4 @@ void MysticMansion_Init(const HelperFunctions &helperFunctions) {
 	MysticMansionObjects_Init();
 }
 
-HeroesLevelData MysticMansionData = { HeroesLevelID_MysticMansion, 0, LengthOfArray(MysticMansionChunks), "mystic-mansion", "MM", nullptr, nullptr, MysticMansion_Init, { 0, 23, 777 } };
+HeroesLevelData MysticMansionData = { HeroesLevelID_MysticMansion, 0, LengthOfArray(MysticMansionChunks), "mystic-mansion", "MM", MysticMansion_Load, MysticMansion_Unload, MysticMansion_Init, { 0, 23, 777 } };

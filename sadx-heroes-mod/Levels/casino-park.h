@@ -67,7 +67,7 @@ DeathZone CasinoParkDeathZones[] = {
 
 void CasinoParkObjects_Init();
 void CasinoCommon_OnFrame();
-void CasinoCommon_Delete(ObjectMaster * a1);
+void CasinoCommon_Delete(ObjectMaster* a1);
 void CPGlass(ObjectMaster *a1);
 
 extern ModelInfo * CP_BIGDICE;

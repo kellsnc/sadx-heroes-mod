@@ -81,14 +81,6 @@ bool ForceWhiteDiffuse(NJS_MATERIAL* material, Uint32 flags)
 	return true;
 }
 
-struct SortLevelCols
-{
-	inline bool operator() (const COL* col1, const COL* col2)
-	{
-		return (col1->Flags < col2->Flags);
-	}
-};
-
 LandTable* LoadLevelGeometry(std::string name, HeroesLevelIDs levelid, Uint8 act, Uint8 ChunkMax) {
 	std::vector<COL*> cols;
 	int colcount = 0;
@@ -126,7 +118,6 @@ LandTable* LoadLevelGeometry(std::string name, HeroesLevelIDs levelid, Uint8 act
 	}
 
 	// Merge everything into one landtable
-	std::sort(cols.begin(), cols.end(), SortLevelCols());
 	COL* newcol = new COL[colcount];
 
 	for (int i = 0; i < colcount; ++i) {
@@ -188,7 +179,7 @@ void __cdecl LoadHeroesLevelFiles() {
 void SwapChunk(Uint8 chunk) {
 	for (int j = 0; j < CurrentLandTable->COLCount; ++j) {
 		COL* col = &CurrentLandTable->Col[j];
-		if (col->Padding[0] == 0) break;
+		if (col->Padding[0] == 0) continue;
 
 		if (col->Padding[0] == chunk) {
 			col->Flags |= ColFlags_Visible;
@@ -273,7 +264,7 @@ void AnimateTexlist(SH_ANIMTEXS *list, Int listcount, NJS_TEXLIST* texlist) {
 }
 
 void AnimateTextures(SH_ANIMTEXS *list, Int listcount) {
-	AnimateTexlist(list, listcount, CurrentLevelTexlist);
+	AnimateTexlist(list, listcount, &HeroesTexlist);
 }
 
 //We prevent the skybox objects from loading in heroes levels

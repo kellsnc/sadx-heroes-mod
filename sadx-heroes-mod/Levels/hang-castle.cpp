@@ -62,46 +62,6 @@ void HangCastleSkybox(ObjectMaster *a1) {
 	}
 }
 
-void HangCastle_InitObjects() {
-	HC_SPKWARP = LoadObjectModel(HC_SPKWARP, "HC_SPKWARP");
-	HC_HFLAMES = LoadObjectModel(HC_HFLAMES, "HC_HFLAMES");
-	HC_HCBLADE = LoadObjectModel(HC_HCBLADE, "HC_HCBLADE");
-	HC_HPLANTA = LoadObjectModel(HC_HPLANTA, "HC_HPLANTA");
-	HC_HPLANTB = LoadObjectModel(HC_HPLANTB, "HC_HPLANTB");
-	HC_POLFLAG = LoadObjectModel(HC_POLFLAG, "HC_POLFLAG");
-	HC_SPDSIGN = LoadObjectModel(HC_SPDSIGN, "HC_SPDSIGN");
-	HC_SKYMDLS = LoadObjectModel(HC_SKYMDLS, "HC_SKYMDLS");
-	HC_MCLOUDS = LoadObjectModel(HC_MCLOUDS, "HC_MCLOUDS");
-
-	HCMODELLIST[0] = HC_HFLAMES->getmodel()->basicdxmodel;
-	HCMODELLIST[1] = HC_HFLAMES->getmodel()->child->basicdxmodel;
-
-	LoadObject(LoadObj_Data1, 3, HCSpiders);
-}
-
-void HangCastle_Delete(ObjectMaster * a1) {
-	HCFlags_Reset();
-
-	HC_HCBLADE = FreeMDL(HC_HCBLADE);
-	HC_HFLAMES = FreeMDL(HC_HFLAMES);
-	HC_HPLANTA = FreeMDL(HC_HPLANTA);
-	HC_HPLANTB = FreeMDL(HC_HPLANTB);
-	HC_POLFLAG = FreeMDL(HC_POLFLAG);
-	HC_SPDSIGN = FreeMDL(HC_SPDSIGN);
-	HC_SPKDOOR = FreeMDL(HC_SPKDOOR);
-	HC_SPKTREE = FreeMDL(HC_SPKTREE);
-	HC_SPKWARP = FreeMDL(HC_SPKWARP);
-	HC_SKYMDLS = FreeMDL(HC_SKYMDLS);
-	HC_MCLOUDS = FreeMDL(HC_MCLOUDS);
-
-	if (IsLantern) {
-		set_shader_flags_ptr(ShaderFlags_Blend, false);
-		set_blend_ptr(-1, -1);
-	}
-
-	CasinoLightRotation_Z = 0;
-}
-
 void HangCastleHandler(ObjectMaster * a1) {
 	EntityData1 *entity = EntityData1Ptrs[0];
 	CharObj2 * co2 = CharObj2Ptrs[0];
@@ -112,34 +72,13 @@ void HangCastleHandler(ObjectMaster * a1) {
 		SoundManager_Delete2();
 
 		a1->Data1->Action = 1;
-		a1->DeleteSub = HangCastle_Delete;
 
-		HangCastle_InitObjects();
+		LoadObject(LoadObj_Data1, 3, HCSpiders);
 		HCFlags_Reset();
 
 		if (CurrentAct == 0) {
 			CurrentLevelTexlist = &RUIN01_TEXLIST;
 			CurrentLandAddress = (LandTable**)0x97DAE8;
-
-			HC_SPKDOOR = LoadObjectModel(HC_SPKDOOR, "HC_SPKDOOR");
-			HC_SPKTREE = LoadObjectModel(HC_SPKTREE, "HC_SPKTREE");
-
-			HangCastle_UVShift[0].List = HC_MCLOUDS->getmodel()->basicdxmodel->meshsets[0].vertuv;
-			HangCastle_UVShift[1].List = HC_MCLOUDS->getmodel()->child->basicdxmodel->meshsets[0].vertuv;
-			HangCastle_UVShift[2].List = HC_MCLOUDS->getmodel()->child->child->basicdxmodel->meshsets[0].vertuv;
-			HangCastle_UVShift[3].List = HC_MCLOUDS->getmodel()->child->child->child->basicdxmodel->meshsets[0].vertuv;
-			HangCastle_UVShift[4].List = HC_MCLOUDS->getmodel()->child->child->child->child->basicdxmodel->meshsets[0].vertuv;
-			HangCastle_UVShift[5].List = HC_MCLOUDS->getmodel()->child->child->child->child->child->basicdxmodel->meshsets[0].vertuv;
-
-			HangCastle_UVShift[0].Size = HC_MCLOUDS->getmodel()->basicdxmodel->meshsets[0].nbMesh * 3;
-			HangCastle_UVShift[1].Size = HC_MCLOUDS->getmodel()->child->basicdxmodel->meshsets[0].nbMesh * 3;
-			HangCastle_UVShift[2].Size = HC_MCLOUDS->getmodel()->child->child->basicdxmodel->meshsets[0].nbMesh * 3;
-			HangCastle_UVShift[3].Size = HC_MCLOUDS->getmodel()->child->child->child->basicdxmodel->meshsets[0].nbMesh * 3;
-			HangCastle_UVShift[4].Size = HC_MCLOUDS->getmodel()->child->child->child->child->basicdxmodel->meshsets[0].nbMesh * 3;
-			HangCastle_UVShift[5].Size = HC_MCLOUDS->getmodel()->child->child->child->child->child->basicdxmodel->meshsets[0].nbMesh * 3;
-
-			if (IsLantern) 
-				set_shader_flags_ptr(ShaderFlags_Blend, true);
 		}
 	}
 	else {
@@ -169,6 +108,65 @@ void HangCastleHandler(ObjectMaster * a1) {
 	}
 }
 
+void HangCastle_Unload() {
+	HC_HCBLADE = FreeMDL(HC_HCBLADE);
+	HC_HFLAMES = FreeMDL(HC_HFLAMES);
+	HC_HPLANTA = FreeMDL(HC_HPLANTA);
+	HC_HPLANTB = FreeMDL(HC_HPLANTB);
+	HC_POLFLAG = FreeMDL(HC_POLFLAG);
+	HC_SPDSIGN = FreeMDL(HC_SPDSIGN);
+	HC_SPKDOOR = FreeMDL(HC_SPKDOOR);
+	HC_SPKTREE = FreeMDL(HC_SPKTREE);
+	HC_SPKWARP = FreeMDL(HC_SPKWARP);
+	HC_SKYMDLS = FreeMDL(HC_SKYMDLS);
+	HC_MCLOUDS = FreeMDL(HC_MCLOUDS);
+
+	if (IsLantern) {
+		set_shader_flags_ptr(ShaderFlags_Blend, false);
+		set_blend_ptr(-1, -1);
+	}
+
+	CasinoLightRotation_Z = 0;
+}
+
+void HangCastle_Load() {
+	HC_SPKWARP = LoadObjectModel(HC_SPKWARP, "HC_SPKWARP");
+	HC_HFLAMES = LoadObjectModel(HC_HFLAMES, "HC_HFLAMES");
+	HC_HCBLADE = LoadObjectModel(HC_HCBLADE, "HC_HCBLADE");
+	HC_HPLANTA = LoadObjectModel(HC_HPLANTA, "HC_HPLANTA");
+	HC_HPLANTB = LoadObjectModel(HC_HPLANTB, "HC_HPLANTB");
+	HC_POLFLAG = LoadObjectModel(HC_POLFLAG, "HC_POLFLAG");
+	HC_SPDSIGN = LoadObjectModel(HC_SPDSIGN, "HC_SPDSIGN");
+	HC_SKYMDLS = LoadObjectModel(HC_SKYMDLS, "HC_SKYMDLS");
+	HC_MCLOUDS = LoadObjectModel(HC_MCLOUDS, "HC_MCLOUDS");
+
+	if (CurrentAct == 0) {
+		HC_SPKDOOR = LoadObjectModel(HC_SPKDOOR, "HC_SPKDOOR");
+		HC_SPKTREE = LoadObjectModel(HC_SPKTREE, "HC_SPKTREE");
+	}
+
+	HCMODELLIST[0] = HC_HFLAMES->getmodel()->basicdxmodel;
+	HCMODELLIST[1] = HC_HFLAMES->getmodel()->child->basicdxmodel;
+
+	HangCastle_UVShift[0].List = HC_MCLOUDS->getmodel()->basicdxmodel->meshsets[0].vertuv;
+	HangCastle_UVShift[1].List = HC_MCLOUDS->getmodel()->child->basicdxmodel->meshsets[0].vertuv;
+	HangCastle_UVShift[2].List = HC_MCLOUDS->getmodel()->child->child->basicdxmodel->meshsets[0].vertuv;
+	HangCastle_UVShift[3].List = HC_MCLOUDS->getmodel()->child->child->child->basicdxmodel->meshsets[0].vertuv;
+	HangCastle_UVShift[4].List = HC_MCLOUDS->getmodel()->child->child->child->child->basicdxmodel->meshsets[0].vertuv;
+	HangCastle_UVShift[5].List = HC_MCLOUDS->getmodel()->child->child->child->child->child->basicdxmodel->meshsets[0].vertuv;
+
+	HangCastle_UVShift[0].Size = HC_MCLOUDS->getmodel()->basicdxmodel->meshsets[0].nbMesh * 3;
+	HangCastle_UVShift[1].Size = HC_MCLOUDS->getmodel()->child->basicdxmodel->meshsets[0].nbMesh * 3;
+	HangCastle_UVShift[2].Size = HC_MCLOUDS->getmodel()->child->child->basicdxmodel->meshsets[0].nbMesh * 3;
+	HangCastle_UVShift[3].Size = HC_MCLOUDS->getmodel()->child->child->child->basicdxmodel->meshsets[0].nbMesh * 3;
+	HangCastle_UVShift[4].Size = HC_MCLOUDS->getmodel()->child->child->child->child->basicdxmodel->meshsets[0].nbMesh * 3;
+	HangCastle_UVShift[5].Size = HC_MCLOUDS->getmodel()->child->child->child->child->child->basicdxmodel->meshsets[0].nbMesh * 3;
+
+	if (IsLantern) {
+		set_shader_flags_ptr(ShaderFlags_Blend, true);
+	}
+}
+
 void HangCastle_Init(const HelperFunctions &helperFunctions) {
 	ReplacePVM("RUIN01", "hang-castle");
 	ReplaceBIN("SET0700S", "hang-castle-set");
@@ -191,4 +189,4 @@ void HangCastle_Init(const HelperFunctions &helperFunctions) {
 	HangCastleObjects_Init();
 }
 
-HeroesLevelData HangCastleData = { HeroesLevelID_HangCastle, 0, LengthOfArray(HangCastleChunks), "hang-castle", "HG", nullptr, nullptr, HangCastle_Init, { 3999, 4000, 109 } };
+HeroesLevelData HangCastleData = { HeroesLevelID_HangCastle, 0, LengthOfArray(HangCastleChunks), "hang-castle", "HG", HangCastle_Load, HangCastle_Unload, HangCastle_Init, { 3999, 4000, 109 } };

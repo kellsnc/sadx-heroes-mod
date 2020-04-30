@@ -4,7 +4,44 @@
 
 void CasinoSkybox(ObjectMaster *a1);
 
-void BingoHighway_InitObjects() {
+void BingoHighwayHandler(ObjectMaster * a1) {
+	EntityData1 *entity = EntityData1Ptrs[0];
+	CharObj2 * co2 = CharObj2Ptrs[0];
+
+	if (a1->Data1->Action == 0) {
+		InitializeSoundManager();
+		PlayMusic(MusicIDs_SpeedHighwaySpeedHighway);
+		SoundManager_Delete2();
+
+		a1->DeleteSub = CasinoCommon_Delete;
+		a1->Data1->Action = 1;
+		
+		CurrentLevelTexlist = &HIGHWAY01_TEXLIST;
+		CurrentLandAddress = (LandTable**)0x97DA88;
+	}
+	else {
+		ChunkHandler("BH", BingoHighwayChunks, LengthOfArray(BingoHighwayChunks), entity->Position);
+		AnimateTextures(BingoHighwayAnimTexs, LengthOfArray(BingoHighwayAnimTexs));
+		CasinoCommon_OnFrame();
+	}
+}
+
+void BingoHighway_Unload() {
+	CP_CSNOBOB = FreeMDL(CP_CSNOBOB);
+	CP_FLIPPER = FreeMDL(CP_FLIPPER);
+	CP_MOVDICE = FreeMDL(CP_MOVDICE);
+	CP_RURETTO = FreeMDL(CP_RURETTO);
+	CP_SLDDOOR = FreeMDL(CP_SLDDOOR);
+	CP_SLOTMCS = FreeMDL(CP_SLOTMCS);
+	CP_DSHPANL = FreeMDL(CP_DSHPANL);
+	BH_BIGCHIP = FreeMDL(BH_BIGCHIP);
+	BH_BNGCHIP = FreeMDL(BH_BNGCHIP);
+	BH_BNGCARD = FreeMDL(BH_BNGCARD);
+	BH_TBLSIGN = FreeMDL(BH_TBLSIGN);
+	CP_SKYMDLS = FreeMDL(CP_SKYMDLS);
+}
+
+void BingoHighway_Load() {
 	CP_CSNOBOB = LoadObjectModel(CP_CSNOBOB, "CP_CSNOBOB");
 	CP_FLIPPER = LoadObjectModel(CP_FLIPPER, "CP_FLIPPER");
 	CP_MOVDICE = LoadObjectModel(CP_MOVDICE, "CP_MOVDICE");
@@ -32,47 +69,6 @@ void BingoHighway_InitObjects() {
 	LoadObject(LoadObj_Data1, 3, BHSigns);
 }
 
-void BingoHighway_Delete(ObjectMaster * a1) {
-	CP_CSNOBOB = FreeMDL(CP_CSNOBOB);
-	CP_FLIPPER = FreeMDL(CP_FLIPPER);
-	CP_MOVDICE = FreeMDL(CP_MOVDICE);
-	CP_RURETTO = FreeMDL(CP_RURETTO);
-	CP_SLDDOOR = FreeMDL(CP_SLDDOOR);
-	CP_SLOTMCS = FreeMDL(CP_SLOTMCS);
-	CP_DSHPANL = FreeMDL(CP_DSHPANL);
-	BH_BIGCHIP = FreeMDL(BH_BIGCHIP);
-	BH_BNGCHIP = FreeMDL(BH_BNGCHIP);
-	BH_BNGCARD = FreeMDL(BH_BNGCARD);
-	BH_TBLSIGN = FreeMDL(BH_TBLSIGN);
-	CP_SKYMDLS = FreeMDL(CP_SKYMDLS);
-
-	CasinoCommon_Delete(a1);
-}
-
-void BingoHighwayHandler(ObjectMaster * a1) {
-	EntityData1 *entity = EntityData1Ptrs[0];
-	CharObj2 * co2 = CharObj2Ptrs[0];
-
-	if (a1->Data1->Action == 0) {
-		InitializeSoundManager();
-		PlayMusic(MusicIDs_SpeedHighwaySpeedHighway);
-		SoundManager_Delete2();
-
-		BingoHighway_InitObjects();
-
-		a1->Data1->Action = 1;
-		a1->DeleteSub = BingoHighway_Delete;
-
-		CurrentLevelTexlist = &HIGHWAY01_TEXLIST;
-		CurrentLandAddress = (LandTable**)0x97DA88;
-	}
-	else {
-		ChunkHandler("BH", BingoHighwayChunks, LengthOfArray(BingoHighwayChunks), entity->Position);
-		AnimateTextures(BingoHighwayAnimTexs, LengthOfArray(BingoHighwayAnimTexs));
-		CasinoCommon_OnFrame();
-	}
-}
-
 void BingoHighway_Init(const HelperFunctions &helperFunctions) {
 	ReplacePVM("HIGHWAY01", "bingo-highway");
 	ReplaceBIN("SET0400S", "bingo-highway-set");
@@ -90,4 +86,4 @@ void BingoHighway_Init(const HelperFunctions &helperFunctions) {
 	BingoHighwayObjects_Init();
 }
 
-HeroesLevelData BingoHighwayData = { HeroesLevelID_BingoHighway, 0, 12, "bingo-highway", "BH", nullptr, nullptr, BingoHighway_Init, { 7999, 2277, 472 } };
+HeroesLevelData BingoHighwayData = { HeroesLevelID_BingoHighway, 0, 12, "bingo-highway", "BH", BingoHighway_Load, BingoHighway_Unload, BingoHighway_Init, { 7999, 2277, 472 } };
