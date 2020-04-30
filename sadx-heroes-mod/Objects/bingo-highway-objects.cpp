@@ -52,7 +52,7 @@ SOI_LIST2 Bingo_Signs[] = {
 
 void BHBingoCard_Display(ObjectMaster *a1) {
 	if (!MissedFrames) {
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(0, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
@@ -239,7 +239,7 @@ void BHBingoHandler(ObjectMaster *a1)
 
 void BHBingoNumber_Display(ObjectMaster *a1) {
 	if (!MissedFrames) {
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
@@ -315,7 +315,7 @@ void BHGiantTokens_Display(ObjectMaster *a1) {
 	if (a1->Data1->Scale.y != 0) if (CurrentChunk != a1->Data1->Scale.y) return;
 
 	if (!MissedFrames) {
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateY(nullptr, a1->Data1->Rotation.y);
@@ -380,7 +380,7 @@ void BHSigns(ObjectMaster *a1) {
 			if (CheckModelDisplay2(Bingo_Signs[i])) {
 				SOI_LIST2 item = Bingo_Signs[i];
 
-				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+				SetHeroesLeveltex();
 				njPushMatrix(0);
 				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
 				njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);

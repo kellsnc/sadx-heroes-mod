@@ -18,7 +18,7 @@ int flamecount;
 void MysticTorches_Display(ObjectMaster *a1)
 {
 	if (!MissedFrames) {
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
@@ -91,7 +91,7 @@ void MysticSphere_Display(ObjectMaster *a1)
 	if (!MissedFrames) {
 		if (a1->Data1->Scale.x != 0 && IsPlayerInsideSphere(&a1->Data1->Position, 500.0f) == 0) return;
 
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, 0, a1->Data1->Rotation.y, 0);
@@ -123,7 +123,7 @@ void MysticSphere(ObjectMaster *a1)
 void MysticFan_Display(ObjectMaster *a1)
 {
 	if (!MissedFrames) {
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, 0, a1->Data1->Rotation.y, 0);
@@ -192,7 +192,7 @@ void CartActions(ObjectMaster * a1) {
 
 void CartDisplay(ObjectMaster * a1) {
 	if (!MissedFrames && IsPlayerInsideSphere(&a1->Data1->Position, 1000)) {
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		

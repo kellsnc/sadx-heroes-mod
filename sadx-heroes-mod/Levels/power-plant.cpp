@@ -6,22 +6,22 @@
 void PowerPlantSkybox(ObjectMaster *a1) {
 	if (!MissedFrames) {
 		if (a1->Data1->Action == 0) {
-			a1->Data1->Action = 1;
 			a1->DisplaySub = a1->MainSub;
 			HeroesSkybox_Main(a1);
 		}
-		
-		DisableFog();
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
-		njPushMatrix(0);
-		NJS_VECTOR * pos = &EntityData1Ptrs[0]->Position;
-		njTranslate(nullptr, pos->x, 1000, pos->z);
-		DrawQueueDepthBias = -6000;
-		njDrawModel_SADX(PP_SKYMDLS->getmodel()->basicdxmodel);
-		njDrawModel_SADX(PP_SKYMDLS->getmodel()->child->basicdxmodel);
-		DrawQueueDepthBias = 0;
-		njPopMatrix(1u);
-		ToggleStageFog();
+		else {
+			DisableFog();
+			SetHeroesLeveltex();
+			njPushMatrix(0);
+			NJS_VECTOR* pos = &EntityData1Ptrs[0]->Position;
+			njTranslate(nullptr, pos->x, 1000, pos->z);
+			DrawQueueDepthBias = -6000;
+			njDrawModel_SADX(PP_SKYMDLS->getmodel()->basicdxmodel);
+			njDrawModel_SADX(PP_SKYMDLS->getmodel()->child->basicdxmodel);
+			DrawQueueDepthBias = 0;
+			njPopMatrix(1u);
+			ToggleStageFog();
+		}
 	}
 }
 
@@ -43,9 +43,6 @@ void PowerPlantHandler(ObjectMaster * a1) {
 		LoadObject(LoadObj_Data1, 3, PPTrucks);
 
 		if (IsLantern) set_shader_flags_ptr(ShaderFlags_Blend, true);
-
-		CurrentLevelTexlist = &ICECAP01_TEXLIST;
-		CurrentLandAddress = (LandTable**)0x97DB08;
 	}
 	else {
 		ChunkHandler("PP", PowerPlantChunks, LengthOfArray(PowerPlantChunks), entity->Position);
@@ -96,10 +93,6 @@ void PowerPlant_Load() {
 }
 
 void PowerPlant_Init(const HelperFunctions &helperFunctions) {
-	ReplacePVM("ICECAP01", "power-plant");
-	ReplaceBIN("SET0800S", "power-plant-set");
-	ReplaceBIN("SET0800M", "power-plant-set-tails");
-	ReplaceBIN("CAM0800S", "heroes-cam");
 	ReplaceBIN("PL_80B", "power-plant-shaders");
 
 	MusicList[MusicIDs_icecap1].Name = "power-plant";

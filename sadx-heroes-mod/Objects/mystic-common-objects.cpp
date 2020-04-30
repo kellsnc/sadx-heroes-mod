@@ -12,7 +12,7 @@ float hclight = 0;
 
 void HCWarp_Display(ObjectMaster *a1) {
 	if (!MissedFrames) {
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, 0, 1);
@@ -146,7 +146,7 @@ void HCWarp(ObjectMaster *a1)
 
 void HCDoor_Display(ObjectMaster *a1) {
 	if (!MissedFrames) {
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
@@ -249,7 +249,7 @@ void HCTorch_Display(ObjectMaster *a1) {
 
 		//replace will billboard sprite somehow
 		if (!MissedFrames) {
-			njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+			SetHeroesLeveltex();
 			njPushMatrix(0);
 			njTranslateV(0, &a1->Data1->Position);
 			njRotateXYZ(nullptr, a1->Data1->Rotation.x, Camera_Data1->Rotation.y, a1->Data1->Rotation.z);
@@ -308,7 +308,7 @@ void HCTorch(ObjectMaster *a1)
 void HCWall_Display(ObjectMaster *a1)
 {
 	if (!MissedFrames && a1->SETData.SETData->SETEntry->Properties.z != 1) {
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
@@ -415,7 +415,7 @@ void HCWall(ObjectMaster *a1)
 
 void HCPlatform_Display(ObjectMaster *a1) {
 	if (!DroppedFrames) {
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);

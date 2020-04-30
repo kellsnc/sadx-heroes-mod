@@ -7,7 +7,27 @@ ModelInfo* EF_SKYMDLS;
 MusicInfo EggFleetMusic = { "egg-fleet", 1 };
 int eggfleetmusicid = 81;
 
-void EggFleetObjects_Init();
+void EggFleetSkybox(ObjectMaster* obj) {
+	if (!MissedFrames) {
+		if (obj->Data1->Action == 0) {
+			obj->DisplaySub = obj->MainSub;
+			HeroesSkybox_Main(obj);
+		}
+		else {
+			DisableFog();
+			SetHeroesLeveltex();
+			njPushMatrix(0);
+			njTranslateV(nullptr, &EntityData1Ptrs[0]->Position);
+			njScale(nullptr, 0.1f, 0.1f, 0.1f);
+			DrawQueueDepthBias = -6000;
+			njDrawModel_SADX(EF_SKYMDLS->getmodel()->basicdxmodel);
+			njDrawModel_SADX(EF_SKYMDLS->getmodel()->child->basicdxmodel);
+			DrawQueueDepthBias = 0;
+			njPopMatrix(1u);
+			ToggleStageFog();
+		}
+	}
+}
 
 void EggFleetHandler(ObjectMaster *obj) {
 	EntityData1 *entity = EntityData1Ptrs[0];
@@ -24,9 +44,6 @@ void EggFleetHandler(ObjectMaster *obj) {
 
 		LoadObject((LoadObj)0, 3, EFRailends);
 		LoadObject(LoadObj_Data1, 3, EFBgShips);
-
-		CurrentLevelTexlist = &SKYDECK01_TEXLIST;
-		CurrentLandAddress = (LandTable**)0x97DAC8;
 
 		PlayMusic((MusicIDs)eggfleetmusicid);
 
@@ -106,34 +123,7 @@ void EggFleet_Load() {
 	PropellerModel = EF_PROPPLR->getmodel();
 }
 
-void EggFleetSkybox(ObjectMaster *obj) {
-	if (obj->Data1->Action == 0) {
-		obj->Data1->Action = 1;
-		obj->DisplaySub = obj->MainSub;
-
-		HeroesSkybox_Main(obj);
-	}
-
-	if (!MissedFrames) {
-		DisableFog();
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
-		njPushMatrix(0);
-		njTranslateV(nullptr, &EntityData1Ptrs[0]->Position);
-		njScale(nullptr, 0.1f, 0.1f, 0.1f);
-		DrawQueueDepthBias = -6000;
-		njDrawModel_SADX(EF_SKYMDLS->getmodel()->basicdxmodel);
-		njDrawModel_SADX(EF_SKYMDLS->getmodel()->child->basicdxmodel);
-		DrawQueueDepthBias = 0;
-		njPopMatrix(1u);
-		ToggleStageFog();
-	}
-}
-
 void EggFleet_Init(const HelperFunctions &helperFunctions) {
-	ReplacePVM("SKYDECK01", "egg-fleet");
-	ReplaceBIN("SET0600S", "egg-fleet-set");
-	ReplaceBIN("SET0600M", "egg-fleet-set-tails");
-	ReplaceBIN("CAM0600S", "egg-fleet-cam");
 	ReplaceBIN("PL_60B", "egg-fleet-shaders");
 
 	eggfleetmusicid = helperFunctions.RegisterMusicFile(EggFleetMusic); //bgm

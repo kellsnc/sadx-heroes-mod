@@ -78,7 +78,7 @@ void Propeller_Display(ObjectMaster* obj) {
 	if (!MissedFrames) {
 		EntityData1* data = obj->Data1;
 
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &data->Position);
 		njRotateXYZ(0, data->Rotation.x, -data->Rotation.y - 0x4000, data->Rotation.z);
@@ -169,7 +169,7 @@ void PropellerPath_Display(ObjectMaster* obj) {
 	if (!MissedFrames && IsPlayerInsideSphere(&obj->Data1->Position, 3000)) {
 		EntityData1* data = obj->Data1;
 
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslate(0, data->Position.x, data->Object->pos[1], data->Position.z);
 		njRotateXYZ(0, data->Rotation.x, -data->Rotation.y - 0x4000, data->Rotation.z);

@@ -21,7 +21,7 @@ void SHFlowers(ObjectMaster *a1) {
 			if (CheckModelDisplay2(SeasideHill_Flowers[i])) {
 				SOI_LIST2 item = SeasideHill_Flowers[i];
 
-				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+				SetHeroesLeveltex();
 				njPushMatrix(0);
 				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
 				njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);
@@ -82,7 +82,7 @@ void SHWaterfalls(ObjectMaster *a1) {
 
 void SHMovingPltfrms_Display(ObjectMaster *a1) {
 	if (!DroppedFrames) {
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
@@ -226,7 +226,7 @@ void Flags_Animate() {
 void __cdecl SHSpikes_Display(ObjectMaster *a1)
 {
 	if (!DroppedFrames) {
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);

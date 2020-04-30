@@ -21,7 +21,7 @@ void OPFins_Display(ObjectMaster *a1) {
 			if (OceanPalace_EventObjects[i].Model > 1 && CheckModelDisplay2(OceanPalace_EventObjects[i])) {
 				SOI_LIST2 item = OceanPalace_EventObjects[i];
 
-				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+				SetHeroesLeveltex();
 				njPushMatrix(0);
 				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
 				njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);
@@ -94,7 +94,7 @@ void OPFlowers(ObjectMaster *a1) {
 			if (CheckModelDisplay2(OceanPalace_Flowers[i])) {
 				SOI_LIST2 item = OceanPalace_Flowers[i];
 
-				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+				SetHeroesLeveltex();
 				njPushMatrix(0);
 				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
 				njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);
@@ -157,7 +157,7 @@ void OPWaterfalls(ObjectMaster *a1) {
 				a1->Data1->Action = 1;
 			}
 
-			njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+			SetHeroesLeveltex();
 			njPushMatrix(0);
 			DrawQueueDepthBias = -6000.f;
 			njTranslate(nullptr, 0, 3000, 2900);
@@ -172,7 +172,7 @@ void OPPOLE_Main(ObjectMaster *a1) {
 	if (!MissedFrames && !ClipSetObject(a1)) {
 		DynColRadius(a1, 200, 0);
 
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
@@ -216,7 +216,7 @@ void OPBoulders_Display(ObjectMaster *a1) {
 	if (CurrentChunk < 6)
 		return;
 	
-	njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+	SetHeroesLeveltex();
 	njPushMatrix(0);
 	DrawQueueDepthBias = -6000.0f;
 

@@ -23,6 +23,7 @@ struct HeroesLevelData {
 	VoidFuncPtr		unloadfunc;
 	HelperFuncPtr	initfunc;
 	NJS_POINT3		startpos;
+	int				musicid;
 };
 
 typedef struct {
@@ -64,6 +65,7 @@ extern LandTable** CurrentLandAddress;
 bool IsCurrentHeroesLevel();
 bool IsNoPinballEnabled();
 bool IsNoMysticMusicEnabled();
+void SetHeroesLeveltex();
 
 void AnimateTexlist(SH_ANIMTEXS *list, Int listcount, NJS_TEXLIST* texlist);
 void AnimateTextures(SH_ANIMTEXS *list, Int listcount);
@@ -72,4 +74,4 @@ void SwapChunk(Uint8 chunk);
 void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size, NJS_VECTOR pos);
 void SetFog(FogData * fog);
 
-void HeroesSkybox_Main(ObjectMaster *a1);
+void HeroesSkybox_Main(ObjectMaster *obj);

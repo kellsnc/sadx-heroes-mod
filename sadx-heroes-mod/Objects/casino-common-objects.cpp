@@ -24,7 +24,7 @@ int slotmax2;
 void HeroesFlippers_display(ObjectMaster *a1)
 {
 	EntityData1 *v1 = a1->Data1;
-	njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+	SetHeroesLeveltex();
 	njPushMatrix(0);
 	njTranslateV(0, &v1->Position);
 	njRotateXYZ(nullptr, 8192, v1->Rotation.y, 0);
@@ -132,7 +132,7 @@ void sub_5DBCD0_h(ObjectMaster *a2)
 
 			EntityData1 *v1 = a2->Data1;
 
-			njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+			SetHeroesLeveltex();
 			njPushMatrix(0);
 			njTranslateV(0, &v1->Position);
 			if (v1->Rotation.x == 0) njRotateXYZ(nullptr, 8192, v1->Rotation.y, 0);
@@ -151,7 +151,7 @@ void sub_5DBCD0_h(ObjectMaster *a2)
 
 void CPDice_Display(ObjectMaster *a1) {
 	if (!DroppedFrames) {
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, 0, a1->Data1->Rotation.y, 0);
@@ -292,7 +292,7 @@ void CPGlass(ObjectMaster *a1) {
 			if (CheckModelDisplay2(Casino_Glass[i])) {
 				SOI_LIST2 item = Casino_Glass[i];
 
-				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+				SetHeroesLeveltex();
 				njPushMatrix(0);
 				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
 				njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);
@@ -370,7 +370,7 @@ void CPDashPanel(ObjectMaster *a1) {
 		if (CurrentLevel == 3) mat[0].attr_texId = 144;
 		else mat[0].attr_texId = 107;
 
-		njSetTexture(CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 
@@ -404,7 +404,7 @@ void TakeRings(char nb) {
 
 void CPSlotS_Display(ObjectMaster *a1) {
 	if (!MissedFrames) {
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, 8192, a1->Data1->Rotation.y, 0);
@@ -543,7 +543,7 @@ void CPSlotS(ObjectMaster *a1)
 
 void CPSlotL_Display(ObjectMaster *a1) {
 	if (!MissedFrames) {
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, 8192, a1->Data1->Rotation.y, 0);
@@ -814,7 +814,7 @@ void CPSlotL(ObjectMaster *a1)
 
 void CPDoor_Display(ObjectMaster *a1) {
 	if (!MissedFrames) {
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
@@ -922,7 +922,7 @@ void CPDoor(ObjectMaster *a1)
 
 void CPRoulette_Display(ObjectMaster *a1) {
 	if (!MissedFrames) {
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);

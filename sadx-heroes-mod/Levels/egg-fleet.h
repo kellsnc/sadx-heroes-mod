@@ -51,3 +51,5 @@ extern ModelInfo * EF_CANBRK2;
 extern ModelInfo * EF_CANDECO;
 extern ModelInfo * EF_EBIGFAN;
 extern ModelInfo * EF_EHELICE;
+
+void EggFleetObjects_Init();

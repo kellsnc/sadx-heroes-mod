@@ -105,8 +105,6 @@ void SeasideHillHandler(ObjectMaster * a1) {
 			SH_POLFLAG = LoadObjectModel(SH_POLFLAG, "SH_POLFLAG");
 			LoadObject(LoadObj_Data1, 3, SHFlowers);
 
-			CurrentLevelTexlist = &BEACH01_TEXLIST;
-			CurrentLandAddress = (LandTable**)0x97DA28;
 			matlist_waterfall[0].attr_texId = 87;
 		}
 		else {
@@ -139,10 +137,6 @@ void SeasideHillHandler(ObjectMaster * a1) {
 }
 
 void SeaGate_Init(const HelperFunctions &helperFunctions) {
-	ReplacePVM("BEACH02", "sea-gate");
-	ReplaceBIN("SET0101S", "sea-gate-set-gamma");
-	ReplaceBIN("SET0101A", "sea-gate-set-amy");
-	ReplaceBIN("CAM0101S", "heroes-cam");
 	ReplaceBIN("PL_11B", "sea-gate-shaders");
 
 	MusicList[MusicIDs_ecoast2].Name = "sea-gate";
@@ -154,10 +148,6 @@ void SeaGate_Init(const HelperFunctions &helperFunctions) {
 
 void SeasideHill_Init(const HelperFunctions &helperFunctions) {
 	//Initiliazing files
-	ReplacePVM("BEACH01", "seaside-hill");
-	ReplaceBIN("SET0100S", "seaside-hill-set");
-	ReplaceBIN("SET0100M", "seaside-hill-set-tails");
-	ReplaceBIN("CAM0100S", "heroes-cam");
 	ReplaceBIN("PL_10B", "seaside-hill-shaders");
 
 	MusicList[MusicIDs_ecoast1].Name = "seaside-hill";

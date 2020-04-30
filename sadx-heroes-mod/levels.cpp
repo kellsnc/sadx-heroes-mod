@@ -42,6 +42,10 @@ bool IsNoMysticMusicEnabled() {
 	return NoMysticMusic;
 }
 
+void SetHeroesLeveltex() {
+	njSetTexture(&HeroesTexlist);
+}
+
 /*** Level Load System ***/
 
 void HeroesLevelDestructor(int heap);
@@ -127,6 +131,7 @@ LandTable* LoadLevelGeometry(std::string name, HeroesLevelIDs levelid, Uint8 act
 	HeroesLandTable.COLCount = colcount;
 	HeroesLandTable.Col = newcol;
 	GeoLists[act + 8 * levelid] = &HeroesLandTable;
+	InitLandTable(levelid, act);
 
 	return &HeroesLandTable;
 }
@@ -146,6 +151,7 @@ void __cdecl LoadHeroesLevelFiles() {
 				if (level->ChunkAmount) {
 					CurrentLandTable = LoadLevelGeometry(level->shortname, level->LevelID, level->Act, level->ChunkAmount);
 					CurrentLandTable->TexName = level->name.c_str();
+					CurrentLevelTexlist = &HeroesTexlist;
 				}
 				
 				level->loadfunc();
@@ -268,11 +274,13 @@ void AnimateTextures(SH_ANIMTEXS *list, Int listcount) {
 }
 
 //We prevent the skybox objects from loading in heroes levels
-void HeroesSkybox_Main(ObjectMaster *a1)
-{
-	LevelDrawDistance.Maximum = -999999.0f;
-	SkyboxDrawDistance.Maximum = -36000.0f;
-	Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
+void HeroesSkybox_Main(ObjectMaster *obj) {
+	if (obj->Data1->Action == 0) {
+		LevelDrawDistance.Maximum = -999999.0f;
+		SkyboxDrawDistance.Maximum = -36000.0f;
+		Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
+		obj->Data1->Action = 1;
+	}
 }
 
 int CountRings() {

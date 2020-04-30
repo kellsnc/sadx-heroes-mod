@@ -14,7 +14,7 @@ void HangCastleSkybox(ObjectMaster *a1) {
 		if (!CurrentChunk) return;
 
 		DisableFog();
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		NJS_VECTOR * pos = &EntityData1Ptrs[0]->Position;
 		

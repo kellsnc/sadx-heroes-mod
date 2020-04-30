@@ -182,7 +182,7 @@ void BoulderPath(ObjectMaster *a1) {
 				}
 			}
 			
-			njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+			SetHeroesLeveltex();
 			njPushMatrix(0);
 			DrawQueueDepthBias = -6000.0f;
 

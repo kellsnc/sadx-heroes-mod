@@ -15,9 +15,6 @@ void BingoHighwayHandler(ObjectMaster * a1) {
 
 		a1->DeleteSub = CasinoCommon_Delete;
 		a1->Data1->Action = 1;
-		
-		CurrentLevelTexlist = &HIGHWAY01_TEXLIST;
-		CurrentLandAddress = (LandTable**)0x97DA88;
 	}
 	else {
 		ChunkHandler("BH", BingoHighwayChunks, LengthOfArray(BingoHighwayChunks), entity->Position);
@@ -70,10 +67,6 @@ void BingoHighway_Load() {
 }
 
 void BingoHighway_Init(const HelperFunctions &helperFunctions) {
-	ReplacePVM("HIGHWAY01", "bingo-highway");
-	ReplaceBIN("SET0400S", "bingo-highway-set");
-	ReplaceBIN("SET0400M", "bingo-highway-set");
-	ReplaceBIN("CAM0400S", "heroes-cam");
 	ReplaceBIN("PL_40B", "bingo-highway-shaders");
 
 	MusicList[MusicIDs_highway1].Name = "bingo-highway";

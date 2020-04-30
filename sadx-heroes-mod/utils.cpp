@@ -153,7 +153,7 @@ void FreeANMFiles(AnimationFile** Files, int size) {
 //Basic drawing call
 void DrawObjModel(ObjectMaster* obj, NJS_MODEL_SADX *m, bool scalable) {
 	if (!MissedFrames) {
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &obj->Data1->Position);
 		njRotateXYZ(nullptr, obj->Data1->Rotation.x, obj->Data1->Rotation.y, obj->Data1->Rotation.z);

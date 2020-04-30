@@ -18,9 +18,6 @@ void CasinoParkHandler(ObjectMaster * a1) {
 		a1->Data1->Action = 1;
 
 		if (CurrentAct == 0) {
-			CurrentLevelTexlist = &TWINKLE01_TEXLIST;
-			CurrentLandAddress = (LandTable**)0x97DA68;
-
 			LoadObject(LoadObj_Data1, 3, CPGlass);
 		}
 	}
@@ -63,9 +60,6 @@ void CasinoPark_Load() {
 }
 
 void CasinoPark_Init(const HelperFunctions &helperFunctions) {
-	ReplacePVM("TWINKLE01", "casino-park");
-	ReplaceBIN("SET0300S", "casino-park-set");
-	ReplaceBIN("CAM0300S", "heroes-cam");
 	ReplaceBIN("PL_30B", "casino-park-shaders");
 
 	MusicList[MusicIDs_twnklpk1].Name = "casino-park";

@@ -5,12 +5,11 @@
 
 void GrandMetropolisSkybox(ObjectMaster *a1) {
 	if (a1->Data1->Action == 0) {
-		a1->Data1->Action = 1;
 		a1->DisplaySub = a1->MainSub;
+		a1->Data1->Position = { 0, 12000, 5000 };
 		HeroesSkybox_Main(a1);
 	}
 
-	a1->Data1->Position = { 0, 12000, 5000 };
 	DrawLensFlare(&a1->Data1->Position);
 }
 
@@ -83,11 +82,6 @@ void GrandMetropolis_Load() {
 }
 
 void GrandMetropolis_Init(const HelperFunctions &helperFunctions) {
-	ReplacePVM("CASINO01", "grand-metropolis");
-	ReplaceBIN("SET0900S", "grand-metropolis-set");
-	ReplaceBIN("SET0900M", "grand-metropolis-set-tails");
-	ReplaceBIN("SET0900K", "grand-metropolis-set");
-	ReplaceBIN("CAM0900S", "heroes-cam");
 	ReplaceBIN("PL_90B", "grand-metropolis-shaders");
 
 	MusicList[MusicIDs_casino1].Name = "grand-metropolis";

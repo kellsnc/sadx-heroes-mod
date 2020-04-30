@@ -74,7 +74,7 @@ void ObjectBreaker_Display(ObjectMaster* obj) {
 			njSetTexture((NJS_TEXLIST*)data->LoopData);
 		}
 		else {
-			njSetTexture(CurrentLevelTexlist);
+			SetHeroesLeveltex();
 		}
 
 		njPushMatrix(0);

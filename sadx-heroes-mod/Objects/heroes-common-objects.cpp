@@ -343,7 +343,7 @@ void WaterfallObject(ObjectMaster *a1) {
 			}
 
 			if (!MissedFrames) {
-				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+				SetHeroesLeveltex();
 				njPushMatrix(0);
 				njTranslate(nullptr, a1->Data1->Position.x, a1->Data1->Position.y, a1->Data1->Position.z);
 				njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);

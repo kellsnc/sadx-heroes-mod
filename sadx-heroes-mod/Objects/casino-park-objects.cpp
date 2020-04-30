@@ -91,7 +91,7 @@ void CPGiantDice_Display(ObjectMaster *a1) {
 	if (a1->Data1->Scale.y != 0) if (CurrentChunk != a1->Data1->Scale.y) return;
 	
 	if (!MissedFrames) {
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 

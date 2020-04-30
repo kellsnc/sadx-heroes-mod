@@ -23,7 +23,7 @@ void HCFlag_Display(ObjectMaster *a1) {
 	else DrawObjModel(a1, HC_POLFLAG->getmodel()->basicdxmodel, false);
 
 	if (!DroppedFrames) {
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
@@ -60,7 +60,7 @@ void HCFlag(ObjectMaster *a1)
 
 void HCBlade_Display(ObjectMaster *a1) {
 	if (!MissedFrames) {
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
@@ -110,7 +110,7 @@ void HCTree_Display(ObjectMaster *a1) {
 	DrawObjModel(a1, a1->Data1->Object->basicdxmodel, false);
 
 	if (!MissedFrames) {
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
@@ -167,7 +167,7 @@ void HCTree(ObjectMaster *a1)
 
 void HCPlantA_Display(ObjectMaster *a1) {
 	if (!MissedFrames) {
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
@@ -224,7 +224,7 @@ void HCPlantA(ObjectMaster *a1)
 
 void HCPlantB_Display(ObjectMaster *a1) {
 	if (!MissedFrames) {
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, a1->Data1->Rotation.x, a1->Data1->Rotation.y, a1->Data1->Rotation.z);
@@ -286,7 +286,7 @@ void HCSpiders(ObjectMaster *a1) {
 			if (CheckModelDisplay2(HangCastle_Spiders[i])) {
 				SOI_LIST2 item = HangCastle_Spiders[i];
 
-				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+				SetHeroesLeveltex();
 				njPushMatrix(0);
 				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
 				njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);

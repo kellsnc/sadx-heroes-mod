@@ -16,7 +16,7 @@ void GMSky(ObjectMaster *a1) {
 			a1->Data1->Action = 1;
 		}
 
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslate(nullptr, EntityData1Ptrs[0]->Position.x, 300, EntityData1Ptrs[0]->Position.z);
 		DrawQueueDepthBias = -7000;
@@ -37,7 +37,7 @@ void GMPistons_Display(ObjectMaster *a1) {
 			if (CheckModelDisplay(GM_Pistons[i])) {
 				SOI_LIST item = GM_Pistons[i];
 
-				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+				SetHeroesLeveltex();
 				njPushMatrix(0);
 				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
 				njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);
@@ -100,7 +100,7 @@ void GMAds(ObjectMaster *a1) {
 			if (CheckModelDisplay(GM_Ads[i])) {
 				SOI_LIST item = GM_Ads[i];
 
-				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+				SetHeroesLeveltex();
 				njPushMatrix(0);
 				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
 				njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);
@@ -119,7 +119,7 @@ void GMCars_Display(ObjectMaster *a1) {
 			if (CheckModelDisplay2(GM_FlyingObjs[i])) {
 				SOI_LIST2 item = GM_FlyingObjs[i];
 
-				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+				SetHeroesLeveltex();
 				njPushMatrix(0);
 				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
 				njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);
@@ -165,7 +165,7 @@ void GMCars(ObjectMaster *a1) {
 void GMEnergyH_Display(ObjectMaster *a1)
 {
 	if (!DroppedFrames) {
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, 0, a1->Data1->Rotation.y, 0);
@@ -197,7 +197,7 @@ void GMEnergyH(ObjectMaster *a1)
 
 void GM_EnergyDoors_Display(ObjectMaster *a1) {
 	if (!MissedFrames && IsPlayerInsideSphere(&a1->Data1->Position, 2000.0f)) {
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, 0, a1->Data1->Rotation.y, 0);
@@ -301,7 +301,7 @@ void GM_EnergyDoors(ObjectMaster *a1)
 
 void GM_EnergyPaths_Display(ObjectMaster *a1) {
 	if (!MissedFrames) {
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateY(nullptr, a1->Data1->Rotation.y);

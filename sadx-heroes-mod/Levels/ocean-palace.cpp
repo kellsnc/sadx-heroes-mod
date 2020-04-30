@@ -4,46 +4,46 @@
 #include "ocean-palace.h"
 
 void OceanPalaceSkybox(ObjectMaster *a1) {
-	if (a1->Data1->Action == 0) {
-		a1->Data1->Action = 1;
-		a1->DisplaySub = a1->MainSub;
-		HeroesSkybox_Main(a1);
-	}
-	
-	if (CurrentAct == 0 && !MissedFrames) {
-		DisableFog();
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
-		njPushMatrix(0);
-		NJS_VECTOR * pos = &EntityData1Ptrs[0]->Position;
-		njTranslate(nullptr, pos->x, 1.8f, pos->z);
-		DrawQueueDepthBias = -6000;
-		njDrawModel_SADX(OP_SKYMDLS->getmodel()->basicdxmodel);
-		njDrawModel_SADX(OP_SKYMDLS->getmodel()->child->basicdxmodel);
-		DrawQueueDepthBias = 0;
-		njPopMatrix(1u);
-		ToggleStageFog();
-
-		switch (CurrentChunk) {
-		case 0:
-		case 1:
-		case 2:
-		case 3:
-			a1->Data1->Position = { -7000, 3000, -900 };
-			break;
-		case 4:
-		case 5:
-			a1->Data1->Position = { -5696, 3000, -24900 };
-			break;
-		case 6:
-			a1->Data1->Position = { -7200, 4000, -38900 };
-			break;
-		case 7:
-		case 8:
-			a1->Data1->Position = { -7000, 4500, -42900 };
-			break;
+	if (!MissedFrames) {
+		if (a1->Data1->Action == 0) {
+			a1->DisplaySub = a1->MainSub;
+			HeroesSkybox_Main(a1);
 		}
+		else if (CurrentAct == 0) {
+			DisableFog();
+			SetHeroesLeveltex();
+			njPushMatrix(0);
+			NJS_VECTOR* pos = &EntityData1Ptrs[0]->Position;
+			njTranslate(nullptr, pos->x, 1.8f, pos->z);
+			DrawQueueDepthBias = -6000;
+			njDrawModel_SADX(OP_SKYMDLS->getmodel()->basicdxmodel);
+			njDrawModel_SADX(OP_SKYMDLS->getmodel()->child->basicdxmodel);
+			DrawQueueDepthBias = 0;
+			njPopMatrix(1u);
+			ToggleStageFog();
 
-		DrawLensFlare(&a1->Data1->Position);
+			switch (CurrentChunk) {
+			case 0:
+			case 1:
+			case 2:
+			case 3:
+				a1->Data1->Position = { -7000, 3000, -900 };
+				break;
+			case 4:
+			case 5:
+				a1->Data1->Position = { -5696, 3000, -24900 };
+				break;
+			case 6:
+				a1->Data1->Position = { -7200, 4000, -38900 };
+				break;
+			case 7:
+			case 8:
+				a1->Data1->Position = { -7000, 4500, -42900 };
+				break;
+			}
+
+			DrawLensFlare(&a1->Data1->Position);
+		}
 	}
 }
 
@@ -62,9 +62,6 @@ void OceanPalaceHandler(ObjectMaster * a1) {
 			InitializeSoundManager();
 			PlayMusic(MusicIDs_WindyValleyWindyHill);
 			SoundManager_Delete2();
-
-			CurrentLevelTexlist = &WINDY01_TEXLIST;
-			CurrentLandAddress = (LandTable**)0x97DA48;
 			
 			LoadObject(LoadObj_Data1, 3, OPFlowers);
 			LoadObject(LoadObj_Data1, 3, OPFins_Main);
@@ -155,11 +152,6 @@ void OceanPalace_Load() {
 }
 
 void RoadRock_Init(const HelperFunctions &helperFunctions) {
-	ReplacePVM("WINDY02", "road-rock");
-	ReplaceBIN("SET0201B", "road-rock-set-big");
-	ReplaceBIN("SET0201A", "road-rock-set-amy");
-	ReplaceBIN("SET0201S", "road-rock-set-gamma");
-	ReplaceBIN("CAM0201S", "heroes-cam");
 	ReplaceBIN("PL_21B", "road-rock-shaders");
 
 	MusicList[MusicIDs_wndyvly2].Name = "road-rock";
@@ -168,10 +160,6 @@ void RoadRock_Init(const HelperFunctions &helperFunctions) {
 }
 
 void OceanPalace_Init(const HelperFunctions &helperFunctions) {
-	ReplacePVM("WINDY01", "ocean-palace");
-	ReplaceBIN("SET0200S", "ocean-palace-set");
-	ReplaceBIN("SET0200M", "ocean-palace-set-tails");
-	ReplaceBIN("CAM0200S", "heroes-cam");
 	ReplaceBIN("PL_20B", "ocean-palace-shaders");
 
 	MusicList[MusicIDs_wndyvly1].Name = "ocean-palace";

@@ -59,7 +59,7 @@ void ECPlatforms_Display(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1;
 
 	if (!MissedFrames) {
-		njSetTexture(CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &data->Position);
 		njRotateXYZ(nullptr, data->Rotation.x, data->Rotation.y, data->Rotation.z);
@@ -194,7 +194,7 @@ void EFPipeline_Display(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1;
 
 	if (!MissedFrames) {
-		njSetTexture(CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &data->Position);
 		njRotateXYZ(nullptr, data->Rotation.x, data->Rotation.y, data->Rotation.z);
@@ -247,7 +247,7 @@ void EFRailends(ObjectMaster* obj) {
 			if (EggFleet_RailEnds[i].Chunk > 0 && CurrentChunk != EggFleet_RailEnds[i].Chunk) continue;
 
 			if (IsPlayerInsideSphere_(&item.Position, 5000.0f)) {
-				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+				SetHeroesLeveltex();
 				njPushMatrix(0);
 				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
 				njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);
@@ -280,7 +280,7 @@ void EFShipDoor_Display(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1;
 
 	if (!MissedFrames) {
-		njSetTexture(CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &data->Position);
 		njRotateXYZ(nullptr, data->Rotation.x, data->Rotation.y, data->Rotation.z);
@@ -388,7 +388,7 @@ void EFBigShipControlRoom_Display(ObjectMaster* obj) {
 
 	EntityData1* data = obj->Data1; 
 
-	njSetTexture(CurrentLevelTexlist);
+	SetHeroesLeveltex();
 
 	njPushMatrix(0);
 	njTranslateV(0, &data->Position);
@@ -423,7 +423,7 @@ void EFShipConveyor_Display(ObjectMaster* obj) {
 	if (MissedFrames) return;
 	
 	EntityData1* data = obj->Data1;
-	njSetTexture(CurrentLevelTexlist);
+	SetHeroesLeveltex();
 
 	if (IsPlayerInsideSphere_(&data->Position, 1500)) {
 		njPushMatrix(0);
@@ -523,7 +523,7 @@ void EFAntenna_Display(ObjectMaster* obj) {
 	if (!MissedFrames) {
 		EntityData1* data = obj->Data1;
 		
-		njSetTexture(CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &data->Position);
 		njRotateXYZ(nullptr, data->Rotation.x, data->Rotation.y, data->Rotation.z);
@@ -571,7 +571,7 @@ void EFRailSign_Display(ObjectMaster* obj) {
 	if (!MissedFrames) {
 		EntityData1* data = obj->Data1;
 
-		njSetTexture(CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &data->Position);
 		njRotateXYZ(nullptr, data->Rotation.x, data->Rotation.y, data->Rotation.z);
@@ -665,7 +665,7 @@ void EFBgShips(ObjectMaster* obj) {
 			SOI_LIST item = EggFleet_Ships[i];
 
 			if ((item.Chunk == 0 || item.Chunk == CurrentChunk)) {
-				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+				SetHeroesLeveltex();
 				njPushMatrix(0);
 				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
 				njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);
@@ -709,7 +709,7 @@ void EFBigFans_Display(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1;
 
 	if (!MissedFrames) {
-		njSetTexture(CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &data->Position);
 		njRotateXYZ(nullptr, data->Rotation.x, data->Rotation.y, data->Rotation.z);
@@ -784,7 +784,7 @@ void EFHelice_Display(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1;
 
 	if (!MissedFrames) {
-		njSetTexture(CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &data->Position);
 		njRotateXYZ(nullptr, data->Rotation.x, data->Rotation.y, data->Rotation.z);
@@ -864,7 +864,7 @@ void EFBullet_Display(ObjectMaster* obj) {
 
 	if (!MissedFrames) {
 		if (data->Action == 1) {
-			njSetTexture(CurrentLevelTexlist);
+			SetHeroesLeveltex();
 			njPushMatrix(0);
 			njTranslateV(0, &data->Position);
 			njRotateXYZ(nullptr, data->Rotation.x, data->Rotation.y, data->Rotation.z);
@@ -956,7 +956,7 @@ void EFCannon2_Display(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1;
 
 	if (!MissedFrames) {
-		njSetTexture(CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &data->Position);
 		njRotateXYZ(nullptr, data->Rotation.x, data->Rotation.y, data->Rotation.z);
@@ -971,7 +971,7 @@ void EFCannon1_Display(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1;
 
 	if (!MissedFrames) {
-		njSetTexture(CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &data->Position);
 		njRotateX(0, data->Rotation.x);

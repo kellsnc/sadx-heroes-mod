@@ -48,8 +48,6 @@ void SpecialStage_Load() {
 }
 
 void SpecialStages_Init( const HelperFunctions &helperFunctions) {
-	ReplacePVM("MINI_CART01", "special-stages");
-	ReplaceBIN("SETMCART00S", "special-stages");
 	ReplaceBIN("PL_Z0B", "special-stages-shaders");
 
 	MusicList[MusicIDs_circuit].Name = "special-stages";

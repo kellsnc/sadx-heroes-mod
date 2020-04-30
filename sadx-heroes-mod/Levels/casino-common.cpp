@@ -12,7 +12,6 @@ ModelInfo * CP_SKYMDLS;
 void CasinoSkybox(ObjectMaster *a1) {
 	if (!MissedFrames) {
 		if (a1->Data1->Action == 0) {
-			a1->Data1->Action = 1;
 			a1->DisplaySub = a1->MainSub;
 			HeroesSkybox_Main(a1);
 
@@ -35,17 +34,18 @@ void CasinoSkybox(ObjectMaster *a1) {
 				material[4].attr_texId = 4;
 			}
 		}
-
-		DisableFog();
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
-		njPushMatrix(0);
-		njTranslateV(nullptr, &EntityData1Ptrs[0]->Position);
-		njScale(0, 0.83f, 0.83f, 0.83f);
-		DrawQueueDepthBias = -6000;
-		njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
-		DrawQueueDepthBias = 0;
-		njPopMatrix(1u);
-		ToggleStageFog();
+		else {
+			DisableFog();
+			SetHeroesLeveltex();
+			njPushMatrix(0);
+			njTranslateV(nullptr, &EntityData1Ptrs[0]->Position);
+			njScale(0, 0.83f, 0.83f, 0.83f);
+			DrawQueueDepthBias = -6000;
+			njDrawModel_SADX(a1->Data1->Object->basicdxmodel);
+			DrawQueueDepthBias = 0;
+			njPopMatrix(1u);
+			ToggleStageFog();
+		}
 	}
 }
 

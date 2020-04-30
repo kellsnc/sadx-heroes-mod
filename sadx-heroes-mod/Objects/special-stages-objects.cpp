@@ -16,7 +16,7 @@ void SSWaves_Main(ObjectMaster *a1) {
 			if (CheckModelDisplay2(FluidWaves[i])) {
 				SOI_LIST2 item = FluidWaves[i];
 
-				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+				SetHeroesLeveltex();
 				njPushMatrix(0);
 				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
 				njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);

@@ -27,7 +27,7 @@ void PPSolarpnls(ObjectMaster *a1) {
 			if (CheckModelDisplay(PP_Panels[i])) {
 				SOI_LIST item = PP_Panels[i];
 
-				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+				SetHeroesLeveltex();
 				njPushMatrix(0);
 				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
 				if (GameState != 16) a1->Data1->Scale.x += 100;
@@ -54,7 +54,7 @@ void PPCranes(ObjectMaster *a1) {
 			if (CheckModelDisplay(PP_Cranes[i])) {
 				SOI_LIST item = PP_Cranes[i];
 
-				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+				SetHeroesLeveltex();
 				njPushMatrix(0);
 				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
 
@@ -91,7 +91,7 @@ void PPLights(ObjectMaster *a1) {
 			if (CheckModelDisplay(PP_Lights[i])) {
 				SOI_LIST item = PP_Lights[i];
 
-				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+				SetHeroesLeveltex();
 				njPushMatrix(0);
 				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
 				if (GameState != 16) a1->Data1->Scale.x += 100;
@@ -110,7 +110,7 @@ void PPLights(ObjectMaster *a1) {
 void PPStep_Display(ObjectMaster *a1) {
 	if (CurrentChunk != 11) return;
 
-	njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+	SetHeroesLeveltex();
 	njPushMatrix(0);
 	njTranslateV(nullptr, &a1->Data1->Position);
 	njRotateXYZ(0, 0, a1->Data1->Rotation.y, 0);
@@ -162,7 +162,7 @@ void PPTankHandler_Display(ObjectMaster *a1) {
 	if (CurrentChunk != 11) return;
 
 	if (!DroppedFrames) {
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslate(nullptr, 22930, 10979.9f, -12388);
 		DrawQueueDepthBias = -6000;
@@ -252,7 +252,7 @@ void PPTrucks_Display(ObjectMaster *a1) {
 			if (CheckModelDisplay2(PP_Trucks[i])) {
 				SOI_LIST2 item = PP_Trucks[i];
 
-				njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+				SetHeroesLeveltex();
 				njPushMatrix(0);
 				njTranslate(nullptr, item.Position.x, item.Position.y, item.Position.z);
 				njRotateXYZ(nullptr, item.Rotation[0], item.Rotation[1], item.Rotation[2]);
@@ -343,7 +343,7 @@ void PathsFunction() {
 
 void PPEnergyPaths_Display(ObjectMaster *a1) {
 	if (!MissedFrames) {
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, 0, a1->Data1->Rotation.y, 0);
@@ -380,7 +380,7 @@ void PPEnergyPaths(ObjectMaster *a1)
 void PPPlatformsV_Display(ObjectMaster *a1)
 {
 	if (!DroppedFrames) {
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, 0, a1->Data1->Rotation.y, 0);
@@ -424,7 +424,7 @@ void PPPlatformsV(ObjectMaster *a1)
 void PPPlatformsH_Display(ObjectMaster *a1)
 {
 	if (!DroppedFrames) {
-		njSetTexture((NJS_TEXLIST*)CurrentLevelTexlist);
+		SetHeroesLeveltex();
 		njPushMatrix(0);
 		njTranslateV(0, &a1->Data1->Position);
 		njRotateXYZ(nullptr, 0, a1->Data1->Rotation.y, 0);
