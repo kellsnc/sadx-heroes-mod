@@ -63,8 +63,6 @@ void EggFleet_Delete(ObjectMaster *a1) {
 	EF_CANDECO = FreeMDL(EF_CANDECO);
 	EF_EBIGFAN = FreeMDL(EF_EBIGFAN);
 	EF_EHELICE = FreeMDL(EF_EHELICE);
-	
-	LevelHandler_Delete(a1);
 }
 
 void EggFleetHandler(ObjectMaster *obj) {
@@ -140,9 +138,7 @@ void EggFleet_Init(const HelperFunctions &helperFunctions) {
 	ReplaceBIN("CAM0600S", "egg-fleet-cam");
 	ReplaceBIN("PL_60B", "egg-fleet-shaders");
 
-	DefaultLight(HeroesLevelID_EggFleet);
-
-	eggfleetmusicid =  helperFunctions.RegisterMusicFile(EggFleetMusic); //bgm
+	eggfleetmusicid = helperFunctions.RegisterMusicFile(EggFleetMusic); //bgm
 	helperFunctions.RegisterPathList(EggFleetPaths); //splines
 
 	//Load the level handler

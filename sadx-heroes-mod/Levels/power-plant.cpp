@@ -69,8 +69,6 @@ void PowerPlant_Delete(ObjectMaster * a1) {
 		set_shader_flags_ptr(ShaderFlags_Blend, false);
 		set_blend_ptr(-1, -1);
 	}
-	
-	LevelHandler_Delete(a1);
 }
 
 void PowerPlantHandler(ObjectMaster * a1) {
@@ -108,7 +106,6 @@ void PowerPlant_Init(const HelperFunctions &helperFunctions) {
 	ReplaceBIN("PL_80B", "power-plant-shaders");
 
 	MusicList[MusicIDs_icecap1].Name = "power-plant";
-	DefaultLight(HeroesLevelID_PowerPlant);
 
 	helperFunctions.RegisterPathList(PowerPlantPaths);
 

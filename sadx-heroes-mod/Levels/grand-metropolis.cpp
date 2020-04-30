@@ -46,8 +46,6 @@ void GrandMetropolis_Delete(ObjectMaster * a1) {
 		set_shader_flags_ptr(ShaderFlags_Blend, false);
 		set_blend_ptr(-1, -1);
 	}
-	
-	LevelHandler_Delete(a1);
 }
 
 void GrandMetropolisHandler(ObjectMaster * a1) {

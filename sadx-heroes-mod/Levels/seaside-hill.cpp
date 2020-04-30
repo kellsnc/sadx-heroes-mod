@@ -59,7 +59,7 @@ void SeasideHill_OnFrame(EntityData1 * entity, CharObj2 * co2) {
 	}
 }
 
-void SeasideHill_InitObjects() {
+void SeasideHill_Load() {
 	SH_PLATFOR = LoadObjectModel(SH_PLATFOR, "SH_PLATFOR");
 	SH_WATERFS = LoadObjectModel(SH_WATERFS, "SH_WATERFS");
 	SH_MORUINS = LoadObjectModel(SH_MORUINS, "SH_MORUINS");
@@ -77,14 +77,12 @@ void SeasideHill_InitObjects() {
 	LoadObject(LoadObj_Data1, 3, SHWaterfalls);
 }
 
-void SeasideHill_Delete(ObjectMaster * a1) {
+void SeasideHill_Unload() {
 	SH_MORUINS = SH_MORUINS = FreeMDL(SH_MORUINS);
 	SH_POLFLAG = SH_POLFLAG = FreeMDL(SH_POLFLAG);
 	SH_FLOWERS = SH_FLOWERS = FreeMDL(SH_FLOWERS);
 	SH_PLATFOR = SH_PLATFOR = FreeMDL(SH_PLATFOR);
 	SH_WATERFS = SH_WATERFS = FreeMDL(SH_WATERFS);
-
-	LevelHandler_Delete(a1);
 }
 
 void SeasideHillHandler(ObjectMaster * a1) {
@@ -93,10 +91,8 @@ void SeasideHillHandler(ObjectMaster * a1) {
 
 	if (a1->Data1->Action == 0) {
 		a1->Data1->Action = 1;
-		a1->DeleteSub = SeasideHill_Delete;
 
 		SetFog(&SeasideHill_Fog);
-		SeasideHill_InitObjects();
 		PlayCustomSound(LevelSound_Sea_Seagul);
 
 		if (CurrentAct == 0) {
@@ -165,7 +161,6 @@ void SeasideHill_Init(const HelperFunctions &helperFunctions) {
 	ReplaceBIN("PL_10B", "seaside-hill-shaders");
 
 	MusicList[MusicIDs_ecoast1].Name = "seaside-hill";
-	DefaultLight(HeroesLevelID_SeasideHill);
 	
 	helperFunctions.RegisterPathList(SeasideHillPaths); //splines
 

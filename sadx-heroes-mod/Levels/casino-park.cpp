@@ -33,7 +33,6 @@ void CasinoPark_Delete(ObjectMaster * a1) {
 	CP_SKYMDLS = FreeMDL(CP_SKYMDLS);
 
 	CasinoCommon_Delete(a1);
-	LevelHandler_Delete(a1);
 }
 
 void CasinoParkHandler(ObjectMaster * a1) {
@@ -74,7 +73,6 @@ void CasinoPark_Init(const HelperFunctions &helperFunctions) {
 	ReplaceBIN("PL_30B", "casino-park-shaders");
 
 	MusicList[MusicIDs_twnklpk1].Name = "casino-park";
-	DefaultLight(HeroesLevelID_CasinoPark);
 
 	helperFunctions.RegisterPathList(CasinoParkPaths);
 

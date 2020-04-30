@@ -53,8 +53,6 @@ void OceanPalace_delete(ObjectMaster * a1) {
 	OP_FLOWERS = FreeMDL(OP_FLOWERS);
 	OP_BOULDER = FreeMDL(OP_BOULDER);
 	OP_WATERFS = FreeMDL(OP_WATERFS);
-
-	LevelHandler_Delete(a1);
 }
 
 void OceanPalaceHandler(ObjectMaster * a1) {
@@ -131,7 +129,7 @@ void OceanPalaceHandler(ObjectMaster * a1) {
 			OceanPalace_UVShift[12].Size = OP_WATERFS->getmodel()->child->child->child->child->child->child->child->child->child->child->child->child->basicdxmodel->meshsets[0].nbMesh * 3;
 			OceanPalace_UVShift[13].Size = OP_WATERFS->getmodel()->child->child->child->child->child->child->child->child->child->child->child->child->basicdxmodel->meshsets[1].nbMesh * 3;
 
-			LoadLevelFile("RR", 01);
+			LoadLevelFile("RR01");
 		}
 	}
 	else {
@@ -170,7 +168,6 @@ void OceanPalace_Init(const HelperFunctions &helperFunctions) {
 	ReplaceBIN("PL_20B", "ocean-palace-shaders");
 
 	MusicList[MusicIDs_wndyvly1].Name = "ocean-palace";
-	DefaultLight(HeroesLevelID_OceanPalace);
 
 	helperFunctions.RegisterPathList(OceanPalacePaths);
 

@@ -3,7 +3,9 @@
 struct HeroesLevelData {
 	HeroesLevelIDs	LevelID;
 	Uint8			Act;
+	Uint8			ChunkAmount;
 	std::string		name;
+	std::string		shortname;
 	VoidFuncPtr		loadfunc;
 	VoidFuncPtr		unloadfunc;
 	HelperFuncPtr	initfunc;
@@ -11,29 +13,31 @@ struct HeroesLevelData {
 };
 
 HeroesLevelData HeroesLevelList[]{
-	{ HeroesLevelID_SeasideHill, 0, "seaside-hill", nullptr, nullptr, SeasideHill_Init, { 0, 6.800581f, 5.217285f } },
-	{ HeroesLevelID_SeasideHill, 1, "sea-gate", nullptr, nullptr, SeaGate_Init, { 6090, 30, 1000 } },
-	{ HeroesLevelID_OceanPalace, 0, "ocean-palace", nullptr, nullptr, OceanPalace_Init, { -8771, 1303, -2819.688f } },
-	{ HeroesLevelID_OceanPalace, 1, "road-rock", nullptr, nullptr, RoadRock_Init, { 0, 3020, 4462 } },
-	{ HeroesLevelID_GrandMetropolis, 0, "grand-metropolis", nullptr, nullptr, GrandMetropolis_Init, { 0.5f, 70, 4125.8f } },
-	{ HeroesLevelID_PowerPlant, 0,	"power-plant", nullptr, nullptr, PowerPlant_Init, { 2000, 1564, 63 } },
-	{ HeroesLevelID_CasinoPark, 0, "casino-park", nullptr, nullptr, CasinoPark_Init, { -8000, 2188, 0 } },
-	{ HeroesLevelID_BingoHighway, 0, "bingo-highway", nullptr, nullptr, BingoHighway_Init, { 7999, 2277, 472 } },
-	{ HeroesLevelID_HangCastle, 0, "hang-castle", nullptr, nullptr, HangCastle_Init, { 3999, 4000, 109 } },
-	{ HeroesLevelID_MysticMansion, 0, "mystic-mansion", nullptr, nullptr, MysticMansion_Init, { 0, 23, 777 } },
-	{ HeroesLevelID_EggFleet, 0, "egg-fleet", nullptr, nullptr, EggFleet_Init, { 500, 4230, 5320 } },
-	{ HeroesLevelID_SpecialStages, 0, "special-stage", nullptr, nullptr, SpecialStages_Init, { 200, 0, 0 } }
+	{ HeroesLevelID_SeasideHill, 0, 16, "seaside-hill", "SH", SeasideHill_Load, SeasideHill_Unload, SeasideHill_Init, { 0, 6.800581f, 5.217285f } },
+	{ HeroesLevelID_SeasideHill, 1, 0, "sea-gate", "SG", nullptr, nullptr, SeaGate_Init, { 6090, 30, 1000 } },
+	{ HeroesLevelID_OceanPalace, 0, 0, "ocean-palace", "OP", nullptr, nullptr, OceanPalace_Init, { -8771, 1303, -2819.688f } },
+	{ HeroesLevelID_OceanPalace, 1, 0, "road-rock", "RR", nullptr, nullptr, RoadRock_Init, { 0, 3020, 4462 } },
+	{ HeroesLevelID_GrandMetropolis, 0, 0, "grand-metropolis", "GM", nullptr, nullptr, GrandMetropolis_Init, { 0.5f, 70, 4125.8f } },
+	{ HeroesLevelID_PowerPlant, 0, 0, "power-plant", "PP", nullptr, nullptr, PowerPlant_Init, { 2000, 1564, 63 } },
+	{ HeroesLevelID_CasinoPark, 0, 0, "casino-park", "CP", nullptr, nullptr, CasinoPark_Init, { -8000, 2188, 0 } },
+	{ HeroesLevelID_BingoHighway, 0, 0, "bingo-highway", "BH", nullptr, nullptr, BingoHighway_Init, { 7999, 2277, 472 } },
+	{ HeroesLevelID_HangCastle, 0, 0, "hang-castle", "HG", nullptr, nullptr, HangCastle_Init, { 3999, 4000, 109 } },
+	{ HeroesLevelID_MysticMansion, 0, 0, "mystic-mansion", "MM", nullptr, nullptr, MysticMansion_Init, { 0, 23, 777 } },
+	{ HeroesLevelID_EggFleet, 0, 0, "egg-fleet", "EF", nullptr, nullptr, EggFleet_Init, { 500, 4230, 5320 } },
+	{ HeroesLevelID_SpecialStages, 0, 0, "special-stage", "SS", nullptr, nullptr, SpecialStages_Init, { 200, 0, 0 } }
 };
 
-static bool EnabledLevels[12] = { false };
+static bool EnabledLevels[42] = { false };
 
 static bool EnableFog		= true;
 static bool NoMysticMusic	= false;
 static bool NoPinball		= false;
 
-//todo: load every chunks at level start, unload when finished
-static LandTableInfo* info		= nullptr;
-static LandTableInfo* oldinfo	= nullptr;
+NJS_TEXNAME HeroesTexnames[64];
+NJS_TEXLIST HeroesTexlist = { arrayptrandlength(HeroesTexnames) };
+
+static std::vector<LandTableInfo*> CurrentChunks;
+LandTable HeroesLandTable = { 0, 0, 8, 0, nullptr, nullptr, NULL, &HeroesTexlist, 0, 0 };
 
 LandTable** CurrentLandAddress = nullptr;
 
@@ -50,7 +54,37 @@ bool IsNoMysticMusicEnabled() {
 	return NoMysticMusic;
 }
 
-// Chunk system
+/*** Level Load System ***/
+
+void HeroesLevelDestructor(int heap);
+Trampoline RunLevelDestructor_t((int)RunLevelDestructor, (int)RunLevelDestructor + 0x6, HeroesLevelDestructor);
+void HeroesLevelDestructor(int heap) {
+	if (CurrentChunks.size() > 0) {
+		DeleteCustomEnemies();
+
+		for (uint16_t i = 0; i < SETTable_Count; ++i) {
+			if (CurrentSetFile[i].Properties.z == 1
+				&& CurrentSetFile[i].Properties.x == 0
+				&& CurrentSetFile[i].Properties.y == 0) {
+				CurrentSetFile[i].Properties.z = 0;
+			}
+		}
+
+		for (Uint8 c = 0; c < CurrentChunks.size(); ++c) {
+			delete CurrentChunks[c];
+		}
+
+		CurrentChunks.clear();
+		CurrentChunk = 0;
+
+		delete[] HeroesLandTable.Col;
+		HeroesLandTable.Col = nullptr;
+	}
+
+	FunctionPointer(void, RunLevelDestructor_orig, (int heap), RunLevelDestructor_t.Target());
+	RunLevelDestructor_orig(heap);
+}
+
 bool ForceWhiteDiffuse(NJS_MATERIAL* material, Uint32 flags)
 {
 	if (IsCurrentHeroesLevel() && CurrentLevel == 1 && material->attr_texId == 41) set_shader_flags_ptr(ShaderFlags_Fog, false);
@@ -59,93 +93,122 @@ bool ForceWhiteDiffuse(NJS_MATERIAL* material, Uint32 flags)
 	return true;
 }
 
-void FreeCurrentChunk(int level, int act)
+struct SortLevelCols
 {
-	LandTable *CurrentLand; // esi
-	int COL_Length; // ebp
-	int COL_LengthT; // ebx
-	NJS_OBJECT **LandObject; // edi
-
-	CurrentLand = GeoLists[act + 8 * level];
-	if (CurrentLand)
+	inline bool operator() (const COL* col1, const COL* col2)
 	{
-		COL_Length = CurrentLand->COLCount;
-		if (COL_Length > 0)
-		{
-			LandObject = &CurrentLand->Col->Model;
-			COL_LengthT = CurrentLand->COLCount;
-			do
-			{
-				if (((unsigned int)LandObject[2] & (ColFlags_Visible | ColFlags_UvManipulation)) == ColFlags_Visible)
-				{
-					FreeLandTableObject(*LandObject);
-				}
-				LandObject += 9;
-				--COL_LengthT;
-			} while (COL_LengthT);
-		}
+		return (col1->Flags < col2->Flags);
 	}
-	if (!IsLoaded) SetQueueDrawingState_BlankScreen();
-}
+};
 
-void SwapCurrentLandTable() {
-	LandTable *land = info->getlandtable();
-	for (Int j = 0; j < land->COLCount; ++j) {
-		if (land->Col[j].Flags == 0x80000000) {
-			for (Int k = 0; k < land->Col[j].Model->basicdxmodel->nbMat; ++k) {
-				NJS_MATERIAL* landmtl[1] = { &land->Col[j].Model->basicdxmodel->mats[k] };
-				if (IsLantern) material_register_ptr(landmtl, LengthOfArray(landmtl), &ForceWhiteDiffuse);
+LandTable* LoadLevelGeometry(std::string name, HeroesLevelIDs levelid, Uint8 act, Uint8 ChunkMax) {
+	std::vector<COL*> cols;
+	int colcount = 0;
+	int geocount = 0;
+
+	// Load every chunk
+	for (Uint8 i = 1; i < ChunkMax + 1; ++i) {
+		std::string num;
+
+		if (i < 10) num = "0" + std::to_string(i);
+		else num = std::to_string(i);
+
+		std::string fullPath = "system\\levels\\" + name + num + ".sa1lvl";
+		LandTableInfo* info = new LandTableInfo(HelperFunctionsGlobal.GetReplaceablePath(fullPath.c_str()));
+
+		LandTable* land = info->getlandtable();
+		if (land) {
+			CurrentChunks.push_back(info);
+			colcount += land->COLCount;
+			
+			for (int j = 0; j < land->COLCount; ++j) {
+				if (land->Col[j].Flags & ColFlags_Visible) {
+					geocount++;
+					land->Col[j].Padding[0] = i;
+
+					for (Int k = 0; k < land->Col[j].Model->basicdxmodel->nbMat; ++k) {
+						NJS_MATERIAL* landmtl[1] = { &land->Col[j].Model->basicdxmodel->mats[k] };
+						if (IsLantern) material_register_ptr(landmtl, 1, &ForceWhiteDiffuse);
+					}
+				}
+
+				cols.push_back(&land->Col[j]);
 			}
 		}
 	}
 
-	land->TexList = CurrentLevelTexlist;
-	land->AnimCount = 0;
-	WriteData((LandTable**)CurrentLandAddress, land);
+	// Merge everything into one landtable
+	std::sort(cols.begin(), cols.end(), SortLevelCols());
+	COL* newcol = new COL[colcount];
+
+	for (int i = 0; i < colcount; ++i) {
+		newcol[i] = *cols[i];
+	}
+
+	HeroesLandTable.COLCount = colcount;
+	HeroesLandTable.Col = newcol;
+	GeoLists[act + 8 * levelid] = &HeroesLandTable;
+
+	return &HeroesLandTable;
 }
 
-void LoadLevelFile(const char *shortname, int chunknb) {
-	std::string numtos = std::to_string(chunknb);
+void __cdecl LoadHeroesLevelFiles();
+Trampoline LoadLevel_t(0x415210, 0x415216, LoadHeroesLevelFiles);
+void __cdecl LoadHeroesLevelFiles() {
+	VoidFunc(original, LoadLevel_t.Target());
+	original();
 
-	PrintDebug("[SHM] Loading "); PrintDebug(shortname); if (chunknb < 10) PrintDebug("0");
-	PrintDebug(numtos.c_str()); PrintDebug("... ");
-	
-	std::string fullPath = "system\\levels\\";
-	fullPath += shortname;
-	if (chunknb < 10) fullPath += "0";
-	fullPath += numtos + ".sa1lvl";
-	const char *foo = fullPath.c_str();
+	if (IsCurrentHeroesLevel()) {
+		for (uint8_t i = 0; i < LengthOfArray(HeroesLevelList); ++i) {
+			if (CurrentLevel == HeroesLevelList[i].LevelID) {
+				HeroesLevelData* level = &HeroesLevelList[i];
+				PrintDebug("[SHM] Loading %s files... ", level->name.c_str());
 
-	PrintDebug("Freeing chunk... ");
+				CurrentLandTable = LoadLevelGeometry(level->shortname, level->LevelID, level->Act, level->ChunkAmount);
+				CurrentLandTable->TexName = level->name.c_str();
+				level->loadfunc();
 
-	FreeCurrentChunk(CurrentLevel, CurrentAct);
+				ReleaseCamFile();
+				ReleaseSetFile();
 
-	if (info) {
-		if (oldinfo) {
-			delete oldinfo;
-			oldinfo = nullptr;
+				std::string file = level->name + "-set.bin";
+				LoadFileWithMalloc(file.c_str(), (LPVOID*)&SetFiles[level->Act]);
 
+				file = level->name + "-cam.bin";
+				LoadFileWithMalloc(file.c_str(), (LPVOID*)&CamData[level->Act]);
+
+				if (!CamData[level->Act]) {
+					file = "heroes-cam.bin";
+					LoadFileWithMalloc(file.c_str(), (LPVOID*)&CamData[level->Act]);
+				}
+
+				SetCurrentCamData(CurrentLevel);
+				SetCurrentSetData(CurrentLevel);
+
+				PrintDebug("Done. \n");
+				return;
+			}
 		}
-		oldinfo = info;
-		info = nullptr;
 	}
-
-	info = new LandTableInfo(HelperFunctionsGlobal.GetReplaceablePath(foo));
-
-	PrintDebug("Done. Loaded '"); PrintDebug(foo); PrintDebug("'. Swapping landtable... ");
-
-	SwapCurrentLandTable();
-	SetCurrentLandTable();
-
-	PrintDebug("Done. \n");
 }
 
-void SwapChunk(const char* shortname, int chunknb) {
-	if (CurrentChunk != chunknb) {
-		LoadLevelFile(shortname, chunknb);
-		CurrentChunk = chunknb;
-		ChunkSwapped = true;
+/*** Chunk System ***/
+
+void SwapChunk(Uint8 chunk) {
+	for (int j = 0; j < CurrentLandTable->COLCount; ++j) {
+		COL* col = &CurrentLandTable->Col[j];
+		if (col->Padding[0] == 0) break;
+
+		if (col->Padding[0] == chunk) {
+			col->Flags |= ColFlags_Visible;
+		}
+		else {
+			col->Flags &= ~ColFlags_Visible;
+		}
 	}
+
+	CurrentChunk = chunk;
+	ChunkSwapped = true;
 }
 
 void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size, NJS_VECTOR pos) {
@@ -160,7 +223,8 @@ void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size, NJS_
 					((chunklist[i].Position2.y == 0 || pos.y > chunklist[i].Position2.y)) &&
 					((chunklist[i].Position2.z == 0 || pos.z > chunklist[i].Position2.z))) {
 
-					SwapChunk(level, chunklist[i].Chunk);
+					SwapChunk(chunklist[i].Chunk);
+
 					break;
 				}
 			}
@@ -168,22 +232,28 @@ void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size, NJS_
 	}
 }
 
-void LevelHandler_Delete(ObjectMaster * a1) {
-	FreeCurrentChunk(CurrentLevel, CurrentAct);
-	CurrentChunk = 0;
-	delete oldinfo;
-	oldinfo = nullptr;
-	anim = 0;
+// Load a single chunk
+void LoadLevelFile(std::string name) {
+	std::string fullPath = "system\\levels\\" + name + ".sa1lvl";
+	LandTableInfo* info = new LandTableInfo(HelperFunctionsGlobal.GetReplaceablePath(fullPath.c_str()));
 
-	DeleteCustomEnemies();
+	CurrentChunks.push_back(info);
 
-	for (uint16_t i = 0; i < SETTable_Count; ++i) {
-		if (CurrentSetFile[i].Properties.z == 1
-			&& CurrentSetFile[i].Properties.x == 0
-			&& CurrentSetFile[i].Properties.y == 0) {
-			CurrentSetFile[i].Properties.z = 0;
+	LandTable* land = info->getlandtable();
+	for (Int j = 0; j < land->COLCount; ++j) {
+		if (land->Col[j].Flags == 0x80000000) {
+			for (Int k = 0; k < land->Col[j].Model->basicdxmodel->nbMat; ++k) {
+				NJS_MATERIAL* landmtl[1] = { &land->Col[j].Model->basicdxmodel->mats[k] };
+				if (IsLantern) material_register_ptr(landmtl, LengthOfArray(landmtl), &ForceWhiteDiffuse);
+			}
 		}
 	}
+
+	land->TexList = CurrentLevelTexlist;
+	land->AnimCount = 0;
+	
+	GeoLists[CurrentAct + 8 * CurrentLevel] = land;
+	SetCurrentLandTable();
 }
 
 //Animate textures of the current landtable in a similar way to Sonic Heroes
@@ -348,19 +418,21 @@ void __cdecl DrawLandTableFog(NJS_MODEL_SADX *a1)
 	}
 }
 
-//Default light for stages
-void DefaultLight(HeroesLevelIDs levelid) {
-	for (int i = 0; i < StageLightList_Length; ++i) {
-		if (StageLightList[i].level == levelid)
-			StageLightList[i] = *GetStageLight(LevelIDs_Casinopolis, 0, 0);
-	}
-}
+/*** Initialize levels ***/
 
-//Initialize levels
 inline Uint8 GetLevelListID(HeroesLevelIDs id, Uint8 act) {
 	for (Uint8 i = 0; i < LengthOfArray(HeroesLevelList); ++i) {
 		if (HeroesLevelList[i].LevelID == id && HeroesLevelList[i].Act == act) {
 			return i;
+		}
+	}
+}
+
+void DefaultHeroesLight(char level, char act) {
+	for (int i = 0; i < StageLightList_Length; ++i) {
+		if (StageLightList[i].level == level && StageLightList[i].act == act) {
+			StageLightList[i] = *GetStageLight(LevelIDs_Casinopolis, 0, 0);
+			return;
 		}
 	}
 }
@@ -377,11 +449,15 @@ void AddTrialEntry(unsigned char character, char level, char act, const HelperFu
 
 void SetStartPositions(Uint8 id, const HelperFunctions& helperFunctions) {
 	HeroesLevelData* level = &HeroesLevelList[id];
-	StartPosition start = { level->LevelID, level->Act, level->startpos, 0xBFFF };
+	int levelid = level->LevelID;
+	int levelact = level->Act;
+
+	StartPosition start = { levelid, levelact, level->startpos, 0xBFFF };
 
 	for (unsigned char i = 0; i < 8; ++i) {
 		helperFunctions.RegisterStartPosition(i, start);
-		AddTrialEntry(i, level->LevelID, level->Act, helperFunctions);
+		DefaultHeroesLight(levelid, levelact);
+		AddTrialEntry(i, levelid, levelact, helperFunctions);
 	}
 }
 
@@ -395,8 +471,7 @@ inline void InitLevelData(HeroesLevelIDs id, Uint8 act, const HelperFunctions& h
 	InitLevelListData(GetLevelListID(id, act), helperFunctions);
 }
 
-void Levels_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config)
-{
+void Levels_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config) {
 	if (config->getBool("Levels", "EnableSeasideHill", true)) { InitLevelData(HeroesLevelID_SeasideHill, 0, helperFunctions); }
 	if (config->getBool("Levels", "EnableSeaGate", true)) { InitLevelData(HeroesLevelID_SeasideHill, 1, helperFunctions); }
 	if (config->getBool("Levels", "EnableOceanPalace", true)) { InitLevelData(HeroesLevelID_OceanPalace, 0, helperFunctions); }

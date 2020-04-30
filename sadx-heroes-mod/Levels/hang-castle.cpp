@@ -100,8 +100,6 @@ void HangCastle_Delete(ObjectMaster * a1) {
 	}
 
 	CasinoLightRotation_Z = 0;
-	
-	LevelHandler_Delete(a1);
 }
 
 void HangCastleHandler(ObjectMaster * a1) {
@@ -179,7 +177,6 @@ void HangCastle_Init(const HelperFunctions &helperFunctions) {
 
 	MusicList[MusicIDs_lstwrld1].Name = "hang-castle";
 	MusicList[MusicIDs_lstwrld2].Name = "hang-castle-alt";
-	DefaultLight(HeroesLevelID_HangCastle);
 
 	helperFunctions.RegisterPathList(HangCastlePaths);
 

@@ -72,8 +72,6 @@ void MysticMansion_Delete(ObjectMaster * a1) {
 		set_shader_flags_ptr(ShaderFlags_Blend, false);
 		set_blend_ptr(-1, -1);
 	}
-
-	LevelHandler_Delete(a1);
 }
 
 void MysticMansionHandler(ObjectMaster * a1) {
@@ -142,7 +140,6 @@ void MysticMansion_Init(const HelperFunctions &helperFunctions) {
 	ReplaceBIN("PL_A0B", "mystic-mansion-shaders");
 
 	MusicList[MusicIDs_finaleg1].Name = "mystic-mansion";
-	DefaultLight(HeroesLevelID_MysticMansion);
 
 	if (helperFunctions.Version >= 9 && IsNoMysticMusicEnabled() == true) {
 		musicid = helperFunctions.RegisterMusicFile(MysticMansionMusics[0]);

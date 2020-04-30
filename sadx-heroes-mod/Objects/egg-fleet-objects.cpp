@@ -490,7 +490,7 @@ void EFShipConveyor(ObjectMaster* obj) {
 					}
 
 					SetCameraMode_(0);
-					SwapChunk("EF", 7);
+					SwapChunk(7);
 					data->Action = EFConveyorAction_Destroy;
 					DynCol_Delete(obj);
 					return;

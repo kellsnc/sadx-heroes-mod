@@ -154,7 +154,6 @@ void PinTablePhysics() {
 void CasinoCommon_Delete(ObjectMaster * a1) {
 	IsPinRolling == false;
 	IsRolling == false;
-	LevelHandler_Delete(a1);
 }
 
 void CasinoCommon_OnFrame() {

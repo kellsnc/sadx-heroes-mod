@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include <math.h>
 #include <cmath>
+#include <vector>
+#include <algorithm>
 
 //Mod Loader headers
 #include <SADXModLoader.h>

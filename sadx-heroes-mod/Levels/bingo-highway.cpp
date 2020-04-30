@@ -47,7 +47,6 @@ void BingoHighway_Delete(ObjectMaster * a1) {
 	CP_SKYMDLS = FreeMDL(CP_SKYMDLS);
 
 	CasinoCommon_Delete(a1);
-	LevelHandler_Delete(a1);
 }
 
 void BingoHighwayHandler(ObjectMaster * a1) {
@@ -82,7 +81,6 @@ void BingoHighway_Init(const HelperFunctions &helperFunctions) {
 	ReplaceBIN("PL_40B", "bingo-highway-shaders");
 
 	MusicList[MusicIDs_highway1].Name = "bingo-highway";
-	DefaultLight(HeroesLevelID_BingoHighway);
 
 	helperFunctions.RegisterPathList(BingoHighwayPaths);
 

@@ -42,16 +42,17 @@ bool IsNoMysticMusicEnabled();
 
 void AnimateTexlist(SH_ANIMTEXS *list, Int listcount, NJS_TEXLIST* texlist);
 void AnimateTextures(SH_ANIMTEXS *list, Int listcount);
-void LoadLevelFile(const char *shortname, int chunknb);
-void SwapChunk(const char* shortname, int chunknb);
+void LoadLevelFile(std::string name);
+void SwapChunk(Uint8 chunk);
 void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size, NJS_VECTOR pos);
 void SetFog(FogData * fog);
-void DefaultLight(HeroesLevelIDs levelid);
 
 void HeroesSkybox_Main(ObjectMaster *a1);
-void LevelHandler_Delete(ObjectMaster * a1);
 
 void SeasideHill_Init(const HelperFunctions &helperFunctions);
+void SeasideHill_Load();
+void SeasideHill_Unload();
+
 void SeaGate_Init(const HelperFunctions &helperFunctions);
 void OceanPalace_Init(const HelperFunctions &helperFunctions);
 void RoadRock_Init(const HelperFunctions &helperFunctions);

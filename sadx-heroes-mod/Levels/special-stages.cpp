@@ -14,8 +14,6 @@ void SpecialStage_InitObjects() {
 
 void SpecialStage_Delete(ObjectMaster * a1) {
 	SS_SSWAVES = FreeMDL(SS_SSWAVES);
-
-	LevelHandler_Delete(a1);
 }
 
 void SpecialStagesHandler(ObjectMaster * a1) {
@@ -35,7 +33,7 @@ void SpecialStagesHandler(ObjectMaster * a1) {
 
 		SpecialStage_InitObjects();
 
-		LoadLevelFile("SS", CurrentAct + 1);
+		LoadLevelFile("SS01");
 	}
 	else {
 		//Physics changes, makes character accelerate faster and allow ceiling-running
@@ -58,7 +56,6 @@ void SpecialStages_Init( const HelperFunctions &helperFunctions) {
 	ReplaceBIN("PL_Z0B", "special-stages-shaders");
 
 	MusicList[MusicIDs_circuit].Name = "special-stages";
-	DefaultLight(HeroesLevelID_SpecialStages);
 
 	WriteJump((void*)0x4DAA80, SpecialStagesHandler);
 	DeathZoneList[HeroesLevelID_SpecialStages] = nullptr;
