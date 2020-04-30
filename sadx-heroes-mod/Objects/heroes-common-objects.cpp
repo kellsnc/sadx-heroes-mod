@@ -302,7 +302,7 @@ void ObjReel_Main(ObjectMaster *a1)
 
 				if (a1->Data1->Position.y < max - 15) {
 					a1->Data1->Position.y += 1;
-					if (anim % 40) PlayHeroesSound(CommonSound_Pulley);
+					if (anim % 40) PlayCustomSound(CommonSound_Pulley);
 				}
 			}
 		}
@@ -313,7 +313,7 @@ void ObjReel_Main(ObjectMaster *a1)
 
 			if (a1->Data1->Position.y > min) {
 				a1->Data1->Position.y -= 1;
-				if (anim % 40) PlayHeroesSound_Entity(CommonSound_Pulley, a1, 300, 0);
+				if (anim % 40) PlayCustomSound_Entity(CommonSound_Pulley, a1, 300, 0);
 			}
 		}
 
@@ -397,7 +397,7 @@ void ObjBalloon_Main(ObjectMaster *a1)
 				a1->Data1->Scale.y += 0.2f;
 
 				if (a1->Data1->Scale.y == 3.2f) {
-					PlayHeroesSound(CommonSound_ItemBox);
+					PlayCustomSound(CommonSound_ItemBox);
 
 					if (item == 12) {
 						if (GetCharacterID(a1->Data1->CharIndex - 1) == Characters_Tails) {
@@ -557,7 +557,7 @@ void ObjCannon_Main(ObjectMaster *a1)
 				if (a1->Data1->NextAction < 21) a1->Data1->NextAction += 1;
 				else {
 					a1->Data1->NextAction = 0;
-					PlayHeroesSound(CommonSound_CannonIn);
+					PlayCustomSound(CommonSound_CannonIn);
 					a1->Data1->Action = 2;
 				}
 				float timer = (float)a1->Data1->NextAction / 100;
@@ -592,7 +592,7 @@ void ObjCannon_Main(ObjectMaster *a1)
 				a1->Data1->NextAction = 0;
 				a1->Data1->Action = 3;
 				a1->Data1->Scale.z = 100;
-				PlayHeroesSound(CommonSound_CannonMov);
+				PlayCustomSound(CommonSound_CannonMov);
 			}
 
 			float timer = (float)a1->Data1->NextAction / 100;
@@ -640,7 +640,7 @@ void ObjCannon_Main(ObjectMaster *a1)
 				if (CurrentLevel == HeroesLevelID_EggFleet) entity->Rotation.y += 0x8000;
 				co2->Speed.x = a1->Data1->Scale.x;
 				co2->Speed.y = a1->Data1->Scale.y;
-				PlayHeroesSound(CommonSound_CannonLch);
+				PlayCustomSound(CommonSound_CannonLch);
 			}
 
 			DoBall(a1->Data1->Status);
@@ -798,7 +798,7 @@ void Capsule_Main_r(ObjectMaster *a1)
 		else {
 			v1->Scale.x = 1;
 
-			if (anim % 60 == 0) PlayHeroesSound_Entity(CommonSound_GoalRing, a1, 500, 0);
+			if (anim % 60 == 0) PlayCustomSound_Entity(CommonSound_GoalRing, a1, 500, 0);
 		}
 
 		Capsule_Display_r(a1);
@@ -887,8 +887,8 @@ void ObjBoxW(ObjectMaster *a1)
 			if (DynColRadius(a1, 100, 0)) {
 				if (a1->Data1->Action == 0 && type < 3) {
 					if (OhNoImDead(a1->Data1, (ObjectData2*)a1->Data2)) {
-						if (type == 0 || type == 2) PlayHeroesSound(CommonSound_BoxBreak);
-						else if (type == 1) PlayHeroesSound(CommonSound_BoxBreak);
+						if (type == 0 || type == 2) PlayCustomSound(CommonSound_BoxBreak);
+						else if (type == 1) PlayCustomSound(CommonSound_BoxBreak);
 
 						a1->Data1->Action = 1;
 
@@ -998,7 +998,7 @@ void Laserdoor(ObjectMaster* obj) {
 void CommonObjects_Sounds(int ID, void *a2, int a3, void *a4) {
 	switch (ID) {
 	case 738:
-		PlayHeroesSound(CommonSound_DashPanel);
+		PlayCustomSound(CommonSound_DashPanel);
 		break;
 	default:
 		PlaySound(ID, a2, a3, a4);
@@ -1010,10 +1010,10 @@ void CasinoObjects_Sounds(int ID, void *a2, int a3, void *a4) {
 	if (IsCurrentHeroesLevel() && CurrentLevel != LevelIDs_Casinopolis) {
 		switch (ID) {
 		case 245:
-			PlayHeroesSound(LevelSound_Csn_Bumper1);
+			PlayCustomSound(LevelSound_Csn_Bumper1);
 			break;
 		case 246:
-			PlayHeroesSound(LevelSound_Csn_Trigger);
+			PlayCustomSound(LevelSound_Csn_Trigger);
 			break;
 		}
 	}

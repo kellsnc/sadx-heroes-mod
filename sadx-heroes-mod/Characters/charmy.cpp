@@ -13,7 +13,7 @@ NJS_MATRIX CharmyMatrices[2];
 void PlayVoice_Charmy(int ID) {
 	switch (ID) {
 	case 1803:
-		PlayHeroesSound(CharmySound_Win);
+		PlayCustomSound(CharmySound_Win);
 		break;
 	}
 }
@@ -23,18 +23,18 @@ void PlaySound_Charmy(int ID) {
 
 	switch (ID) {
 	case 17:
-		PlayHeroesSound(CharmySound_Trick);
+		PlayCustomSound(CharmySound_Trick);
 		break;
 	case 1243:
-		PlayHeroesSound(CharmySound_FlyBegin);
+		PlayCustomSound(CharmySound_FlyBegin);
 		break;
 	case 1249:
-		if (random < 4) PlayHeroesSound(CharmySound_ThatHurts);
-		else if (random < 8) PlayHeroesSound(CharmySound_Hurt1);
-		else PlayHeroesSound(CharmySound_Hurt2);
+		if (random < 4) PlayCustomSound(CharmySound_ThatHurts);
+		else if (random < 8) PlayCustomSound(CharmySound_Hurt1);
+		else PlayCustomSound(CharmySound_Hurt2);
 		break;
 	case 1465:
-		PlayHeroesSound(CharmySound_Death);
+		PlayCustomSound(CharmySound_Death);
 		break;
 	case 1453:
 		PlaySound(ID, 0, 0, 0);
@@ -191,14 +191,14 @@ void CharmyHeroes_Main(ObjectMaster *obj) {
 			}
 
 			if (anim == 34 && PressedButtons[data->CharIndex] & Buttons_X) {
-				PlayHeroesSound(CharmySound_FlyAttack);
+				PlayCustomSound(CharmySound_FlyAttack);
 				data->field_A = 0;
 				data->Action = 4;
 			}
 
 			if (anim == 34 && PressedButtons[data->CharIndex] & Buttons_A) {
 				if (++data->field_A == 2) {
-					PlayHeroesSound(CharmySound_FlyUp);
+					PlayCustomSound(CharmySound_FlyUp);
 					obj->Child->Data1->field_A = 1;
 					data->field_A = 0;
 					playerco2->Speed.y = 2;
@@ -210,11 +210,11 @@ void CharmyHeroes_Main(ObjectMaster *obj) {
 
 		if (playerco2->IdleTime > 1000) {
 			if (rand() % 2 == 0) {
-				PlayHeroesSound(CharmySound_Idle1);
+				PlayCustomSound(CharmySound_Idle1);
 				playerco2->AnimationThing.Index = 4;
 			}
 			else {
-				PlayHeroesSound(CharmySound_Idle2);
+				PlayCustomSound(CharmySound_Idle2);
 				playerco2->AnimationThing.Index = 4;
 			}
 			playerco2->IdleTime = 0;
@@ -444,7 +444,7 @@ void CharmyHeroes_Main(ObjectMaster *obj) {
 	case 3:
 		if (data->field_A == 0) {
 			data->field_A = 1;
-			PlayHeroesSound(CharmySound_DardAttack);
+			PlayCustomSound(CharmySound_DardAttack);
 			data->Scale.x = 0;
 		}
 		else {

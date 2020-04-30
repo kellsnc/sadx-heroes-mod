@@ -339,7 +339,7 @@ void EFShipDoor(ObjectMaster* obj) {
 		if (IsPlayerInsideSphere_(&data->Position, 800) == 0) break;
 
 		if (data->Scale.y == -159) {
-			PlayHeroesSound_EntityAndVolume(LevelSound_Egg_Door, obj, 1200, 3, false);
+			PlayCustomSound_EntityAndVolume(LevelSound_Egg_Door, obj, 1200, 3, false);
 		}
 
 		if (data->Scale.y < 0) {
@@ -354,7 +354,7 @@ void EFShipDoor(ObjectMaster* obj) {
 	case EFDoorAction_Closed:
 		if (IsSwitchPressed(data->Scale.x)) {
 			data->Action = EFDoorAction_OpenDoor;
-			PlayHeroesSound_EntityAndVolume(LevelSound_Egg_Door, obj, 900, 3, false);
+			PlayCustomSound_EntityAndVolume(LevelSound_Egg_Door, obj, 900, 3, false);
 		}
 
 		break;
@@ -408,8 +408,8 @@ void EFBigShipControlRoom_Main(ObjectMaster* obj) {
 			data->Object = EF_SHPBRK1->getmodel()->child;
 			NJS_VECTOR temp = { data->Position.x, data->Position.y + 300, data->Position.z - 600 };
 			LoadObjectBreaker(&temp, &data->Rotation, EF_SHPBRK2->getmodel(), nullptr);
-			PlayHeroesSound(LevelSound_Egg_Boom1);
-			PlayHeroesSound(LevelSound_Egg_Boom2);
+			PlayCustomSound(LevelSound_Egg_Boom1);
+			PlayCustomSound(LevelSound_Egg_Boom2);
 
 			data->Action = 1;
 			DynCol_Delete(obj);
@@ -739,7 +739,7 @@ void EFBigFans(ObjectMaster* obj) {
 		data->Object->basicdxmodel->r = 300;
 		data->Action = 1;
 
-		PlayHeroesSound_Entity(LevelSound_Egg_Fan, obj, 500, true);
+		PlayCustomSound_Entity(LevelSound_Egg_Fan, obj, 500, true);
 
 		ObjectMaster* child = LoadChildObject(LoadObj_Data1, mainSub_Dyncol, obj);
 		child->Data1->Position = data->Position;
@@ -806,7 +806,7 @@ void EFHelice(ObjectMaster* obj) {
 		data->Object = EF_EHELICE->getmodel();
 		data->Action = 1;
 
-		PlayHeroesSound_EntityAndVolume(LevelSound_Egg_Engines, obj, 1500, 3, true);
+		PlayCustomSound_EntityAndVolume(LevelSound_Egg_Engines, obj, 1500, 3, true);
 
 		Collision_Init(obj, EFHelice_Col, 2, 5);
 	}
@@ -903,7 +903,7 @@ void EFBullet(ObjectMaster* obj) {
 		data->Object = EF_BULLETS->getmodel();
 		data->Action = 1;
 
-		PlayHeroesSound_Entity(CommonSound_Shoot2, obj, 500, false);
+		PlayCustomSound_Entity(CommonSound_Shoot2, obj, 500, false);
 		
 		Collision_Init(obj, (CollisionData*)0x223B3D8, 1, 4u);
 		break;
@@ -1010,7 +1010,7 @@ bool EFCannon_Explode(ObjectMaster* obj) {
 
 	if (CheckObjectDamage(data)) {
 		if (++obj->Data1->NextAction < 3) {
-			PlayHeroesSound_Pos(CommonSound_Explosion, &data->Position, 300, 2, false);
+			PlayCustomSound_Pos(CommonSound_Explosion, &data->Position, 300, 2, false);
 			return false;
 		}
 
@@ -1025,7 +1025,7 @@ bool EFCannon_Explode(ObjectMaster* obj) {
 			temp->Data1->Object = EF_CANBRK2->getmodel()->child;
 		}
 
-		PlayHeroesSound_Pos(CommonSound_Explosion, &data->Position, 300, 5, false);
+		PlayCustomSound_Pos(CommonSound_Explosion, &data->Position, 300, 5, false);
 
 		DynCol_Delete(obj);
 		obj->DisplaySub = nullptr;

@@ -15,7 +15,7 @@ void PlayVoice_Espio(int ID) {
 	switch (ID) {
 	case 1498:
 	case 1495:
-		PlayHeroesSound(EspioSound_Win);
+		PlayCustomSound(EspioSound_Win);
 		break;
 	}
 }
@@ -25,19 +25,19 @@ void PlaySound_Espio(int ID) {
 
 	switch (ID) {
 	case 17:
-		PlayHeroesSound(EspioSound_Attack);
+		PlayCustomSound(EspioSound_Attack);
 		break;
 	case 762:
-		PlayHeroesSound(CommonSound_HomingAttack);
+		PlayCustomSound(CommonSound_HomingAttack);
 		break;
 	case 1232:
-		PlayHeroesSound(EspioSound_Hurt2);
+		PlayCustomSound(EspioSound_Hurt2);
 		break;
 	case 1233:
-		PlayHeroesSound(EspioSound_Hurt1); 
+		PlayCustomSound(EspioSound_Hurt1); 
 		break;
 	case 1503:
-		PlayHeroesSound(EspioSound_Death);
+		PlayCustomSound(EspioSound_Death);
 		break;
 	}
 }
@@ -218,14 +218,14 @@ void EspioHeroes_Main(ObjectMaster *obj) {
 		if (CanDoTricks(playerdata)) {
 			if (HeldButtons2[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
 				playerdata->Action = 5;
-				PlayHeroesSound(EspioSound_Ya);
+				PlayCustomSound(EspioSound_Ya);
 				data->Action = 3;
 				break;
 			}
 
 			if (data->Index == 14 && (playerdata->Status & Status_Ground) != Status_Ground && PressedButtons[data->CharIndex] & Buttons_X) {
 				data->field_A = 0;
-				PlayHeroesSound(EspioSound_Attack);
+				PlayCustomSound(EspioSound_Attack);
 				data->Action = 4;
 			}
 		}
@@ -234,11 +234,11 @@ void EspioHeroes_Main(ObjectMaster *obj) {
 
 		if (playerco2->IdleTime > 1000) {
 			if (rand() % 2 == 0) {
-				PlayHeroesSound(EspioSound_Idle1);
+				PlayCustomSound(EspioSound_Idle1);
 				playerco2->AnimationThing.Index = 4;
 			}
 			else {
-				PlayHeroesSound(EspioSound_Idle2);
+				PlayCustomSound(EspioSound_Idle2);
 				playerco2->AnimationThing.Index = 4;
 			}
 			playerco2->IdleTime = 0;

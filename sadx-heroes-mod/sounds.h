@@ -7,14 +7,21 @@ extern bool jmpsounds;
 extern bool flysounds;
 extern bool envsounds;
 
-void PlayHeroesSound(int ID);
-void PlayDelayedHeroesSound(int ID, int time);
-void PlayHeroesSound_Entity(int ID, ObjectMaster* obj, float dist, bool loop);
-void PlayHeroesSound_EntityAndPos(int ID, ObjectMaster* obj, NJS_VECTOR* pos, float dist, float volume, bool loop);
-void PlayHeroesSound_EntityAndVolume(int ID, ObjectMaster* obj, float dist, float volume, bool loop);
-void PlayHeroesSound_Pos(int ID, NJS_VECTOR* pos, float dist, float volume, bool loop);
+void Sounds_Init(const char* path, const HelperFunctions& helperFunctions, const IniFile* config);
+void RunCustomSounds();
 
-enum HeroesSounds {
+void ResumeSounds();
+void PauseSounds();
+void FreeAllCustomSounds();
+
+void PlayCustomSound(int ID);
+void PlayDelayedCustomSound(int ID, int time, float volumeoverride);
+void PlayCustomSound_Entity(int ID, ObjectMaster* obj, float dist, bool loop);
+void PlayCustomSound_EntityAndPos(int ID, ObjectMaster* obj, NJS_VECTOR* pos, float dist, float volume, bool loop);
+void PlayCustomSound_EntityAndVolume(int ID, ObjectMaster* obj, float dist, float volume, bool loop);
+void PlayCustomSound_Pos(int ID, NJS_VECTOR* pos, float dist, float volume, bool loop);
+
+enum CustomSounds {
 	CommonSound_DashPanel = 10100,
 	CommonSound_Jumping,
 	CommonSound_BoxBreak,

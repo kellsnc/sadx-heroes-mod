@@ -13,7 +13,7 @@ void PlayVoice_Vector(int ID) {
 	switch (ID) {
 	case 1498:
 	case 1495:
-		PlayHeroesSound(VectorSound_Win);
+		PlayCustomSound(VectorSound_Win);
 		break;
 	}
 }
@@ -23,16 +23,16 @@ void PlaySound_Vector(int ID) {
 
 	switch (ID) {
 	case 17:
-		PlayHeroesSound(VectorSound_Attack);
+		PlayCustomSound(VectorSound_Attack);
 		break;
 	case 1232:
-		PlayHeroesSound(VectorSound_Hurt2);
+		PlayCustomSound(VectorSound_Hurt2);
 		break;
 	case 1233:
-		PlayHeroesSound(VectorSound_Hurt1);
+		PlayCustomSound(VectorSound_Hurt1);
 		break;
 	case 1503:
-		PlayHeroesSound(VectorSound_Death);
+		PlayCustomSound(VectorSound_Death);
 		break;
 	}
 }
@@ -206,7 +206,7 @@ void VectorHeroes_Main(ObjectMaster *obj) {
 			if (data->Index == 14 && (playerdata->Status & Status_Ground) != Status_Ground && PressedButtons[data->CharIndex] & Buttons_X) {
 				data->field_A = 0;
 				data->Scale.y = 0;
-				PlayHeroesSound(VectorSound_Attack);
+				PlayCustomSound(VectorSound_Attack);
 				data->Action = 4;
 			}
 		}
@@ -215,11 +215,11 @@ void VectorHeroes_Main(ObjectMaster *obj) {
 
 		if (playerco2->IdleTime > 1000) {
 			if (rand() % 2 == 0) {
-				PlayHeroesSound(VectorSound_Idle1);
+				PlayCustomSound(VectorSound_Idle1);
 				playerco2->AnimationThing.Index = 4;
 			}
 			else {
-				PlayHeroesSound(VectorSound_Idle2);
+				PlayCustomSound(VectorSound_Idle2);
 				playerco2->AnimationThing.Index = 4;
 			}
 			playerco2->IdleTime = 0;
@@ -233,15 +233,15 @@ void VectorHeroes_Main(ObjectMaster *obj) {
 	case 3:
 		switch (PowerLaunchTrick(data, data2, playerco2, playerdata)) {
 		case 1:
-			PlayHeroesSound(VectorSound_Combo1);
+			PlayCustomSound(VectorSound_Combo1);
 			PlayHeroesAnimation(obj, 11, VectorAnimData, 0, 0);
 			break;
 		case 2:
-			PlayHeroesSound(VectorSound_Combo2);
+			PlayCustomSound(VectorSound_Combo2);
 			PlayHeroesAnimation(obj, 9, VectorAnimData, 0, 0);
 			break;
 		case 3:
-			PlayHeroesSound(VectorSound_Combo3);
+			PlayCustomSound(VectorSound_Combo3);
 			playerco2->Speed.x = 1;
 		case 4:
 			playerco2->Speed.x = 0;
@@ -264,11 +264,11 @@ void VectorHeroes_Main(ObjectMaster *obj) {
 		break;
 	case 4:
 		if (playerdata->Position.y - playerco2->_struct_a3.DistanceMax < 30) {
-			if (data->field_A != 2) PlayHeroesSound(CommonSound_FlyPunchHit);
+			if (data->field_A != 2) PlayCustomSound(CommonSound_FlyPunchHit);
 			data->field_A = 2;
 		}
 		else {
-			if (FlightPunchTrick(data, data2, playerco2, playerdata)) PlayHeroesSound(VectorSound_Trick);
+			if (FlightPunchTrick(data, data2, playerco2, playerdata)) PlayCustomSound(VectorSound_Trick);
 		}
 
 		if (data->field_A != 2) {

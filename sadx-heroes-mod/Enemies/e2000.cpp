@@ -154,7 +154,7 @@ void e2000_LoadLaser(EntityData1* data) {
 	obj->Data1->Object = e2000Mdls[2]->getmodel();
 	obj->DisplaySub = e2000Laser_Display;
 
-	PlayHeroesSound_Entity(CommonSound_Shoot2, obj, 500, false);
+	PlayCustomSound_Entity(CommonSound_Shoot2, obj, 500, false);
 
 	Collision_Init(obj, arrayptrandlength(LaserCollisionData), 4);
 	SetCollisionInfoRadius(obj->Data1->CollisionInfo, 1000);
@@ -312,7 +312,7 @@ bool e2000_CheckDeath(EntityData1* data, E2KCustomData* e2kdata) {
 		}
 
 		if (e2kdata->damage < 16) {
-			PlayHeroesSound_Pos(CommonSound_Explosion, &data->Position, 200, 1, false);
+			PlayCustomSound_Pos(CommonSound_Explosion, &data->Position, 200, 1, false);
 			++e2kdata->damage;
 			
 			EntityData1* temp = GetCollidingEntityA(data);
@@ -330,7 +330,7 @@ bool e2000_CheckDeath(EntityData1* data, E2KCustomData* e2kdata) {
 		SpawnAnimal(2, PosToVector(data->Position));
 
 		Score += 5000;
-		PlayHeroesSound_Pos(CommonSound_Explosion, &data->Position, 300, 5, false);
+		PlayCustomSound_Pos(CommonSound_Explosion, &data->Position, 300, 5, false);
  		LoadObjectBreaker(&data->Position, &data->Rotation, data->Object->child, &E2000_TEXLIST);
 		return true;
 	}

@@ -70,7 +70,7 @@ void OceanPalaceHandler(ObjectMaster * a1) {
 
 		if (CurrentAct == 0) {
 			//Ocean Palace
-			PlayHeroesSound(LevelSound_Sea_Seagul);
+			PlayCustomSound(LevelSound_Sea_Seagul);
 			InitializeSoundManager();
 			PlayMusic(MusicIDs_WindyValleyWindyHill);
 			SoundManager_Delete2();

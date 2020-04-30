@@ -15,7 +15,7 @@ extern CollisionData Cheese_Col;
 void PlayVoice_Tails(int ID) {
 	switch (ID) {
 	case 1803:
-		PlayHeroesSound(TailsSound_Win);
+		PlayCustomSound(TailsSound_Win);
 		break;
 	}
 }
@@ -25,18 +25,18 @@ void PlaySound_Tails(int ID) {
 
 	switch (ID) {
 	case 17:
-		PlayHeroesSound(TailsSound_Attack);
+		PlayCustomSound(TailsSound_Attack);
 		break;
 	case 1243:
-		PlayHeroesSound(TailsSound_FlyBegin);
+		PlayCustomSound(TailsSound_FlyBegin);
 		break;
 	case 1249:
-		if (random < 4) PlayHeroesSound(TailsSound_ThatHurts);
-		else if (random < 8) PlayHeroesSound(TailsSound_Hurt1);
-		else PlayHeroesSound(TailsSound_Hurt2);
+		if (random < 4) PlayCustomSound(TailsSound_ThatHurts);
+		else if (random < 8) PlayCustomSound(TailsSound_Hurt1);
+		else PlayCustomSound(TailsSound_Hurt2);
 		break;
 	case 1465:
-		PlayHeroesSound(TailsSound_Death);
+		PlayCustomSound(TailsSound_Death);
 		break;
 	case 1453:
 		PlaySound(ID, 0, 0, 0);
@@ -271,14 +271,14 @@ void TailsHeroes_Main(ObjectMaster *obj) {
 			}
 
 			if (anim == 34 && PressedButtons[data->CharIndex] & Buttons_X) {
-				PlayHeroesSound(TailsSound_FlyAttack);
+				PlayCustomSound(TailsSound_FlyAttack);
 				data->field_A = 0;
 				data->Action = 4;
 			}
 
 			if (anim == 34 && PressedButtons[data->CharIndex] & Buttons_A) {
 				if (++data->field_A == 2) {
-					PlayHeroesSound(TailsSound_FlyUp);
+					PlayCustomSound(TailsSound_FlyUp);
 					obj->Child->Data1->field_A = 1;
 					data->field_A = 0;
 					playerco2->Speed.y = 2;
@@ -290,11 +290,11 @@ void TailsHeroes_Main(ObjectMaster *obj) {
 
 		if (playerco2->IdleTime > 1000) {
 			if (rand() % 2 == 0) {
-				PlayHeroesSound(TailsSound_Idle1);
+				PlayCustomSound(TailsSound_Idle1);
 				playerco2->AnimationThing.Index = 4;
 			}
 			else {
-				PlayHeroesSound(TailsSound_Idle2);
+				PlayCustomSound(TailsSound_Idle2);
 				playerco2->AnimationThing.Index = 4;
 			}
 			playerco2->IdleTime = 0;
@@ -417,7 +417,7 @@ void TailsHeroes_Main(ObjectMaster *obj) {
 		case 40:
 		case 41:
 			if (flysounds && playerobj->Data1->CharIndex == EntityData1Ptrs[0]->CharIndex && FrameCounterUnpaused % 38 == 0)
-				PlayHeroesSound_Entity(TailsSound_Flying, playerobj, 50, 0);
+				PlayCustomSound_Entity(TailsSound_Flying, playerobj, 50, 0);
 			anim = 34; //52 IF HOLDING PLAYER
 			if (HeldButtons2[data->CharIndex] & Buttons_A) speed = 0.8;
 			speed += playerco2->Speed.x * 0.5f;
@@ -526,7 +526,7 @@ void TailsHeroes_Main(ObjectMaster *obj) {
 	case 3:
 		if (data->field_A == 0) {
 			data->field_A = 1;
-			PlayHeroesSound(TailsSound_BombAttack);
+			PlayCustomSound(TailsSound_BombAttack);
 			data->Scale.x = 0;
 		}
 		else if (data->field_A < 30) {

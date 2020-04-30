@@ -83,13 +83,13 @@ void Flyer_Main(ObjectMaster* obj) {
 		if (FlyerTriggerID == obj->Data1->Scale.z) {
 			data->Action = 1;
 			obj->DisplaySub = Flyer_Display;
-			PlayHeroesSound_EntityAndVolume(LevelSound_Egg_Engines, obj, 300, 3, true);
+			PlayCustomSound_EntityAndVolume(LevelSound_Egg_Engines, obj, 300, 3, true);
 		}
 	}
 	else {
 		if (OhNoImDead(data, (ObjectData2*)data2)) {
 			LoadObjectBreaker(&data->Position, &data->Rotation, FlyerMdl->getmodel()->child, &FLYER_TEXLIST);
-			PlayHeroesSound_Pos(CommonSound_Explosion, &data->Position, 300, 5, false);
+			PlayCustomSound_Pos(CommonSound_Explosion, &data->Position, 300, 5, false);
 
 			Score += 400;
 			UpdateSetDataAndDelete(obj);

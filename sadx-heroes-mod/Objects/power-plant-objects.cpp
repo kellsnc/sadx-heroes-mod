@@ -358,7 +358,7 @@ void PPEnergyPaths_Display(ObjectMaster *a1) {
 void PPEnergyPaths_Main(ObjectMaster *a1) {
 	if (!ClipSetObject(a1)) {
 		if (a1->Data1->Scale.z < 1) if (IsSwitchPressed(a1->Data1->Scale.y)) a1->Data1->Scale.z += 0.1f;
-		if (a1->Data1->Scale.z == 0.1f) PlayHeroesSound(LevelSound_Cty_FluidPath);
+		if (a1->Data1->Scale.z == 0.1f) PlayCustomSound(LevelSound_Cty_FluidPath);
 
 		PathsFunction();
 

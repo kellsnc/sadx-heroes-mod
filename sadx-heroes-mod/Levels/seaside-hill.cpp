@@ -51,7 +51,7 @@ void SeasideHill_OnFrame(EntityData1 * entity, CharObj2 * co2) {
 				if ((entity->Position.z < -2676 && entity->Position.z > -4364)
 					|| (entity->Position.z < -7228 && entity->Position.z > -8029 && entity->Position.x > -90)
 					|| (entity->Position.z < -13345 && entity->Position.z > -14023) || (entity->Position.z < -14704 && entity->Position.z > -15648)) {
-					PlayHeroesSound(LevelSound_Sea_Seagul); 
+					PlayCustomSound(LevelSound_Sea_Seagul); 
 					sh_trigger = false; 
 				}
 			}
@@ -97,7 +97,7 @@ void SeasideHillHandler(ObjectMaster * a1) {
 
 		SetFog(&SeasideHill_Fog);
 		SeasideHill_InitObjects();
-		PlayHeroesSound(LevelSound_Sea_Seagul);
+		PlayCustomSound(LevelSound_Sea_Seagul);
 
 		if (CurrentAct == 0) {
 			//Seaside Hill

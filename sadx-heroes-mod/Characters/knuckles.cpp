@@ -13,7 +13,7 @@ void PlayVoice_Knuckles(int ID) {
 	switch (ID) {
 	case 1498:
 	case 1495:
-		PlayHeroesSound(KnucklesSound_Win);
+		PlayCustomSound(KnucklesSound_Win);
 		break;
 	}
 }
@@ -23,19 +23,19 @@ void PlaySound_Knuckles(int ID) {
 
 	switch (ID) {
 	case 17:
-		PlayHeroesSound(KnucklesSound_Attack);
+		PlayCustomSound(KnucklesSound_Attack);
 		break;
 	case 762:
-		PlayHeroesSound(CommonSound_HomingAttack);
+		PlayCustomSound(CommonSound_HomingAttack);
 		break;
 	case 1232:
-		PlayHeroesSound(KnucklesSound_Hurt2);
+		PlayCustomSound(KnucklesSound_Hurt2);
 		break;
 	case 1233:
-		PlayHeroesSound(KnucklesSound_Hurt1);
+		PlayCustomSound(KnucklesSound_Hurt1);
 		break;
 	case 1503:
-		PlayHeroesSound(KnucklesSound_Death);
+		PlayCustomSound(KnucklesSound_Death);
 		break;
 	}
 }
@@ -183,7 +183,7 @@ void KnucklesHeroes_Main(ObjectMaster *obj) {
 
 			if (data->Index == 14 && (playerdata->Status & Status_Ground) != Status_Ground && PressedButtons[data->CharIndex] & Buttons_X) {
 				data->field_A = 0;
-				PlayHeroesSound(KnucklesSound_Attack);
+				PlayCustomSound(KnucklesSound_Attack);
 				data->Action = 4;
 			}
 		}
@@ -192,11 +192,11 @@ void KnucklesHeroes_Main(ObjectMaster *obj) {
 
 		if (playerco2->IdleTime > 1000) {
 			if (rand() % 2 == 0) {
-				PlayHeroesSound(KnucklesSound_Idle1);
+				PlayCustomSound(KnucklesSound_Idle1);
 				playerco2->AnimationThing.Index = 4;
 			}
 			else {
-				PlayHeroesSound(KnucklesSound_Idle2);
+				PlayCustomSound(KnucklesSound_Idle2);
 				playerco2->AnimationThing.Index = 4;
 			}
 			playerco2->IdleTime = 0;
@@ -210,13 +210,13 @@ void KnucklesHeroes_Main(ObjectMaster *obj) {
 	case 3:
 		switch (PowerComboTrick(data, data2, playerco2, playerdata)) {
 		case 1:
-			PlayHeroesSound(KnucklesSound_Combo1);
+			PlayCustomSound(KnucklesSound_Combo1);
 			break;
 		case 2:
-			PlayHeroesSound(KnucklesSound_Combo2);
+			PlayCustomSound(KnucklesSound_Combo2);
 			break;
 		case 3:
-			PlayHeroesSound(KnucklesSound_Combo3);
+			PlayCustomSound(KnucklesSound_Combo3);
 			playerco2->Speed.x = 1;
 			playerco2->Speed.y = 2;
 		case 4:
@@ -232,7 +232,7 @@ void KnucklesHeroes_Main(ObjectMaster *obj) {
 		PlayHeroesAnimation(obj, 11, HKnucklesAnimData, 0, 0);
 		break;
 	case 4:
-		if (FlightPunchTrick(data, data2, playerco2, playerdata)) PlayHeroesSound(KnucklesSound_Trick);
+		if (FlightPunchTrick(data, data2, playerco2, playerdata)) PlayCustomSound(KnucklesSound_Trick);
 
 		PlayHeroesAnimation(obj, 12, HKnucklesAnimData, 0, 0);
 		break;

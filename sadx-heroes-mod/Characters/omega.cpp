@@ -13,7 +13,7 @@ void PlayVoice_Omega(int ID) {
 	switch (ID) {
 	case 1498:
 	case 1495:
-		PlayHeroesSound(OmegaSound_Win);
+		PlayCustomSound(OmegaSound_Win);
 		break;
 	}
 }
@@ -23,17 +23,17 @@ void PlaySound_Omega(int ID) {
 
 	switch (ID) {
 	case 17:
-		PlayHeroesSound(OmegaSound_Attack);
+		PlayCustomSound(OmegaSound_Attack);
 		break;
 	case 762:
-		PlayHeroesSound(CommonSound_HomingAttack);
+		PlayCustomSound(CommonSound_HomingAttack);
 		break;
 	case 1232:
 		break;
 	case 1233:
 		break;
 	case 1503:
-		PlayHeroesSound(OmegaSound_Death);
+		PlayCustomSound(OmegaSound_Death);
 		break;
 	}
 }
@@ -328,11 +328,11 @@ void OmegaHeroes_Main(ObjectMaster *obj) {
 
 		if (playerco2->IdleTime > 1000) {
 			if (rand() % 2 == 0) {
-				PlayHeroesSound(OmegaSound_Idle1);
+				PlayCustomSound(OmegaSound_Idle1);
 				playerco2->AnimationThing.Index = 4;
 			}
 			else {
-				PlayHeroesSound(OmegaSound_Idle2);
+				PlayCustomSound(OmegaSound_Idle2);
 				playerco2->AnimationThing.Index = 4;
 			}
 			playerco2->IdleTime = 0;
@@ -346,13 +346,13 @@ void OmegaHeroes_Main(ObjectMaster *obj) {
 	case 3:
 		switch (PowerComboTrick(data, data2, playerco2, playerdata)) {
 		case 1:
-			PlayHeroesSound(OmegaSound_Combo1);
+			PlayCustomSound(OmegaSound_Combo1);
 			break;
 		case 2:
-			PlayHeroesSound(OmegaSound_Combo2);
+			PlayCustomSound(OmegaSound_Combo2);
 			break;
 		case 3:
-			PlayHeroesSound(OmegaSound_Combo3);
+			PlayCustomSound(OmegaSound_Combo3);
 		case 4:
 			playerco2->Speed = { 0, 0, 0 };
 
@@ -373,7 +373,7 @@ void OmegaHeroes_Main(ObjectMaster *obj) {
 		PlayHeroesAnimation(obj, 11, OmegaAnimData, 0, 0);
 		break;
 	case 4:
-		if (FlightPunchTrick(data, data2, playerco2, playerdata)) PlayHeroesSound(OmegaSound_Trick);
+		if (FlightPunchTrick(data, data2, playerco2, playerdata)) PlayCustomSound(OmegaSound_Trick);
 		
 		data2->field_38 += 0x1000;
 

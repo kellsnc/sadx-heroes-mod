@@ -275,7 +275,7 @@ void BHBingoNumber_Main(ObjectMaster *a1) {
 							if (IsPlayerInsideSphere(&a1->Data1->Position, 30.0f)) {
 								a1->Data1->NextAction = 30;
 								a1->Data1->Action = 1;
-								 PlayHeroesSound(LevelSound_Csn_Slot);
+								 PlayCustomSound(LevelSound_Csn_Slot);
 							}
 						}
 

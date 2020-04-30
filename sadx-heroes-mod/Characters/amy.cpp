@@ -13,7 +13,7 @@ void PlayVoice_Amy(int ID) {
 	switch (ID) {
 	case 1498:
 	case 1495:
-		PlayHeroesSound(AmySound_Win);
+		PlayCustomSound(AmySound_Win);
 		break;
 	}
 }
@@ -23,19 +23,19 @@ void PlaySound_Amy(int ID) {
 
 	switch (ID) {
 	case 17:
-		PlayHeroesSound(AmySound_Jump);
+		PlayCustomSound(AmySound_Jump);
 		break;
 	case 762:
-		PlayHeroesSound(CommonSound_HomingAttack);
+		PlayCustomSound(CommonSound_HomingAttack);
 		break;
 	case 1232:
-		PlayHeroesSound(AmySound_Hurt2);
+		PlayCustomSound(AmySound_Hurt2);
 		break;
 	case 1233:
-		PlayHeroesSound(AmySound_Hurt1); 
+		PlayCustomSound(AmySound_Hurt1); 
 		break;
 	case 1503:
-		PlayHeroesSound(AmySound_Death);
+		PlayCustomSound(AmySound_Death);
 		break;
 	}
 }
@@ -169,14 +169,14 @@ void AmyHeroes_Main(ObjectMaster *obj) {
 		if (CanDoTricks(playerdata)) {
 			if (playerco2->Speed.x < 2 && PressedButtons[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
 				playerdata->Action = 5;
-				PlayHeroesSound(AmySound_Ya);
+				PlayCustomSound(AmySound_Ya);
 				data->Action = 3;
 				break;
 			}
 
 			if (data->Index == 14 && (playerdata->Status & Status_Ground) != Status_Ground && PressedButtons[data->CharIndex] & Buttons_X) {
 				data->field_A = 0;
-				PlayHeroesSound(AmySound_Attack);
+				PlayCustomSound(AmySound_Attack);
 				data->Action = 4;
 			}
 		}
@@ -185,11 +185,11 @@ void AmyHeroes_Main(ObjectMaster *obj) {
 
 		if (playerco2->IdleTime > 1000) {
 			if (rand() % 2 == 0) {
-				PlayHeroesSound(AmySound_Idle1);
+				PlayCustomSound(AmySound_Idle1);
 				playerco2->AnimationThing.Index = 4;
 			}
 			else {
-				PlayHeroesSound(AmySound_Idle2);
+				PlayCustomSound(AmySound_Idle2);
 				playerco2->AnimationThing.Index = 4;
 			}
 			playerco2->IdleTime = 0;

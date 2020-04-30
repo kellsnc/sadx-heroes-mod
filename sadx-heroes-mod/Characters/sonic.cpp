@@ -13,7 +13,7 @@ void PlayVoice_Sonic(int ID) {
 	switch (ID) {
 	case 1498:
 	case 1495:
-		PlayHeroesSound(SonicSound_Win);
+		PlayCustomSound(SonicSound_Win);
 		break;
 	}
 }
@@ -23,19 +23,19 @@ void PlaySound_Sonic(int ID) {
 
 	switch (ID) {
 	case 17:
-		PlayHeroesSound(SonicSound_Attack);
+		PlayCustomSound(SonicSound_Attack);
 		break;
 	case 762:
-		PlayHeroesSound(CommonSound_HomingAttack);
+		PlayCustomSound(CommonSound_HomingAttack);
 		break;
 	case 1232:
-		PlayHeroesSound(SonicSound_Hurt2);
+		PlayCustomSound(SonicSound_Hurt2);
 		break;
 	case 1233:
-		PlayHeroesSound(SonicSound_Hurt1); 
+		PlayCustomSound(SonicSound_Hurt1); 
 		break;
 	case 1503:
-		PlayHeroesSound(SonicSound_Death);
+		PlayCustomSound(SonicSound_Death);
 		break;
 	}
 }
@@ -156,14 +156,14 @@ void SonicHeroes_Main(ObjectMaster *obj) {
 		if (CanDoTricks(playerdata)) {
 			if (playerco2->Speed.x < 2 && HeldButtons2[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
 				playerdata->Action = 5;
-				PlayHeroesSound(SonicSound_Ya);
+				PlayCustomSound(SonicSound_Ya);
 				data->Action = 3;
 				break;
 			}
 
 			if (data->Index == 14 && (playerdata->Status & Status_Ground) != Status_Ground && PressedButtons[data->CharIndex] & Buttons_X) {
 				data->field_A = 0;
-				PlayHeroesSound(SonicSound_Attack);
+				PlayCustomSound(SonicSound_Attack);
 				data->Action = 4;
 			}
 		}
@@ -172,11 +172,11 @@ void SonicHeroes_Main(ObjectMaster *obj) {
 
 		if (playerco2->IdleTime > 1000) {
 			if (rand() % 2 == 0) {
-				PlayHeroesSound(SonicSound_Idle1);
+				PlayCustomSound(SonicSound_Idle1);
 				playerco2->AnimationThing.Index = 4;
 			}
 			else {
-				PlayHeroesSound(SonicSound_Idle2);
+				PlayCustomSound(SonicSound_Idle2);
 				playerco2->AnimationThing.Index = 4;
 			}
 			playerco2->IdleTime = 0;

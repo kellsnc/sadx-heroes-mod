@@ -22,16 +22,14 @@ unsigned int anim = 0;
 uint8_t CurrentChunk = 0;
 NJS_TEXLIST * CurrentLevelTexlist;
 
-static const Uint8 FREECAM_FIX[] = { 0x81, 0x0D, /*0xA8, 0xCB, 0xB2, 0x03, 0x0C, 0x00, 0x00, 0x80*/ };
+static const Uint8 FREECAM_FIX[] = { 0x81, 0x0D };
 
 void Levels_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config);
 void Objects_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config);
 void Characters_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config);
-void Sounds_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config);
 
 void CommonObjects_OnFrame();
 void Characters_OnFrame();
-void Sounds_OnFrame();
 
 extern "C"
 {
@@ -72,7 +70,7 @@ extern "C"
 	{
 		if (GameState != 16) ++anim;
 
-		Sounds_OnFrame();
+		RunCustomSounds();
 
 		if (GameState == 15 || GameState == 4 || GameMode == 12) {
 			Characters_OnFrame();

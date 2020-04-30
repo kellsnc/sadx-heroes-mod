@@ -612,7 +612,7 @@ bool EggPawn_CheckDamage(EntityData1* data, PawnCustomData* pawndata) {
 			}
 
 			if (pawndata->damage < check) {
-				PlayHeroesSound_Pos(CommonSound_Explosion, &data->Position, 300, 2, false);
+				PlayCustomSound_Pos(CommonSound_Explosion, &data->Position, 300, 2, false);
 				++pawndata->damage;
 				return false;
 			}
@@ -624,7 +624,7 @@ bool EggPawn_CheckDamage(EntityData1* data, PawnCustomData* pawndata) {
 		SpawnAnimal(2, PosToVector(data->Position));
 		Score += 100;
 
-		PlayHeroesSound_Pos(CommonSound_Explosion, &data->Position, 300, 5, false);
+		PlayCustomSound_Pos(CommonSound_Explosion, &data->Position, 300, 5, false);
 		LoadObjectBreaker(&data->Position, &data->Rotation, data->Object->child->child, &EGGPAWN_TEXLIST);
 
 		return true;
@@ -685,7 +685,7 @@ void EggPawn_Main(ObjectMaster* obj) {
 
 				if (data->Unknown == 1) {
 					// Load icon "!"
-					PlayHeroesSound_Entity(CommonSound_Detect1, obj, 200, false);
+					PlayCustomSound_Entity(CommonSound_Detect1, obj, 200, false);
 					data->Action = EggPawnAction_Check;
 				}
 			}

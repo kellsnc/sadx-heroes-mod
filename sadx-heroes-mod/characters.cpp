@@ -525,7 +525,7 @@ NJS_VECTOR PowerAnims(EntityData1* data, EntityData1* playerdata, CharObj2* play
 	case 51: anim = 19; 
 		if (data->field_A == 0) {
 			data->field_A = 1;
-			PlayHeroesSound(CommonSound_GlideBegin);
+			PlayCustomSound(CommonSound_GlideBegin);
 		} break; //gliding
 	case 46: case 47: case 48: anim = 1; break;
 	case 49: case 52: anim = 33; break;
@@ -618,7 +618,7 @@ void TornadoTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, En
 			tornado->Data1->CharID = data->CharID;
 			Collision_Init(tornado, &Tornado_Col, 1, 3u);
 
-			PlayHeroesSound_Entity(CommonSound_Tornado, tornado, 500, false);
+			PlayCustomSound_Entity(CommonSound_Tornado, tornado, 500, false);
 		}
 		
 		playerco2->Powerups |= Powerups_Invincibility;
@@ -784,7 +784,7 @@ bool FlightPunchTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2
 	
 	if (data->field_A == 0) {
 		data->field_A = 1;
-		PlayHeroesSound(CommonSound_FlyPunchBegin);
+		PlayCustomSound(CommonSound_FlyPunchBegin);
 		playerco2->Powerups |= Powerups_Invincibility;
 		playerco2->Speed.y = 1;
 		playerco2->Speed.x = 1;
@@ -796,7 +796,7 @@ bool FlightPunchTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2
 
 		if (playerdata->Status & Status_Ground) {
 			playerco2->Powerups &= ~Powerups_Invincibility;
-			PlayHeroesSound(CommonSound_FlyPunchHit);
+			PlayCustomSound(CommonSound_FlyPunchHit);
 			ExploseEnemies(&playerdata->Position, 3);
 			data->field_A = 2;
 		}
@@ -890,7 +890,7 @@ int PlaySound_HeroesChar(int ID, void *a2, int a3, void *a4) {
 	}
 	
 	if (ID == 17 && !jmpsounds) {
-		PlayHeroesSound(CommonSound_Jumping);
+		PlayCustomSound(CommonSound_Jumping);
 		return 1;
 	}
 	else if (!chrsounds || (!flysounds && ID == 1243)) {

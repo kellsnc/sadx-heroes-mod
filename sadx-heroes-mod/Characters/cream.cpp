@@ -13,7 +13,7 @@ CollisionData Cheese_Col = { 0, 0, 0, 0, 0, { 0.0f, 0.0f, 0.0f }, { 4.5, 0.0f, 0
 void PlayVoice_Cream(int ID) {
 	switch (ID) {
 	case 1803:
-		PlayHeroesSound(CreamSound_Win);
+		PlayCustomSound(CreamSound_Win);
 		break;
 	}
 }
@@ -23,18 +23,18 @@ void PlaySound_Cream(int ID) {
 	
 	switch (ID) {
 	case 17:
-		PlayHeroesSound(CreamSound_Trick);
+		PlayCustomSound(CreamSound_Trick);
 		break;
 	case 1243:
-		PlayHeroesSound(CreamSound_FlyBegin);
+		PlayCustomSound(CreamSound_FlyBegin);
 		break;
 	case 1249:
-		if (random < 4) PlayHeroesSound(CreamSound_ThatHurts);
-		else if (random < 8) PlayHeroesSound(CreamSound_Hurt1);
-		else PlayHeroesSound(CreamSound_Hurt2);
+		if (random < 4) PlayCustomSound(CreamSound_ThatHurts);
+		else if (random < 8) PlayCustomSound(CreamSound_Hurt1);
+		else PlayCustomSound(CreamSound_Hurt2);
 		break;
 	case 1465:
-		PlayHeroesSound(CreamSound_Death);
+		PlayCustomSound(CreamSound_Death);
 		break;
 	case 1453:
 		PlaySound(ID, 0, 0, 0);
@@ -386,14 +386,14 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 
 		if (CanDoTricks(playerdata)) {
 			if (anim == 34 && PressedButtons[data->CharIndex] & Buttons_X) {
-				PlayHeroesSound(CreamSound_FlyAttack);
+				PlayCustomSound(CreamSound_FlyAttack);
 				data->field_A = 0;
 				data->Action = 4;
 			}
 
 			if (anim == 34 && PressedButtons[data->CharIndex] & Buttons_A) {
 				if (++data->field_A == 2) {
-					PlayHeroesSound(CreamSound_FlyUp);
+					PlayCustomSound(CreamSound_FlyUp);
 					data->field_A = 0;
 					playerco2->Speed.y = 2;
 				}
@@ -404,11 +404,11 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 
 		if (playerco2->IdleTime > 1000) {
 			if (rand() % 2 == 0) {
-				PlayHeroesSound(CreamSound_Idle1);
+				PlayCustomSound(CreamSound_Idle1);
 				playerco2->AnimationThing.Index = 4;
 			}
 			else {
-				PlayHeroesSound(CreamSound_Idle2);
+				PlayCustomSound(CreamSound_Idle2);
 				playerco2->AnimationThing.Index = 4;
 			}
 			playerco2->IdleTime = 0;
@@ -637,7 +637,7 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 		break;
 	case 3:
 		if (data->field_A == 0) {
-			PlayHeroesSound(CreamSound_CheeseGetHim);
+			PlayCustomSound(CreamSound_CheeseGetHim);
 			data->field_A = 1;
 			data->Scale.x = 0;
 		}
