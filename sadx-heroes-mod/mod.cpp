@@ -11,6 +11,8 @@ set_specular_blend* set_specular_blend_ptr;
 set_diffuse_blend_factor* set_diffuse_blend_factor_ptr;
 set_specular_blend_factor* set_specular_blend_factor_ptr;
 set_blend* set_blend_ptr;
+pl_load_register* pl_load_register_ptr;
+sl_load_register* sl_load_register_ptr;
 
 std::string modpath;
 HelperFunctions HelperFunctionsGlobal;
@@ -19,7 +21,6 @@ bool IsLoaded = false;
 bool ChunkSwapped = false;
 
 unsigned int anim = 0;
-
 
 static const Uint8 FREECAM_FIX[] = { 0x81, 0x0D };
 
@@ -49,6 +50,8 @@ extern "C"
 			set_diffuse_blend_factor_ptr = (void(*)(float))GetProcAddress(LanternDLL, "set_diffuse_blend_factor");
 			set_specular_blend_factor_ptr = (void(*)(float))GetProcAddress(LanternDLL, "set_specular_blend_factor");
 			set_blend_ptr = (void(*)(int32_t, int32_t))GetProcAddress(LanternDLL, "set_blend");
+			pl_load_register_ptr = (void(*)(lantern_load_cb))GetProcAddress(LanternDLL, "pl_load_register");
+			sl_load_register_ptr = (void(*)(lantern_load_cb))GetProcAddress(LanternDLL, "sl_load_register");
 		}
 
 		modpath = std::string(path);

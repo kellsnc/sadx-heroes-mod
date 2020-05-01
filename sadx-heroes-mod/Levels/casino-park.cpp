@@ -56,8 +56,6 @@ void CasinoPark_Load() {
 }
 
 void CasinoPark_Init(const HelperFunctions &helperFunctions) {
-	ReplaceBIN("PL_30B", "casino-park-shaders");
-
 	helperFunctions.RegisterPathList(CasinoParkPaths);
 
 	LevelObjects[HeroesLevelID_CasinoPark] = CasinoParkHandler;

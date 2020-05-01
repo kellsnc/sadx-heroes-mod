@@ -75,8 +75,6 @@ void GrandMetropolis_Load() {
 }
 
 void GrandMetropolis_Init(const HelperFunctions &helperFunctions) {
-	ReplaceBIN("PL_90B", "grand-metropolis-shaders");
-
 	helperFunctions.RegisterPathList(GrandMetropolisPaths);
 
 	LevelObjects[HeroesLevelID_GrandMetropolis] = GrandMetropolisHandler;

@@ -3,10 +3,11 @@
 #include "hang-castle-deathzones.h"
 #include "hang-castle.h"
 
+MusicInfo AltMusic = { "hang-castle-alt", 1 };
+
 void HangCastleSkybox(ObjectMaster *a1) {
 	if (!MissedFrames) {
 		if (a1->Data1->Action == 0) {
-			a1->Data1->Action = 1;
 			a1->DisplaySub = a1->MainSub;
 			HeroesSkybox_Main(a1);
 		}
@@ -87,14 +88,14 @@ void HangCastleHandler(ObjectMaster * a1) {
 
 			if (ChunkSwapped) {
 				if (CurrentChunk == 2 || CurrentChunk == 6 || CurrentChunk == 8 || CurrentChunk == 10 || CurrentChunk == 11) {
-					CurrentSong = MusicIDs_lstwrld2;
+					CurrentSong = AltMusic.Loop;
+					LastSong = AltMusic.Loop;
 					CasinoLightRotation_Z = 0x8000;
-					LastSong = MusicIDs_lstwrld2;
 				}
 				else {
-					CurrentSong = MusicIDs_lstwrld1;
+					CurrentSong = HangCastleData.musicid;
+					LastSong = HangCastleData.musicid;
 					CasinoLightRotation_Z = 0;
-					LastSong = MusicIDs_lstwrld1;
 				}
 			}
 
@@ -163,13 +164,7 @@ void HangCastle_Load() {
 }
 
 void HangCastle_Init(const HelperFunctions &helperFunctions) {
-	ReplacePVM("RUIN01", "hang-castle");
-	ReplaceBIN("SET0700S", "hang-castle-set");
-	ReplaceBIN("CAM0700S", "heroes-cam");
-	ReplaceBIN("PL_70B", "hang-castle-shaders");
-
-	MusicList[MusicIDs_lstwrld1].Name = "hang-castle";
-	MusicList[MusicIDs_lstwrld2].Name = "hang-castle-alt";
+	AltMusic.Loop = helperFunctions.RegisterMusicFile(AltMusic);
 
 	helperFunctions.RegisterPathList(HangCastlePaths);
 
@@ -184,4 +179,4 @@ void HangCastle_Init(const HelperFunctions &helperFunctions) {
 	HangCastleObjects_Init();
 }
 
-HeroesLevelData HangCastleData = { HeroesLevelID_HangCastle, 0, LengthOfArray(HangCastleChunks), "hang-castle", "HG", HangCastle_Load, HangCastle_Unload, HangCastle_Init, { 3999, 4000, 109 } };
+HeroesLevelData HangCastleData = { HeroesLevelID_HangCastle, 0, LengthOfArray(HangCastleChunks), "hang-castle", "HC", HangCastle_Load, HangCastle_Unload, HangCastle_Init, { 3999, 4000, 109 } };

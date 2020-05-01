@@ -447,12 +447,14 @@ void __cdecl DrawLandTableFog(NJS_MODEL_SADX *a1)
 
 /*** Initialize levels ***/
 
-inline Uint8 GetLevelListID(HeroesLevelIDs id, Uint8 act) {
+inline int8_t GetLevelListID(HeroesLevelIDs id, Uint8 act) {
 	for (Uint8 i = 0; i < LengthOfArray(HeroesLevelList); ++i) {
 		if (HeroesLevelList[i]->LevelID == id && HeroesLevelList[i]->Act == act) {
 			return i;
 		}
 	}
+
+	return -1;
 }
 
 int SetLevelMusic(const char* name, const HelperFunctions& helperFunctions) {
@@ -493,10 +495,37 @@ void SetStartPositions(Uint8 id, const HelperFunctions& helperFunctions) {
 	}
 }
 
+const char* RegisterLevelShader(int32_t level, int32_t act) {
+	HeroesLevelData* leveldata = HeroesLevelList[GetLevelListID((HeroesLevelIDs)level, act)];
+
+	if (leveldata >= 0) {
+		std::string path = modpath + "\\system\\" + leveldata->name + "-shaders.bin";
+		return path.c_str();
+	}
+
+	return nullptr;
+}
+
+const char* RegisterLevelLight(int32_t level, int32_t act) {
+	HeroesLevelData* leveldata = HeroesLevelList[GetLevelListID((HeroesLevelIDs)level, act)];
+
+	if (leveldata >= 0) {
+		std::string path = modpath + "\\system\\heroes-light.bin";
+		return path.c_str();
+	}
+	
+	return nullptr;
+}
+
 inline void InitLevelListData(Uint8 id, const HelperFunctions& helperFunctions) {
 	HeroesLevelList[id]->initfunc(helperFunctions);
 	HeroesLevelList[id]->musicid = SetLevelMusic(HeroesLevelList[id]->name.c_str(), helperFunctions);
 	SetStartPositions(id, helperFunctions);
+
+	if (IsLantern == true) {
+		pl_load_register_ptr(RegisterLevelShader);
+		//sl_load_register_ptr(RegisterLevelLight);
+	}
 }
 
 inline void InitLevelData(HeroesLevelIDs id, Uint8 act, const HelperFunctions& helperFunctions) {

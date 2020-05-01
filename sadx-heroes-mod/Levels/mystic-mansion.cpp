@@ -129,13 +129,6 @@ void MysticMansion_Load() {
 }
 
 void MysticMansion_Init(const HelperFunctions &helperFunctions) {
-	ReplacePVM("FINALEGG1", "mystic-mansion");
-	ReplaceBIN("SET1000S", "mystic-mansion-set");
-	ReplaceBIN("SET1000M", "mystic-mansion-set-tails");
-	ReplaceBIN("SET1000K", "mystic-mansion-set-knux");
-	ReplaceBIN("CAM1000S", "mystic-mansion-cam");
-	ReplaceBIN("PL_A0B", "mystic-mansion-shaders");
-
 	if (helperFunctions.Version >= 9 && IsNoMysticMusicEnabled() == false) {
 		musicid = helperFunctions.RegisterMusicFile(MysticMansionMusics[0]);
 		helperFunctions.RegisterMusicFile(MysticMansionMusics[1]);

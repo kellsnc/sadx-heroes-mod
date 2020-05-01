@@ -16,6 +16,8 @@ extern set_specular_blend* set_specular_blend_ptr;
 extern set_diffuse_blend_factor* set_diffuse_blend_factor_ptr;
 extern set_specular_blend_factor* set_specular_blend_factor_ptr;
 extern set_blend* set_blend_ptr;
+extern pl_load_register* pl_load_register_ptr;
+extern sl_load_register* sl_load_register_ptr;
 
 extern std::string modpath;
 extern HelperFunctions HelperFunctionsGlobal;

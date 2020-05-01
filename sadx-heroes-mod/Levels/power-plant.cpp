@@ -89,8 +89,6 @@ void PowerPlant_Load() {
 }
 
 void PowerPlant_Init(const HelperFunctions &helperFunctions) {
-	ReplaceBIN("PL_80B", "power-plant-shaders");
-
 	helperFunctions.RegisterPathList(PowerPlantPaths);
 
 	LevelObjects[HeroesLevelID_PowerPlant] = PowerPlantHandler;

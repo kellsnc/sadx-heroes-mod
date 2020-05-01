@@ -141,18 +141,10 @@ void OceanPalace_Load() {
 }
 
 void RoadRock_Init(const HelperFunctions &helperFunctions) {
-	ReplaceBIN("PL_21B", "road-rock-shaders");
-
-	MusicList[MusicIDs_wndyvly2].Name = "road-rock";
-
 	DeathZoneList[HeroesLevelID_OceanPalace][1] = RoadRockDeathZones;
 }
 
 void OceanPalace_Init(const HelperFunctions &helperFunctions) {
-	ReplaceBIN("PL_20B", "ocean-palace-shaders");
-
-	MusicList[MusicIDs_wndyvly1].Name = "ocean-palace";
-
 	helperFunctions.RegisterPathList(OceanPalacePaths);
 
 	LevelObjects[HeroesLevelID_OceanPalace] = OceanPalaceHandler;

@@ -132,10 +132,7 @@ void SeaGate_Init(const HelperFunctions &helperFunctions) {
 }
 
 void SeasideHill_Init(const HelperFunctions &helperFunctions) {
-	//Initiliazing files
-	ReplaceBIN("PL_10B", "seaside-hill-shaders");
-	
-	helperFunctions.RegisterPathList(SeasideHillPaths); //splines
+	helperFunctions.RegisterPathList(SeasideHillPaths);
 
 	//Load the level handler
 	LevelObjects[HeroesLevelID_SeasideHill] = SeasideHillHandler;

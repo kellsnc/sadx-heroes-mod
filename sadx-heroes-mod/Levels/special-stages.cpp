@@ -41,8 +41,6 @@ void SpecialStage_Load() {
 }
 
 void SpecialStages_Init( const HelperFunctions &helperFunctions) {
-	ReplaceBIN("PL_Z0B", "special-stages-shaders");
-
 	WriteJump((void*)0x4DAA80, SpecialStagesHandler);
 	SkyboxObjects[HeroesLevelID_SpecialStages] = HeroesSkybox_Main;
 	DeathZoneList[HeroesLevelID_SpecialStages] = nullptr;

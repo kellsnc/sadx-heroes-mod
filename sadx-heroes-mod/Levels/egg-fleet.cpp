@@ -119,8 +119,6 @@ void EggFleet_Load() {
 }
 
 void EggFleet_Init(const HelperFunctions &helperFunctions) {
-	ReplaceBIN("PL_60B", "egg-fleet-shaders");
-
 	helperFunctions.RegisterPathList(EggFleetPaths);
 
 	//Load the level handler

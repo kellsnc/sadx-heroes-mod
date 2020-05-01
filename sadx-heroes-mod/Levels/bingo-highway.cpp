@@ -63,8 +63,6 @@ void BingoHighway_Load() {
 }
 
 void BingoHighway_Init(const HelperFunctions &helperFunctions) {
-	ReplaceBIN("PL_40B", "bingo-highway-shaders");
-
 	helperFunctions.RegisterPathList(BingoHighwayPaths);
 
 	LevelObjects[HeroesLevelID_BingoHighway] = BingoHighwayHandler;
