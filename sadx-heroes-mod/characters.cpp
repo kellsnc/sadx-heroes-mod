@@ -902,7 +902,7 @@ int PlaySound_HeroesChar(int ID, void *a2, int a3, void *a4) {
 }
 
 //Load the files of selected characters
-void Characters_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config) {
+void Characters_Init(const HelperFunctions &helperFunctions, const IniFile *config) {
 	const std::string SpeedCharacter = config->getString("2- Characters", "SpeedCharacter", "None");
 	const std::string FlyCharacter = config->getString("2- Characters", "FlyCharacter", "None");
 	const std::string PowerCharacter = config->getString("2- Characters", "PowerCharacter", "None");

@@ -7,7 +7,7 @@ extern bool jmpsounds;
 extern bool flysounds;
 extern bool envsounds;
 
-void Sounds_Init(const char* path, const HelperFunctions& helperFunctions, const IniFile* config);
+void Sounds_Init(const IniFile* config);
 void RunCustomSounds();
 
 void ResumeSounds();

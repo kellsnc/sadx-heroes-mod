@@ -7,7 +7,7 @@ bool Enemies_CanSwap = false;
 
 Trampoline* KikiTrampoline = nullptr;
 
-void Enemies_Init(const char* path, const HelperFunctions& helperFunctions, const IniFile* config) {
+void Enemies_Init(const IniFile* config) {
 	EnableEnemiesSAStages = config->getBool("5- Enemies", "EnableEnemiesSAStages", false);
 	EnableEggpawn = config->getBool("5- Enemies", "EnableEggpawn", true);
 

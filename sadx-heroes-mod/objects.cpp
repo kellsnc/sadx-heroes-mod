@@ -13,7 +13,7 @@ static SETObjData set_table[SET_COUNT]{};
 
 uint8_t killcount = 0;
 
-void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config);
+void CommonObjects_Init(const HelperFunctions &helperFunctions, const IniFile *config);
 void CommonObjects_OnFrame();
 
 void __cdecl ObjectData2_SetStartPosition_r(EntityData1 *a1, ObjectData2 *a2)
@@ -183,8 +183,8 @@ void LoadObjectBreaker(NJS_VECTOR* pos, Rotation3* rot, NJS_OBJECT* obj, NJS_TEX
 	temp->Data1->LoopData = (Loop*)tex;
 }
 
-void Objects_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config) {
-	CommonObjects_Init(path, helperFunctions, config);
+void Objects_Init(const HelperFunctions &helperFunctions, const IniFile *config) {
+	CommonObjects_Init(helperFunctions, config);
 	WriteJump((void*)0x004CD370, ObjectData2_SetStartPosition_r);
 
 	WriteData((SETObjData**)0x0046B817, &set_table[0]);

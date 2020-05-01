@@ -86,7 +86,7 @@ bool ForceWhiteDiffuse(NJS_MATERIAL* material, Uint32 flags)
 	return true;
 }
 
-LandTable* LoadLevelGeometry(std::string name, HeroesLevelIDs levelid, Uint8 act, Uint8 ChunkMax) {
+void LoadLevelGeometry(std::string name, std::string shortname, HeroesLevelIDs levelid, Uint8 act, Uint8 ChunkMax) {
 	std::vector<COL*> cols;
 	int colcount = 0;
 	int geocount = 0;
@@ -98,7 +98,7 @@ LandTable* LoadLevelGeometry(std::string name, HeroesLevelIDs levelid, Uint8 act
 		if (i < 10) num = "0" + std::to_string(i);
 		else num = std::to_string(i);
 
-		std::string fullPath = "system\\levels\\" + name + num + ".sa1lvl";
+		std::string fullPath = "system\\levels\\" + shortname + num + ".sa1lvl";
 		LandTableInfo* info = new LandTableInfo(HelperFunctionsGlobal.GetReplaceablePath(fullPath.c_str()));
 
 		LandTable* land = info->getlandtable();
@@ -131,10 +131,10 @@ LandTable* LoadLevelGeometry(std::string name, HeroesLevelIDs levelid, Uint8 act
 
 	HeroesLandTable.COLCount = colcount;
 	HeroesLandTable.Col = newcol;
+	HeroesLandTable.TexName = name.c_str();
+
 	GeoLists[act + 8 * levelid] = &HeroesLandTable;
 	InitLandTable(levelid, act);
-
-	return &HeroesLandTable;
 }
 
 void LoadHeroesSetFiles(std::string name, Uint8 act) {
@@ -189,6 +189,8 @@ void __cdecl LoadHeroesLevelFiles() {
 	original();
 	
 	if (IsCurrentHeroesLevel()) {
+		Enemies_CheckEnemiesSwap();
+
 		for (uint8_t i = 0; i < LengthOfArray(HeroesLevelList); ++i) {
 			HeroesLevelData* level = HeroesLevelList[i];
 
@@ -196,13 +198,16 @@ void __cdecl LoadHeroesLevelFiles() {
 				PrintDebug("[SHM] Loading %s files... ", level->name.c_str());
 
 				if (level->ChunkAmount) {
-					CurrentLandTable = LoadLevelGeometry(level->shortname, level->LevelID, level->Act, level->ChunkAmount);
-					CurrentLandTable->TexName = level->name.c_str();
+					LoadLevelGeometry(level->name, level->shortname, level->LevelID, level->Act, level->ChunkAmount);
 				}
 				
 				level->loadfunc();
 
 				LoadHeroesSetFiles(level->name, level->Act);
+
+				LevelDrawDistance.Maximum = -999999.0f;
+				SkyboxDrawDistance.Maximum = -36000.0f;
+				Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
 
 				CurrentMusic = level->musicid;
 
@@ -253,7 +258,6 @@ void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size, NJS_
 	}
 }
 
-// Load a single chunk
 void LoadLevelFile(std::string name, std::string texname) {
 	std::string fullPath = "system\\levels\\" + name + ".sa1lvl";
 	LandTableInfo* info = new LandTableInfo(HelperFunctionsGlobal.GetReplaceablePath(fullPath.c_str()));
@@ -278,7 +282,8 @@ void LoadLevelFile(std::string name, std::string texname) {
 	SetCurrentLandTable();
 }
 
-//Animate textures of the current landtable in a similar way to Sonic Heroes
+/*** Texture List Animation ***/
+
 void AnimateTexlist(SH_ANIMTEXS *list, Int listcount, NJS_TEXLIST* texlist) {
 	if (!DroppedFrames && texlist) {
 		for (uint8_t count = 0; count < listcount; ++count) {
@@ -307,12 +312,10 @@ void AnimateTextures(SH_ANIMTEXS *list, Int listcount) {
 	AnimateTexlist(list, listcount, &HeroesTexlist);
 }
 
-//We prevent the skybox objects from loading in heroes levels
+// We prevent the skybox objects from loading in heroes levels
+// Also start the music thing here
 void HeroesSkybox_Main(ObjectMaster *obj) {
 	if (obj->Data1->Action == 0) {
-		LevelDrawDistance.Maximum = -999999.0f;
-		SkyboxDrawDistance.Maximum = -36000.0f;
-		Direct3D_SetNearFarPlanes(LevelDrawDistance.Minimum, LevelDrawDistance.Maximum);
 		obj->Data1->Action = 1;
 
 		InitializeSoundManager();
@@ -320,12 +323,10 @@ void HeroesSkybox_Main(ObjectMaster *obj) {
 	}
 }
 
-int CountRings() {
+/*** Perfect Rings calculation ***/
+
+void CountRings() {
 	int rings = 0;
-	int itemrings = 0;
-	int enemies = 0;
-	int falcons = 0;
-	int lives = 0;
 
 	if (SETTable && SETTable_Count > 0) {
 		for (int count = 0; count < SETTable_Count; ++count) {
@@ -346,38 +347,18 @@ int CountRings() {
 				switch ((int)setentry->Properties.x)
 				{
 				case 2:
-					itemrings += 5;
+					rings += 5;
 					break;
 				case 3:
-					itemrings += 10;
+					rings += 10;
 					break;
 				case 4:
-					itemrings += 40;
+					rings += 40;
 					break;
-				case 6:
-					lives += 1;
 				}
-			}
-
-			if (current == Kiki_Load || current == RhinoTank_Main || current == Sweep_Load
-				|| current == SpinnerA_Main || current == SpinnerB_Main || current == SpinnerC_Main
-				|| current == UnidusA_Main || current == UnidusB_Main || current == UnidusC_Main
-				|| current == Leon_Load || current == BoaBoa_Main || current == ESman
-				|| current == e2000_Init) {
-				enemies += 1;
-			}
-
-			if (current == Flyer_Init) {
-				falcons += 1;
 			}
 		}
 	}
-
-	lives;
-	enemies;
-	falcons;
-	itemrings += rings;
-	return rings;
 }
 
 void __cdecl LoadSETObjs_r() {
@@ -397,7 +378,8 @@ void __cdecl LoadSETObjs_r() {
 	}
 }
 
-//We force acts here
+// Force the second act for slow characters
+
 void __cdecl ForceAct()
 {
 	njReleaseTextureAll();
@@ -411,11 +393,10 @@ void __cdecl ForceAct()
 			LoadLevelTextures(GetLevelAndAct());
 		}
 	}
-
-	Enemies_CheckEnemiesSwap();
 }
 
-//Fog
+/*** Heroes Level Fog ***/
+
 void SetFog(FogData * fog) {
 	if (EnableFog) {
 		LevelFogData.Layer = fog->Layer;
@@ -481,17 +462,12 @@ void AddTrialEntry(unsigned char character, char level, char act, const HelperFu
 	helperFunctions.RegisterTrialLevel(character, { level, act });
 }
 
-void SetStartPositions(Uint8 id, const HelperFunctions& helperFunctions) {
-	HeroesLevelData* level = HeroesLevelList[id];
-	int levelid = level->LevelID;
-	int levelact = level->Act;
-
-	StartPosition start = { levelid, levelact, level->startpos, 0xBFFF };
+void SetStartPositions(Uint8 Level, Uint8 Act, NJS_POINT3* pos, const HelperFunctions& helperFunctions) {
+	StartPosition start = { Level, Act, *pos, 0xBFFF };
 
 	for (unsigned char i = 0; i < 8; ++i) {
 		helperFunctions.RegisterStartPosition(i, start);
-		DefaultHeroesLight(levelid, levelact);
-		AddTrialEntry(i, levelid, levelact, helperFunctions);
+		AddTrialEntry(i, Level, Act, helperFunctions);
 	}
 }
 
@@ -517,23 +493,23 @@ const char* RegisterLevelLight(int32_t level, int32_t act) {
 	return nullptr;
 }
 
-inline void InitLevelListData(Uint8 id, const HelperFunctions& helperFunctions) {
-	HeroesLevelList[id]->initfunc(helperFunctions);
-	HeroesLevelList[id]->musicid = SetLevelMusic(HeroesLevelList[id]->name.c_str(), helperFunctions);
-	SetStartPositions(id, helperFunctions);
+inline void InitLevelData(HeroesLevelIDs id, Uint8 act, const HelperFunctions& helperFunctions) {
+	HeroesLevelData* leveldata = HeroesLevelList[GetLevelListID(id, act)];
+
+	DefaultHeroesLight(leveldata->LevelID, leveldata->Act);
+	SetStartPositions(leveldata->LevelID, leveldata->Act, &leveldata->startpos, helperFunctions);
+	leveldata->initfunc(helperFunctions);
+	leveldata->musicid = SetLevelMusic(leveldata->name.c_str(), helperFunctions);
 
 	if (IsLantern == true) {
 		pl_load_register_ptr(RegisterLevelShader);
 		//sl_load_register_ptr(RegisterLevelLight);
 	}
-}
 
-inline void InitLevelData(HeroesLevelIDs id, Uint8 act, const HelperFunctions& helperFunctions) {
 	EnabledLevels[id] = true;
-	InitLevelListData(GetLevelListID(id, act), helperFunctions);
 }
 
-void Levels_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config) {
+void Levels_Init(const HelperFunctions &helperFunctions, const IniFile *config) {
 	if (config->getBool("Levels", "EnableSeasideHill", true)) { InitLevelData(HeroesLevelID_SeasideHill, 0, helperFunctions); }
 	if (config->getBool("Levels", "EnableSeaGate", true)) { InitLevelData(HeroesLevelID_SeasideHill, 1, helperFunctions); }
 	if (config->getBool("Levels", "EnableOceanPalace", true)) { InitLevelData(HeroesLevelID_OceanPalace, 0, helperFunctions); }
@@ -551,7 +527,7 @@ void Levels_Init(const char *path, const HelperFunctions &helperFunctions, const
 	NoPinball = config->getBool("0- General", "NoPinball", false);
 	EnableFog = config->getBool("0- General", "EnableFog", true);
 	
-	WriteJump((void*)0x406F00, ForceAct); //njReleaseTextureAll_
-	WriteJump((void*)0x40A140, DrawLandTableFog); //DrawLandTableObject_SimpleModel
-	//WriteJump(LoadSETObjs, LoadSETObjs_r);
+	WriteJump(njReleaseTextureAll_, ForceAct);
+	WriteJump((void*)0x40A140, DrawLandTableFog);
+	WriteJump(LoadSETObjs, LoadSETObjs_r);
 }

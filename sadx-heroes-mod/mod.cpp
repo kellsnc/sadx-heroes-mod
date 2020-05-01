@@ -24,9 +24,9 @@ unsigned int anim = 0;
 
 static const Uint8 FREECAM_FIX[] = { 0x81, 0x0D };
 
-void Levels_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config);
-void Objects_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config);
-void Characters_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config);
+void Levels_Init(const HelperFunctions &helperFunctions, const IniFile *config);
+void Objects_Init(const HelperFunctions &helperFunctions, const IniFile *config);
+void Characters_Init(const HelperFunctions &helperFunctions, const IniFile *config);
 
 void CommonObjects_OnFrame();
 void Characters_OnFrame();
@@ -60,11 +60,11 @@ extern "C"
 		WriteData((Uint8*)0x438330, FREECAM_FIX); //freecam fix by SonicFreak94
 		
 		const IniFile *config = new IniFile(std::string(path) + "\\config.ini");
-		Levels_Init(path, helperFunctions, config);
-		Objects_Init(path, helperFunctions, config);
-		Characters_Init(path, helperFunctions, config);
-		Sounds_Init(path, helperFunctions, config);
-		Enemies_Init(path, helperFunctions, config);
+		Levels_Init(helperFunctions, config);
+		Objects_Init(helperFunctions, config);
+		Characters_Init(helperFunctions, config);
+		Sounds_Init(config);
+		Enemies_Init(config);
 		delete config;
 	}
 

@@ -224,7 +224,7 @@ void PlayDelayedCustomSound(int ID, int time, float volumeoverride) {
 	temp->Data1->Scale.z = volumeoverride;
 }
 
-void Sounds_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config) {
+void Sounds_Init(const IniFile *config) {
 	chrsounds = config->getBool("4- Sounds", "chrsounds", true);
 	jmpsounds = config->getBool("4- Sounds", "jmpsounds", true);
 	flysounds = config->getBool("4- Sounds", "flysounds", true);

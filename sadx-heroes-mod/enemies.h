@@ -1,6 +1,6 @@
 #pragma once
 
-void Enemies_Init(const char* path, const HelperFunctions& helperFunctions, const IniFile* config);
+void Enemies_Init(const IniFile* config);
 void Enemies_CheckEnemiesSwap();
 void DeleteCustomEnemies();
 

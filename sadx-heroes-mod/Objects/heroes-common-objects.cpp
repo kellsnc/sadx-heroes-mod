@@ -1022,7 +1022,7 @@ void CasinoObjects_Sounds(int ID, void *a2, int a3, void *a4) {
 	}
 }
 
-void CommonObjects_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config) {
+void CommonObjects_Init(const HelperFunctions &helperFunctions, const IniFile *config) {
 	helperFunctions.RegisterCommonObjectPVM(shobjpvm);
 
 	CO_BALLOON = LoadCommonModel("CO_BALLOON");
