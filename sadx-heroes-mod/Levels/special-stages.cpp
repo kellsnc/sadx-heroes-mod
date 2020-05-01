@@ -15,7 +15,7 @@ void SpecialStagesHandler(ObjectMaster * a1) {
 
 		LoadObject(LoadObj_Data1, 3, SSWaves);
 
-		LoadLevelFile("SS01");
+		LoadLevelFile("SS01", "special-stages");
 	}
 	else {
 		//Physics changes, makes character accelerate faster and allow ceiling-running

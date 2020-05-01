@@ -137,16 +137,62 @@ LandTable* LoadLevelGeometry(std::string name, HeroesLevelIDs levelid, Uint8 act
 	return &HeroesLandTable;
 }
 
+void LoadHeroesSetFiles(std::string name, Uint8 act) {
+	ReleaseCamFile();
+	ReleaseSetFile();
+	
+	std::string file = name + "-set";
+
+	switch (CurrentCharacter) {
+	case Characters_Tails:
+		file += "-tails";
+		break;
+	case Characters_Knuckles:
+		file += "-knucks";
+		break;
+	case Characters_Amy:
+		file += "-amy";
+		break;
+	case Characters_Big:
+		file += "-big";
+		break;
+	case Characters_Gamma:
+		file += "-gamma";
+		break;
+	}
+
+	file += ".bin";
+
+	LoadFileWithMalloc(file.c_str(), (LPVOID*)&SetFiles[act]);
+
+	if (!SetFiles[act]) {
+		file = name + "-set.bin";
+		LoadFileWithMalloc(file.c_str(), (LPVOID*)&SetFiles[act]);
+	}
+
+	file = name + "-cam.bin";
+	LoadFileWithMalloc(file.c_str(), (LPVOID*)&CamData[act]);
+
+	if (!CamData[act]) {
+		file = "heroes-cam.bin";
+		LoadFileWithMalloc(file.c_str(), (LPVOID*)&CamData[act]);
+	}
+
+	SetCurrentCamData(CurrentLevel);
+	SetCurrentSetData(CurrentLevel);
+}
+
 void __cdecl LoadHeroesLevelFiles();
 Trampoline LoadLevel_t(0x415210, 0x415216, LoadHeroesLevelFiles);
 void __cdecl LoadHeroesLevelFiles() {
 	VoidFunc(original, LoadLevel_t.Target());
 	original();
-
+	
 	if (IsCurrentHeroesLevel()) {
 		for (uint8_t i = 0; i < LengthOfArray(HeroesLevelList); ++i) {
-			if (CurrentLevel == HeroesLevelList[i]->LevelID) {
-				HeroesLevelData* level = HeroesLevelList[i];
+			HeroesLevelData* level = HeroesLevelList[i];
+
+			if (CurrentLevel == level->LevelID && CurrentAct == level->Act) {
 				PrintDebug("[SHM] Loading %s files... ", level->name.c_str());
 
 				if (level->ChunkAmount) {
@@ -156,22 +202,7 @@ void __cdecl LoadHeroesLevelFiles() {
 				
 				level->loadfunc();
 
-				ReleaseCamFile();
-				ReleaseSetFile();
-
-				std::string file = level->name + "-set.bin";
-				LoadFileWithMalloc(file.c_str(), (LPVOID*)&SetFiles[level->Act]);
-
-				file = level->name + "-cam.bin";
-				LoadFileWithMalloc(file.c_str(), (LPVOID*)&CamData[level->Act]);
-
-				if (!CamData[level->Act]) {
-					file = "heroes-cam.bin";
-					LoadFileWithMalloc(file.c_str(), (LPVOID*)&CamData[level->Act]);
-				}
-
-				SetCurrentCamData(CurrentLevel);
-				SetCurrentSetData(CurrentLevel);
+				LoadHeroesSetFiles(level->name, level->Act);
 
 				CurrentMusic = level->musicid;
 
@@ -223,7 +254,7 @@ void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size, NJS_
 }
 
 // Load a single chunk
-void LoadLevelFile(std::string name) {
+void LoadLevelFile(std::string name, std::string texname) {
 	std::string fullPath = "system\\levels\\" + name + ".sa1lvl";
 	LandTableInfo* info = new LandTableInfo(HelperFunctionsGlobal.GetReplaceablePath(fullPath.c_str()));
 
@@ -239,6 +270,7 @@ void LoadLevelFile(std::string name) {
 		}
 	}
 
+	LoadPVM(texname.c_str(), &HeroesTexlist);
 	land->TexList = &HeroesTexlist;
 	land->AnimCount = 0;
 	

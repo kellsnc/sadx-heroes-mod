@@ -65,7 +65,7 @@ void OceanPalaceHandler(ObjectMaster * a1) {
 			LoadObject(LoadObj_Data1, 3, OPBoulders);
 		}
 		else {
-			LoadLevelFile("RR01");
+			LoadLevelFile("RR01", "road-rock");
 		}
 	}
 	else {
