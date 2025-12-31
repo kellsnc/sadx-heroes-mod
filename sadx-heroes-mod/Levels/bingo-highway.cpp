@@ -75,6 +75,14 @@ void BingoHighwayHandler(ObjectMaster * a1) {
 		ChunkHandler("BH", BingoHighwayChunks, LengthOfArray(BingoHighwayChunks), entity->Position);
 		AnimateTextures(BingoHighwayAnimTexs, LengthOfArray(BingoHighwayAnimTexs));
 		CasinoCommon_OnFrame();
+
+		for (int i = 0; i < 8; ++i)
+		{
+			if (EntityData1Ptrs[i] && !(EntityData1Ptrs[i]->Status & 0x4000) && EntityData1Ptrs[i]->Position.y < -20000.0f)
+			{
+				KillPlayer(i);
+			}
+		}
 	}
 }
 
@@ -92,6 +100,7 @@ void BingoHighway_Init(const char *path, const HelperFunctions &helperFunctions)
 
 	LevelObjects[HeroesLevelID_BingoHighway] = BingoHighwayHandler;
 	SkyboxObjects[HeroesLevelID_BingoHighway] = CasinoSkybox;
+	DeathZoneList[HeroesLevelID_BingoHighway][0] = nullptr;
 
 	BingoHighwayObjects_Init(path);
 }
