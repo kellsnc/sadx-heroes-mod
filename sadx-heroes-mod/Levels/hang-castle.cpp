@@ -126,6 +126,7 @@ void HangCastleHandler(ObjectMaster * a1) {
 		if (CurrentAct == 0) {
 			CurrentLevelTexlist = &RUIN01_TEXLIST;
 			CurrentLandAddress = (LandTable**)0x97DAE8;
+			LoadChunkManager("HC", arrayptrandlength(HangCastleChunks));
 
 			HC_SPKDOOR = LoadObjectModel(HC_SPKDOOR, "HC_SPKDOOR");
 			HC_SPKTREE = LoadObjectModel(HC_SPKTREE, "HC_SPKTREE");
@@ -153,7 +154,6 @@ void HangCastleHandler(ObjectMaster * a1) {
 
 		switch (CurrentAct) {
 		case 0:
-			ChunkHandler("HC", HangCastleChunks, LengthOfArray(HangCastleChunks), entity->Position);
 			AnimateTextures(HangCastleAnimTexs, LengthOfArray(HangCastleAnimTexs));
 			AnimateUV(HangCastle_UVShift, LengthOfArray(HangCastle_UVShift));
 

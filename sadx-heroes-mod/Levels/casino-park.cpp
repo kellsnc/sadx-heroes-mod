@@ -55,6 +55,7 @@ void CasinoParkHandler(ObjectMaster * a1) {
 		if (CurrentAct == 0) {
 			CurrentLevelTexlist = &TWINKLE01_TEXLIST;
 			CurrentLandAddress = (LandTable**)0x97DA68;
+			LoadChunkManager("CP", arrayptrandlength(CasinoParkChunks));
 
 			CasinoPark_InitObjects();
 		}
@@ -62,7 +63,6 @@ void CasinoParkHandler(ObjectMaster * a1) {
 	else {
 		switch (CurrentAct) {
 		case 0:
-			ChunkHandler("CP", CasinoParkChunks, LengthOfArray(CasinoParkChunks), entity->Position);
 			AnimateTextures(CasinoParkAnimTexs, LengthOfArray(CasinoParkAnimTexs));
 			CasinoCommon_OnFrame();
 

@@ -106,6 +106,7 @@ void SeasideHillHandler(ObjectMaster * a1) {
 
 		if (CurrentAct == 0) {
 			//Seaside Hill
+
 			InitializeSoundManager();
 			PlayMusic(MusicIDs_EmeraldCoastAzureBlueWorld);
 			SoundManager_Delete2();
@@ -117,6 +118,8 @@ void SeasideHillHandler(ObjectMaster * a1) {
 			CurrentLevelTexlist = &BEACH01_TEXLIST;
 			CurrentLandAddress = (LandTable**)0x97DA28;
 			matlist_waterfall[0].attr_texId = 87;
+
+			LoadChunkManager("SH", arrayptrandlength(SeasideHillChunks));
 		}
 		else {
 			//Sea Gate
@@ -127,6 +130,8 @@ void SeasideHillHandler(ObjectMaster * a1) {
 			CurrentLevelTexlist = &BEACH02_TEXLIST;
 			CurrentLandAddress = (LandTable**)0x97DA2C;
 			matlist_waterfall[0].attr_texId = 83;
+
+			LoadChunkManager("SG", arrayptrandlength(SeaGateChunks));
 		}
 	}
 	else {
@@ -134,13 +139,11 @@ void SeasideHillHandler(ObjectMaster * a1) {
 
 		switch (CurrentAct) {
 		case 0:
-			ChunkHandler("SH", SeasideHillChunks, LengthOfArray(SeasideHillChunks), entity->Position);
 			AnimateTextures(SeasideHillAnimTexs, LengthOfArray(SeasideHillAnimTexs));
 			SeasideHill_OnFrame(entity, co2);
 			SeasideHillObjects_OnFrame(entity);
 			break;
 		case 1:
-			ChunkHandler("SG", SeaGateChunks, LengthOfArray(SeaGateChunks), entity->Position);
 			AnimateTextures(SeaGateAnimTexs, LengthOfArray(SeaGateAnimTexs));
 			break;
 		}	

@@ -95,9 +95,10 @@ void PowerPlantHandler(ObjectMaster * a1) {
 
 		CurrentLevelTexlist = &ICECAP01_TEXLIST;
 		CurrentLandAddress = (LandTable**)0x97DB08;
+
+		LoadChunkManager("PP", arrayptrandlength(PowerPlantChunks));
 	}
 	else {
-		ChunkHandler("PP", PowerPlantChunks, LengthOfArray(PowerPlantChunks), entity->Position);
 		AnimateTextures(PowerPlantAnimTexs, LengthOfArray(PowerPlantAnimTexs));
 		AnimateUV(PowerPlant_UVSHIFT, LengthOfArray(PowerPlant_UVSHIFT));
 		PPPathsHandler();

@@ -103,7 +103,8 @@ void MysticMansionHandler(ObjectMaster * a1) {
 			CurrentLandAddress = (LandTable**)0x97DB48;
 			
 			LoadPVM("FINALEGG1", (TexList*)0x1B98518);
-				
+			
+			LoadChunkManager("MM", arrayptrandlength(MysticMansionChunks));
 			MysticMansion_InitObjects();
 
 			if (IsLantern) set_shader_flags_ptr(ShaderFlags_Blend, true);
@@ -112,7 +113,6 @@ void MysticMansionHandler(ObjectMaster * a1) {
 	else {
 		switch (CurrentAct) {
 		case 0:
-			ChunkHandler("MM", MysticMansionChunks, LengthOfArray(MysticMansionChunks), entity->Position);
 			AnimateTextures(MysticMansionAnimTexs, LengthOfArray(MysticMansionAnimTexs));
 			AnimateUV(MysticMansion_UVShift, LengthOfArray(MysticMansion_UVShift));
 

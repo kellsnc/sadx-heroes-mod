@@ -119,6 +119,8 @@ void OceanPalaceHandler(ObjectMaster * a1) {
 			OceanPalace_UVShift[9].Size = OP_WATERFS->getmodel()->child->child->child->child->child->child->child->child->child->basicdxmodel->meshsets[0].nbMesh * 3;
 			OceanPalace_UVShift[10].Size = OP_WATERFS->getmodel()->child->child->child->child->child->child->child->child->child->child->basicdxmodel->meshsets[0].nbMesh * 3;
 			OceanPalace_UVShift[11].Size = OP_WATERFS->getmodel()->child->child->child->child->child->child->child->child->child->child->child->basicdxmodel->meshsets[0].nbMesh * 3;
+
+			LoadChunkManager("OP", arrayptrandlength(OceanPalaceChunks));
 		}
 		else {
 			//Road Rock
@@ -144,7 +146,6 @@ void OceanPalaceHandler(ObjectMaster * a1) {
 
 		switch (CurrentAct) {
 		case 0:
-			ChunkHandler("OP", OceanPalaceChunks, LengthOfArray(OceanPalaceChunks), entity->Position);
 			AnimateTextures(OceanPalaceAnimTexs, LengthOfArray(OceanPalaceAnimTexs));
 			break;
 		case 1:

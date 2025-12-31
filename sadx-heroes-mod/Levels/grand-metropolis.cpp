@@ -74,14 +74,15 @@ void GrandMetropolisHandler(ObjectMaster * a1) {
 		if (CurrentAct == 0) {
 			CurrentLevelTexlist = &CASINO01_TEXLIST;
 			CurrentLandAddress = (LandTable**)0x97DB28;
+			LoadChunkManager("GM", arrayptrandlength(GrandMetropolisChunks));
 
 			GrandMetropolis_InitObjects();
 		}
+
 	}
 	else {
 		switch (CurrentAct) {
 		case 0:
-			ChunkHandler("GM", GrandMetropolisChunks, LengthOfArray(GrandMetropolisChunks), entity->Position);
 			AnimateTextures(GrandMetropolisAnimTexs, LengthOfArray(GrandMetropolisAnimTexs));
 			AnimateUV(GrandMetropolis_UVSHIFT, LengthOfArray(GrandMetropolis_UVSHIFT));
 			AutoPathsMovs();

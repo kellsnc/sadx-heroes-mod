@@ -24,8 +24,10 @@ bool NoPinball = false;
 
 LandTable** CurrentLandAddress = nullptr;
 
-LandTableInfo* info		= nullptr;
-LandTableInfo* oldinfo	= nullptr;
+LandTable* pHeroesLandTable = nullptr;
+std::vector<LandTableInfo*> landInfos;
+int last_chunk[8];
+static int32_t(*viewport_get_num)() = nullptr;
 
 StartPosition Heroes_StartPositions[]{
 	{ HeroesLevelID_SeasideHill, 0,{ 0, 6.800581f, 5.217285f }, 0xBFFF },
@@ -63,130 +65,210 @@ bool ForceWhiteDiffuse(NJS_MATERIAL* material, Uint32 flags)
 	return true;
 }
 
-void FreeCurrentChunk(int level, int act)
-{
-	LandTable *CurrentLand; // esi
-	int COL_Length; // ebp
-	int COL_LengthT; // ebx
-	NJS_OBJECT **LandObject; // edi
-
-	CurrentLand = GeoLists[act + 8 * level];
-	if (CurrentLand)
-	{
-		COL_Length = CurrentLand->COLCount;
-		if (COL_Length > 0)
-		{
-			LandObject = &CurrentLand->Col->Model;
-			COL_LengthT = CurrentLand->COLCount;
-			do
-			{
-				if (((unsigned int)LandObject[2] & (ColFlags_Visible | ColFlags_UvManipulation)) == ColFlags_Visible)
-				{
-					FreeLandTableObject(*LandObject);
-				}
-				LandObject += 9;
-				--COL_LengthT;
-			} while (COL_LengthT);
-		}
-	}
-	if (!IsLoaded) SetQueueDrawingState_BlankScreen();
-}
-
-void SwapCurrentLandTable() {
-	LandTable *land = info->getlandtable();
-	for (Int j = 0; j < land->COLCount; ++j) {
-		if (land->Col[j].Flags == 0x80000000) {
-			for (Int k = 0; k < land->Col[j].Model->basicdxmodel->nbMat; ++k) {
-				NJS_MATERIAL* landmtl[1] = { &land->Col[j].Model->basicdxmodel->mats[k] };
-				if (IsLantern) material_register_ptr(landmtl, LengthOfArray(landmtl), &ForceWhiteDiffuse);
-			}
-		}
-	}
-
-	land->TexList = CurrentLevelTexlist;
-	land->AnimCount = 0;
-	WriteData((LandTable**)CurrentLandAddress, land);
-}
-
-void LoadLevelFile(const char *shortname, int chunknb) {
-	std::string numtos = std::to_string(chunknb);
-
-	PrintDebug("[SHM] Loading "); PrintDebug(shortname); if (chunknb < 10) PrintDebug("0");
-	PrintDebug(numtos.c_str()); PrintDebug("... ");
-	
+void LoadLevelFile(const char* shortname, int chunknb) {
 	std::string fullPath = "system\\levels\\";
 	fullPath += shortname;
 	if (chunknb < 10) fullPath += "0";
-	fullPath += numtos + ".sa1lvl";
-	const char *foo = fullPath.c_str();
+	fullPath += std::to_string(chunknb) + ".sa1lvl";
 
-	PrintDebug("Freeing chunk... ");
+	LandTableInfo* info = new LandTableInfo(HelperFunctionsGlobal.GetReplaceablePath(fullPath.c_str()));
+	if (info && info->getlandtable())
+	{
+		LandTable* land = info->getlandtable();
 
-	FreeCurrentChunk(CurrentLevel, CurrentAct);
-
-	if (info) {
-		if (oldinfo) {
-			delete oldinfo;
-			oldinfo = nullptr;
-
+		for (int j = 0; j < land->COLCount; ++j)
+		{
+			if (land->Col[j].Flags & ColFlags_Visible)
+			{
+				for (Int k = 0; k < land->Col[j].Model->basicdxmodel->nbMat; ++k) {
+					NJS_MATERIAL* landmtl[1] = { &land->Col[j].Model->basicdxmodel->mats[k] };
+					landmtl[0]->diffuse.color = 0xFFFFFFFF;
+					if (IsLantern) material_register_ptr(landmtl, LengthOfArray(landmtl), &ForceWhiteDiffuse);
+				}
+				InitLandTableObject(land->Col[j].Model);
+			}
 		}
-		oldinfo = info;
-		info = nullptr;
+
+		pHeroesLandTable = land;
 	}
 
-	info = new LandTableInfo(HelperFunctionsGlobal.GetReplaceablePath(foo));
-
-	PrintDebug("Done. Loaded '"); PrintDebug(foo); PrintDebug("'. Swapping landtable... ");
-
-	SwapCurrentLandTable();
-	SetCurrentLandTable();
-
-	PrintDebug("Done. \n");
+	landInfos.push_back(info);
 }
 
-void SwapChunk(const char* shortname, int chunknb) {
-	if (CurrentChunk != chunknb) {
-		LoadLevelFile(shortname, chunknb);
-		CurrentChunk = chunknb;
-		ChunkSwapped = true;
+void ChunkManagerDisp(ObjectMaster* obj)
+{
+	if (viewport_get_num)
+	{
+		int pnum = viewport_get_num();
+
+		auto data = obj->Data1;
+
+		auto chunklist = (CHUNK_LIST*)data->LoopData;
+		auto size = data->InvulnerableTime;
+
+		NJS_VECTOR* pos = &Camera_Data1->Position;
+
+		for (Int i = 0; i < size; ++i) {
+			if (chunklist[i].Chunk != last_chunk[pnum]) {
+				EntityData1* entity = EntityData1Ptrs[0];
+				if (entity != nullptr) {
+					if (((chunklist[i].Position1.x == 0 || pos->x < chunklist[i].Position1.x)) &&
+						((chunklist[i].Position1.y == 0 || pos->y < chunklist[i].Position1.y)) &&
+						((chunklist[i].Position1.z == 0 || pos->z < chunklist[i].Position1.z)) &&
+						((chunklist[i].Position2.x == 0 || pos->x > chunklist[i].Position2.x)) &&
+						((chunklist[i].Position2.y == 0 || pos->y > chunklist[i].Position2.y)) &&
+						((chunklist[i].Position2.z == 0 || pos->z > chunklist[i].Position2.z))) {
+						last_chunk[pnum] = chunklist[i].Chunk;
+						break;
+					}
+				}
+			}
+		}
+
+		*(int*)0x3B36D48 = (1 << last_chunk[pnum]);
 	}
 }
 
-void ChunkHandler(const char * level, CHUNK_LIST * chunklist, uint8_t size, NJS_VECTOR pos) {
-	for (Int i = 0; i < size; ++i) {
+void ChunkManagerExec(ObjectMaster* obj)
+{
+	auto data = obj->Data1;
+	
+	auto chunklist = (CHUNK_LIST*)data->LoopData;
+	auto size = data->InvulnerableTime;
+
+	NJS_VECTOR* pos = &Camera_Data1->Position;
+
+	for (int i = 0; i < size; ++i) {
 		if (chunklist[i].Chunk != CurrentChunk) {
-			EntityData1 *entity = EntityData1Ptrs[0];
+			EntityData1* entity = EntityData1Ptrs[0];
 			if (entity != nullptr) {
-				if (((chunklist[i].Position1.x == 0 || pos.x < chunklist[i].Position1.x)) &&
-					((chunklist[i].Position1.y == 0 || pos.y < chunklist[i].Position1.y)) &&
-					((chunklist[i].Position1.z == 0 || pos.z < chunklist[i].Position1.z)) &&
-					((chunklist[i].Position2.x == 0 || pos.x > chunklist[i].Position2.x)) &&
-					((chunklist[i].Position2.y == 0 || pos.y > chunklist[i].Position2.y)) &&
-					((chunklist[i].Position2.z == 0 || pos.z > chunklist[i].Position2.z))) {
-
-					SwapChunk(level, chunklist[i].Chunk);
+				if (((chunklist[i].Position1.x == 0 || pos->x < chunklist[i].Position1.x)) &&
+					((chunklist[i].Position1.y == 0 || pos->y < chunklist[i].Position1.y)) &&
+					((chunklist[i].Position1.z == 0 || pos->z < chunklist[i].Position1.z)) &&
+					((chunklist[i].Position2.x == 0 || pos->x > chunklist[i].Position2.x)) &&
+					((chunklist[i].Position2.y == 0 || pos->y > chunklist[i].Position2.y)) &&
+					((chunklist[i].Position2.z == 0 || pos->z > chunklist[i].Position2.z))) {
+					CurrentChunk = chunklist[i].Chunk;
 					break;
 				}
 			}
 		}
 	}
+
+	*(int*)0x3B36D48 = (1 << CurrentChunk);
+	CurrentLandTable = pHeroesLandTable;
+}
+
+// In the old chunk system, each chunk was a separate landtable. That was ineficient and not compatible with multiplayer.
+// This merges every chunk into a single landtable, the chunk ID is preserved as a visibility flag ("blockbit" system)
+void LoadChunkManager(const char* level, CHUNK_LIST* chunklist, int size)
+{
+	if (!pHeroesLandTable)
+	{
+		std::vector<COL*> visible;
+		std::vector<COL*> colli;
+		std::vector<int> prev_ids;
+
+		for (int i = 0; i < size; ++i)
+		{
+			int id = chunklist[i].Chunk;
+
+			if (std::find(prev_ids.begin(), prev_ids.end(), id) != prev_ids.end())
+			{
+				continue;
+			}
+
+			prev_ids.push_back(id);
+
+			std::string fullPath = "system\\levels\\";
+			fullPath += level;
+			if (id < 10) fullPath += "0";
+			fullPath += std::to_string(id) + ".sa1lvl";
+
+			LandTableInfo* info = new LandTableInfo(HelperFunctionsGlobal.GetReplaceablePath(fullPath.c_str()));
+			if (info && info->getlandtable())
+			{
+				LandTable* land = info->getlandtable();
+
+				for (int j = 0; j < land->COLCount; ++j)
+				{
+					if (land->Col[j].Flags & ColFlags_Visible)
+					{
+						for (Int k = 0; k < land->Col[j].Model->basicdxmodel->nbMat; ++k) {
+							NJS_MATERIAL* landmtl[1] = { &land->Col[j].Model->basicdxmodel->mats[k] };
+							landmtl[0]->diffuse.color = 0xFFFFFFFF;
+							if (IsLantern) material_register_ptr(landmtl, LengthOfArray(landmtl), &ForceWhiteDiffuse);
+						}
+						land->Col[j].anonymous_6 = (1 << id);
+						visible.push_back(&land->Col[j]);
+						InitLandTableObject(land->Col[j].Model);
+					}
+					else
+					{
+						colli.push_back(&land->Col[j]);
+					}
+				}
+			}
+			landInfos.push_back(info);
+		}
+
+		int count = colli.size() + visible.size();
+
+		if (count == 0)
+		{
+			return;
+		}
+
+		COL* cols = (COL*)calloc(count, sizeof(COL));
+		int cc = 0;
+
+		for (auto& col : visible)
+		{
+			cols[cc] = *col;
+			++cc;
+		}
+
+		for (auto& col : colli)
+		{
+			cols[cc] = *col;
+			++cc;
+		}
+
+		pHeroesLandTable = (LandTable*)calloc(1, sizeof(LandTable));
+		pHeroesLandTable->Flags = 0xC;
+		pHeroesLandTable->TexList = CurrentLevelTexlist;
+		pHeroesLandTable->TexName = "seaside-hill";
+		pHeroesLandTable->COLCount = count;
+		pHeroesLandTable->Col = cols;
+	}
+
+	ObjectMaster* obj = LoadObject(LoadObj_Data1, 1, ChunkManagerExec);
+	if (obj)
+	{
+		obj->DisplaySub = ChunkManagerDisp;
+		obj->Data1->LoopData = (Loop*)chunklist;
+		obj->Data1->InvulnerableTime = size;
+	}
+
+	CurrentLandTable = pHeroesLandTable;
 }
 
 void LevelHandler_Delete(ObjectMaster * a1) {
-	FreeCurrentChunk(CurrentLevel, CurrentAct);
 	CurrentChunk = 0;
-	delete oldinfo;
-	oldinfo = nullptr;
 	anim = 0;
 
 	DeleteCustomEnemies();
 
-	for (uint16_t i = 0; i < SETTable_Count; ++i) {
-		if (CurrentSetFile[i].Properties.z == 1
-			&& CurrentSetFile[i].Properties.x == 0
-			&& CurrentSetFile[i].Properties.y == 0) {
-			CurrentSetFile[i].Properties.z = 0;
+	if (pHeroesLandTable)
+	{
+		for (int i = 0; i < pHeroesLandTable->COLCount; ++i)
+		{
+			FreeLandTableObject(pHeroesLandTable->Col[i].Model);
 		}
+		free(pHeroesLandTable->Col);
+		free(pHeroesLandTable);
+		pHeroesLandTable = NULL;
+		landInfos.clear();
 	}
 }
 
@@ -345,6 +427,12 @@ void DefaultLight(HeroesLevelIDs levelid) {
 //Initialize levels
 void Levels_Init(const char *path, const HelperFunctions &helperFunctions, const IniFile *config)
 {
+	HMODULE hmod_multi = GetModuleHandle(L"sadx-multiplayer");
+	if (hmod_multi != INVALID_HANDLE_VALUE)
+	{
+		viewport_get_num = (decltype(viewport_get_num))GetProcAddress(hmod_multi, "viewport_get_num");
+	}
+
 	EnableSeasideHill = config->getBool("1- Levels", "EnableSeasideHill", true);
 	EnableOceanPalace = config->getBool("1- Levels", "EnableOceanPalace", true);
 	EnableGrandMetropolis = config->getBool("1- Levels", "EnableGrandMetropolis", true);

@@ -85,6 +85,7 @@ void EggFleetHandler(ObjectMaster *obj) {
 
 		SetFog(&EggFleet_Fog);
 
+		LoadChunkManager("EG", arrayptrandlength(EggFleetChunks));
 		EggFleet_InitObjects();
 		CurrentLevelTexlist = &SKYDECK01_TEXLIST;
 		CurrentLandAddress = (LandTable**)0x97DAC8;
@@ -94,7 +95,6 @@ void EggFleetHandler(ObjectMaster *obj) {
 		SetCameraMode_(1);
 	}
 	else {
-		ChunkHandler("EF", EggFleetChunks, LengthOfArray(EggFleetChunks), entity->Position);
 		AnimateTextures(EggFleetAnimTexs, LengthOfArray(EggFleetAnimTexs));
 		AnimateUV(EggFleet_UVShift, LengthOfArray(EggFleet_UVShift));
 

@@ -70,9 +70,10 @@ void BingoHighwayHandler(ObjectMaster * a1) {
 
 		CurrentLevelTexlist = &HIGHWAY01_TEXLIST;
 		CurrentLandAddress = (LandTable**)0x97DA88;
+
+		LoadChunkManager("BH", arrayptrandlength(BingoHighwayChunks));
 	}
 	else {
-		ChunkHandler("BH", BingoHighwayChunks, LengthOfArray(BingoHighwayChunks), entity->Position);
 		AnimateTextures(BingoHighwayAnimTexs, LengthOfArray(BingoHighwayAnimTexs));
 		CasinoCommon_OnFrame();
 
