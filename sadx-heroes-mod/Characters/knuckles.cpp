@@ -1,4 +1,8 @@
 #include "stdafx.h"
+#include "mod.h"
+#include "utils.h"
+#include "sounds.h"
+#include "characters.h"
 
 ModelInfo* KnucklesMdls[2];
 AnimationFile* KnucklesAnms[60];
@@ -202,9 +206,10 @@ void KnucklesHeroes_Main(ObjectMaster *obj) {
 			playerco2->IdleTime = 0;
 		}
 
-		NJS_VECTOR anim = PowerAnims(data, playerdata, playerco2); //id, speed, state
-
-		PlayHeroesAnimation(obj, anim.x, HKnucklesAnimData, anim.y, anim.z);
+		{
+			NJS_VECTOR anim = PowerAnims(data, playerdata, playerco2); //id, speed, state
+			PlayHeroesAnimation(obj, anim.x, HKnucklesAnimData, anim.y, anim.z);
+		}
 
 		break;
 	case 3:

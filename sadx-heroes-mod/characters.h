@@ -44,7 +44,6 @@ bool FlightPunchTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2
 
 extern ObjectMaster* HeroesChars[];
 
-static void(__cdecl** NodeCallbackFuncPtr)(NJS_OBJECT* obj) = (decltype(NodeCallbackFuncPtr))0x3AB9908;
 void ExploseEnemies(NJS_VECTOR* pos, float size);
 
 void CreamHeroes_Display(ObjectMaster *obj);

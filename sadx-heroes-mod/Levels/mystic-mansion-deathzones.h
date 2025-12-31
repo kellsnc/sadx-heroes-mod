@@ -1,5 +1,7 @@
 #pragma once
 
+#include "objects.h"
+
 NJS_MATERIAL matlist_8D6AE21F5A70AC7C692[] = {
 	{ { 0xFFB2B2B2 }, { 0x00FFFFFF }, 0, 0, NJD_FLAG_USE_ALPHA | NJD_FLAG_USE_TEXTURE | NJD_DA_INV_SRC | NJD_SA_SRC }
 };

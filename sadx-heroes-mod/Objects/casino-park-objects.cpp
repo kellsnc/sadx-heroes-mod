@@ -1,4 +1,8 @@
 #include "stdafx.h"
+#include "mod.h"
+#include "utils.h"
+#include "levels.h"
+#include "objects.h"
 
 void _cdecl HeroesFlippers(ObjectMaster *a1);
 void _cdecl CPDice(ObjectMaster *a1);

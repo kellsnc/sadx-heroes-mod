@@ -1,4 +1,11 @@
 #include "stdafx.h"
+#include "mod.h"
+#include "utils.h"
+#include "sounds.h"
+#include "levels.h"
+#include "objects.h"
+#include "characters.h"
+#include "enemies.h"
 
 bool IsEggPawnInitialized;
 

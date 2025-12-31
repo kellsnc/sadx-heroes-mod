@@ -1,4 +1,8 @@
 #include "stdafx.h"
+#include "mod.h"
+#include "utils.h"
+#include "levels.h"
+#include "objects.h"
 #include "power-plant-paths.h"
 #include "power-plant-deathzones.h"
 #include "power-plant.h"

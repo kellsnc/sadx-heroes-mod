@@ -1,4 +1,9 @@
 #include "stdafx.h"
+#include "mod.h"
+#include "utils.h"
+#include "sounds.h"
+#include "paths.h"
+#include "characters.h"
 
 uint8_t FlyCharEnabled;
 uint8_t SpeedCharEnabled;

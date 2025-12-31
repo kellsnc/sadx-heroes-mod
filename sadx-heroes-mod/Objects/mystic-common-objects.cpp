@@ -1,4 +1,9 @@
 #include "stdafx.h"
+#include "mod.h"
+#include "utils.h"
+#include "sounds.h"
+#include "levels.h"
+#include "objects.h"
 #include "mystic-common-objects.h"
 
 ModelInfo * MM_MOVPLAT;
@@ -48,43 +53,57 @@ void HCWarp_Main(ObjectMaster *obj) {
 			od2->vector_a = data->Position;
 			od2->vector_a.y += 10;
 
-			if (GetCollidingEntityA(data) || GetCollidingEntityB(data)) {
+			EntityData1* hit_player = GetCollidingEntityA(data);
+			
+			if (hit_player) {
 				PlayHeroesSound(LevelSound_Mys_Warp1);
-				EntityData1 *entity = EntityData1Ptrs[0];
-				od2->vector_a = entity->Position;
+				od2->vector_a = hit_player->Position;
+				data->CharIndex = hit_player->CharIndex;
 				data->Action = 1;
+			}
+			else
+			{
+				EntityData1* hit_proj = GetCollidingEntityB(data);
+
+				if (hit_proj)
+				{
+					PlayHeroesSound(LevelSound_Mys_Warp1);
+					od2->vector_a = EntityData1Ptrs[hit_proj->Index]->Position;
+					data->CharIndex = hit_proj->Index;
+					data->Action = 1;
+				}
 			}
 		}
 
 		if (data->Action == 1) {
-			EntityData1 *entity = EntityData1Ptrs[0];
+			EntityData1 *entity = EntityData1Ptrs[data->CharIndex];
 			entity->Position = od2->vector_a;
 			if (data->Rotation.z == 2) od2->vector_a.y += 0.05f;
 			else od2->vector_a.y -= 0.05f;
 
 			entity->Status = 0;
-			CharObj2 * co2 = CharObj2Ptrs[0];
-			if (GetCharacterID(0) == Characters_Sonic) {
+			CharObj2 * co2 = CharObj2Ptrs[data->CharIndex];
+			if (GetCharacterID(data->CharIndex) == Characters_Sonic) {
 				if ((co2->Upgrades & Upgrades_SuperSonic) == 0) co2->AnimationThing.Index = 18;
 				else co2->AnimationThing.Index = 141;
 			}
-			else if (GetCharacterID(0) == Characters_Tails || GetCharacterID(0) == Characters_Knuckles) {
+			else if (GetCharacterID(data->CharIndex) == Characters_Tails || GetCharacterID(0) == Characters_Knuckles) {
 				co2->AnimationThing.Index = 19;
 			}
 			if (data->NextAction < 100) {
 				data->NextAction += 1;
 
-				if (IsLantern) {
-					set_specular_blend_ptr(0, 4);
-					set_specular_blend_ptr(1, 4);
-					set_specular_blend_ptr(2, 4);
-					set_specular_blend_ptr(3, 4);
-					set_specular_blend_ptr(7, 4);
-				}
+				//if (IsLantern) {
+				//	set_specular_blend_ptr(0, 4);
+				//	set_specular_blend_ptr(1, 4);
+				//	set_specular_blend_ptr(2, 4);
+				//	set_specular_blend_ptr(3, 4);
+				//	set_specular_blend_ptr(7, 4);
+				//}
 				
 				hclight = data->NextAction;
 				hclight /= 100;
-				if (IsLantern) set_specular_blend_factor_ptr(hclight);
+				//if (IsLantern) set_specular_blend_factor_ptr(hclight);
 			}
 			else {
 				if (data->Scale.x != 0) {
@@ -108,12 +127,12 @@ void HCWarp_Main(ObjectMaster *obj) {
 		if (data->Action == 2) {
 			if (hclight > 0) {
 				hclight -= 0.05f;
-				if (IsLantern) set_specular_blend_factor_ptr(hclight);
+				//if (IsLantern) set_specular_blend_factor_ptr(hclight);
 			}
 			else {
 				if (data->Rotation.z == 2) data->Action = 0;
 				else data->Action = 3;
-				if (IsLantern) set_blend_ptr(-1, -1);
+				//if (IsLantern) set_blend_ptr(-1, -1);
 			}
 		}
 

@@ -1,4 +1,8 @@
 #include "stdafx.h"
+#include "mod.h"
+#include "utils.h"
+#include "levels.h"
+#include "paths.h"
 
 ObjectMaster * railcam;
 extern LoopHead *MysticMansionPathList[70];

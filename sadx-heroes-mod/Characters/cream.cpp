@@ -1,4 +1,9 @@
 #include "stdafx.h"
+#include "mod.h"
+#include "utils.h"
+#include "paths.h"
+#include "sounds.h"
+#include "characters.h"
 
 ModelInfo* CreamMdls[4];
 AnimationFile* CreamAnms[76];

@@ -1,4 +1,8 @@
 #include "stdafx.h"
+#include "mod.h"
+#include "utils.h"
+#include "sounds.h"
+#include "characters.h"
 
 ModelInfo* EspioMdls[5];
 AnimationFile* EspioAnms[59];
@@ -244,9 +248,10 @@ void EspioHeroes_Main(ObjectMaster *obj) {
 			playerco2->IdleTime = 0;
 		}
 
-		NJS_VECTOR anim = SpeedAnims(data, playerdata, playerco2); //id, speed, state
-		
-		PlayHeroesAnimation(obj, anim.x, EspioAnimData, anim.y, anim.z);
+		{
+			NJS_VECTOR anim = SpeedAnims(data, playerdata, playerco2); //id, speed, state
+			PlayHeroesAnimation(obj, anim.x, EspioAnimData, anim.y, anim.z);
+		}
 
 		break;
 	case 3:

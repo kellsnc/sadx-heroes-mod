@@ -1,4 +1,7 @@
 #include "stdafx.h"
+#include "mod.h"
+#include "utils.h"
+#include "sounds.h"
 #include "bass_vgmstream.h"
 
 bool chrsounds = true;

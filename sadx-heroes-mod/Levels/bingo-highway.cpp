@@ -1,4 +1,8 @@
 #include "stdafx.h"
+#include "mod.h"
+#include "utils.h"
+#include "levels.h"
+#include "objects.h"
 #include "bingo-highway-paths.h"
 #include "bingo-highway.h"
 

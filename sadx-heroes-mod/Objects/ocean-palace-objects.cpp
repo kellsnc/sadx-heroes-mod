@@ -1,4 +1,8 @@
 #include "stdafx.h"
+#include "mod.h"
+#include "utils.h"
+#include "levels.h"
+#include "objects.h"
 #include "ocean-palace-objects.h"
 
 ModelInfo * OP_WATERFS;

@@ -1,4 +1,6 @@
 #include "stdafx.h"
+#include "levels.h"
+#include "enemies.h"
 
 bool EnableEnemiesSAStages = false;
 bool EnableEggpawn = true;

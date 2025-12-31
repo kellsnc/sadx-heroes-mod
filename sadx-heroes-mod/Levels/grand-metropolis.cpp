@@ -1,4 +1,8 @@
 #include "stdafx.h"
+#include "mod.h"
+#include "utils.h"
+#include "levels.h"
+#include "objects.h"
 #include "grand-metropolis-paths.h"
 #include "grand-metropolis-deathzones.h"
 #include "grand-metropolis.h"

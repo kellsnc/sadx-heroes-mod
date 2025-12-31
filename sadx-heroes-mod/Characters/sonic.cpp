@@ -1,4 +1,8 @@
 #include "stdafx.h"
+#include "mod.h"
+#include "utils.h"
+#include "sounds.h"
+#include "characters.h"
 
 ModelInfo* SonicMdls[2];
 AnimationFile* SonicAnms[58];
@@ -182,10 +186,11 @@ void SonicHeroes_Main(ObjectMaster *obj) {
 			playerco2->IdleTime = 0;
 		}
 
-		NJS_VECTOR anim = SpeedAnims(data, playerdata, playerco2); //id, speed, state
+		{
+			NJS_VECTOR anim = SpeedAnims(data, playerdata, playerco2); //id, speed, state
+			PlayHeroesAnimation(obj, anim.x, HSonicAnimData, anim.y, anim.z);
+		}
 		
-		PlayHeroesAnimation(obj, anim.x, HSonicAnimData, anim.y, anim.z);
-
 		break;
 	case 3:
 		KickTrick(data, data2, playerco2, playerdata);

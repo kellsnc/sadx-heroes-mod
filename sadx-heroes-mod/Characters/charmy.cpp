@@ -1,4 +1,8 @@
 #include "stdafx.h"
+#include "mod.h"
+#include "utils.h"
+#include "sounds.h"
+#include "characters.h"
 
 ModelInfo* CharmyMdls[4];
 AnimationFile* CharmyAnms[58];

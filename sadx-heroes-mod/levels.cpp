@@ -1,4 +1,8 @@
 #include "stdafx.h"
+#include "lanternapi.h"
+#include "mod.h"
+#include "enemies.h"
+#include "levels.h"
 
 static bool EnableSeasideHill = true;
 static bool EnableSeaGate = true;

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "paths.h"
+
 void MysticCart(ObjectMaster * a1);
 
 Loop MM_CamPath1_Entries[] = {

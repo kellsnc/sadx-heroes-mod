@@ -1,4 +1,8 @@
 #include "stdafx.h"
+#include "mod.h"
+#include "utils.h"
+#include "sounds.h"
+#include "characters.h"
 
 ModelInfo* VectorMdls[3];
 AnimationFile* VectorAnms[63];
@@ -225,9 +229,10 @@ void VectorHeroes_Main(ObjectMaster *obj) {
 			playerco2->IdleTime = 0;
 		}
 
-		NJS_VECTOR anim = PowerAnims(data, playerdata, playerco2); //id, speed, state
-
-		PlayHeroesAnimation(obj, anim.x, VectorAnimData, anim.y, anim.z);
+		{
+			NJS_VECTOR anim = PowerAnims(data, playerdata, playerco2); //id, speed, state
+			PlayHeroesAnimation(obj, anim.x, VectorAnimData, anim.y, anim.z);
+		}
 
 		break;
 	case 3:

@@ -1,3 +1,7 @@
+#pragma once
+
+#include "paths.h"
+
 Loop PP_CamPath1_Entries[] = {
 	{ 0, 0, 203.829f,{ 15371.68f, 6130, -10178.04f } },
 	{ 0, 0, 150.6359f,{ 15561.9f, 6068.682f, -10134.91f } },

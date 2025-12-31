@@ -30,6 +30,8 @@ FunctionPointer(void, DrawModelBlend_IsVisible, (NJS_MODEL_SADX* model, QueuedMo
 FunctionPointer(void, DrawSimpleModel_IsVisible, (NJS_MODEL_SADX* model, float scale), 0x407A00);
 FunctionPointer(void, KillPlayer, (uint8_t ID), 0x440CD0);
 
+static void(__cdecl** NodeCallbackFuncPtr)(NJS_OBJECT* obj) = (decltype(NodeCallbackFuncPtr))0x3AB9908;
+
 extern float bombsize;
 
 extern unsigned int anim;

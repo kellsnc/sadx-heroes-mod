@@ -1,3 +1,7 @@
+#pragma once
+
+#include "paths.h"
+
 Loop BH_SlopePath1_Entries[] = {
 	{ 0, 0, 15.28824f,{ 7940, 451.133f, -2015.5f } },
 	{ 0, 0, 28.88554f,{ 7940, 440.121f, -2026.105f } },

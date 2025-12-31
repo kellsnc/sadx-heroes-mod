@@ -1,5 +1,7 @@
 #pragma once
 
+#include "paths.h"
+
 Loop EF_IntroPath_Entries[] = {
 	{ 0, 0, 25.654, { 500,  4200.86,  4979.035 } },
 	{ 0, 0, 25.655, { 500,  4200.86,  4953.381 } },

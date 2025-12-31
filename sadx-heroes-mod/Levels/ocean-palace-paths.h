@@ -1,5 +1,7 @@
 #pragma once
 
+#include "paths.h"
+
 Loop OP_CamPath1_Entries[] = {
 	{ 0, 0, 38.4081f,{ -8769.507f, 1291.545f, -3021.229f } },
 	{ 0, 0, 45.86842f,{ -8769.507f, 1289.975f, -3059.605f } },

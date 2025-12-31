@@ -1,4 +1,8 @@
 #include "stdafx.h"
+#include "mod.h"
+#include "utils.h"
+#include "sounds.h"
+#include "characters.h"
 
 ModelInfo* AmyMdls[3];
 AnimationFile* AmyAnms[62];
@@ -195,9 +199,10 @@ void AmyHeroes_Main(ObjectMaster *obj) {
 			playerco2->IdleTime = 0;
 		}
 
-		NJS_VECTOR anim = SpeedAnims(data, playerdata, playerco2); //id, speed, state
-		
-		PlayHeroesAnimation(obj, anim.x, HAmyAnimData, anim.y, anim.z);
+		{
+			NJS_VECTOR anim = SpeedAnims(data, playerdata, playerco2); //id, speed, state
+			PlayHeroesAnimation(obj, anim.x, HAmyAnimData, anim.y, anim.z);
+		}
 
 		break;
 	case 3:

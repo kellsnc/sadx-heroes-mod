@@ -1,5 +1,7 @@
 #pragma once
 
+#include "objects.h"
+
 Sint16 poly_8D5A9321C954CC9B673[] = {
 	0, 1, 2,
 	2, 1, 3,

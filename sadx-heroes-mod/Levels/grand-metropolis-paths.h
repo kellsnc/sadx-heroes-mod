@@ -1,5 +1,7 @@
 #pragma once
 
+#include "paths.h"
+
 Loop GM_AutoLoop1_Entries[] = {
 	{ 0, 0, 3.82634f,{ 1.136362f, -1210, -220 } },
 	{ 0, 0, 58.64817f,{ 1.121648f, -1212.375f, -223.375f } },

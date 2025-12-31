@@ -1,4 +1,10 @@
 #include "stdafx.h"
+#include "mod.h"
+#include "utils.h"
+#include "sounds.h"
+#include "levels.h"
+#include "enemies.h"
+#include "objects.h"
 #include "egg-fleet-objects.h"
 
 ModelInfo * EF_CANNON1;

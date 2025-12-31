@@ -1,4 +1,10 @@
 #include "stdafx.h"
+#include "mod.h"
+#include "utils.h"
+#include "sounds.h"
+#include "paths.h"
+#include "levels.h"
+#include "objects.h"
 
 void HCWarp(ObjectMaster *a1);
 void HCDoor(ObjectMaster *a1);

@@ -1,4 +1,8 @@
 #include "stdafx.h"
+#include "mod.h"
+#include "utils.h"
+#include "levels.h"
+#include "objects.h"
 #include "hang-castle-paths.h"
 #include "hang-castle-deathzones.h"
 #include "hang-castle.h"

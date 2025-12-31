@@ -1,4 +1,8 @@
 #include "stdafx.h"
+#include "mod.h"
+#include "utils.h"
+#include "sounds.h"
+#include "paths.h"
 
 enum PathStates {
 	PathState_RunPath,

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "paths.h"
+
 Loop CP_SlopePath1_Entries[] = {
 	{ 0, 0, 9.246f,{ -12445.14f, 2400, -2320 } },
 	{ 0, 0, 23.35094f,{ -12454.39f, 2399.999f, -2320 } },

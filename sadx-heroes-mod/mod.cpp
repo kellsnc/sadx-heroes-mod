@@ -1,4 +1,10 @@
 #include "stdafx.h"
+#include "lanternapi.h"
+#include "levels.h"
+#include "objects.h"
+#include "characters.h"
+#include "sounds.h"
+#include "enemies.h"
 
 bool IsLantern = false;
 set_shader_flags* set_shader_flags_ptr;

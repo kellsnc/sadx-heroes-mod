@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "utils.h"
 
 typedef struct {
 	NJS_VECTOR p1;

@@ -1,13 +1,20 @@
 #include "stdafx.h"
+#include "mod.h"
+#include "utils.h"
+#include "sounds.h"
+#include "levels.h"
+#include "objects.h"
+#include "characters.h"
+#include "enemies.h"
 
 bool IsFlyerInitialized;
 
-ModelInfo*		FlyerMdl;
-AnimationFile*	FlyerAnm;
-AnimData		FlyerAnimData;
+ModelInfo*     FlyerMdl;
+AnimationFile* FlyerAnm;
+AnimData       FlyerAnimData;
 
-AnimationFile*	CommonPaths[11];
-AnimationFile*	EggFleetPaths[36];
+AnimationFile* FlyerCommonPaths[11];
+AnimationFile* FlyerEggFleetPaths[36];
 
 AnimationFile** CurrentLevelPath;
 
@@ -27,9 +34,9 @@ void Flyer_DeleteFiles() {
 		njReleaseTexture(&FLYER_TEXLIST);
 		FreeMDL(FlyerMdl);
 		FreeANM(FlyerAnm);
-		FreeANMFiles(arrayptrandlength(CommonPaths));
+		FreeANMFiles(arrayptrandlength(FlyerCommonPaths));
 
-		if (EggFleetPaths[0]) FreeANMFiles(arrayptrandlength(EggFleetPaths));
+		if (FlyerEggFleetPaths[0]) FreeANMFiles(arrayptrandlength(FlyerEggFleetPaths));
 	}
 }
 
@@ -155,7 +162,7 @@ void Flyer_LoadLevelPath(AnimationFile** animfile, uint8_t count, const char* le
 
 void Flyer_LoadCommonPaths() {
 	PrintDebug("[SHM] Load Flyers common paths \n");
-	Count = LengthOfArray(CommonPaths);
+	Count = LengthOfArray(FlyerCommonPaths);
 
 	for (uint8_t i = 0; i < Count; ++i) {
 		std::string fullPath = "system\\";
@@ -163,7 +170,7 @@ void Flyer_LoadCommonPaths() {
 		if (i < 10) num = "0" + num;
 		fullPath = fullPath + "enemies\\paths\\PATH_CMN_0" + num + ".saanim";
 
-		CommonPaths[i] = new AnimationFile(HelperFunctionsGlobal.GetReplaceablePath(fullPath.c_str()));
+		FlyerCommonPaths[i] = new AnimationFile(HelperFunctionsGlobal.GetReplaceablePath(fullPath.c_str()));
 	}
 }
 
@@ -178,7 +185,7 @@ inline void Flyer_LoadFiles() {
 	FlyerAnimData.AnimationSpeed = 0.5f;
 
 	Flyer_LoadCommonPaths();
-	if (CurrentLevel == HeroesLevelID_EggFleet) Flyer_LoadLevelPath(arrayptrandlength(EggFleetPaths), "eggfleet");
+	if (CurrentLevel == HeroesLevelID_EggFleet) Flyer_LoadLevelPath(arrayptrandlength(FlyerEggFleetPaths), "eggfleet");
 }
 
 void Flyer_Init(ObjectMaster* obj) {
@@ -205,11 +212,11 @@ void Flyer_Init(ObjectMaster* obj) {
 	//	Get the correct path
 	int path = (int)data->Scale.x;
 	
-	if (path < LengthOfArray(CommonPaths)) {
-		data->LoopData = (Loop*)CommonPaths[path]->getmotion();
+	if (path < LengthOfArray(FlyerCommonPaths)) {
+		data->LoopData = (Loop*)FlyerCommonPaths[path]->getmotion();
 	}
 	else {
-		data->LoopData = (Loop*)CurrentLevelPath[path - LengthOfArray(CommonPaths)]->getmotion();
+		data->LoopData = (Loop*)CurrentLevelPath[path - LengthOfArray(FlyerCommonPaths)]->getmotion();
 	}
 
 	if (data->Rotation.y) {

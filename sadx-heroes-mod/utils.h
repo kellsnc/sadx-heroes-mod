@@ -1,5 +1,6 @@
 #pragma once
-#include "stdafx.h"
+
+#include "objects.h"
 
 ModelInfo* LoadMDL(const char* type, const char* name);
 ModelInfo* LoadCommonModel(const char* name);
