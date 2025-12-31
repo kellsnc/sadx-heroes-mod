@@ -91,10 +91,6 @@ void EggFleetHandler(ObjectMaster *obj) {
 
 		PlayMusic((MusicIDs)eggfleetmusicid);
 
-		if (RestartLevel.Position.x == 0) {
-			entity->Position = { 500, 4230, 5320 };
-		}
-
 		SetCameraMode_(1);
 	}
 	else {

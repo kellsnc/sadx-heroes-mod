@@ -248,6 +248,8 @@ void SetCharactersLevelData(const HelperFunctions &helperFunctions) {
 			SetStartLevelData(helperFunctions, character, 8, HeroesLevelID_HangCastle, 0);
 		if (EnableMysticMansion)
 			SetStartLevelData(helperFunctions, character, 9, HeroesLevelID_MysticMansion, 0);
+		if (EnableEggFleet)
+			SetStartLevelData(helperFunctions, character, 10, HeroesLevelID_EggFleet, 0);
 	}
 
 	helperFunctions.RegisterTrialLevel(Characters_Amy, { 1, 0 });
