@@ -198,6 +198,9 @@ void Sounds_OnFrame() {
 			HSTREAM stream = SoundListEntries[i].stream;
 			
 			HWND ActiveWindow = GetActiveWindow();
+			HWND ChildWindow = GetWindow(ActiveWindow, GW_CHILD);
+			if (ChildWindow != NULL)
+				ActiveWindow = ChildWindow;
 
   			if ((GameState == 16 || ActiveWindow != WindowHandle) && BASS_ChannelIsActive(stream) == BASS_ACTIVE_PLAYING) {
 				BASS_ChannelPause(stream);
