@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "FunctionHook.h"
 #include "mod.h"
 #include "utils.h"
 #include "sounds.h"
@@ -128,60 +129,43 @@ VoidFunction UnloadFilesFuncs[]{
 	UnloadVectorFiles
 };
 
-Trampoline* Knuckles_Trampoline = nullptr;
-Trampoline* Tails_Trampoline = nullptr;
-Trampoline* Sonic_Trampoline = nullptr;
+FunctionHook<void, task*> SonicTheHedgehog_h(0x49A9B0);
+FunctionHook<void, task*> MilesTalesPrower_h(0x461700);
+FunctionHook<void, task*> KnucklesTheEchidna_h(0x47A770);
 
 //Store the current player id at the start of their function
 //to get which character triggered a sound, as PlaySound doesn't keep track of the entity
 
-void Knuckles_Main_r(ObjectMaster* obj) {
-	CurrentPlayer = obj->Data1->CharIndex;
-
-	ObjectFunc(original, Knuckles_Trampoline->Target());
-	original(obj);
+void SonicTheHedgehog_r(task* tp)
+{
+	CurrentPlayer = tp->twp->counter.b[0];
+	SonicTheHedgehog_h.Original(tp);
 }
 
-void Tails_Main_r(ObjectMaster* obj) {
-	CurrentPlayer = obj->Data1->CharIndex;
+void MilesTalesPrower_r(task* tp)
+{
+	CurrentPlayer = tp->twp->counter.b[0];
 
 	//Player 2 can play sounds
-	if (P2SoundsEnabled && HeroesChars[obj->Data1->CharIndex]) {
+	if (P2SoundsEnabled && HeroesChars[CurrentPlayer]) {
 		WriteData((char*)0x45C02C, (char)0x99);
 		WriteData((char*)0x45BDF3, (char)0x99);
 		WriteData((char*)0x45BF7F, (char)0x99);
 	}
 
-	ObjectFunc(original, Tails_Trampoline->Target());
-	original(obj);
+	MilesTalesPrower_h.Original(tp);
 
-	if (P2SoundsEnabled && HeroesChars[obj->Data1->CharIndex]) {
+	if (P2SoundsEnabled && HeroesChars[CurrentPlayer]) {
 		WriteData((char*)0x45C02C, (char)0x01);
 		WriteData((char*)0x45BDF3, (char)0x01);
 		WriteData((char*)0x45BF7F, (char)0x01);
 	}
 }
 
-void Sonic_Act1_r(EntityData1 *entity1, EntityData2 *entity2, CharObj2 *obj2) {
-	CurrentPlayer = entity1->CharIndex;
-
-	FunctionPointer(void, original, (EntityData1 *entity1, EntityData2 *entity2, CharObj2 *obj2), Sonic_Trampoline->Target());
-	original(entity1, entity2, obj2);
-}
-
-//Unload a Knuckles object that doesn't delete itself with charsel swapping.
-void sub_473CE0(ObjectMaster* obj);
-Trampoline sub_473CE0_t(0x473CE0, 0x473CE8, sub_473CE0);
-void sub_473CE0(ObjectMaster* obj) {
-	if (GameState != GameState_Ingame) return;
-
-	if (EntityData1Ptrs[obj->Data1->CharIndex]->CharID != Characters_Knuckles) {
-		DeleteObject_(obj);
-		return;
-	}
-
-	ObjectFunc(original, sub_473CE0_t.Target());
-	original(obj);
+void KnucklesTheEchidna_r(task* tp)
+{
+	CurrentPlayer = tp->twp->counter.b[0];
+	KnucklesTheEchidna_h.Original(tp);
 }
 
 //Character Animation like Sonic Heroes does
@@ -966,9 +950,9 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 		WriteCall((void*)0x492DD4, PlaySound_HeroesChar); //hurt
 		WriteCall((void*)0x446A26, PlaySound_HeroesChar); //death
 
-		Sonic_Trampoline = new Trampoline((int)Sonic_Act1, (int)Sonic_Act1 + 0x8, Sonic_Act1_r);
-		Tails_Trampoline = new Trampoline((int)Tails_Main, (int)Tails_Main + 0x12, Tails_Main_r);
-		Knuckles_Trampoline = new Trampoline((int)Knuckles_Main, (int)Knuckles_Main + 0x8, Knuckles_Main_r);
+		SonicTheHedgehog_h.Hook(SonicTheHedgehog_r);
+		MilesTalesPrower_h.Hook(MilesTalesPrower_r);
+		KnucklesTheEchidna_h.Hook(KnucklesTheEchidna_r);
 
 		//Common special effects
 		CharMdls[1] = LoadObjectModel(CharMdls[1], "effect_tornado");
