@@ -85,10 +85,10 @@ void EggFleetHandler(ObjectMaster *obj) {
 
 		SetFog(&EggFleet_Fog);
 
-		LoadChunkManager("EG", arrayptrandlength(EggFleetChunks));
-		EggFleet_InitObjects();
 		CurrentLevelTexlist = &SKYDECK01_TEXLIST;
 		CurrentLandAddress = (LandTable**)0x97DAC8;
+		LoadHeroesLandTable("egg-fleet", arrayptrandlength(EggFleetChunks));
+		EggFleet_InitObjects();
 
 		PlayMusic((MusicIDs)eggfleetmusicid);
 

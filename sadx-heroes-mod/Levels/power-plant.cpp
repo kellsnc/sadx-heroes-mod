@@ -7,10 +7,14 @@
 #include "power-plant-deathzones.h"
 #include "power-plant.h"
 
+void PowerPlantHandler(ObjectMaster* a1);
+
 void PowerPlantSkybox(ObjectMaster *a1) {
+	PowerPlantHandler(a1);
+
 	if (!MissedFrames) {
-		if (a1->Data1->Action == 0) {
-			a1->Data1->Action = 1;
+		if (a1->Data1->Action == 1) {
+			a1->Data1->Action = 2;
 			a1->DisplaySub = a1->MainSub;
 			HeroesSkybox_Main(a1);
 		}
@@ -96,7 +100,7 @@ void PowerPlantHandler(ObjectMaster * a1) {
 		CurrentLevelTexlist = &ICECAP01_TEXLIST;
 		CurrentLandAddress = (LandTable**)0x97DB08;
 
-		LoadChunkManager("PP", arrayptrandlength(PowerPlantChunks));
+		LoadHeroesLandTable("power-plant", arrayptrandlength(PowerPlantChunks));
 	}
 	else {
 		AnimateTextures(PowerPlantAnimTexs, LengthOfArray(PowerPlantAnimTexs));

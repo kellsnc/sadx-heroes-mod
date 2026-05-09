@@ -104,7 +104,7 @@ void MysticMansionHandler(ObjectMaster * a1) {
 			
 			LoadPVM("FINALEGG1", (TexList*)0x1B98518);
 			
-			LoadChunkManager("MM", arrayptrandlength(MysticMansionChunks));
+			LoadHeroesLandTable("mystic-mansion", arrayptrandlength(MysticMansionChunks));
 			MysticMansion_InitObjects();
 
 			if (IsLantern) set_shader_flags_ptr(ShaderFlags_Blend, true);

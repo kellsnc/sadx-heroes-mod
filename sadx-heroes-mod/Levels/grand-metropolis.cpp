@@ -74,7 +74,7 @@ void GrandMetropolisHandler(ObjectMaster * a1) {
 		if (CurrentAct == 0) {
 			CurrentLevelTexlist = &CASINO01_TEXLIST;
 			CurrentLandAddress = (LandTable**)0x97DB28;
-			LoadChunkManager("GM", arrayptrandlength(GrandMetropolisChunks));
+			LoadHeroesLandTable("grand-metropolis", arrayptrandlength(GrandMetropolisChunks));
 
 			GrandMetropolis_InitObjects();
 		}

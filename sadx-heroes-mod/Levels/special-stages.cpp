@@ -39,7 +39,7 @@ void SpecialStagesHandler(ObjectMaster * a1) {
 
 		SpecialStage_InitObjects();
 
-		LoadLevelFile("SS", CurrentAct + 1);
+		LoadHeroesLandTable("special-stage1", nullptr, 0);
 	}
 	else {
 		//Physics changes, makes character accelerate faster and allow ceiling-running

@@ -42,8 +42,7 @@ bool IsNoMysticMusicEnabled();
 
 void AnimateTexlist(SH_ANIMTEXS *list, Int listcount, NJS_TEXLIST* texlist);
 void AnimateTextures(SH_ANIMTEXS *list, Int listcount);
-void LoadLevelFile(const char *shortname, int chunknb);
-void LoadChunkManager(const char* level, CHUNK_LIST* chunklist, int size);
+void LoadHeroesLandTable(const char* level, CHUNK_LIST* chunklist, int size);
 void SetFog(FogData * fog);
 void DefaultLight(HeroesLevelIDs levelid);
 

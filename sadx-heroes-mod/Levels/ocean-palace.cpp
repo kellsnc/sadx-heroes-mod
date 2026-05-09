@@ -120,7 +120,7 @@ void OceanPalaceHandler(ObjectMaster * a1) {
 			OceanPalace_UVShift[10].Size = OP_WATERFS->getmodel()->child->child->child->child->child->child->child->child->child->child->basicdxmodel->meshsets[0].nbMesh * 3;
 			OceanPalace_UVShift[11].Size = OP_WATERFS->getmodel()->child->child->child->child->child->child->child->child->child->child->child->basicdxmodel->meshsets[0].nbMesh * 3;
 
-			LoadChunkManager("OP", arrayptrandlength(OceanPalaceChunks));
+			LoadHeroesLandTable("ocean-palace", arrayptrandlength(OceanPalaceChunks));
 		}
 		else {
 			//Road Rock
@@ -138,7 +138,7 @@ void OceanPalaceHandler(ObjectMaster * a1) {
 			OceanPalace_UVShift[12].Size = OP_WATERFS->getmodel()->child->child->child->child->child->child->child->child->child->child->child->child->basicdxmodel->meshsets[0].nbMesh * 3;
 			OceanPalace_UVShift[13].Size = OP_WATERFS->getmodel()->child->child->child->child->child->child->child->child->child->child->child->child->basicdxmodel->meshsets[1].nbMesh * 3;
 
-			LoadLevelFile("RR", 01);
+			LoadHeroesLandTable("road-rock", nullptr, 0);
 		}
 	}
 	else {

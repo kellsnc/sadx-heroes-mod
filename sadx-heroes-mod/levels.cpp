@@ -24,8 +24,7 @@ bool NoPinball = false;
 
 LandTable** CurrentLandAddress = nullptr;
 
-LandTable* pHeroesLandTable = nullptr;
-std::vector<LandTableInfo*> landInfos;
+LandTableInfo* pLandTableInfo = nullptr;
 int last_chunk[8];
 static int32_t(*viewport_get_num)() = nullptr;
 
@@ -56,43 +55,12 @@ bool IsNoMysticMusicEnabled() {
 	return NoMysticMusic;
 }
 
-//Chunk system
 bool ForceWhiteDiffuse(NJS_MATERIAL* material, Uint32 flags)
 {
 	if (IsHeroesLevel && CurrentLevel == 1 && material->attr_texId == 41) set_shader_flags_ptr(ShaderFlags_Fog, false);
 	set_diffuse_ptr(1, false);
 	set_specular_ptr(7, false);
 	return true;
-}
-
-void LoadLevelFile(const char* shortname, int chunknb) {
-	std::string fullPath = "system\\levels\\";
-	fullPath += shortname;
-	if (chunknb < 10) fullPath += "0";
-	fullPath += std::to_string(chunknb) + ".sa1lvl";
-
-	LandTableInfo* info = new LandTableInfo(HelperFunctionsGlobal.GetReplaceablePath(fullPath.c_str()));
-	if (info && info->getlandtable())
-	{
-		LandTable* land = info->getlandtable();
-
-		for (int j = 0; j < land->COLCount; ++j)
-		{
-			if (land->Col[j].Flags & ColFlags_Visible)
-			{
-				for (Int k = 0; k < land->Col[j].Model->basicdxmodel->nbMat; ++k) {
-					NJS_MATERIAL* landmtl[1] = { &land->Col[j].Model->basicdxmodel->mats[k] };
-					landmtl[0]->diffuse.color = 0xFFFFFFFF;
-					if (IsLantern) material_register_ptr(landmtl, LengthOfArray(landmtl), &ForceWhiteDiffuse);
-				}
-				InitLandTableObject(land->Col[j].Model);
-			}
-		}
-
-		pHeroesLandTable = land;
-	}
-
-	landInfos.push_back(info);
 }
 
 void ChunkManagerDisp(ObjectMaster* obj)
@@ -155,102 +123,47 @@ void ChunkManagerExec(ObjectMaster* obj)
 		}
 	}
 
-	*(int*)0x3B36D48 = (1 << CurrentChunk);
-	CurrentLandTable = pHeroesLandTable;
+	*(int*)0x3B36D48 = (1 << (CurrentChunk - 1));
+	CurrentLandTable = pLandTableInfo->getlandtable();
 }
 
-// In the old chunk system, each chunk was a separate landtable. That was ineficient and not compatible with multiplayer.
-// This merges every chunk into a single landtable, the chunk ID is preserved as a visibility flag ("blockbit" system)
-void LoadChunkManager(const char* level, CHUNK_LIST* chunklist, int size)
+void LoadHeroesLandTable(const char* level, CHUNK_LIST* chunklist, int size)
 {
-	if (!pHeroesLandTable)
+	if (!pLandTableInfo)
 	{
-		std::vector<COL*> visible;
-		std::vector<COL*> colli;
-		std::vector<int> prev_ids;
+		std::string fullPath = std::string("system\\") + level + ".sa1lvl";
 
-		for (int i = 0; i < size; ++i)
+		pLandTableInfo = new LandTableInfo(HelperFunctionsGlobal.GetReplaceablePath(fullPath.c_str()));
+		
+		LandTable* land = pLandTableInfo->getlandtable();
+		land->TexList = CurrentLevelTexlist;
+		
+		for (int i = 0; i < land->COLCount; ++i)
 		{
-			int id = chunklist[i].Chunk;
-
-			if (std::find(prev_ids.begin(), prev_ids.end(), id) != prev_ids.end())
+			if (land->Col[i].Flags & ColFlags_Visible)
 			{
-				continue;
-			}
-
-			prev_ids.push_back(id);
-
-			std::string fullPath = "system\\levels\\";
-			fullPath += level;
-			if (id < 10) fullPath += "0";
-			fullPath += std::to_string(id) + ".sa1lvl";
-
-			LandTableInfo* info = new LandTableInfo(HelperFunctionsGlobal.GetReplaceablePath(fullPath.c_str()));
-			if (info && info->getlandtable())
-			{
-				LandTable* land = info->getlandtable();
-
-				for (int j = 0; j < land->COLCount; ++j)
-				{
-					if (land->Col[j].Flags & ColFlags_Visible)
-					{
-						for (Int k = 0; k < land->Col[j].Model->basicdxmodel->nbMat; ++k) {
-							NJS_MATERIAL* landmtl[1] = { &land->Col[j].Model->basicdxmodel->mats[k] };
-							landmtl[0]->diffuse.color = 0xFFFFFFFF;
-							if (IsLantern) material_register_ptr(landmtl, LengthOfArray(landmtl), &ForceWhiteDiffuse);
-						}
-						land->Col[j].anonymous_6 = (1 << id);
-						visible.push_back(&land->Col[j]);
-						InitLandTableObject(land->Col[j].Model);
-					}
-					else
-					{
-						colli.push_back(&land->Col[j]);
-					}
+				for (Int k = 0; k < land->Col[i].Model->basicdxmodel->nbMat; ++k) {
+					NJS_MATERIAL* landmtl[1] = { &land->Col[i].Model->basicdxmodel->mats[k] };
+					landmtl[0]->diffuse.color = 0xFFFFFFFF;
+					if (IsLantern) material_register_ptr(landmtl, LengthOfArray(landmtl), &ForceWhiteDiffuse);
 				}
+				InitLandTableObject(land->Col[i].Model);
 			}
-			landInfos.push_back(info);
 		}
 
-		int count = colli.size() + visible.size();
-
-		if (count == 0)
-		{
-			return;
-		}
-
-		COL* cols = (COL*)calloc(count, sizeof(COL));
-		int cc = 0;
-
-		for (auto& col : visible)
-		{
-			cols[cc] = *col;
-			++cc;
-		}
-
-		for (auto& col : colli)
-		{
-			cols[cc] = *col;
-			++cc;
-		}
-
-		pHeroesLandTable = (LandTable*)calloc(1, sizeof(LandTable));
-		pHeroesLandTable->Flags = 0xC;
-		pHeroesLandTable->TexList = CurrentLevelTexlist;
-		pHeroesLandTable->TexName = "seaside-hill";
-		pHeroesLandTable->COLCount = count;
-		pHeroesLandTable->Col = cols;
+		CurrentLandTable = land;
 	}
 
-	ObjectMaster* obj = LoadObject(LoadObj_Data1, 1, ChunkManagerExec);
-	if (obj)
+	if (chunklist)
 	{
-		obj->DisplaySub = ChunkManagerDisp;
-		obj->Data1->LoopData = (Loop*)chunklist;
-		obj->Data1->InvulnerableTime = size;
+		ObjectMaster* obj = LoadObject(LoadObj_Data1, 1, ChunkManagerExec);
+		if (obj)
+		{
+			obj->DisplaySub = ChunkManagerDisp;
+			obj->Data1->LoopData = (Loop*)chunklist;
+			obj->Data1->InvulnerableTime = size;
+		}
 	}
-
-	CurrentLandTable = pHeroesLandTable;
 }
 
 void LevelHandler_Delete(ObjectMaster * a1) {
@@ -259,16 +172,17 @@ void LevelHandler_Delete(ObjectMaster * a1) {
 
 	DeleteCustomEnemies();
 
-	if (pHeroesLandTable)
+	if (pLandTableInfo)
 	{
-		for (int i = 0; i < pHeroesLandTable->COLCount; ++i)
+		LandTable* land = pLandTableInfo->getlandtable();
+
+		for (int i = 0; i < land->COLCount; ++i)
 		{
-			FreeLandTableObject(pHeroesLandTable->Col[i].Model);
+			FreeLandTableObject(land->Col[i].Model);
 		}
-		free(pHeroesLandTable->Col);
-		free(pHeroesLandTable);
-		pHeroesLandTable = NULL;
-		landInfos.clear();
+
+		delete pLandTableInfo;
+		pLandTableInfo = nullptr;
 	}
 }
 

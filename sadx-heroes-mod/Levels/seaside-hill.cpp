@@ -119,7 +119,7 @@ void SeasideHillHandler(ObjectMaster * a1) {
 			CurrentLandAddress = (LandTable**)0x97DA28;
 			matlist_waterfall[0].attr_texId = 87;
 
-			LoadChunkManager("SH", arrayptrandlength(SeasideHillChunks));
+			LoadHeroesLandTable("seaside-hill", arrayptrandlength(SeasideHillChunks));
 		}
 		else {
 			//Sea Gate
@@ -131,7 +131,7 @@ void SeasideHillHandler(ObjectMaster * a1) {
 			CurrentLandAddress = (LandTable**)0x97DA2C;
 			matlist_waterfall[0].attr_texId = 83;
 
-			LoadChunkManager("SG", arrayptrandlength(SeaGateChunks));
+			LoadHeroesLandTable("sea-gate", arrayptrandlength(SeaGateChunks));
 		}
 	}
 	else {

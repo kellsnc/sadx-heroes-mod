@@ -126,7 +126,7 @@ void HangCastleHandler(ObjectMaster * a1) {
 		if (CurrentAct == 0) {
 			CurrentLevelTexlist = &RUIN01_TEXLIST;
 			CurrentLandAddress = (LandTable**)0x97DAE8;
-			LoadChunkManager("HC", arrayptrandlength(HangCastleChunks));
+			LoadHeroesLandTable("hang-castle", arrayptrandlength(HangCastleChunks));
 
 			HC_SPKDOOR = LoadObjectModel(HC_SPKDOOR, "HC_SPKDOOR");
 			HC_SPKTREE = LoadObjectModel(HC_SPKTREE, "HC_SPKTREE");

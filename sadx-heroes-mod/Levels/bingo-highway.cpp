@@ -71,7 +71,7 @@ void BingoHighwayHandler(ObjectMaster * a1) {
 		CurrentLevelTexlist = &HIGHWAY01_TEXLIST;
 		CurrentLandAddress = (LandTable**)0x97DA88;
 
-		LoadChunkManager("BH", arrayptrandlength(BingoHighwayChunks));
+		LoadHeroesLandTable("bingo-highway", arrayptrandlength(BingoHighwayChunks));
 	}
 	else {
 		AnimateTextures(BingoHighwayAnimTexs, LengthOfArray(BingoHighwayAnimTexs));

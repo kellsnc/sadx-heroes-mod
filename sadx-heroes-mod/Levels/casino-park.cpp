@@ -55,7 +55,7 @@ void CasinoParkHandler(ObjectMaster * a1) {
 		if (CurrentAct == 0) {
 			CurrentLevelTexlist = &TWINKLE01_TEXLIST;
 			CurrentLandAddress = (LandTable**)0x97DA68;
-			LoadChunkManager("CP", arrayptrandlength(CasinoParkChunks));
+			LoadHeroesLandTable("casino-park", arrayptrandlength(CasinoParkChunks));
 
 			CasinoPark_InitObjects();
 		}
