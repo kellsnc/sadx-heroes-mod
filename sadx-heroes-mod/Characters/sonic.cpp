@@ -45,8 +45,10 @@ void PlaySound_Sonic(int ID) {
 }
 
 void SonicCallback(NJS_OBJECT* object) {
-	if (object == (NJS_OBJECT*)SonicMdls[0]->getdata("Dummy006")) {
-		memcpy(SonicMatrix, _nj_current_matrix_ptr_, sizeof(NJS_MATRIX)); //pupils
+	NJS_OBJECT* base = SonicMdls[0]->getmodel();
+
+	if (object == base->getnode(31)) {
+		njGetMatrix(SonicMatrix); //pupils
 	}
 }
 
@@ -88,35 +90,30 @@ void SonicHeroes_Display(ObjectMaster *obj) {
 		njRotateY(0, 0xC000);
 	}
 
-	SetupWorldMatrix();
-	Direct3D_SetChunkModelRenderState();
-
 	*NodeCallbackFuncPtr = SonicCallback;
-	njCnkAction(HSonicAnimData[sonicobj->Data1->Index].Animation, sonicobj->Data1->Scale.x);
+	njActionWeight(HSonicAnimData[sonicobj->Data1->Index].Animation, sonicobj->Data1->Scale.x, SonicMdls[0]->getweightinfo());
 	*NodeCallbackFuncPtr = nullptr;
 
-	memcpy(_nj_current_matrix_ptr_, SonicMatrix, sizeof(NJS_MATRIX));
-	NJS_CNK_OBJECT* pupils = SonicMdls[1]->getmodel();
-
+	njSetMatrix(NULL, SonicMatrix);
+	NJS_OBJECT* pupils = SonicMdls[1]->getmodel();
 	switch (sonicobj->Data1->InvulnerableTime) {
 	case 1:
 	case 7:
-		DrawChunkModel(pupils->chunkmodel);
+		dsDrawModel(pupils->getbasicdxmodel());
 		break;
 	case 2:
 	case 6:
-		DrawChunkModel(pupils->child->chunkmodel);
+		dsDrawModel(pupils->child->getbasicdxmodel());
 		break;
 	case 3:
 	case 5:
-		DrawChunkModel(pupils->child->child->chunkmodel);
+		dsDrawModel(pupils->child->child->getbasicdxmodel());
 		break;
 	case 4:
-		DrawChunkModel(pupils->child->child->child->chunkmodel);
+		dsDrawModel(pupils->child->child->child->getbasicdxmodel());
 		break;
 	}
 	
-	Direct3D_UnsetChunkModelRenderState();
 	njPopMatrix(1);
 
 	Direct3D_PerformLighting(0);
@@ -217,6 +214,8 @@ void LoadSonicFiles() {
 	SonicMdls[0] = LoadCharacterModel("sonic_main");
 	SonicMdls[1] = LoadCharacterModel("sonic_pupils");
 
+	HelperFunctionsGlobal.Weights->Init(SonicMdls[0]->getweightinfo(), SonicMdls[0]->getmodel());
+
 	SonicAnms[0] = LoadCharacterAnim("SN_WALK");
 	SonicAnms[1] = LoadCharacterAnim("SN_WALK_PULL");
 	SonicAnms[2] = LoadCharacterAnim("SN_WALK_PUSH");
@@ -300,6 +299,7 @@ void LoadSonicFiles() {
 }
 
 void UnloadSonicFiles() {
+	HelperFunctionsGlobal.Weights->DeInit(SonicMdls[0]->getweightinfo(), SonicMdls[0]->getmodel());
 	FreeMDLFiles(SonicMdls, LengthOfArray(SonicMdls));
 	FreeANMFiles(SonicAnms, LengthOfArray(SonicAnms));
 }

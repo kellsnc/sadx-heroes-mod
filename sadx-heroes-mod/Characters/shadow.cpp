@@ -45,20 +45,22 @@ void PlaySound_Shadow(int ID) {
 }
 
 void ShadowCallback(NJS_OBJECT* object) {
-	if (object == (NJS_OBJECT*)ShadowMdls[0]->getdata("Dummy006")) {
-		memcpy(ShadowMatrices[0], _nj_current_matrix_ptr_, sizeof(NJS_MATRIX)); //pupils
+	NJS_OBJECT* base = ShadowMdls[0]->getmodel();
+
+	if (object == base->getnode(31)) {
+		njGetMatrix(ShadowMatrices[0]); //pupils
 	}
-	else if (object == (NJS_OBJECT*)ShadowMdls[0]->getdata("Dummy054")) {
-		memcpy(ShadowMatrices[1], _nj_current_matrix_ptr_, sizeof(NJS_MATRIX)); //leftbottom
+	else if (object == base->getnode(52)) {
+		njGetMatrix(ShadowMatrices[1]); // jet
 	}
-	else if (object == (NJS_OBJECT*)ShadowMdls[0]->getdata("Dummy055")) {
-		memcpy(ShadowMatrices[2], _nj_current_matrix_ptr_, sizeof(NJS_MATRIX)); //leftbottom
+	else if (object == base->getnode(53)) {
+		njGetMatrix(ShadowMatrices[2]); // jet
 	}
-	else if (object == (NJS_OBJECT*)ShadowMdls[0]->getdata("Dummy051")) {
-		memcpy(ShadowMatrices[3], _nj_current_matrix_ptr_, sizeof(NJS_MATRIX)); //leftbottom
+	else if (object == base->getnode(48)) {
+		njGetMatrix(ShadowMatrices[3]); // jet
 	}
-	else if (object == (NJS_OBJECT*)ShadowMdls[0]->getdata("Dummy052")) {
-		memcpy(ShadowMatrices[4], _nj_current_matrix_ptr_, sizeof(NJS_MATRIX)); //leftbottom
+	else if (object == base->getnode(49)) {
+		njGetMatrix(ShadowMatrices[4]); // jet
 	}
 }
 
@@ -96,46 +98,37 @@ void ShadowHeroes_Display(ObjectMaster *obj) {
 	njRotateX(0, entity1->Rotation.x);
 	njRotateY(0, -entity1->Rotation.y - 0x4000);
 
-	SetupWorldMatrix();
-	Direct3D_SetChunkModelRenderState();
-
 	*NodeCallbackFuncPtr = ShadowCallback;
-	njCnkAction(HShadowAnimData[sonicobj->Data1->Index].Animation, sonicobj->Data1->Scale.x);
+	njActionWeight(HShadowAnimData[sonicobj->Data1->Index].Animation, sonicobj->Data1->Scale.x, ShadowMdls[0]->getweightinfo());
 	*NodeCallbackFuncPtr = nullptr;
 
-	memcpy(_nj_current_matrix_ptr_, ShadowMatrices[0], sizeof(NJS_MATRIX));
-	NJS_CNK_OBJECT* pupils = ShadowMdls[1]->getmodel();
-
+	njSetMatrix(NULL, ShadowMatrices[0]);
+	NJS_OBJECT* pupils = ShadowMdls[1]->getmodel();
 	switch (sonicobj->Data1->InvulnerableTime) {
 	case 1:
 	case 7:
-		DrawChunkModel(pupils->chunkmodel);
+		dsDrawModel(pupils->getbasicdxmodel());
 		break;
 	case 2:
 	case 6:
-		DrawChunkModel(pupils->child->chunkmodel);
+		dsDrawModel(pupils->child->getbasicdxmodel());
 		break;
 	case 3:
 	case 5:
-		DrawChunkModel(pupils->child->child->chunkmodel);
+		dsDrawModel(pupils->child->child->getbasicdxmodel());
 		break;
 	case 4:
-		DrawChunkModel(pupils->child->child->child->chunkmodel);
+		dsDrawModel(pupils->child->child->child->getbasicdxmodel());
 		break;
 	}
 
 	if (sonicobj->Data1->Index == 6 || sonicobj->Data1->Index == 7 || sonicobj->Data1->Index == 57) {
-		for (uint8_t i = 1; i < 5; ++i) {
-			NJS_CNK_OBJECT* air = ShadowMdls[2]->getmodel();
-			memcpy(_nj_current_matrix_ptr_, ShadowMatrices[i], sizeof(NJS_MATRIX));
-			njRotateX(0, 0x8000);
-			njTranslate(0, 0, -0.5f, 0);
-			DrawChunkModel(air->child->child->child->chunkmodel);
-			DrawChunkModel(air->child->sibling->child->child->chunkmodel);
+		for (int i = 0; i < 4; ++i) {
+			njSetMatrix(0, ShadowMatrices[i + 1]);
+			late_DrawObject(ShadowMdls[2]->getmodel()->getnode((i == 0 || i == 2) ? 5 : 2), LATE_MAT);
 		}
 	}
 	
-	Direct3D_UnsetChunkModelRenderState();
 	njPopMatrix(1);
 
 	Direct3D_PerformLighting(0);
@@ -237,6 +230,8 @@ void LoadShadowFiles() {
 	ShadowMdls[1] = LoadCharacterModel("shadow_pupils");
 	ShadowMdls[2] = LoadCharacterModel("shadow_air");
 
+	HelperFunctionsGlobal.Weights->Init(ShadowMdls[0]->getweightinfo(), ShadowMdls[0]->getmodel());
+
 	ShadowAnms[0] = LoadCharacterAnim("SH_WALK");
 	ShadowAnms[1] = LoadCharacterAnim("SH_WALK_PULL");
 	ShadowAnms[2] = LoadCharacterAnim("SH_WALK_PUSH");
@@ -320,6 +315,7 @@ void LoadShadowFiles() {
 }
 
 void UnloadShadowFiles() {
+	HelperFunctionsGlobal.Weights->DeInit(ShadowMdls[0]->getweightinfo(), ShadowMdls[0]->getmodel());
 	FreeMDLFiles(ShadowMdls, LengthOfArray(ShadowMdls));
 	FreeANMFiles(ShadowAnms, LengthOfArray(ShadowAnms));
 }

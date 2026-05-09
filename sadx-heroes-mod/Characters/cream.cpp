@@ -118,17 +118,13 @@ void Cheese_Display(ObjectMaster* obj) {
 		}
 	}
 	
-	SetupWorldMatrix();
-	Direct3D_SetChunkModelRenderState();
-
-	njCnkAction(CheeseAnimData[data->Index].Animation, data->Scale.x);
+	njAction(CheeseAnimData[data->Index].Animation, data->Scale.x);
 
 	njTranslate(0, -data->Position.x, -data->Position.y, -data->Position.z);
 	njTranslateV(0, &data2->SomeCollisionVector);
 	njTranslate(0, 0, 5, -1);
-	DrawChunkModel(CreamMdls[3]->getmodel()->child->chunkmodel);
+	dsDrawModel(CreamMdls[3]->getmodel()->child->getbasicdxmodel());
 
-	Direct3D_UnsetChunkModelRenderState();
 	njPopMatrix(1);
 
 	Direct3D_PerformLighting(0);
@@ -263,8 +259,10 @@ void Cheese_Main(ObjectMaster* obj) {
 NJS_MATRIX EyeLashesMatrix;
 
 void CreamCallback(NJS_OBJECT* object) {
-	if (object == (NJS_OBJECT*)CreamMdls[0]->getdata("Dummy019")) {
-		memcpy(EyeLashesMatrix, _nj_current_matrix_ptr_, sizeof(NJS_MATRIX));
+	NJS_OBJECT* base = CreamMdls[0]->getmodel();
+
+	if (object == base->getnode(31)) {
+		njGetMatrix(EyeLashesMatrix);
 	}
 }
 
@@ -306,37 +304,32 @@ void CreamHeroes_Display(ObjectMaster *obj) {
 		njTranslate(0, 10, 2, 0);
 	}
 
-	SetupWorldMatrix();
-	Direct3D_SetChunkModelRenderState();
-
 	*NodeCallbackFuncPtr = CreamCallback;
-	njCnkAction(CreamAnimData[creamobj->Data1->Index].Animation, creamobj->Data1->Scale.x);
+	njActionWeight(CreamAnimData[creamobj->Data1->Index].Animation, creamobj->Data1->Scale.x, CreamMdls[0]->getweightinfo());
 	*NodeCallbackFuncPtr = nullptr;
 
-	memcpy(_nj_current_matrix_ptr_, EyeLashesMatrix, sizeof(NJS_MATRIX));
-
+	njSetMatrix(NULL, EyeLashesMatrix);
 	switch (creamobj->Data1->InvulnerableTime) {
 	case 1:
 	case 7:
-		DrawChunkModel(CreamMdls[1]->getmodel()->child->chunkmodel);
+		dsDrawModel(CreamMdls[1]->getmodel()->child->getbasicdxmodel());
 		break;
 	case 2:
 	case 6:
-		DrawChunkModel(CreamMdls[1]->getmodel()->child->child->chunkmodel);
+		dsDrawModel(CreamMdls[1]->getmodel()->child->child->getbasicdxmodel());
 		break;
 	case 3:
 	case 5:
-		DrawChunkModel(CreamMdls[1]->getmodel()->child->child->child->chunkmodel);
+		dsDrawModel(CreamMdls[1]->getmodel()->child->child->child->getbasicdxmodel());
 		break;
 	case 4:
-		DrawChunkModel(CreamMdls[1]->getmodel()->child->child->child->child->chunkmodel);
+		dsDrawModel(CreamMdls[1]->getmodel()->child->child->child->child->getbasicdxmodel());
 		break;
 	default:
-		DrawChunkModel(CreamMdls[1]->getmodel()->chunkmodel);
+		dsDrawModel(CreamMdls[1]->getmodel()->getbasicdxmodel());
 		break;
 	}
 
-	Direct3D_UnsetChunkModelRenderState();
 	njPopMatrix(1);
 
 	Direct3D_PerformLighting(0);
@@ -696,6 +689,8 @@ void LoadCreamFiles() {
 	CreamMdls[2] = LoadCharacterModel("cheese_main");
 	CreamMdls[3] = LoadCharacterModel("cheese_ball");
 
+	HelperFunctionsGlobal.Weights->Init(CreamMdls[0]->getweightinfo(), CreamMdls[0]->getmodel());
+
 	CreamAnms[0] = LoadCharacterAnim("CR_WALK");
 	CreamAnms[1] = LoadCharacterAnim("CR_WALK_PULL");
 	CreamAnms[2] = LoadCharacterAnim("CR_WALK_PUSH");
@@ -814,6 +809,7 @@ void LoadCreamFiles() {
 }
 
 void UnloadCreamFiles() {
+	HelperFunctionsGlobal.Weights->DeInit(CreamMdls[0]->getweightinfo(), CreamMdls[0]->getmodel());
 	FreeMDLFiles(CreamMdls, LengthOfArray(CreamMdls));
 	FreeANMFiles(CreamAnms, LengthOfArray(CreamAnms));
 }

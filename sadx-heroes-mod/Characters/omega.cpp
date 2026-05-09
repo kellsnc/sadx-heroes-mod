@@ -42,45 +42,35 @@ void PlaySound_Omega(int ID) {
 	}
 }
 
-inline bool IsSameObject(NJS_OBJECT* object, const char* name) {
-	return (object == (NJS_OBJECT*)OmegaMdls[0]->getdata(name) ? 1 : 0);
-}
-
-inline void DrawGammaLayerPart_Draw(const char* name) {
-	NJS_OBJECT *obj = (NJS_OBJECT*)OmegaMdls[3]->getdata(name);
-	DrawModel_QueueVisible(obj->basicdxmodel, QueuedModelFlagsB_EnableZWrite, 1);
-}
-
 inline bool DrawGammaLayerPart(NJS_OBJECT* object, const char* name) {
-	if (IsSameObject(object, name)) {
-		DrawGammaLayerPart_Draw(name);
+	NJS_OBJECT* overlay = (NJS_OBJECT*)OmegaMdls[3]->getdata(name);
+	if (overlay && object == (NJS_OBJECT*)OmegaMdls[0]->getdata(name)) {
+		late_DrawModel(overlay->getbasicdxmodel(), LATE_WZ);
 		return true;
 	}
 	return false;
 }
 
 void OmegaCallback(NJS_OBJECT* object) {
-	if (IsSameObject(object, "Dummy037")) {
-		DrawGammaLayerPart_Draw("Dummy037");
-		memcpy(OmegaMatrices[0], _nj_current_matrix_ptr_, sizeof(NJS_MATRIX));
+	NJS_OBJECT* base = OmegaMdls[0]->getmodel();
+
+	if (DrawGammaLayerPart(object, "Dummy037")) {
+		njGetMatrix(OmegaMatrices[0]);
 		return;
 	}
 	
-	if (IsSameObject(object, "Dummy022")) {
-		DrawGammaLayerPart_Draw("Dummy022");
-		memcpy(OmegaMatrices[1], _nj_current_matrix_ptr_, sizeof(NJS_MATRIX));
+	if (DrawGammaLayerPart(object, "Dummy022")) {
+		njGetMatrix(OmegaMatrices[1]);
 		return;
 	}
 
-	if (IsSameObject(object, "Dummy012")) {
-		DrawGammaLayerPart_Draw("Dummy012");
-		memcpy(OmegaMatrices[2], _nj_current_matrix_ptr_, sizeof(NJS_MATRIX));
+	if (DrawGammaLayerPart(object, "Dummy012")) {
+		njGetMatrix(OmegaMatrices[2]);
 		return;
 	}
 	
-	if (IsSameObject(object, "Dummy011")) {
-		DrawGammaLayerPart_Draw("Dummy011");
-		memcpy(OmegaMatrices[3], _nj_current_matrix_ptr_, sizeof(NJS_MATRIX));
+	if (DrawGammaLayerPart(object, "Dummy011")) {
+		njGetMatrix(OmegaMatrices[3]);
 		return;
 	}
 
@@ -178,8 +168,8 @@ void OmegaHeroes_Display(ObjectMaster *obj) {
 	switch (omegaobj->Data1->Index) {
 	case 7: case 19:
 		for (uint8_t i = 2; i < 4; ++i) {
-			memcpy(_nj_current_matrix_ptr_, OmegaMatrices[i], sizeof(NJS_MATRIX));
-			DrawModel_QueueVisible(OmegaMdls[2]->getmodel()->basicdxmodel, QueuedModelFlagsB_EnableZWrite, 1);
+			njSetMatrix(NULL, OmegaMatrices[i]);
+			late_DrawModel(OmegaMdls[2]->getmodel()->getbasicdxmodel(), LATE_MAT);
 		}
 		
 		break;
@@ -194,35 +184,36 @@ void OmegaHeroes_Display(ObjectMaster *obj) {
 			mdl->evalflags |= NJD_EVAL_HIDE;
 		}
 
-		memcpy(_nj_current_matrix_ptr_, OmegaMatrices[0], sizeof(NJS_MATRIX));
+		njSetMatrix(NULL, OmegaMatrices[0]);
 		njTranslate(0, -3.5f, 0, 0);
 		njScale(0, 1, 0.8f, 0.8f);
 		if (obj->Data1->Action == 19 || obj->Data1->Action == 20) {
 			njRotateX(0, data2->field_38);
-			njDrawModel_SADX(OmegaMdls[1]->getmodel()->basicdxmodel);
+			dsDrawModel(OmegaMdls[1]->getmodel()->getbasicdxmodel());
 		}
 		else {
 			njTranslate(0, 2, 0, 0);
 			njRotateX(0, data2->field_38);
-			njDrawModel_SADX(OmegaMdls[1]->getmodel()->child->child->basicdxmodel);
-			njDrawModel_SADX(OmegaMdls[1]->getmodel()->child->child->child->basicdxmodel);
-			memcpy(OmegaMatrices[0], _nj_current_matrix_ptr_, sizeof(NJS_MATRIX));
+			dsDrawModel(OmegaMdls[1]->getmodel()->child->child->getbasicdxmodel());
+			dsDrawModel(OmegaMdls[1]->getmodel()->child->child->child->getbasicdxmodel());
+
+			njGetMatrix(OmegaMatrices[0]);
 		}
 
-		memcpy(_nj_current_matrix_ptr_, OmegaMatrices[1], sizeof(NJS_MATRIX));
+		njSetMatrix(NULL, OmegaMatrices[1]);
 		njRotateY(0, 0x8000);
 		njTranslate(0, -3.5f, 0, 0);
 		njScale(0, 1, 0.8f, 0.8f);
 		if (obj->Data1->Action == 19 || obj->Data1->Action == 20) {
-			njDrawModel_SADX(OmegaMdls[1]->getmodel()->basicdxmodel);
+			dsDrawModel(OmegaMdls[1]->getmodel()->getbasicdxmodel());
 			njRotateX(0, data2->field_38);
 		}
 		else {
 			njTranslate(0, 2, 0, 0);
 			njRotateX(0, data2->field_38);
-			njDrawModel_SADX(OmegaMdls[1]->getmodel()->child->child->basicdxmodel);
-			njDrawModel_SADX(OmegaMdls[1]->getmodel()->child->child->child->basicdxmodel);
-			memcpy(OmegaMatrices[1], _nj_current_matrix_ptr_, sizeof(NJS_MATRIX));
+			dsDrawModel(OmegaMdls[1]->getmodel()->child->child->getbasicdxmodel());
+			dsDrawModel(OmegaMdls[1]->getmodel()->child->child->child->getbasicdxmodel());
+			njGetMatrix(OmegaMatrices[1]);
 		}
 	}
 	else {
@@ -247,14 +238,14 @@ void OmegaHeroes_Display(ObjectMaster *obj) {
 
 void OmegaDrawMissiles(float y, float z) {
 	for (uint8_t j = 0; j < 2; ++j) {
-		memcpy(_nj_current_matrix_ptr_, OmegaMatrices[j], sizeof(NJS_MATRIX));
+		njSetMatrix(NULL, OmegaMatrices[j]);
 		njRotateY(0, 0x8000);
 		njTranslate(0, 7, y, z);
 		if (FrameCounterUnpaused % 3 == 0) njTranslate(0, 5, 0, 0);
 		njRotateZ(0, 0xC000);
 		njScale(0, 0.02f, 0.2f, 0.02f);
 		for (uint8_t i = 0; i < 5; ++i) {
-			njDrawModel_SADX(OmegaMdls[2]->getmodel()->basicdxmodel);
+			dsDrawModel(OmegaMdls[2]->getmodel()->getbasicdxmodel());
 			njTranslate(0, 0, 20, 0);
 		}
 	}

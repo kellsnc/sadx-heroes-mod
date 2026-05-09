@@ -42,15 +42,14 @@ void PlaySound_Vector(int ID) {
 }
 
 void VectorCallback(NJS_OBJECT* object) {
-	if (object == (NJS_OBJECT*)VectorMdls[0]->getdata("Dummy007")) {
-		memcpy(VectorMatrices[0], _nj_current_matrix_ptr_, sizeof(NJS_MATRIX)); //eyelids
+	NJS_OBJECT* base = VectorMdls[0]->getmodel();
+
+	if (object == base->getnode(32)) {
+		njGetMatrix(VectorMatrices[0]); //eyelids
 	}
-	else if (object == (NJS_OBJECT*)VectorMdls[0]->getdata("Dummy041")) {
-		memcpy(VectorMatrices[1], _nj_current_matrix_ptr_, sizeof(NJS_MATRIX)); //gum
+	else if (object == base->getnode(36)) {
+		njGetMatrix(VectorMatrices[1]); //gum
 	}
-	//else if (object == (NJS_OBJECT*)VectorMdls[0]->getdata("Dummy037")) { 
-	//	memcpy(VectorMatrices[2], _nj_current_matrix_ptr_, sizeof(NJS_MATRIX)); //listeners
-	//}
 }
 
 void VectorHeroes_Display(ObjectMaster *obj) {
@@ -115,45 +114,36 @@ void VectorHeroes_Display(ObjectMaster *obj) {
 		njRotateY(0, 0xC000);
 	}
 
-	SetupWorldMatrix();
-	Direct3D_SetChunkModelRenderState();
-
 	*NodeCallbackFuncPtr = VectorCallback;
-	njCnkAction(VectorAnimData[knucklesobj->Data1->Index].Animation, knucklesobj->Data1->Scale.x);
+	njActionWeight(VectorAnimData[knucklesobj->Data1->Index].Animation, knucklesobj->Data1->Scale.x, VectorMdls[0]->getweightinfo());
 	*NodeCallbackFuncPtr = nullptr;
 
-	//memcpy(_nj_current_matrix_ptr_, VectorMatrices[2], sizeof(NJS_MATRIX));
-	//njRotateX(0, 0xC000);
-	//DrawChunkModel(VectorMdls[2]->getmodel()->chunkmodel);
-
-	memcpy(_nj_current_matrix_ptr_, VectorMatrices[0], sizeof(NJS_MATRIX));
+	njSetMatrix(NULL, VectorMatrices[0]);
 	NJS_CNK_OBJECT* pupils = VectorMdls[1]->getmodel();
-
 	switch (knucklesobj->Data1->InvulnerableTime) {
 	case 1:
 	case 7:
-		DrawChunkModel(pupils->chunkmodel);
+		dsDrawModel(pupils->getbasicdxmodel());
 		break;
 	case 2:
 	case 6:
-		DrawChunkModel(pupils->child->chunkmodel);
+		dsDrawModel(pupils->child->getbasicdxmodel());
 		break;
 	case 3:
 	case 5:
-		DrawChunkModel(pupils->child->child->chunkmodel);
+		dsDrawModel(pupils->child->child->getbasicdxmodel());
 		break;
 	case 4:
-		DrawChunkModel(pupils->child->child->child->chunkmodel);
+		dsDrawModel(pupils->child->child->child->getbasicdxmodel());
 		break;
 	}
 
 	if (entity1->Action == 11) {
-		memcpy(_nj_current_matrix_ptr_, VectorMatrices[1], sizeof(NJS_MATRIX));
+		njSetMatrix(NULL, VectorMatrices[1]);
 		njTranslate(0, 0, -2, -7);
- 		DrawChunkModel(VectorMdls[2]->getmodel()->child->chunkmodel);
+		dsDrawModel(VectorMdls[2]->getmodel()->child->getbasicdxmodel());
 	}
 	
-	Direct3D_UnsetChunkModelRenderState();
 	njPopMatrix(1);
 
 	Direct3D_PerformLighting(0);
@@ -318,8 +308,7 @@ void LoadVectorFiles() {
 	VectorMdls[1] = LoadCharacterModel("vector_eyelids");
 	VectorMdls[2] = LoadCharacterModel("vector_objs");
 
-	//NJS_OBJECT* listeners = (NJS_OBJECT*)VectorMdls[0]->getdata("Dummy037");
-	//listeners->evalflags |= NJD_EVAL_HIDE;
+	HelperFunctionsGlobal.Weights->Init(VectorMdls[0]->getweightinfo(), VectorMdls[0]->getmodel());
 
 	VectorAnms[0] = LoadCharacterAnim("VE_WALK");
 	VectorAnms[1] = LoadCharacterAnim("VE_WALK_PULL");
@@ -410,6 +399,7 @@ void LoadVectorFiles() {
 }
 
 void UnloadVectorFiles() {
+	HelperFunctionsGlobal.Weights->DeInit(VectorMdls[0]->getweightinfo(), VectorMdls[0]->getmodel());
 	FreeMDLFiles(VectorMdls, LengthOfArray(VectorMdls));
 	FreeANMFiles(VectorAnms, LengthOfArray(VectorAnms));
 }

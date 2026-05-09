@@ -45,11 +45,13 @@ void PlaySound_Amy(int ID) {
 }
 
 void AmyCallback(NJS_OBJECT* object) {
-	if (object == (NJS_OBJECT*)AmyMdls[0]->getdata("Dummy006")) {
-		memcpy(AmyMatrices[0], _nj_current_matrix_ptr_, sizeof(NJS_MATRIX)); //eyelashes
+	NJS_OBJECT* base = AmyMdls[0]->getmodel();
+
+	if (object == base->getnode(31)) {
+		njGetMatrix(AmyMatrices[0]); //eyelashes
 	}
-	else if (object == (NJS_OBJECT*)AmyMdls[0]->getdata("Dummy011")) {
-		memcpy(AmyMatrices[1], _nj_current_matrix_ptr_, sizeof(NJS_MATRIX)); //hammer
+	else if (object == base->getnode(6)) {
+		njGetMatrix(AmyMatrices[1]); //hammer
 	}
 }
 
@@ -91,45 +93,40 @@ void AmyHeroes_Display(ObjectMaster *obj) {
 		njTranslate(0, -10, 5, 0);
 	}
 
-	SetupWorldMatrix();
-	Direct3D_SetChunkModelRenderState();
-
 	*NodeCallbackFuncPtr = AmyCallback;
-	njCnkAction(HAmyAnimData[amyobj->Data1->Index].Animation, amyobj->Data1->Scale.x);
+	njActionWeight(HAmyAnimData[amyobj->Data1->Index].Animation, amyobj->Data1->Scale.x, AmyMdls[0]->getweightinfo());
 	*NodeCallbackFuncPtr = nullptr;
 
-	memcpy(_nj_current_matrix_ptr_, AmyMatrices[0], sizeof(NJS_MATRIX));
+	njSetMatrix(NULL, AmyMatrices[0]);
 	NJS_CNK_OBJECT* pupils = AmyMdls[1]->getmodel();
-
 	switch (amyobj->Data1->InvulnerableTime) {
 	case 1:
 	case 7:
-		DrawChunkModel(pupils->child->chunkmodel);
+		dsDrawModel(pupils->child->getbasicdxmodel());
 		break;
 	case 2:
 	case 6:
-		DrawChunkModel(pupils->child->child->chunkmodel);
+		dsDrawModel(pupils->child->child->getbasicdxmodel());
 		break;
 	case 3:
 	case 5:
-		DrawChunkModel(pupils->child->child->child->chunkmodel);
+		dsDrawModel(pupils->child->child->child->getbasicdxmodel());
 		break;
 	case 4:
-		DrawChunkModel(pupils->child->child->child->child->chunkmodel);
+		dsDrawModel(pupils->child->child->child->child->getbasicdxmodel());
 		break;
 	default:
-		DrawChunkModel(pupils->chunkmodel);
+		dsDrawModel(pupils->getbasicdxmodel());
 		break;
 	}
 	
 	if (amyobj->Data1->Index == 53 || amyobj->Data1->Index == 61) {
-		memcpy(_nj_current_matrix_ptr_, AmyMatrices[1], sizeof(NJS_MATRIX));
+		njSetMatrix(NULL, AmyMatrices[1]);
 		njTranslate(0, 0, 0, 0.5f);
 		njRotateZ(0, 0xC000);
-		DrawChunkModel(AmyMdls[2]->getmodel()->child->chunkmodel);
+		dsDrawModel(AmyMdls[2]->getmodel()->child->getbasicdxmodel());
 	}
 	
-	Direct3D_UnsetChunkModelRenderState();
 	njPopMatrix(1);
 
 	Direct3D_PerformLighting(0);
@@ -246,6 +243,8 @@ void LoadAmyFiles() {
 	AmyMdls[1] = LoadCharacterModel("amy_eyelashes");
 	AmyMdls[2] = LoadCharacterModel("amy_hammer");
 
+	HelperFunctionsGlobal.Weights->Init(AmyMdls[0]->getweightinfo(), AmyMdls[0]->getmodel());
+
 	AmyAnms[0] = LoadCharacterAnim("AM_WALK");
 	AmyAnms[1] = LoadCharacterAnim("AM_WALK_PULL");
 	AmyAnms[2] = LoadCharacterAnim("AM_WALK_PUSH");
@@ -333,6 +332,7 @@ void LoadAmyFiles() {
 }
 
 void UnloadAmyFiles() {
+	HelperFunctionsGlobal.Weights->DeInit(AmyMdls[0]->getweightinfo(), AmyMdls[0]->getmodel());
 	FreeMDLFiles(AmyMdls, LengthOfArray(AmyMdls));
 	FreeANMFiles(AmyAnms, LengthOfArray(AmyAnms));
 }

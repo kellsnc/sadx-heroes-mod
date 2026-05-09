@@ -58,11 +58,13 @@ void CharmyWings_Main(ObjectMaster* obj) {
 }
 
 void CharmyCallback(NJS_OBJECT* object) {
-	if (object == (NJS_OBJECT*)CharmyMdls[0]->getdata("Dummy008")) {
-		memcpy(CharmyMatrices[0], _nj_current_matrix_ptr_, sizeof(NJS_MATRIX)); //eyelashes
+	NJS_OBJECT* base = CharmyMdls[0]->getmodel();
+
+	if (object == base->getnode(31)) {
+		njGetMatrix(CharmyMatrices[0]); //eyelashes
 	}
-	else if (object == (NJS_OBJECT*)CharmyMdls[0]->getdata("Dummy005")) {
-		memcpy(CharmyMatrices[1], _nj_current_matrix_ptr_, sizeof(NJS_MATRIX)); //wings
+	else if (object == base->getnode(2)) {
+		njGetMatrix(CharmyMatrices[1]); //wings
 	}
 }
 
@@ -104,43 +106,38 @@ void CharmyHeroes_Display(ObjectMaster *obj) {
 		njTranslate(0, 10, 2, 0);
 	}
 
-	SetupWorldMatrix();
-	Direct3D_SetChunkModelRenderState();
-
 	*NodeCallbackFuncPtr = CharmyCallback;
-	njCnkAction(CharmyAnimData[Charmyobj->Data1->Index].Animation, Charmyobj->Data1->Scale.x);
+	njActionWeight(CharmyAnimData[Charmyobj->Data1->Index].Animation, Charmyobj->Data1->Scale.x, CharmyMdls[0]->getweightinfo());
 	*NodeCallbackFuncPtr = nullptr;
 
-	memcpy(_nj_current_matrix_ptr_, CharmyMatrices[0], sizeof(NJS_MATRIX));
+	njSetMatrix(NULL, CharmyMatrices[0]);
 	NJS_CNK_OBJECT* eyelashes = CharmyMdls[1]->getmodel();
-
 	switch (Charmyobj->Data1->InvulnerableTime) {
 	case 1:
 	case 7:
-		DrawChunkModel(eyelashes->child->chunkmodel);
+		dsDrawModel(eyelashes->child->getbasicdxmodel());
 		break;
 	case 2:
 	case 6:
-		DrawChunkModel(eyelashes->child->child->chunkmodel);
+		dsDrawModel(eyelashes->child->child->getbasicdxmodel());
 		break;
 	case 3:
 	case 5:
-		DrawChunkModel(eyelashes->child->child->child->chunkmodel);
+		dsDrawModel(eyelashes->child->child->child->getbasicdxmodel());
 		break;
 	case 4:
-		DrawChunkModel(eyelashes->child->child->child->chunkmodel);
+		dsDrawModel(eyelashes->child->child->child->getbasicdxmodel());
 		break;
 	}
 
 	if (Charmyobj->Child) {
-		memcpy(_nj_current_matrix_ptr_, CharmyMatrices[1], sizeof(NJS_MATRIX));
+		njSetMatrix(NULL, CharmyMatrices[1]);
 		njTranslate(0, 0, 1.2f, 0.5f);
-		njCnkAction(CWingsAnimData.Animation, Charmyobj->Child->Data1->Scale.x);
+		njActionWeight(CWingsAnimData.Animation, Charmyobj->Child->Data1->Scale.x, CharmyMdls[2]->getweightinfo());
 		njTranslate(0, 0, -4.8f, -0.5f);
-		DrawChunkModel(CharmyMdls[3]->getmodel()->child->sibling->sibling->chunkmodel);
+		dsDrawModel(CharmyMdls[3]->getmodel()->child->sibling->sibling->getbasicdxmodel());
 	}
 
-	Direct3D_UnsetChunkModelRenderState();
 	njPopMatrix(1);
 
 	Direct3D_PerformLighting(0);
@@ -501,8 +498,10 @@ void LoadCharmyFiles() {
 	CharmyMdls[2] = LoadCharacterModel("charmy_wings");
 	CharmyMdls[3] = LoadCharacterModel("charmy_objs");
 
-	CharmyAnms[0] = LoadCharacterAnim("BEE_HANE_LOCATOR");
+	HelperFunctionsGlobal.Weights->Init(CharmyMdls[0]->getweightinfo(), CharmyMdls[0]->getmodel());
+	HelperFunctionsGlobal.Weights->Init(CharmyMdls[2]->getweightinfo(), CharmyMdls[2]->getmodel());
 
+	CharmyAnms[0] = LoadCharacterAnim("BEE_HANE_LOCATOR");
 	CharmyAnms[1] = LoadCharacterAnim("BE_WALK_PULL");
 	CharmyAnms[2] = LoadCharacterAnim("BE_WALK_PUSH");
 	CharmyAnms[3] = LoadCharacterAnim("BE_TURN_L");
@@ -600,6 +599,8 @@ void LoadCharmyFiles() {
 }
 
 void UnloadCharmyFiles() {
+	HelperFunctionsGlobal.Weights->DeInit(CharmyMdls[0]->getweightinfo(), CharmyMdls[0]->getmodel());
+	HelperFunctionsGlobal.Weights->DeInit(CharmyMdls[2]->getweightinfo(), CharmyMdls[2]->getmodel());
 	FreeMDLFiles(CharmyMdls, LengthOfArray(CharmyMdls));
 	FreeANMFiles(CharmyAnms, LengthOfArray(CharmyAnms));
 }

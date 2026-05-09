@@ -67,11 +67,13 @@ void RougeWings_Main(ObjectMaster* obj) {
 }
 
 void RougeCallback(NJS_OBJECT* object) {
-	if (object == (NJS_OBJECT*)RougeMdls[0]->getdata("Rouge031")) {
-		memcpy(RougeMatrices[0], _nj_current_matrix_ptr_, sizeof(NJS_MATRIX)); //eyelashes
+	NJS_OBJECT* base = RougeMdls[0]->getmodel();
+
+	if (object == base->getnode(31)) {
+		njGetMatrix(RougeMatrices[0]); //eyelashes
 	}
-	else if (object == (NJS_OBJECT*)RougeMdls[0]->getdata("Rouge002")) {
-		memcpy(RougeMatrices[1], _nj_current_matrix_ptr_, sizeof(NJS_MATRIX)); //wings
+	else if (object == base->getnode(2)) {
+		njGetMatrix(RougeMatrices[1]); //wings
 	}
 }
 
@@ -113,39 +115,34 @@ void RougeHeroes_Display(ObjectMaster *obj) {
 		njTranslate(0, 10, 2, 0);
 	}
 
-	SetupWorldMatrix();
-	Direct3D_SetChunkModelRenderState();
-
 	*NodeCallbackFuncPtr = RougeCallback;
-	njCnkAction(RougeAnimData[rougeobj->Data1->Index].Animation, rougeobj->Data1->Scale.x);
+	njActionWeight(RougeAnimData[rougeobj->Data1->Index].Animation, rougeobj->Data1->Scale.x, RougeMdls[0]->getweightinfo());
 	*NodeCallbackFuncPtr = nullptr;
 
-	memcpy(_nj_current_matrix_ptr_, RougeMatrices[0], sizeof(NJS_MATRIX));
+	njSetMatrix(NULL, RougeMatrices[0]);
 	NJS_CNK_OBJECT* eyelashes = RougeMdls[1]->getmodel()->child;
-
 	switch (rougeobj->Data1->InvulnerableTime) {
 	case 1:
 	case 3:
-		DrawChunkModel(eyelashes->child->chunkmodel);
-		DrawChunkModel(eyelashes->sibling->child->chunkmodel);
+		dsDrawModel(eyelashes->child->getbasicdxmodel());
+		dsDrawModel(eyelashes->sibling->child->getbasicdxmodel());
 		break;
 	case 2:
-		DrawChunkModel(eyelashes->child->child->chunkmodel);
-		DrawChunkModel(eyelashes->sibling->child->child->chunkmodel);
+		dsDrawModel(eyelashes->child->child->getbasicdxmodel());
+		dsDrawModel(eyelashes->sibling->child->child->getbasicdxmodel());
 		break;
 	default:
-		DrawChunkModel(eyelashes->chunkmodel);
-		DrawChunkModel(eyelashes->sibling->chunkmodel);
+		dsDrawModel(eyelashes->getbasicdxmodel());
+		dsDrawModel(eyelashes->sibling->getbasicdxmodel());
 		break;
 	}
 
 	if (rougeobj->Child) {
-		memcpy(_nj_current_matrix_ptr_, RougeMatrices[1], sizeof(NJS_MATRIX));
+		njSetMatrix(NULL, RougeMatrices[1]);
 		njTranslate(0, 0, 0.8f, 0.5f);
-		njCnkAction(RWingsAnimData[rougeobj->Child->Data1->Index].Animation, rougeobj->Child->Data1->Scale.x);
+		njActionWeight(RWingsAnimData[rougeobj->Child->Data1->Index].Animation, rougeobj->Child->Data1->Scale.x, RougeMdls[2]->getweightinfo());
 	}
 	
-	Direct3D_UnsetChunkModelRenderState();
 	njPopMatrix(1);
 
 	Direct3D_PerformLighting(0);
@@ -509,6 +506,9 @@ void LoadRougeFiles() {
 	RougeMdls[1] = LoadCharacterModel("rouge_eyelashes");
 	RougeMdls[2] = LoadCharacterModel("rouge_wings");
 
+	HelperFunctionsGlobal.Weights->Init(RougeMdls[0]->getweightinfo(), RougeMdls[0]->getmodel());
+	HelperFunctionsGlobal.Weights->Init(RougeMdls[2]->getweightinfo(), RougeMdls[2]->getmodel());
+
 	RougeAnms[0] = LoadCharacterAnim("RO_WALK");
 	RougeAnms[1] = LoadCharacterAnim("RO_WALK_PULL");
 	RougeAnms[2] = LoadCharacterAnim("RO_WALK_PUSH");
@@ -614,6 +614,8 @@ void LoadRougeFiles() {
 }
 
 void UnloadRougeFiles() {
+	HelperFunctionsGlobal.Weights->DeInit(RougeMdls[0]->getweightinfo(), RougeMdls[0]->getmodel());
+	HelperFunctionsGlobal.Weights->DeInit(RougeMdls[2]->getweightinfo(), RougeMdls[2]->getmodel());
 	FreeMDLFiles(RougeMdls, LengthOfArray(RougeMdls));
 	FreeANMFiles(RougeAnms, LengthOfArray(RougeAnms));
 }

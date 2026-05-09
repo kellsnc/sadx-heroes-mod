@@ -544,3 +544,9 @@ void njScaleY(float f) {
 void njScaleZ(float f) {
 	njScale(nullptr, 1, 1, f);
 }
+
+void njActionWeight(NJS_ACTION* action, Float frame, WeightInfo* weight)
+{
+	HelperFunctionsGlobal.Weights->Apply(weight, action, frame);
+	njAction(action, frame);
+}

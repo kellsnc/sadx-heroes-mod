@@ -905,9 +905,6 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 	JumpBallEnabled = config->getBool("2- Characters", "JumpBallEnabled", true);
 	P2SoundsEnabled = config->getBool("2- Characters", "P2SoundsEnabled", false);
 
-	SpeedCharEnabled = Characters_HeroesSonic;
-	FlyCharEnabled = Characters_Cream;
-	PowerCharEnabled = Characters_HeroesBig;
 	if (!SpeedCharacter.compare("Sonic")) {
 		SpeedCharEnabled = Characters_HeroesSonic;
 	}

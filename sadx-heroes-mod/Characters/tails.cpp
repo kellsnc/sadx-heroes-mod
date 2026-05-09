@@ -140,11 +140,13 @@ void TailsTails_Main(ObjectMaster* obj) {
 }
 
 void TailsCallback(NJS_OBJECT* object) {
-	if (object == (NJS_OBJECT*)TailsMdls[0]->getdata("Dummy036")) {
-		memcpy(TailsMatrices[0], _nj_current_matrix_ptr_, sizeof(NJS_MATRIX)); //pupils
+	NJS_OBJECT* base = TailsMdls[0]->getmodel();
+
+	if(object == base->getnode(31)) {
+		njGetMatrix(TailsMatrices[0]); //pupils
 	}
-	else if (object == (NJS_OBJECT*)TailsMdls[0]->getdata("Dummy004")) {
-		memcpy(TailsMatrices[1], _nj_current_matrix_ptr_, sizeof(NJS_MATRIX)); //tails
+	else if (object == base->getnode(39)) {
+		njGetMatrix(TailsMatrices[1]);  //tails
 	}
 }
 
@@ -186,41 +188,36 @@ void TailsHeroes_Display(ObjectMaster *obj) {
 		njTranslate(0, 10, 2, 0);
 	}
 
-	SetupWorldMatrix();
-	Direct3D_SetChunkModelRenderState();
-
 	*NodeCallbackFuncPtr = TailsCallback;
-	njCnkAction(HTailsAnimData[tailsobj->Data1->Index].Animation, tailsobj->Data1->Scale.x);
+	njActionWeight(HTailsAnimData[tailsobj->Data1->Index].Animation, tailsobj->Data1->Scale.x, TailsMdls[0]->getweightinfo());
 	*NodeCallbackFuncPtr = nullptr;
 
-	memcpy(_nj_current_matrix_ptr_, TailsMatrices[0], sizeof(NJS_MATRIX));
+	njSetMatrix(NULL, TailsMatrices[0]);
 	NJS_CNK_OBJECT* pupils = TailsMdls[1]->getmodel();
-
 	switch (tailsobj->Data1->InvulnerableTime) {
 	case 1:
 	case 7:
-		DrawChunkModel(pupils->chunkmodel);
+		dsDrawModel(pupils->getbasicdxmodel());
 		break;
 	case 2:
 	case 6:
-		DrawChunkModel(pupils->child->chunkmodel);
+		dsDrawModel(pupils->child->getbasicdxmodel());
 		break;
 	case 3:
 	case 5:
-		DrawChunkModel(pupils->child->child->chunkmodel);
+		dsDrawModel(pupils->child->child->getbasicdxmodel());
 		break;
 	case 4:
-		DrawChunkModel(pupils->child->child->child->chunkmodel);
+		dsDrawModel(pupils->child->child->child->getbasicdxmodel());
 		break;
 	}
 
 	if (tailsobj->Child) {
-		memcpy(_nj_current_matrix_ptr_, TailsMatrices[1], sizeof(NJS_MATRIX));
+		njSetMatrix(NULL, TailsMatrices[1]);
 		njTranslate(0, 0, 0.2f, 0.5f);
-		njCnkAction(TTailsAnimData[tailsobj->Child->Data1->Index].Animation, tailsobj->Child->Data1->Scale.x);
+		njActionWeight(TTailsAnimData[tailsobj->Child->Data1->Index].Animation, tailsobj->Child->Data1->Scale.x, TailsMdls[2]->getweightinfo());
 	}
 	
-	Direct3D_UnsetChunkModelRenderState();
 	njPopMatrix(1);
 
 	Direct3D_PerformLighting(0);
@@ -593,6 +590,9 @@ void LoadTailsFiles() {
 	TailsMdls[1] = LoadCharacterModel("tails_pupils");
 	TailsMdls[2] = LoadCharacterModel("tails_tails");
 
+	HelperFunctionsGlobal.Weights->Init(TailsMdls[0]->getweightinfo(), TailsMdls[0]->getmodel());
+	HelperFunctionsGlobal.Weights->Init(TailsMdls[2]->getweightinfo(), TailsMdls[2]->getmodel());
+
 	TailsAnms[0] = LoadCharacterAnim("TA_WALK");
 	TailsAnms[1] = LoadCharacterAnim("TA_WALK_PULL");
 	TailsAnms[2] = LoadCharacterAnim("TA_WALK_PUSH");
@@ -726,6 +726,8 @@ void LoadTailsFiles() {
 }
 
 void UnloadTailsFiles() {
+	HelperFunctionsGlobal.Weights->DeInit(TailsMdls[0]->getweightinfo(), TailsMdls[0]->getmodel());
+	HelperFunctionsGlobal.Weights->DeInit(TailsMdls[2]->getweightinfo(), TailsMdls[2]->getmodel());
 	FreeMDLFiles(TailsMdls, LengthOfArray(TailsMdls));
 	FreeANMFiles(TailsAnms, LengthOfArray(TailsAnms));
 }

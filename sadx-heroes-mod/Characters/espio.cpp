@@ -4,7 +4,7 @@
 #include "sounds.h"
 #include "characters.h"
 
-ModelInfo* EspioMdls[5];
+ModelInfo* EspioMdls[4];
 AnimationFile* EspioAnms[59];
 AnimData EspioAnimData[59];
 
@@ -47,8 +47,10 @@ void PlaySound_Espio(int ID) {
 }
 
 void EspioCallback(NJS_OBJECT* object) {
-	if (object == (NJS_OBJECT*)EspioMdls[0]->getdata("Dummy006")) {
-		memcpy(EspioMatrix, _nj_current_matrix_ptr_, sizeof(NJS_MATRIX)); //eyelids
+	NJS_OBJECT* base = EspioMdls[0]->getmodel();
+
+	if (object == base->getnode(31)) {
+		njGetMatrix(EspioMatrix); //eyelids
 	}
 }
 
@@ -147,38 +149,30 @@ void EspioHeroes_Display(ObjectMaster *obj) {
 	njRotateX(0, entity1->Rotation.x);
 	njRotateY(0, -entity1->Rotation.y - 0x4000);
 
-	SetupWorldMatrix();
-	Direct3D_SetChunkModelRenderState();
-
 	*NodeCallbackFuncPtr = EspioCallback;
-	njCnkAction(EspioAnimData[espioobj->Data1->Index].Animation, espioobj->Data1->Scale.x);
+	njActionWeight(EspioAnimData[espioobj->Data1->Index].Animation, espioobj->Data1->Scale.x, EspioMdls[0]->getweightinfo());
 	*NodeCallbackFuncPtr = nullptr;
 
-	memcpy(_nj_current_matrix_ptr_, EspioMatrix, sizeof(NJS_MATRIX));
-	njRotateX(0, 0x4000);
-	DrawChunkModel(EspioMdls[4]->getmodel()->chunkmodel);
-	njRotateX(0, 0xC000);
-
+	njSetMatrix(NULL, EspioMatrix);
 	NJS_CNK_OBJECT* pupils = EspioMdls[1]->getmodel();
 	switch (espioobj->Data1->InvulnerableTime) {
 	case 1:
 	case 7:
-		DrawChunkModel(pupils->chunkmodel);
+		dsDrawModel(pupils->getbasicdxmodel());
 		break;
 	case 2:
 	case 6:
-		DrawChunkModel(pupils->child->chunkmodel);
+		dsDrawModel(pupils->child->getbasicdxmodel());
 		break;
 	case 3:
 	case 5:
-		DrawChunkModel(pupils->child->child->chunkmodel);
+		dsDrawModel(pupils->child->child->getbasicdxmodel());
 		break;
 	case 4:
-		DrawChunkModel(pupils->child->child->child->chunkmodel);
+		dsDrawModel(pupils->child->child->child->getbasicdxmodel());
 		break;
 	}
 	
-	Direct3D_UnsetChunkModelRenderState();
 	njPopMatrix(1);
 
 	Direct3D_PerformLighting(0);
@@ -286,11 +280,8 @@ void LoadEspioFiles() {
 	EspioMdls[1] = LoadCharacterModel("espio_eyelids");
 	EspioMdls[2] = LoadCharacterModel("espio_attacks");
 	EspioMdls[3] = LoadCharacterModel("espio_objs");
-	EspioMdls[4] = LoadCharacterModel("espio_head");
 
-	//the head lightning is wrong, since it's not weighted I replace it with a non weighted, working one
-	NJS_OBJECT* head = (NJS_OBJECT*)EspioMdls[0]->getdata("Dummy006");
-	head->evalflags |= NJD_EVAL_HIDE;
+	HelperFunctionsGlobal.Weights->Init(EspioMdls[0]->getweightinfo(), EspioMdls[0]->getmodel());
 
 	EspioAnms[0] = LoadCharacterAnim("ES_WALK");
 	EspioAnms[1] = LoadCharacterAnim("ES_WALK_PULL");
@@ -375,6 +366,7 @@ void LoadEspioFiles() {
 }
 
 void UnloadEspioFiles() {
+	HelperFunctionsGlobal.Weights->DeInit(EspioMdls[0]->getweightinfo(), EspioMdls[0]->getmodel());
 	FreeMDLFiles(EspioMdls, LengthOfArray(EspioMdls));
 	FreeANMFiles(EspioAnms, LengthOfArray(EspioAnms));
 }

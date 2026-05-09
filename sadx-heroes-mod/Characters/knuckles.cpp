@@ -45,8 +45,10 @@ void PlaySound_Knuckles(int ID) {
 }
 
 void KnucklesCallback(NJS_OBJECT* object) {
-	if (object == (NJS_OBJECT*)KnucklesMdls[0]->getdata("Dummy006")) {
-		memcpy(KnucklesMatrix, _nj_current_matrix_ptr_, sizeof(NJS_MATRIX)); //pupils
+	NJS_OBJECT* base = KnucklesMdls[0]->getmodel();
+
+	if (object == base->getnode(19)) {
+		njGetMatrix(KnucklesMatrix); //pupils
 	}
 }
 
@@ -112,31 +114,26 @@ void KnucklesHeroes_Display(ObjectMaster *obj) {
 		njRotateY(0, 0xC000);
 	}
 
-	SetupWorldMatrix();
-	Direct3D_SetChunkModelRenderState();
-
 	*NodeCallbackFuncPtr = KnucklesCallback;
-	njCnkAction(HKnucklesAnimData[knucklesobj->Data1->Index].Animation, knucklesobj->Data1->Scale.x);
+	njActionWeight(HKnucklesAnimData[knucklesobj->Data1->Index].Animation, knucklesobj->Data1->Scale.x, KnucklesMdls[0]->getweightinfo());
 	*NodeCallbackFuncPtr = nullptr;
 
-	memcpy(_nj_current_matrix_ptr_, KnucklesMatrix, sizeof(NJS_MATRIX));
+	njSetMatrix(NULL, KnucklesMatrix);
 	NJS_CNK_OBJECT* pupils = KnucklesMdls[1]->getmodel();
-
 	switch (knucklesobj->Data1->InvulnerableTime) {
 	case 1:
 	case 5:
-		DrawChunkModel(pupils->chunkmodel);
+		dsDrawModel(pupils->getbasicdxmodel());
 		break;
 	case 2:
 	case 4:
-		DrawChunkModel(pupils->child->chunkmodel);
+		dsDrawModel(pupils->child->getbasicdxmodel());
 		break;
 	case 3:
-		DrawChunkModel(pupils->child->child->chunkmodel);
+		dsDrawModel(pupils->child->child->getbasicdxmodel());
 		break;
 	}
 
-	Direct3D_UnsetChunkModelRenderState();
 	njPopMatrix(1);
 
 	Direct3D_PerformLighting(0);
@@ -258,6 +255,8 @@ void LoadKnuckFiles() {
 	KnucklesMdls[0] = LoadCharacterModel("knucks_main");
 	KnucklesMdls[1] = LoadCharacterModel("knucks_eyelids");
 
+	HelperFunctionsGlobal.Weights->Init(KnucklesMdls[0]->getweightinfo(), KnucklesMdls[0]->getmodel());
+
 	KnucklesAnms[0] = LoadCharacterAnim("KN_WALK");
 	KnucklesAnms[1] = LoadCharacterAnim("KN_WALK_PULL");
 	KnucklesAnms[2] = LoadCharacterAnim("KN_WALK_PUSH");
@@ -344,6 +343,7 @@ void LoadKnuckFiles() {
 }
 
 void UnloadKnuckFiles() {
+	HelperFunctionsGlobal.Weights->DeInit(KnucklesMdls[0]->getweightinfo(), KnucklesMdls[0]->getmodel());
 	FreeMDLFiles(KnucklesMdls, LengthOfArray(KnucklesMdls));
 	FreeANMFiles(KnucklesAnms, LengthOfArray(KnucklesAnms));
 }

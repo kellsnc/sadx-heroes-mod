@@ -67,3 +67,5 @@ void njTranslateZ(float f);
 void njScaleX(float f);
 void njScaleY(float f);
 void njScaleZ(float f);
+
+void njActionWeight(NJS_ACTION* action, Float frame, WeightInfo* weight);

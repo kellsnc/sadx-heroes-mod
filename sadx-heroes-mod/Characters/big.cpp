@@ -44,11 +44,10 @@ void PlaySound_Big(int ID) {
 }
 
 void BigCallback(NJS_OBJECT* object) {
-	if (object == (NJS_OBJECT*)BigMdls[0]->getdata("Dummy034")) {
-		memcpy(BigMatrix, _nj_current_matrix_ptr_, sizeof(NJS_MATRIX)); //hand
-	} else if (object == (NJS_OBJECT*)BigMdls[0]->getdata("Dummy039")) {
-		njRotateX(0, 0x4000);
-		DrawChunkModel(BigMdls[2]->getmodel()->chunkmodel);
+	NJS_OBJECT* base = BigMdls[0]->getmodel();
+
+	if (object == base->getnode(30)) {
+		njGetMatrix(BigMatrix); //hand
 	}
 }
 
@@ -68,13 +67,8 @@ void LureObj_Display(ObjectMaster *obj) {
 	njRotateY(0, -data->Rotation.y - 0x4000);
 	njScale(0, data->Scale.x, data->Scale.x, data->Scale.x);
 
-	SetupWorldMatrix();
-	Direct3D_SetChunkModelRenderState();
+	dsDrawModel(BigMdls[1]->getmodel()->child->child->getbasicdxmodel());
 
-	NJS_OBJECT* mdl = BigMdls[1]->getmodel()->child->child;
-	DrawChunkModel(mdl->chunkmodel);
-
-	Direct3D_UnsetChunkModelRenderState();
 	njPopMatrix(1);
 
 	Direct3D_PerformLighting(0);
@@ -196,19 +190,15 @@ void BigHeroes_Display(ObjectMaster *obj) {
 		njRotateY(0, 0xC000);
 	}
 
-	SetupWorldMatrix();
-	Direct3D_SetChunkModelRenderState();
-
 	*NodeCallbackFuncPtr = BigCallback;
-	njCnkAction(HBigAnimData[knucklesobj->Data1->Index].Animation, knucklesobj->Data1->Scale.x);
+	njActionWeight(HBigAnimData[knucklesobj->Data1->Index].Animation, knucklesobj->Data1->Scale.x, BigMdls[0]->getweightinfo());
 	*NodeCallbackFuncPtr = nullptr;
 
 	memcpy(_nj_current_matrix_ptr_, BigMatrix, sizeof(NJS_MATRIX));
 	njRotateX(0, 0xC000);
-	if (knucklesobj->Data1->Index == 19) DrawChunkModel(BigMdls[1]->getmodel()->chunkmodel);
-	if (knucklesobj->Data1->Index == 9 || knucklesobj->Data1->Index == 11 || knucklesobj->Data1->Index == 12) DrawChunkModel(BigMdls[1]->getmodel()->child ->chunkmodel);
+	if (knucklesobj->Data1->Index == 19) dsDrawModel(BigMdls[1]->getmodel()->getbasicdxmodel());
+	if (knucklesobj->Data1->Index == 9 || knucklesobj->Data1->Index == 11 || knucklesobj->Data1->Index == 12) dsDrawModel(BigMdls[1]->getmodel()->child->getbasicdxmodel());
 
-	Direct3D_UnsetChunkModelRenderState();
 	njPopMatrix(1);
 
 	Direct3D_PerformLighting(0);
@@ -395,8 +385,7 @@ void LoadBigFiles() {
 	BigMdls[1] = LoadCharacterModel("big_rod");
 	BigMdls[2] = LoadCharacterModel("big_buckle");
 
-	NJS_OBJECT* buckle = (NJS_OBJECT*)BigMdls[0]->getdata("Dummy039");
-	buckle->evalflags |= NJD_EVAL_HIDE;
+	HelperFunctionsGlobal.Weights->Init(BigMdls[0]->getweightinfo(), BigMdls[0]->getmodel());
 
 	BigAnms[0] = LoadCharacterAnim("BI_WALK");
 	BigAnms[1] = LoadCharacterAnim("BI_WALK_PULL");
@@ -487,6 +476,7 @@ void LoadBigFiles() {
 }
 
 void UnloadBigFiles() {
+	HelperFunctionsGlobal.Weights->DeInit(BigMdls[0]->getweightinfo(), BigMdls[0]->getmodel());
 	FreeMDLFiles(BigMdls, LengthOfArray(BigMdls));
 	FreeANMFiles(BigAnms, LengthOfArray(BigAnms));
 }
