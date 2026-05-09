@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "ArchiveX.h"
 #include "mod.h"
 #include "utils.h"
 #include "sounds.h"
@@ -111,10 +112,10 @@ struct PawnCustomData {
 };
 
 const char* EggPawnMdlNames[]{
-	"EN_EGGPAWN",
-	"EN_PWNKING",
-	"EN_PWNOBJS",
-	"EN_PWNVARS"
+	"EN_PAWN",
+	"EN_PAWN_KING",
+	"EN_EO",
+	"EN_PAWN_VARS"
 };
 
 const char* EggPawnAnmNames[]{
@@ -788,10 +789,17 @@ void EggPawn_Main(ObjectMaster* obj) {
 	RunObjectChildren(obj);
 }
 
-inline void EggPawn_LoadFiles() {
+void EggPawn_LoadFiles() {
+	ArchiveX arc(HelperFunctionsGlobal.GetReplaceablePath("system\\en_pawn.arcx"));
+
 	LoadPVM("eggpawn", &EGGPAWN_TEXLIST);
-	LoadModelListFuncPtr(arrayptrandlength(EggPawnMdlNames), EggPawnMdls, LoadEnemyModel);
-	LoadAnimListFuncPtr(arrayptrandlength(EggPawnAnmNames), EggPawnAnms, LoadEnemyAnim);
+
+	for (int i = 0; i < LengthOfArray(EggPawnMdlNames); ++i)
+		EggPawnMdls[i] = arc.GetModel(std::string(EggPawnMdlNames[i]) + ".sa1mdl");
+
+	for (int i = 0; i < LengthOfArray(EggPawnAnmNames); ++i)
+		EggPawnAnms[i] = arc.GetAnimation(std::string(EggPawnAnmNames[i]) + ".saanim");
+
 	FillAnimDataTable(EggPawnAnms, arrayptrandlength(EggPawnAnimData), nullptr);
 }
 

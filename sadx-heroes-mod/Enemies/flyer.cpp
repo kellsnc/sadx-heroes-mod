@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "ArchiveX.h"
 #include "mod.h"
 #include "utils.h"
 #include "sounds.h"
@@ -13,10 +14,7 @@ ModelInfo*     FlyerMdl;
 AnimationFile* FlyerAnm;
 AnimData       FlyerAnimData;
 
-AnimationFile* FlyerCommonPaths[11];
-AnimationFile* FlyerEggFleetPaths[36];
-
-AnimationFile** CurrentLevelPath;
+std::vector<AnimationFile*> FlyerPaths;
 
 NJS_TEXNAME FLYER_TEXNAMES[4];
 NJS_TEXLIST FLYER_TEXLIST = { arrayptrandlength(FLYER_TEXNAMES) };
@@ -34,9 +32,11 @@ void Flyer_DeleteFiles() {
 		njReleaseTexture(&FLYER_TEXLIST);
 		FreeMDL(FlyerMdl);
 		FreeANM(FlyerAnm);
-		FreeANMFiles(arrayptrandlength(FlyerCommonPaths));
-
-		if (FlyerEggFleetPaths[0]) FreeANMFiles(arrayptrandlength(FlyerEggFleetPaths));
+		for (auto& anim : FlyerPaths)
+		{
+			FreeANM(anim);
+		}
+		FlyerPaths.clear();
 	}
 }
 
@@ -145,47 +145,39 @@ void Flyer_Main(ObjectMaster* obj) {
 	}
 }
 
-void Flyer_LoadLevelPath(AnimationFile** animfile, uint8_t count, const char* level) {
-	PrintDebug("[SHM] Load Flyers paths for %s \n", level);
-	CurrentLevelPath = animfile;
+void Flyer_LoadFiles() {
+	ArchiveX arc(HelperFunctionsGlobal.GetReplaceablePath("system\\en_flyer.arcx"));
 
-	for (uint8_t i = 0; i < count; ++i) {
-		std::string fullPath = "system\\";
-		std::string num = std::to_string(i);
-		if (i < 10) num = "0" + num;
-		fullPath = fullPath + "enemies\\paths\\" + level + "\\PATH_STG_0" + num + ".saanim";
-
-		animfile[i] = new AnimationFile(HelperFunctionsGlobal.GetReplaceablePath(fullPath.c_str()));
-		Count += 1;
-	}
-}
-
-void Flyer_LoadCommonPaths() {
-	PrintDebug("[SHM] Load Flyers common paths \n");
-	Count = LengthOfArray(FlyerCommonPaths);
-
-	for (uint8_t i = 0; i < Count; ++i) {
-		std::string fullPath = "system\\";
-		std::string num = std::to_string(i);
-		if (i < 10) num = "0" + num;
-		fullPath = fullPath + "enemies\\paths\\PATH_CMN_0" + num + ".saanim";
-
-		FlyerCommonPaths[i] = new AnimationFile(HelperFunctionsGlobal.GetReplaceablePath(fullPath.c_str()));
-	}
-}
-
-inline void Flyer_LoadFiles() {
 	LoadPVM("Flyer", &FLYER_TEXLIST);
-	FlyerMdl = LoadEnemyModel("EN_FLYER");
-	FlyerAnm = LoadEnemyAnim("EN_FLYER");
+	FlyerMdl = arc.GetModel("EN_FLYER.sa1mdl");
+	FlyerAnm = arc.GetAnimation("EN_FLYER.saanim");
 	FlyerAnimData.Animation = new NJS_ACTION;
 	FlyerAnimData.Animation->object = FlyerMdl->getmodel();
 	FlyerAnimData.Animation->motion = FlyerAnm->getmotion();
 	FlyerAnimData.NextAnim = 0;
 	FlyerAnimData.AnimationSpeed = 0.5f;
 
-	Flyer_LoadCommonPaths();
-	if (CurrentLevel == HeroesLevelID_EggFleet) Flyer_LoadLevelPath(arrayptrandlength(FlyerEggFleetPaths), "eggfleet");
+	int i = 0;
+	while (1)
+	{
+		std::string num = std::to_string(i);
+		if (i < 10) num = "0" + num;
+		AnimationFile* anim = arc.GetAnimation(std::string("PATH_CMN_0" + num + ".saanim"));
+		if (!anim) break;
+		FlyerPaths.push_back(anim);
+		++i;
+	}
+
+	i = 0;
+	while (1)
+	{
+		std::string num = std::to_string(i);
+		if (i < 10) num = "0" + num;
+		AnimationFile* anim = arc.GetAnimation(std::string("PATH_STG_0" + num + ".saanim"));
+		if (!anim) break;
+		FlyerPaths.push_back(anim);
+		++i;
+	}
 }
 
 void Flyer_Init(ObjectMaster* obj) {
@@ -197,7 +189,7 @@ void Flyer_Init(ObjectMaster* obj) {
 		Flyer_LoadFiles();
 	}
 
-	if (data->Scale.x > Count) {
+	if (data->Scale.x > FlyerPaths.size()) {
 		UpdateSetDataAndDelete(obj);
 		return;
 	}
@@ -209,15 +201,8 @@ void Flyer_Init(ObjectMaster* obj) {
 	//	Init the collision (with the "hurt player if not attacking" and "target" flags)
 	Collision_Init(obj, &FlyerCollisionData, 1, 2);
 
-	//	Get the correct path
-	int path = (int)data->Scale.x;
-	
-	if (path < LengthOfArray(FlyerCommonPaths)) {
-		data->LoopData = (Loop*)FlyerCommonPaths[path]->getmotion();
-	}
-	else {
-		data->LoopData = (Loop*)CurrentLevelPath[path - LengthOfArray(FlyerCommonPaths)]->getmotion();
-	}
+	//	Get the path
+	data->LoopData = (Loop*)FlyerPaths[(int)data->Scale.x]->getmotion();
 
 	if (data->Rotation.y) {
 		ObjectData* data2 = (ObjectData*)obj->Data2;

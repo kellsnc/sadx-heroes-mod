@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "ArchiveX.h"
 #include "mod.h"
 #include "utils.h"
 #include "sounds.h"
@@ -86,8 +87,8 @@ struct E2KCustomData {
 
 const char* e2000MdlNames[]{
 	"EN_E2K",
-	"EN_E2KJETS",
-	"EN_E2KLASR"
+	"EN_E2K_JETS",
+	"EN_E2K_LASER"
 };
 
 const char* e2000AnmNames[]{
@@ -577,10 +578,17 @@ void e2000_Main(ObjectMaster* obj) {
 	RunObjectChildren(obj);
 }
 
-inline void e2000_LoadFiles() {
+void e2000_LoadFiles() {
+	ArchiveX arc(HelperFunctionsGlobal.GetReplaceablePath("system\\en_e2000.arcx"));
+
 	LoadPVM("e2k", &E2000_TEXLIST);
-	LoadModelListFuncPtr(arrayptrandlength(e2000MdlNames), e2000Mdls, LoadEnemyModel);
-	LoadAnimListFuncPtr(arrayptrandlength(e2000AnmNames), e2000Anms, LoadEnemyAnim);
+
+	for (int i = 0; i < LengthOfArray(e2000MdlNames); ++i)
+		e2000Mdls[i] = arc.GetModel(std::string(e2000MdlNames[i]) + ".sa1mdl");
+
+	for (int i = 0; i < LengthOfArray(e2000AnmNames); ++i)
+		e2000Anms[i] = arc.GetAnimation(std::string(e2000AnmNames[i]) + ".saanim");
+
 	FillAnimDataTable(e2000Anms, arrayptrandlength(e2000AnimData), e2000Mdls[0]->getmodel());
 
 	e2000AnimData[(int)e2000Anim::TRANSFB].TransitionSpeed = 2;

@@ -14,5 +14,6 @@
 #include "Trampoline.h"
 #include "IniFile.hpp"
 #include "LandTableInfo.h"
+#include "ArchiveX.h"
 #include "ModelInfo.h"
 #include "AnimationFile.h"

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "ArchiveX.h"
 #include "mod.h"
 #include "utils.h"
 #include "sounds.h"
@@ -7,7 +8,7 @@
 
 bool IsCommonEnmInitialized;
 
-ModelInfo* EN_CMNMDLS;
+ModelInfo* EN_EF_GUNFIRE;
 
 const char* CommonEnmObjNames[]{
 	"fire",
@@ -36,7 +37,7 @@ void CommonEnm_Delete(ObjectMaster* obj) {
 	if ((GameState == GameState_ExitLevel || (GameState == GameState_Death && Lives == 0))
 		&& IsCommonEnmInitialized == true) {
 		IsCommonEnmInitialized = false;
-		EN_CMNMDLS = FreeMDL(EN_CMNMDLS);
+		EN_EF_GUNFIRE = FreeMDL(EN_EF_GUNFIRE);
 	}
 }
 
@@ -127,11 +128,13 @@ void Missile_Main(ObjectMaster* obj) {
 	}
 }
 
-inline void CheckAndLoadCommonEnmFiles() {
+void CheckAndLoadCommonEnmFiles() {
 	if (IsCommonEnmInitialized == false) {
 		IsCommonEnmInitialized = true;
+
+		ArchiveX arc(HelperFunctionsGlobal.GetReplaceablePath("system\\en_common.arcx"));
 		
-		EN_CMNMDLS = LoadEnemyModel("EN_CMNMDLS");
+		EN_EF_GUNFIRE = arc.GetModel("EN_EF_GUNFIRE.sa1mdl");
 	}
 }
 
@@ -142,7 +145,7 @@ void LoadMissile(NJS_VECTOR* pos, Rotation3* dir, float scale) {
 	obj->Data1->Position = *pos;
 	obj->Data1->Rotation = *dir;
 	obj->Data1->Scale.x = scale;
-	obj->Data1->Object = EN_CMNMDLS->getmodel();
+	obj->Data1->Object = EN_EF_GUNFIRE->getmodel();
 	obj->DisplaySub = Missile_Display;
 
 	Collision_Init(obj, (CollisionData*)0x223B3D8, 1, 4u);
