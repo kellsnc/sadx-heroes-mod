@@ -845,6 +845,8 @@ void Heroes_Display(ObjectMaster* obj) {
 		return;
 	}
 
+	HelperFunctionsGlobal.PushInterpolationFix();
+
 	if (obj->Data1->CharID == Characters_Sonic && SuperSonicFlag && HeroesChars[obj->Data1->CharIndex]) {
 		Sonic_Display(obj);
 		obj->DisplaySub = Sonic_Display;
@@ -853,6 +855,8 @@ void Heroes_Display(ObjectMaster* obj) {
 
 	if (HeroesChars[obj->Data1->CharIndex]->Data1->LoopData) 
 		DisplayFuncs[HeroesChars[obj->Data1->CharIndex]->Data1->CharID - 9](obj);
+
+	HelperFunctionsGlobal.PopInterpolationFix();
 }
 
 //Hijack the sound functions of Sonic, Tails and Knuckles to redirect those
@@ -901,6 +905,9 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 	JumpBallEnabled = config->getBool("2- Characters", "JumpBallEnabled", true);
 	P2SoundsEnabled = config->getBool("2- Characters", "P2SoundsEnabled", false);
 
+	SpeedCharEnabled = Characters_HeroesSonic;
+	FlyCharEnabled = Characters_Cream;
+	PowerCharEnabled = Characters_HeroesBig;
 	if (!SpeedCharacter.compare("Sonic")) {
 		SpeedCharEnabled = Characters_HeroesSonic;
 	}
@@ -913,7 +920,7 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 	else if (!SpeedCharacter.compare("Espio")) {
 		SpeedCharEnabled = Characters_Espio;
 	}
-	
+
 	if (!FlyCharacter.compare("Cream")) {
 		FlyCharEnabled = Characters_Cream;
 	}
@@ -926,7 +933,7 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 	else if (!FlyCharacter.compare("Tails")) {
 		FlyCharEnabled = Characters_HeroesTails;
 	}
-
+	
 	if (!PowerCharacter.compare("Knuckles")) {
 		PowerCharEnabled = Characters_HeroesKnuckles;
 	}
