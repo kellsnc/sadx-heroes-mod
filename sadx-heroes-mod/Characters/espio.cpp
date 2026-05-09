@@ -13,7 +13,7 @@ NJS_TEXLIST ESPIO_TEXLIST = { arrayptrandlength(ESPIO_TEXNAMES) };
 
 NJS_MATRIX EspioMatrix;
 
-CollisionData Ninja_Col = { 0, 0, 0, 0, 0, { 0.0f, 0.0f, 0.0f }, { 3.5, 0.0f, 0.0f }, 0, 0 };
+CollisionData Ninja_Col = { 0, 0, 0, 0, 0, { 0.0f, 0.0f, 0.0f }, 3.5, 0.0f, 0.0f };
 
 void PlayVoice_Espio(int ID) {
 	switch (ID) {

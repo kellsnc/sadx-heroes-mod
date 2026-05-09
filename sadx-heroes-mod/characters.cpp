@@ -19,7 +19,7 @@ bool CharFilesLoaded[12];
 int CurrentPlayer;
 
 ModelInfo* CharMdls[2];
-CollisionData Tornado_Col = { 0, 0, 0, 0, 0, { 0.0f, 0.0f, 0.0f }, { 20, 0.0f, 0.0f }, 0, 0 };
+CollisionData Tornado_Col = { 0, 0, 0, 0, 0, { 0.0f, 0.0f, 0.0f }, 20.0f, 0.0f, 0.0f };
 
 float bombsize;
 

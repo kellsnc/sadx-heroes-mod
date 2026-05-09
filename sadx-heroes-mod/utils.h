@@ -2,6 +2,9 @@
 
 #include "objects.h"
 
+FunctionPointer(void, SetCameraMode_, (int a1), 0x4348F0);
+FunctionPointer(Uint32, GetCameraMode_, (), 0x434930);
+
 ModelInfo* LoadMDL(const char* type, const char* name);
 ModelInfo* LoadCommonModel(const char* name);
 ModelInfo* LoadObjectModel(ModelInfo* ptr, const char* name);

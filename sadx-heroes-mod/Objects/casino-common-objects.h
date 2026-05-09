@@ -632,5 +632,5 @@ SOI_LIST2 Casino_Glass[] = {
 };
 
 CollisionData Bumpers_col {
-	0, CollisionShape_Sphere, 0x77, 0, 0x800400,{ 0, 0, 0 },{ 5, 5, 5 }, 0, 0
+	0, CollisionShape_Sphere, 0x77, 0, 0x800400,{ 0, 0, 0 }, 5, 5, 5
 };

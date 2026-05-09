@@ -1775,12 +1775,12 @@ NJS_MODEL_SADX HC_PLATFORM_MTL = { vertex_8D606F400D465464DC3, normal_8D606F400D
 NJS_OBJECT HC_PLATFORM = { NJD_EVAL_UNIT_POS | NJD_EVAL_UNIT_ANG | NJD_EVAL_UNIT_SCL | NJD_EVAL_BREAK | NJD_EVAL_SKIP, &HC_PLATFORM_MTL, 0, 0, 0, 0, 0, 0, 1, 1, 1, NULL, NULL };
 
 CollisionData Warps_col[]{
-	{ 0, 0, 0x77, 0, 0x800400,{ 0, 0, 0 },{ 10, 10, 10 }, 0, 0 },
-	{ 0, 0, 0x77, 0, 0x800400,{ 0, 10, 0 },{ 10, 10, 10 }, 0, 0 },
+	{ 0, 0, 0x77, 0, 0x800400,{ 0, 0, 0 }, 10, 10, 10 },
+	{ 0, 0, 0x77, 0, 0x800400,{ 0, 10, 0 }, 10, 10, 10 },
 };
 
 CollisionData HCWall_col{
-	0, 0, 0x77, 0, 0x800400,{ 0, 40, 20 },{ 38, 40, 1 }, 0, 0
+	0, 0, 0x77, 0, 0x800400,{ 0, 40, 20 }, 38, 40, 1
 };
 
 extern NJS_OBJECT CP_DOORCOL;

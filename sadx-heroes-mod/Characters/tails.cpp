@@ -60,7 +60,7 @@ void TrapRing_Main(ObjectMaster* obj) {
 		ring->Data1->Rotation = data->Rotation;
 
 		Collision_Init(obj, &Cheese_Col, 1, 3u);
-		data->CollisionInfo->Radius = 2;
+		data->CollisionInfo->colli_range = 2.0f;
 		
 		data->Action = 1;
 		break;

@@ -24,21 +24,21 @@ NJS_TEXLIST CURRENTE2000_TEXLIST = { arrayptrandlength(CURRENTE2000_TEXNAMES) };
 NJS_MATRIX e2000Matrices[5];
 
 CollisionData e2000CollisionData[]{
-	{0, CollisionShape_Cylinder, 0x77, 0x21, 0x2400, { 0, -5, 0}, {8, 15, 0}},
-	{0, CollisionShape_Sphere, 0x77, 0x21, 0x802400, { 0, 10, 0}, {8, 6, 0}}
+	{0, CollisionShape_Cylinder, 0x77, 0x21, 0x2400, { 0, -5, 0}, 8, 15, 0},
+	{0, CollisionShape_Sphere, 0x77, 0x21, 0x802400, { 0, 10, 0}, 8, 6, 0}
 };
 
 CollisionData LaserCollisionData[]{
-	{0, CollisionShape_Sphere, 0x77, 0x21, 0x2400, { 0, 0, -30}, {30, 30, 0}},
-	{0, CollisionShape_Sphere, 0x77, 0xE2, 0x2400, { 0, 0, -60}, {30, 30, 0}},
-	{0, CollisionShape_Sphere, 0x77, 0xE2, 0x2400, { 0, 0, -90}, {30, 30, 0}},
-	{0, CollisionShape_Sphere, 0x77, 0xE2, 0x2400, { 0, 0, -120}, {30, 30, 0}},
-	{0, CollisionShape_Sphere, 0x77, 0xE2, 0x2400, { 0, 0, -150}, {30, 30, 0}},
-	{0, CollisionShape_Sphere, 0x77, 0xE2, 0x2400, { 0, 0, -180}, {30, 30, 0}},
-	{0, CollisionShape_Sphere, 0x77, 0xE2, 0x2400, { 0, 0, -210}, {30, 30, 0}},
-	{0, CollisionShape_Sphere, 0x77, 0xE2, 0x2400, { 0, 0, -240}, {30, 30, 0}},
-	{0, CollisionShape_Sphere, 0x77, 0xE2, 0x2400, { 0, 0, -270}, {30, 30, 0}},
-	{0, CollisionShape_Sphere, 0x77, 0xE2, 0x2400, { 0, 0, -300}, {30, 30, 0}},
+	{0, CollisionShape_Sphere, 0x77, 0x21, 0x2400, { 0, 0, -30}, 30, 30, 0 },
+	{0, CollisionShape_Sphere, 0x77, 0xE2, 0x2400, { 0, 0, -60}, 30, 30, 0 },
+	{0, CollisionShape_Sphere, 0x77, 0xE2, 0x2400, { 0, 0, -90}, 30, 30, 0 },
+	{0, CollisionShape_Sphere, 0x77, 0xE2, 0x2400, { 0, 0, -120}, 30, 30, 0 },
+	{0, CollisionShape_Sphere, 0x77, 0xE2, 0x2400, { 0, 0, -150}, 30, 30, 0 },
+	{0, CollisionShape_Sphere, 0x77, 0xE2, 0x2400, { 0, 0, -180}, 30, 30, 0 },
+	{0, CollisionShape_Sphere, 0x77, 0xE2, 0x2400, { 0, 0, -210}, 30, 30, 0 },
+	{0, CollisionShape_Sphere, 0x77, 0xE2, 0x2400, { 0, 0, -240}, 30, 30, 0 },
+	{0, CollisionShape_Sphere, 0x77, 0xE2, 0x2400, { 0, 0, -270}, 30, 30, 0 },
+	{0, CollisionShape_Sphere, 0x77, 0xE2, 0x2400, { 0, 0, -300}, 30, 30, 0 },
 };
 
 enum e2000Actions {
@@ -120,7 +120,7 @@ void e2000Laser_Display(ObjectMaster* obj) {
 		njSetTexture(&E2000_TEXLIST);
 		memcpy(_nj_current_matrix_ptr_, e2000Matrices[0], sizeof(NJS_MATRIX));
 		njScale(0, data->Scale.x, data->Scale.x, data->Scale.x);
-		DrawObject(data->Object);
+		dsDrawObject(data->Object);
 		njPopMatrix(1);
 	}
 }
@@ -357,8 +357,8 @@ void e2000_Flying(EntityData1* data, E2KCustomData* e2kdata) {
 
 		if (data->Unknown > 0) {
 			data->Unknown = 0;
-			data->CollisionInfo->CollisionArray[0].origin.y = 10;
-			data->CollisionInfo->CollisionArray[0].scale.y = 5;
+			data->CollisionInfo->CollisionArray[0].center.y = 10;
+			data->CollisionInfo->CollisionArray[0].b= 5;
 			data->NextAction = e2000SubAction_Search;
 		}
 
@@ -439,8 +439,8 @@ void e2000_Hover(EntityData1* data, E2KCustomData* e2kdata) {
 
 		if (data->Unknown > 0) {
 			data->Unknown = 0;
-			data->CollisionInfo->CollisionArray[0].origin.y = -5;
-			data->CollisionInfo->CollisionArray[0].scale.y = 15;
+			data->CollisionInfo->CollisionArray[0].center.y = -5;
+			data->CollisionInfo->CollisionArray[0].b = 15;
 			data->NextAction = e2000SubAction_Search;
 			goto NEXT;
 		}

@@ -683,7 +683,7 @@ void EFBgShips(ObjectMaster* obj) {
 				switch ((int)item.DrawDistance) {
 				case EFShipType_LargeShip:
 					if (CurrentChunk < 10 && IsPlayerInsideSphere_(&item.Position, 10000.0f)) {
-						DrawObject(EF_BIGSHIP->getmodel());
+						dsDrawObject(EF_BIGSHIP->getmodel());
 					}
 					break;
 				/*case EFShipType_FarMoveTopR:
@@ -781,8 +781,8 @@ void EFMissilePods(ObjectMaster* obj) {
 }
 
 CollisionData EFHelice_Col[]{
-	{ 0, 1, 0x77, 0, 0, {0, 0, 0}, { 100, 100, 0} },
-	{ 0, 1, 0x77, 0, 0, {0, 0, 100}, { 100, 100, 0} },
+	{ 0, 1, 0x77, 0, 0, {0, 0, 0}, 100, 100, 0 },
+	{ 0, 1, 0x77, 0, 0, {0, 0, 100}, 100, 100, 0 },
 };
 
 void EFHelice_Display(ObjectMaster* obj) {
@@ -828,7 +828,7 @@ void EFHelice(ObjectMaster* obj) {
 }
 
 CollisionData EFBarrier_Col {
-	0, 3, 0x77, 0, 0x800400, {0, 6, 0}, { 15, 15, 0}
+	0, 3, 0x77, 0, 0x800400, {0, 6, 0}, 15, 15, 0
 };
 
 void ECBarrier(ObjectMaster* obj) {
@@ -948,13 +948,13 @@ enum EFCannonActions {
 };
 
 CollisionData EFCannon1_Col[]{
-	{ 0, 0, 0x77, 0, 0x800400, {0, 50, 0}, {25, 25, 0} },
-	{ 0, 2, 0x77, 0, 0, {0, 0, 0}, {25, 50, 0} },
-	{ 0, 2, 0x77, 0, 0, {0, 25, 0}, {25, 50, 0} }
+	{ 0, 0, 0x77, 0, 0x800400, {0, 50, 0}, 25, 25, 0 },
+	{ 0, 2, 0x77, 0, 0, {0, 0, 0}, 25, 50, 0 },
+	{ 0, 2, 0x77, 0, 0, {0, 25, 0}, 25, 50, 0 }
 };
 
 CollisionData EFCannon2_Col {
-	0, 3, 0x77, 0, 0x800400, {0, 0, 0}, {25, 25, 25}
+	0, 3, 0x77, 0, 0x800400, {0, 0, 0}, 25, 25, 25
 };
 
 void EFCannon2_Display(ObjectMaster* obj) {

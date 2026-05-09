@@ -13,7 +13,7 @@ AnimData CheeseAnimData[13];
 NJS_TEXNAME CREAM_TEXNAMES[4];
 NJS_TEXLIST CREAM_TEXLIST = { arrayptrandlength(CREAM_TEXNAMES) };
 
-CollisionData Cheese_Col = { 0, 0, 0, 0, 0, { 0.0f, 0.0f, 0.0f }, { 4.5, 0.0f, 0.0f }, 0, 0 };
+CollisionData Cheese_Col = { 0, 0, 0, 0, 0, { 0.0f, 0.0f, 0.0f }, 4.5, 0.0f, 0.0f };
 
 void PlayVoice_Cream(int ID) {
 	switch (ID) {

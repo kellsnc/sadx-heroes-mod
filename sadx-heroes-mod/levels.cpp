@@ -332,7 +332,7 @@ void __cdecl DrawLandTableFog(NJS_MODEL_SADX *a1)
 
 //Default light for stages
 void DefaultLight(HeroesLevelIDs levelid) {
-	for (int i = 0; i < StageLightList_Length; ++i) {
+	for (int i = 0; i < StageLightList.size(); ++i) {
 		if (StageLightList[i].level == levelid)
 			StageLightList[i] = *GetStageLight(LevelIDs_Casinopolis, 0, 0);
 	}

@@ -13,7 +13,7 @@ NJS_TEXLIST HBIG_TEXLIST = { arrayptrandlength(HBIG_TEXNAMES) };
 
 NJS_MATRIX BigMatrix;
 
-CollisionData Lure_Col = { 0, 0, 0, 0, 0, { 0.0f, 0.0f, 0.0f }, { 5.5, 0.0f, 0.0f }, 0, 0 };
+CollisionData Lure_Col = { 0, 0, 0, 0, 0, { 0.0f, 0.0f, 0.0f }, 5.5, 0.0f, 0.0f };
 
 void PlayVoice_Big(int ID) {
 	switch (ID) {
@@ -235,10 +235,10 @@ void BigHeroes_Main(ObjectMaster *obj) {
 		}
 
 		if (CustomPhysics) {
-			playerdata->CollisionInfo->CollisionArray->scale.x = 8;
-			playerco2->PhysicsData.CollisionSize = 8;
+			playerdata->CollisionInfo->CollisionArray->a = 8.0f;
+			playerco2->PhysicsData.CollisionSize = 8.0f;
 			playerco2->PhysicsData.RippleSize = 0.5f;
-			playerco2->_struct_a3.ShadowScale = 2;
+			playerco2->_struct_a3.ShadowScale = 2.0f;
 
 			playerco2->PhysicsData.HSpeedCap = 15;
 			playerco2->PhysicsData.MaxAccel = 3.5f;

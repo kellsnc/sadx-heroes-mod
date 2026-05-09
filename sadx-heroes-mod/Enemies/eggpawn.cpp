@@ -24,18 +24,18 @@ NJS_TEXLIST CURRENTEGGPAWN_TEXLIST = { arrayptrandlength(CURRENTEGGPAWN_TEXNAMES
 NJS_MATRIX EggPawnMatrices[4];
 
 CollisionData EggPawnCollisionData[]{
-	{0, CollisionShape_Cylinder, 0, 0x21, 0x2400, { 0, 0, 0}, {8, 10, 0}},
-	{0, CollisionShape_Sphere, 0x77, 0x21, 0x802400, { 0, 10, 0}, {8, 6, 0}}
+	{0, CollisionShape_Cylinder, 0, 0x21, 0x2400, { 0, 0, 0}, 8, 10, 0 },
+	{0, CollisionShape_Sphere, 0x77, 0x21, 0x802400, { 0, 10, 0}, 8, 6, 0 }
 };
 
 CollisionData PawnWeaponCollisionData[]{
-	{0, CollisionShape_Sphere, 0, 0x21, 0, { 0, 0, 0}, {3, 3, 0}},
-	{0, CollisionShape_Cone, 0, 0x21, 0, { 0, 0, 0}, {3, 6, 0}}
+	{0, CollisionShape_Sphere, 0, 0x21, 0, { 0, 0, 0}, 3, 3, 0 },
+	{0, CollisionShape_Cone, 0, 0x21, 0, { 0, 0, 0}, 3, 6, 0 }
 };
 
 CollisionData PawnShieldCollisionData[]{
-	{0, CollisionShape_Sphere, 0x77, 0, 0x2400, { 0, 0, 0}, {3, 3, 0}},
-	{0, CollisionShape_Sphere, 0x77, 0x21, 0x2400, { 0, 0, 0}, {3.1f, 3.1f, 0}}
+	{0, CollisionShape_Sphere, 0x77, 0, 0x2400, { 0, 0, 0}, 3, 3, 0 },
+	{0, CollisionShape_Sphere, 0x77, 0x21, 0x2400, { 0, 0, 0}, 3.1f, 3.1f, 0 }
 };
 
 enum EggPawnActions {

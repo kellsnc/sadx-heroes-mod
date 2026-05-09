@@ -7,7 +7,7 @@
 NJS_OBJECT* PropellerModel = nullptr;
 
 CollisionData Prop_col {
-	0, 0, 0x77, 0, 0x800400,{ 0, -21, 0 },{ 1, 1, 1 }, 0, 0
+	0, 0, 0x77, 0, 0x800400,{ 0, -21, 0 }, 1, 1, 1
 };
 
 enum PropellerActions {

@@ -52,7 +52,7 @@ void ElevatePlayer(uint8_t slot) {
 }
 
 CollisionData ObjBrkr_Col{
-	0, 0, 0, 0, 0x2400, {0, 5, 0}, {10, 10, 10}
+	0, 0, 0, 0, 0x2400, {0, 5, 0}, 10, 10, 10
 };
 
 NJS_VECTOR Breaker_GetPoint(NJS_VECTOR* orig, Rotation3* rot, float dest) {

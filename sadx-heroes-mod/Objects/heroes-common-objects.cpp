@@ -34,19 +34,19 @@ ModelInfo * CO_WOODBOX;
 ModelInfo * CO_OBJLASR;
 
 CollisionData Reel_col{
-	0, 0, 0x77, 0, 0x800400,{ 0, 0, 0 },{ 1, 1, 1 }, 0, 0
+	0, 0, 0x77, 0, 0x800400,{ 0, 0, 0 }, 1, 1, 1
 };
 
 CollisionData ObjBoxW_col{
-	0, 2, 0x77, 0, 0x800400,{ 0, 0, 0 },{ 13, 13, 13 }, 0, 0
+	0, 2, 0x77, 0, 0x800400,{ 0, 0, 0 }, 13, 13, 13
 };
 
 CollisionData Cases_col{
-	0, 2, 0x77, 0, 0x800400,{ 0, 10, 0 },{ 20, 17, 20 }, 0, 0
+	0, 2, 0x77, 0, 0x800400,{ 0, 10, 0 }, 20, 17, 20
 };
 
 CollisionData CasesOpen_col{
-	0, 2, 0x77, 0, 0x800400,{ 0, 0, 0 },{ 20, 7, 20 }, 0, 0
+	0, 2, 0x77, 0, 0x800400,{ 0, 0, 0 }, 20, 7, 20
 };
 
 void CPDashPanel(ObjectMaster *a1);
@@ -919,7 +919,7 @@ void ObjBoxW(ObjectMaster *a1)
 }
 
 CollisionData Laser_col{
-	0, CollisionShape_Cone, 0x77, 0xE2, 0x800400,{ 0, 0, 0 },{ 0, 4, 4 }, 0, 0
+	0, CollisionShape_Cone, 0x77, 0xE2, 0x800400,{ 0, 0, 0 }, 0, 4, 4
 };
 
 //	Draw the laser object
@@ -966,7 +966,7 @@ void ObjLaser_Main(ObjectMaster* obj) {
 		obj->DisplaySub = ObjLaser_Display;
 
 		Collision_Init(obj, &Laser_col, 1, 4);
-		data->CollisionInfo->CollisionArray->scale.x = data->Scale.x * 2;
+		data->CollisionInfo->CollisionArray->a = data->Scale.x * 2;
 	}
 	else if (data->Scale.y && data->Action == 1) {
 		if (IsSwitchPressed((int)data->Scale.y)) {

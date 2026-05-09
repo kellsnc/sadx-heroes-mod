@@ -73,8 +73,8 @@ void Bomb_Main_r(ObjectMaster* obj) {
 		}
 		else
 		{
-			data->Scale.x = data->Scale.x + 1.0;
-			col->scale.x = col->scale.x + 1.0;
+			data->Scale.x += 1.0;
+			col->a += 1.0;
 			data->Rotation.y += 256;
 			ClampGlobalColorThing_Thing();
 		}

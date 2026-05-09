@@ -22,7 +22,7 @@ NJS_TEXNAME FLYER_TEXNAMES[4];
 NJS_TEXLIST FLYER_TEXLIST = { arrayptrandlength(FLYER_TEXNAMES) };
 
 CollisionData FlyerCollisionData {
-	0, CollisionShape_Sphere, 0x77, 0x21, 0x2400, { 0, 0, 0}, {10, 10, 0}
+	0, CollisionShape_Sphere, 0x77, 0x21, 0x2400, { 0, 0, 0}, 10, 10, 0
 };
 
 uint8_t FlyerTriggerID = 0;
