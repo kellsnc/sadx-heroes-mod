@@ -1,10 +1,11 @@
 #include "stdafx.h"
+#include "ArchiveX.h"
 #include "mod.h"
 #include "utils.h"
 #include "sounds.h"
 #include "characters.h"
 
-ModelInfo* BigMdls[3];
+ModelInfo* BigMdls[4];
 AnimationFile* BigAnms[63];
 AnimData HBigAnimData[63];
 
@@ -67,7 +68,9 @@ void LureObj_Display(ObjectMaster *obj) {
 	njRotateY(0, -data->Rotation.y - 0x4000);
 	njScale(0, data->Scale.x, data->Scale.x, data->Scale.x);
 
-	dsDrawModel(BigMdls[1]->getmodel()->child->child->getbasicdxmodel());
+	njRotateX(0, 0x4000);
+
+	dsDrawModel(BigMdls[3]->getmodel()->getbasicdxmodel());
 
 	njPopMatrix(1);
 
@@ -190,14 +193,16 @@ void BigHeroes_Display(ObjectMaster *obj) {
 		njRotateY(0, 0xC000);
 	}
 
+	njRotateX(0, 0x4000);
+
 	*NodeCallbackFuncPtr = BigCallback;
 	njActionWeight(HBigAnimData[knucklesobj->Data1->Index].Animation, knucklesobj->Data1->Scale.x, BigMdls[0]->getweightinfo());
 	*NodeCallbackFuncPtr = nullptr;
 
 	memcpy(_nj_current_matrix_ptr_, BigMatrix, sizeof(NJS_MATRIX));
 	njRotateX(0, 0xC000);
-	if (knucklesobj->Data1->Index == 19) dsDrawModel(BigMdls[1]->getmodel()->getbasicdxmodel());
-	if (knucklesobj->Data1->Index == 9 || knucklesobj->Data1->Index == 11 || knucklesobj->Data1->Index == 12) dsDrawModel(BigMdls[1]->getmodel()->child->getbasicdxmodel());
+	if (knucklesobj->Data1->Index == 19) dsDrawModel(BigMdls[2]->getmodel()->getbasicdxmodel());
+	if (knucklesobj->Data1->Index == 9 || knucklesobj->Data1->Index == 11 || knucklesobj->Data1->Index == 12) dsDrawModel(BigMdls[1]->getmodel()->getbasicdxmodel());
 
 	njPopMatrix(1);
 
@@ -210,7 +215,7 @@ void BigHeroes_Main(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1;
 	EntityData2* data2 = (EntityData2*)obj->Data2;
 
-	if (!CharactersCommon_Init(obj, "bigh", &HBIG_TEXLIST)) {
+	if (!CharactersCommon_Init(obj, "heroes-big", &HBIG_TEXLIST)) {
 		return;
 	}
 
@@ -221,7 +226,7 @@ void BigHeroes_Main(ObjectMaster *obj) {
 
 	if (data->Rotation.z == 0) {
 		if (data->CharIndex == 0) {
-			CON_REGULAR_TEXNAMES[15].texaddr = HBIG_TEXLIST.textures[1].texaddr;
+			CON_REGULAR_TEXNAMES[15].texaddr = HBIG_TEXLIST.textures[8].texaddr;
 		}
 
 		if (CustomPhysics) {
@@ -381,75 +386,80 @@ void BigHeroes_Main(ObjectMaster *obj) {
 }
 
 void LoadBigFiles() {
-	BigMdls[0] = LoadCharacterModel("big_main");
-	BigMdls[1] = LoadCharacterModel("big_rod");
-	BigMdls[2] = LoadCharacterModel("big_buckle");
+	ArchiveX arc(HelperFunctionsGlobal.GetReplaceablePath("system\\heroes-big.arcx"));
+
+	BigMdls[0] = arc.GetModel("BIG_LOCATOR.sa1mdl");
+	BigMdls[1] = arc.GetModel("FISH_STICK.sa1mdl");
+	BigMdls[2] = arc.GetModel("UMBRELLA.sa1mdl");
+	BigMdls[3] = arc.GetModel("UKI.sa1mdl");
+	//BigMdls[4] = arc.GetModel("UKIWA.sa1mdl");
+	//BigMdls[5] = arc.GetModel("UNI.sa1mdl");
 
 	HelperFunctionsGlobal.Weights->Init(BigMdls[0]->getweightinfo(), BigMdls[0]->getmodel());
 
-	BigAnms[0] = LoadCharacterAnim("BI_WALK");
-	BigAnms[1] = LoadCharacterAnim("BI_WALK_PULL");
-	BigAnms[2] = LoadCharacterAnim("BI_WALK_PUSH");
-	BigAnms[3] = LoadCharacterAnim("BI_TURN_L");
-	BigAnms[4] = LoadCharacterAnim("BI_TURN_R");
-	BigAnms[5] = LoadCharacterAnim("BI_SLOW_RUN");
-	BigAnms[6] = LoadCharacterAnim("BI_MID_RUN");
-	BigAnms[7] = LoadCharacterAnim("BI_TOP_RUN");
-	BigAnms[8] = LoadCharacterAnim("BI_START");
-	BigAnms[9] = LoadCharacterAnim("BI_ATC_BATT");
-	BigAnms[10] = LoadCharacterAnim("BI_ATC_PRESS");
-	BigAnms[11] = LoadCharacterAnim("BI_ATC_START");
-	BigAnms[12] = LoadCharacterAnim("BI_FISH");
-	BigAnms[13] = LoadCharacterAnim("BI_JUMP_A");
-	BigAnms[14] = LoadCharacterAnim("BI_JUMP_B");
-	BigAnms[15] = LoadCharacterAnim("BI_JUMP_C");
-	BigAnms[16] = LoadCharacterAnim("BI_JUMP_D");
-	BigAnms[17] = LoadCharacterAnim("BI_JUMP_E");
-	BigAnms[18] = LoadCharacterAnim("BI_JUMP_F");
-	BigAnms[19] = LoadCharacterAnim("BI_JUMP_UMBRELLA");
-	BigAnms[20] = LoadCharacterAnim("BI_JUMP_GLIND");
-	BigAnms[21] = LoadCharacterAnim("BI_GLIND");
-	BigAnms[22] = LoadCharacterAnim("BI_GLIND_BK");
-	BigAnms[23] = LoadCharacterAnim("BI_GLIND_BK_L");
-	BigAnms[24] = LoadCharacterAnim("BI_GLIND_BK_R");
-	BigAnms[25] = LoadCharacterAnim("BI_GLIND_FLIP_BK");
-	BigAnms[26] = LoadCharacterAnim("BI_GLIND_FLIP_FR");
-	BigAnms[27] = LoadCharacterAnim("BI_GLIND_L");
-	BigAnms[28] = LoadCharacterAnim("BI_GLIND_R");
-	BigAnms[29] = LoadCharacterAnim("BI_FLY_IDLE");
-	BigAnms[30] = LoadCharacterAnim("BI_FLY_SLOW");
-	BigAnms[31] = LoadCharacterAnim("BI_FLY_GLIND");
-	BigAnms[32] = LoadCharacterAnim("BI_HANG_OFF");
-	BigAnms[33] = LoadCharacterAnim("BI_HANG_ON");
-	BigAnms[34] = LoadCharacterAnim("BI_BREAK_A");
-	BigAnms[35] = LoadCharacterAnim("BI_BREAK_B");
-	BigAnms[36] = LoadCharacterAnim("BI_BREAK_C");
-	BigAnms[37] = LoadCharacterAnim("BI_BREAK_TURN_L");
-	BigAnms[38] = LoadCharacterAnim("BI_BREAK_TURN_R");
-	BigAnms[39] = LoadCharacterAnim("BI_BRA_MID");
-	BigAnms[40] = LoadCharacterAnim("BI_BRA_TOP");
-	BigAnms[41] = LoadCharacterAnim("BI_FLORT");
-	BigAnms[42] = LoadCharacterAnim("BI_DAM_M_A");
-	BigAnms[43] = LoadCharacterAnim("BI_DAM_M_B");
-	BigAnms[44] = LoadCharacterAnim("BI_DAM_M_C");
-	BigAnms[45] = LoadCharacterAnim("BI_EDGE_OTTO_A");
-	BigAnms[46] = LoadCharacterAnim("BI_EDGE_OTTO_B");
-	BigAnms[47] = LoadCharacterAnim("BI_EDGE_OTTO_C");
-	BigAnms[48] = LoadCharacterAnim("BI_EDGE_OTTO_C");
-	BigAnms[49] = LoadCharacterAnim("BI_FW_JUMP");
-	BigAnms[50] = LoadCharacterAnim("BI_TRAP_JUMP");
-	BigAnms[51] = LoadCharacterAnim("ROSE_BI");
-	BigAnms[52] = LoadCharacterAnim("BI_WIN");
-	BigAnms[53] = LoadCharacterAnim("BI_JUMP_BATT");
-	BigAnms[54] = LoadCharacterAnim("BI_IDLE_HALF");
-	BigAnms[55] = LoadCharacterAnim("BI_IDLE_B_HALF");
-	BigAnms[56] = LoadCharacterAnim("BI_IDLE_C_HALF");
-	BigAnms[57] = LoadCharacterAnim("BI_BOB");
-	BigAnms[58] = LoadCharacterAnim("BI_BOB_L");
-	BigAnms[59] = LoadCharacterAnim("BI_BOB_R");
-	BigAnms[60] = LoadCharacterAnim("BI_START_IDLE");
-	BigAnms[61] = LoadCharacterAnim("BI_GLIND_DASH");
-	BigAnms[62] = LoadCharacterAnim("BI_GLIND_BK_DASH");
+	BigAnms[0] = arc.GetAnimation("BI_WALK.saanim");
+	BigAnms[1] = arc.GetAnimation("BI_WALK_PULL.saanim");
+	BigAnms[2] = arc.GetAnimation("BI_WALK_PUSH.saanim");
+	BigAnms[3] = arc.GetAnimation("BI_TURN_L.saanim");
+	BigAnms[4] = arc.GetAnimation("BI_TURN_R.saanim");
+	BigAnms[5] = arc.GetAnimation("BI_SLOW_RUN.saanim");
+	BigAnms[6] = arc.GetAnimation("BI_MID_RUN.saanim");
+	BigAnms[7] = arc.GetAnimation("BI_TOP_RUN.saanim");
+	BigAnms[8] = arc.GetAnimation("BI_START.saanim");
+	BigAnms[9] = arc.GetAnimation("BI_ATC_BATT.saanim");
+	BigAnms[10] = arc.GetAnimation("BI_ATC_PRESS.saanim");
+	BigAnms[11] = arc.GetAnimation("BI_ATC_START.saanim");
+	BigAnms[12] = arc.GetAnimation("BI_FISH.saanim");
+	BigAnms[13] = arc.GetAnimation("BI_JUMP_A.saanim");
+	BigAnms[14] = arc.GetAnimation("BI_JUMP_B.saanim");
+	BigAnms[15] = arc.GetAnimation("BI_JUMP_C.saanim");
+	BigAnms[16] = arc.GetAnimation("BI_JUMP_D.saanim");
+	BigAnms[17] = arc.GetAnimation("BI_JUMP_E.saanim");
+	BigAnms[18] = arc.GetAnimation("BI_JUMP_F.saanim");
+	BigAnms[19] = arc.GetAnimation("BI_JUMP_UMBRELLA.saanim");
+	BigAnms[20] = arc.GetAnimation("BI_JUMP_GLIND.saanim");
+	BigAnms[21] = arc.GetAnimation("BI_GLIND.saanim");
+	BigAnms[22] = arc.GetAnimation("BI_GLIND_BK.saanim");
+	BigAnms[23] = arc.GetAnimation("BI_GLIND_BK_L.saanim");
+	BigAnms[24] = arc.GetAnimation("BI_GLIND_BK_R.saanim");
+	BigAnms[25] = arc.GetAnimation("BI_GLIND_FLIP_BK.saanim");
+	BigAnms[26] = arc.GetAnimation("BI_GLIND_FLIP_FR.saanim");
+	BigAnms[27] = arc.GetAnimation("BI_GLIND_L.saanim");
+	BigAnms[28] = arc.GetAnimation("BI_GLIND_R.saanim");
+	BigAnms[29] = arc.GetAnimation("BI_FLY_IDLE.saanim");
+	BigAnms[30] = arc.GetAnimation("BI_FLY_SLOW.saanim");
+	BigAnms[31] = arc.GetAnimation("BI_FLY_GLIND.saanim");
+	BigAnms[32] = arc.GetAnimation("BI_HANG_OFF.saanim");
+	BigAnms[33] = arc.GetAnimation("BI_HANG_ON.saanim");
+	BigAnms[34] = arc.GetAnimation("BI_BREAK_A.saanim");
+	BigAnms[35] = arc.GetAnimation("BI_BREAK_B.saanim");
+	BigAnms[36] = arc.GetAnimation("BI_BREAK_C.saanim");
+	BigAnms[37] = arc.GetAnimation("BI_BREAK_TURN_L.saanim");
+	BigAnms[38] = arc.GetAnimation("BI_BREAK_TURN_R.saanim");
+	BigAnms[39] = arc.GetAnimation("BI_BRA_MID.saanim");
+	BigAnms[40] = arc.GetAnimation("BI_BRA_TOP.saanim");
+	BigAnms[41] = arc.GetAnimation("BI_FLORT.saanim");
+	BigAnms[42] = arc.GetAnimation("BI_DAM_M_A.saanim");
+	BigAnms[43] = arc.GetAnimation("BI_DAM_M_B.saanim");
+	BigAnms[44] = arc.GetAnimation("BI_DAM_M_C.saanim");
+	BigAnms[45] = arc.GetAnimation("BI_EDGE_OTTO_A.saanim");
+	BigAnms[46] = arc.GetAnimation("BI_EDGE_OTTO_B.saanim");
+	BigAnms[47] = arc.GetAnimation("BI_EDGE_OTTO_C.saanim");
+	BigAnms[48] = arc.GetAnimation("BI_EDGE_OTTO_C.saanim");
+	BigAnms[49] = arc.GetAnimation("BI_FW_JUMP.saanim");
+	BigAnms[50] = arc.GetAnimation("BI_TRAP_JUMP.saanim");
+	BigAnms[51] = arc.GetAnimation("ROSE_BI.saanim");
+	BigAnms[52] = arc.GetAnimation("BI_WIN.saanim");
+	BigAnms[53] = arc.GetAnimation("BI_JUMP_BATT.saanim");
+	BigAnms[54] = arc.GetAnimation("BI_IDLE_HALF.saanim");
+	BigAnms[55] = arc.GetAnimation("BI_IDLE_B_HALF.saanim");
+	BigAnms[56] = arc.GetAnimation("BI_IDLE_C_HALF.saanim");
+	BigAnms[57] = arc.GetAnimation("BI_BOB.saanim");
+	BigAnms[58] = arc.GetAnimation("BI_BOB_L.saanim");
+	BigAnms[59] = arc.GetAnimation("BI_BOB_R.saanim");
+	BigAnms[60] = arc.GetAnimation("BI_START_IDLE.saanim");
+	BigAnms[61] = arc.GetAnimation("BI_GLIND_DASH.saanim");
+	BigAnms[62] = arc.GetAnimation("BI_GLIND_BK_DASH.saanim");
 
 	for (uint8_t i = 0; i < LengthOfArray(HBigAnimData); ++i) {
 		if (BigAnms[i] == nullptr) continue;

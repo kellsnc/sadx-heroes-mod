@@ -1,10 +1,11 @@
 #include "stdafx.h"
+#include "ArchiveX.h"
 #include "mod.h"
 #include "utils.h"
 #include "sounds.h"
 #include "characters.h"
 
-ModelInfo* RougeMdls[3];
+ModelInfo* RougeMdls[6];
 AnimationFile* RougeAnms[66];
 AnimData RougeAnimData[60];
 AnimData RWingsAnimData[6];
@@ -52,16 +53,22 @@ void RougeWings_Main(ObjectMaster* obj) {
 
 	int anim;
 
-	anim = 2;
+	anim = 3;
 
-	if (data->field_A) {
-		anim = 1;
-		if (++data->field_A >= 70) data->field_A = 0;
+	if (rougedata->Index >= 34 && rougedata->Index <= 42)
+	{
+		anim = 0;
 	}
 
-	if (rougedata->Index > 8) anim = 0;
+	if (rougedata->Index == 36)
+	{
+		anim = 1;
+	}
 
-	if (rougedata->Index == 54 || rougedata->Index == 55) anim = 5;
+	if (rougedata->Index == 54 || rougedata->Index == 55)
+	{
+		anim = 5;
+	}
 
 	PlayHeroesAnimation(obj, anim, RWingsAnimData, 0, 0);
 }
@@ -111,6 +118,8 @@ void RougeHeroes_Display(ObjectMaster *obj) {
 	njRotateX(0, entity1->Rotation.x);
 	njRotateY(0, -entity1->Rotation.y - 0x4000 + rougeobj->Data1->Rotation.y);
 
+	njRotateX(0, 0x4000);
+
 	if (co2->AnimationThing.Index == 54 || co2->AnimationThing.Index == 55) {
 		njTranslate(0, 10, 2, 0);
 	}
@@ -120,27 +129,28 @@ void RougeHeroes_Display(ObjectMaster *obj) {
 	*NodeCallbackFuncPtr = nullptr;
 
 	njSetMatrix(NULL, RougeMatrices[0]);
-	NJS_CNK_OBJECT* eyelashes = RougeMdls[1]->getmodel()->child;
+	NJS_CNK_OBJECT* l_mabuta = RougeMdls[1]->getmodel();
+	NJS_CNK_OBJECT* r_mabuta = RougeMdls[2]->getmodel();
 	switch (rougeobj->Data1->InvulnerableTime) {
 	case 1:
 	case 3:
-		dsDrawModel(eyelashes->child->getbasicdxmodel());
-		dsDrawModel(eyelashes->sibling->child->getbasicdxmodel());
+		dsDrawModel(l_mabuta->child->getbasicdxmodel());
+		dsDrawModel(r_mabuta->child->getbasicdxmodel());
 		break;
 	case 2:
-		dsDrawModel(eyelashes->child->child->getbasicdxmodel());
-		dsDrawModel(eyelashes->sibling->child->child->getbasicdxmodel());
+		dsDrawModel(l_mabuta->child->child->getbasicdxmodel());
+		dsDrawModel(r_mabuta->child->child->getbasicdxmodel());
 		break;
 	default:
-		dsDrawModel(eyelashes->getbasicdxmodel());
-		dsDrawModel(eyelashes->sibling->getbasicdxmodel());
+		dsDrawModel(l_mabuta->getbasicdxmodel());
+		dsDrawModel(r_mabuta->getbasicdxmodel());
 		break;
 	}
 
 	if (rougeobj->Child) {
 		njSetMatrix(NULL, RougeMatrices[1]);
-		njTranslate(0, 0, 0.8f, 0.5f);
-		njActionWeight(RWingsAnimData[rougeobj->Child->Data1->Index].Animation, rougeobj->Child->Data1->Scale.x, RougeMdls[2]->getweightinfo());
+		njTranslate(0, 0, 0.5f, -0.8f);
+		njActionWeight(RWingsAnimData[rougeobj->Child->Data1->Index].Animation, rougeobj->Child->Data1->Scale.x, RougeMdls[5]->getweightinfo());
 	}
 	
 	njPopMatrix(1);
@@ -153,7 +163,7 @@ void RougeHeroes_Display(ObjectMaster *obj) {
 void RougeHeroes_Main(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1;
 
-	if (!CharactersCommon_Init(obj, "rouge", &ROUGE_TEXLIST)) {
+	if (!CharactersCommon_Init(obj, "heroes-rouge", &ROUGE_TEXLIST)) {
 		return;
 	}
 
@@ -166,7 +176,7 @@ void RougeHeroes_Main(ObjectMaster *obj) {
 
 	if (data->Rotation.z == 0) {
 		if (data->CharIndex == 0) {
-			CON_REGULAR_TEXNAMES[14].texaddr = ROUGE_TEXLIST.textures[5].texaddr;
+			CON_REGULAR_TEXNAMES[14].texaddr = ROUGE_TEXLIST.textures[6].texaddr;
 		}
 
 		if (CustomPhysics) {
@@ -502,80 +512,87 @@ void RougeHeroes_Main(ObjectMaster *obj) {
 }
 
 void LoadRougeFiles() {
-	RougeMdls[0] = LoadCharacterModel("rouge_main");
-	RougeMdls[1] = LoadCharacterModel("rouge_eyelashes");
-	RougeMdls[2] = LoadCharacterModel("rouge_wings");
+	ArchiveX arc(HelperFunctionsGlobal.GetReplaceablePath("system\\heroes-rouge.arcx"));
+
+	RougeMdls[0] = arc.GetModel("ROUGE_LOCATOR.sa1mdl");
+	RougeMdls[1] = arc.GetModel("L_MABUTA.sa1mdl");
+	RougeMdls[2] = arc.GetModel("R_MABUTA.sa1mdl");
+	RougeMdls[3] = arc.GetModel("S_HANE.sa1mdl");
+	RougeMdls[4] = arc.GetModel("SL_HANE.sa1mdl");
+	RougeMdls[5] = arc.GetModel("L_HANE.sa1mdl");
 
 	HelperFunctionsGlobal.Weights->Init(RougeMdls[0]->getweightinfo(), RougeMdls[0]->getmodel());
-	HelperFunctionsGlobal.Weights->Init(RougeMdls[2]->getweightinfo(), RougeMdls[2]->getmodel());
+	HelperFunctionsGlobal.Weights->Init(RougeMdls[3]->getweightinfo(), RougeMdls[3]->getmodel());
+	HelperFunctionsGlobal.Weights->Init(RougeMdls[4]->getweightinfo(), RougeMdls[4]->getmodel());
+	HelperFunctionsGlobal.Weights->Init(RougeMdls[5]->getweightinfo(), RougeMdls[5]->getmodel());
 
-	RougeAnms[0] = LoadCharacterAnim("RO_WALK");
-	RougeAnms[1] = LoadCharacterAnim("RO_WALK_PULL");
-	RougeAnms[2] = LoadCharacterAnim("RO_WALK_PUSH");
-	RougeAnms[3] = LoadCharacterAnim("RO_TURN_L");
-	RougeAnms[4] = LoadCharacterAnim("RO_TURN_R");
-	RougeAnms[5] = LoadCharacterAnim("RO_SLOW_RUN");
-	RougeAnms[6] = LoadCharacterAnim("RO_MID_RUN");
-	RougeAnms[7] = LoadCharacterAnim("RO_TOP_RUN");
-	RougeAnms[8] = LoadCharacterAnim("RO_START");
-	RougeAnms[9] = LoadCharacterAnim("RO_IDLE");
-	RougeAnms[10] = LoadCharacterAnim("RO_IDLE_B");
-	RougeAnms[11] = LoadCharacterAnim("RO_IDLE_C_HALF");
-	RougeAnms[12] = LoadCharacterAnim("RO_WIN");
-	RougeAnms[13] = LoadCharacterAnim("RO_ATC_BOMB");
-	RougeAnms[14] = LoadCharacterAnim("RO_POW_ROT");
-	RougeAnms[15] = LoadCharacterAnim("RO_TRAP_JUMP");
-	RougeAnms[16] = LoadCharacterAnim("RO_FW_JUMP");
-	RougeAnms[17] = LoadCharacterAnim("DARK_RO");
-	RougeAnms[18] = LoadCharacterAnim("RO_JUMP_A");
-	RougeAnms[19] = LoadCharacterAnim("RO_JUMP_B");
-	RougeAnms[20] = LoadCharacterAnim("RO_JUMP_C");
-	RougeAnms[21] = LoadCharacterAnim("RO_JUMP_D");
-	RougeAnms[22] = LoadCharacterAnim("RO_JUMP_E");
-	RougeAnms[23] = LoadCharacterAnim("RO_JUMP_F");
-	RougeAnms[24] = LoadCharacterAnim("RO_JUMP_TRNGL");
-	RougeAnms[25] = LoadCharacterAnim("RO_JUMP_GLIND");
-	RougeAnms[26] = LoadCharacterAnim("RO_GLIND");
-	RougeAnms[27] = LoadCharacterAnim("RO_GLIND_BK");
-	RougeAnms[28] = LoadCharacterAnim("RO_GLIND_BK_L");
-	RougeAnms[29] = LoadCharacterAnim("RO_GLIND_BK_R");
-	RougeAnms[30] = LoadCharacterAnim("RO_GLIND_FLIP_B");
-	RougeAnms[31] = LoadCharacterAnim("RO_GLIND_FLIP_F");
-	RougeAnms[32] = LoadCharacterAnim("RO_GLIND_L");
-	RougeAnms[33] = LoadCharacterAnim("RO_GLIND_R");
-	RougeAnms[34] = LoadCharacterAnim("RO_FLY_IDLE");
-	RougeAnms[35] = LoadCharacterAnim("RO_FLY_SLOW");
-	RougeAnms[36] = LoadCharacterAnim("RO_FLY_UP");
-	RougeAnms[37] = LoadCharacterAnim("RO_FLY_PULL");
-	RougeAnms[38] = LoadCharacterAnim("RO_FLY_PUSH");
-	RougeAnms[39] = LoadCharacterAnim("RO_FLY_KICK");
-	RougeAnms[40] = LoadCharacterAnim("RO_FLY_HANG_IDLE");
-	RougeAnms[41] = LoadCharacterAnim("RO_FLY_HANG_OFF");
-	RougeAnms[42] = LoadCharacterAnim("RO_FLY_HANG_ON");
-	RougeAnms[43] = LoadCharacterAnim("RO_HANG_OFF");
-	RougeAnms[44] = LoadCharacterAnim("RO_HANG_ON");
-	RougeAnms[45] = LoadCharacterAnim("RO_BREAK_A");
-	RougeAnms[46] = LoadCharacterAnim("RO_BREAK_B");
-	RougeAnms[47] = LoadCharacterAnim("RO_BREAK_C");
-	RougeAnms[48] = LoadCharacterAnim("RO_BREAK_TURN_L");
-	RougeAnms[49] = LoadCharacterAnim("RO_BREAK_TURN_R");
-	RougeAnms[50] = LoadCharacterAnim("RO_BRA_MID");
-	RougeAnms[51] = LoadCharacterAnim("RO_BRA_TOP");
-	RougeAnms[52] = LoadCharacterAnim("RO_BOB");
-	RougeAnms[53] = LoadCharacterAnim("RO_FLORT");
-	RougeAnms[54] = LoadCharacterAnim("RO_DAM_M_A");
-	RougeAnms[55] = LoadCharacterAnim("RO_DAM_M_B");
-	RougeAnms[56] = LoadCharacterAnim("RO_DAM_M_C");
-	RougeAnms[57] = LoadCharacterAnim("RO_EDGE_OTTO_A");
-	RougeAnms[58] = LoadCharacterAnim("RO_EDGE_OTTO_B");
-	RougeAnms[59] = LoadCharacterAnim("RO_EDGE_OTTO_C");
+	RougeAnms[0] = arc.GetAnimation("RO_WALK.saanim");
+	RougeAnms[1] = arc.GetAnimation("RO_WALK_PULL.saanim");
+	RougeAnms[2] = arc.GetAnimation("RO_WALK_PUSH.saanim");
+	RougeAnms[3] = arc.GetAnimation("RO_TURN_L.saanim");
+	RougeAnms[4] = arc.GetAnimation("RO_TURN_R.saanim");
+	RougeAnms[5] = arc.GetAnimation("RO_SLOW_RUN.saanim");
+	RougeAnms[6] = arc.GetAnimation("RO_MID_RUN.saanim");
+	RougeAnms[7] = arc.GetAnimation("RO_TOP_RUN.saanim");
+	RougeAnms[8] = arc.GetAnimation("RO_START.saanim");
+	RougeAnms[9] = arc.GetAnimation("RO_IDLE.saanim");
+	RougeAnms[10] = arc.GetAnimation("RO_IDLE_B.saanim");
+	RougeAnms[11] = arc.GetAnimation("RO_IDLE_C_HALF.saanim");
+	RougeAnms[12] = arc.GetAnimation("RO_WIN.saanim");
+	RougeAnms[13] = arc.GetAnimation("RO_ATC_BOMB.saanim");
+	RougeAnms[14] = arc.GetAnimation("RO_POW_ROT.saanim");
+	RougeAnms[15] = arc.GetAnimation("RO_TRAP_JUMP.saanim");
+	RougeAnms[16] = arc.GetAnimation("RO_FW_JUMP.saanim");
+	RougeAnms[17] = arc.GetAnimation("DARK_RO.saanim");
+	RougeAnms[18] = arc.GetAnimation("RO_JUMP_A.saanim");
+	RougeAnms[19] = arc.GetAnimation("RO_JUMP_B.saanim");
+	RougeAnms[20] = arc.GetAnimation("RO_JUMP_C.saanim");
+	RougeAnms[21] = arc.GetAnimation("RO_JUMP_D.saanim");
+	RougeAnms[22] = arc.GetAnimation("RO_JUMP_E.saanim");
+	RougeAnms[23] = arc.GetAnimation("RO_JUMP_F.saanim");
+	RougeAnms[24] = arc.GetAnimation("RO_JUMP_TRNGL.saanim");
+	RougeAnms[25] = arc.GetAnimation("RO_JUMP_GLIND.saanim");
+	RougeAnms[26] = arc.GetAnimation("RO_GLIND.saanim");
+	RougeAnms[27] = arc.GetAnimation("RO_GLIND_BK.saanim");
+	RougeAnms[28] = arc.GetAnimation("RO_GLIND_BK_L.saanim");
+	RougeAnms[29] = arc.GetAnimation("RO_GLIND_BK_R.saanim");
+	RougeAnms[30] = arc.GetAnimation("RO_GLIND_FLIP_B.saanim");
+	RougeAnms[31] = arc.GetAnimation("RO_GLIND_FLIP_F.saanim");
+	RougeAnms[32] = arc.GetAnimation("RO_GLIND_L.saanim");
+	RougeAnms[33] = arc.GetAnimation("RO_GLIND_R.saanim");
+	RougeAnms[34] = arc.GetAnimation("RO_FLY_IDLE.saanim");
+	RougeAnms[35] = arc.GetAnimation("RO_FLY_SLOW.saanim");
+	RougeAnms[36] = arc.GetAnimation("RO_FLY_UP.saanim");
+	RougeAnms[37] = arc.GetAnimation("RO_FLY_PULL.saanim");
+	RougeAnms[38] = arc.GetAnimation("RO_FLY_PUSH.saanim");
+	RougeAnms[39] = arc.GetAnimation("RO_FLY_KICK.saanim");
+	RougeAnms[40] = arc.GetAnimation("RO_FLY_HANG_IDLE.saanim");
+	RougeAnms[41] = arc.GetAnimation("RO_FLY_HANG_OFF.saanim");
+	RougeAnms[42] = arc.GetAnimation("RO_FLY_HANG_ON.saanim");
+	RougeAnms[43] = arc.GetAnimation("RO_HANG_OFF.saanim");
+	RougeAnms[44] = arc.GetAnimation("RO_HANG_ON.saanim");
+	RougeAnms[45] = arc.GetAnimation("RO_BREAK_A.saanim");
+	RougeAnms[46] = arc.GetAnimation("RO_BREAK_B.saanim");
+	RougeAnms[47] = arc.GetAnimation("RO_BREAK_C.saanim");
+	RougeAnms[48] = arc.GetAnimation("RO_BREAK_TURN_L.saanim");
+	RougeAnms[49] = arc.GetAnimation("RO_BREAK_TURN_R.saanim");
+	RougeAnms[50] = arc.GetAnimation("RO_BRA_MID.saanim");
+	RougeAnms[51] = arc.GetAnimation("RO_BRA_TOP.saanim");
+	RougeAnms[52] = arc.GetAnimation("RO_BOB.saanim");
+	RougeAnms[53] = arc.GetAnimation("RO_FLORT.saanim");
+	RougeAnms[54] = arc.GetAnimation("RO_DAM_M_A.saanim");
+	RougeAnms[55] = arc.GetAnimation("RO_DAM_M_B.saanim");
+	RougeAnms[56] = arc.GetAnimation("RO_DAM_M_C.saanim");
+	RougeAnms[57] = arc.GetAnimation("RO_EDGE_OTTO_A.saanim");
+	RougeAnms[58] = arc.GetAnimation("RO_EDGE_OTTO_B.saanim");
+	RougeAnms[59] = arc.GetAnimation("RO_EDGE_OTTO_C.saanim");
 
-	RougeAnms[60] = LoadCharacterAnim("RO_FLY_IDLE_WNGL");
-	RougeAnms[61] = LoadCharacterAnim("RO_FLY_UP_WING");
-	RougeAnms[62] = LoadCharacterAnim("RO_IDLE_C_HANE_HALF");
-	RougeAnms[63] = LoadCharacterAnim("RO_IDLE_WNGS");
-	RougeAnms[64] = LoadCharacterAnim("SL_HANE");
-	RougeAnms[65] = LoadCharacterAnim("RO_WING_WIN");
+	RougeAnms[60] = arc.GetAnimation("RO_FLY_IDLE_WNGL.saanim");
+	RougeAnms[61] = arc.GetAnimation("RO_FLY_UP_WING.saanim");
+	RougeAnms[62] = arc.GetAnimation("RO_IDLE_C_HANE_HALF.saanim");
+	RougeAnms[63] = arc.GetAnimation("RO_IDLE_WNGS.saanim");
+	RougeAnms[64] = arc.GetAnimation("SL_HANE.saanim");
+	RougeAnms[65] = arc.GetAnimation("RO_WING_WIN.saanim");
 
 	for (uint8_t i = 0; i < LengthOfArray(RougeAnimData); ++i) {
 		if (RougeAnms[i] == nullptr) continue;
@@ -604,18 +621,21 @@ void LoadRougeFiles() {
 	for (uint8_t i = 0; i < LengthOfArray(RWingsAnimData); ++i) {
 		if (RougeAnms[i + 60] == nullptr) continue;
 		RWingsAnimData[i].Animation = new NJS_ACTION;
-		RWingsAnimData[i].Animation->object = RougeMdls[2]->getmodel();
+		RWingsAnimData[i].Animation->object = RougeMdls[5]->getmodel();
 		RWingsAnimData[i].Animation->motion = RougeAnms[i + 60]->getmotion();
 		RWingsAnimData[i].NextAnim = i;
 		RWingsAnimData[i].AnimationSpeed = 0.5f;
 	}
 
-	RWingsAnimData[6].Property = 1;
+	RWingsAnimData[3].Animation->object = RougeMdls[3]->getmodel();
+	RWingsAnimData[4].Animation->object = RougeMdls[4]->getmodel();
 }
 
 void UnloadRougeFiles() {
 	HelperFunctionsGlobal.Weights->DeInit(RougeMdls[0]->getweightinfo(), RougeMdls[0]->getmodel());
-	HelperFunctionsGlobal.Weights->DeInit(RougeMdls[2]->getweightinfo(), RougeMdls[2]->getmodel());
+	HelperFunctionsGlobal.Weights->DeInit(RougeMdls[3]->getweightinfo(), RougeMdls[3]->getmodel());
+	HelperFunctionsGlobal.Weights->DeInit(RougeMdls[4]->getweightinfo(), RougeMdls[4]->getmodel());
+	HelperFunctionsGlobal.Weights->DeInit(RougeMdls[5]->getweightinfo(), RougeMdls[5]->getmodel());
 	FreeMDLFiles(RougeMdls, LengthOfArray(RougeMdls));
 	FreeANMFiles(RougeAnms, LengthOfArray(RougeAnms));
 }

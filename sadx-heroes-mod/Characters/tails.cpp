@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "ArchiveX.h"
 #include "mod.h"
 #include "utils.h"
 #include "sounds.h"
@@ -182,7 +183,9 @@ void TailsHeroes_Display(ObjectMaster *obj) {
 	njTranslateV(0, &entity1->Position);
 	njRotateZ(0, entity1->Rotation.z);
 	njRotateX(0, entity1->Rotation.x);
-	njRotateY(0, -entity1->Rotation.y - 0x4000 + tailsobj->Data1->Rotation.y);
+	njRotateY(0, -entity1->Rotation.y - 0x4000);
+
+	njRotateX(0, 0x4000);
 
 	if (co2->AnimationThing.Index == 54 || co2->AnimationThing.Index == 55) {
 		njTranslate(0, 10, 2, 0);
@@ -228,7 +231,7 @@ void TailsHeroes_Display(ObjectMaster *obj) {
 void TailsHeroes_Main(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1;
 
-	if (!CharactersCommon_Init(obj, "tails", &TAILS_TEXLIST)) {
+	if (!CharactersCommon_Init(obj, "heroes-tails", &TAILS_TEXLIST)) {
 		return;
 	}
 
@@ -586,110 +589,112 @@ void TailsHeroes_Main(ObjectMaster *obj) {
 }
 
 void LoadTailsFiles() {
-	TailsMdls[0] = LoadCharacterModel("tails_main");
-	TailsMdls[1] = LoadCharacterModel("tails_pupils");
-	TailsMdls[2] = LoadCharacterModel("tails_tails");
+	ArchiveX arc(HelperFunctionsGlobal.GetReplaceablePath("system\\heroes-tails.arcx"));
+
+	TailsMdls[0] = arc.GetModel("TAILS_LOCATOR.sa1mdl");
+	TailsMdls[1] = arc.GetModel("TAILS_MABUTA.sa1mdl");
+	TailsMdls[2] = arc.GetModel("TA_SIPPO.sa1mdl");
 
 	HelperFunctionsGlobal.Weights->Init(TailsMdls[0]->getweightinfo(), TailsMdls[0]->getmodel());
 	HelperFunctionsGlobal.Weights->Init(TailsMdls[2]->getweightinfo(), TailsMdls[2]->getmodel());
 
-	TailsAnms[0] = LoadCharacterAnim("TA_WALK");
-	TailsAnms[1] = LoadCharacterAnim("TA_WALK_PULL");
-	TailsAnms[2] = LoadCharacterAnim("TA_WALK_PUSH");
-	TailsAnms[3] = LoadCharacterAnim("TA_TURN_L");
-	TailsAnms[4] = LoadCharacterAnim("TA_TURN_R");
-	TailsAnms[5] = LoadCharacterAnim("TA_SLOW_RUN");
-	TailsAnms[6] = LoadCharacterAnim("TA_MID_RUN");
-	TailsAnms[7] = LoadCharacterAnim("TA_TOP_RUN");
-	TailsAnms[8] = LoadCharacterAnim("TA_START");
-	TailsAnms[9] = LoadCharacterAnim("TA_IDLE");
-	TailsAnms[10] = LoadCharacterAnim("TA_IDLE_C");
-	TailsAnms[11] = LoadCharacterAnim("TA_IDLE_D_HALF");
-	TailsAnms[12] = LoadCharacterAnim("TA_DASH_PUSH");
-	TailsAnms[13] = LoadCharacterAnim("TA_FLY_IDLE_B");
-	TailsAnms[14] = LoadCharacterAnim("TA_POW_ROT");
-	TailsAnms[15] = LoadCharacterAnim("TA_ATC_BOMB");
-	TailsAnms[16] = LoadCharacterAnim("TA_FW_JUMP");
-	TailsAnms[17] = LoadCharacterAnim("HERO_TA");
-	TailsAnms[18] = LoadCharacterAnim("TA_JUMP_A");
-	TailsAnms[19] = LoadCharacterAnim("TA_JUMP_B");
-	TailsAnms[20] = LoadCharacterAnim("TA_JUMP_C");
-	TailsAnms[21] = LoadCharacterAnim("TA_JUMP_D");
-	TailsAnms[22] = LoadCharacterAnim("TA_JUMP_E");
-	TailsAnms[23] = LoadCharacterAnim("TA_JUMP_F");
-	TailsAnms[24] = LoadCharacterAnim("TA_JUMP_TRNGL");
-	TailsAnms[25] = LoadCharacterAnim("TA_JUMP_GLIND");
-	TailsAnms[26] = LoadCharacterAnim("TA_GLIND");
-	TailsAnms[27] = LoadCharacterAnim("TA_GLIND_BK");
-	TailsAnms[28] = LoadCharacterAnim("TA_GLIND_BK_L");
-	TailsAnms[29] = LoadCharacterAnim("TA_GLIND_BK_R");
-	TailsAnms[30] = LoadCharacterAnim("TA_GLIND_FLIP_BK");
-	TailsAnms[31] = LoadCharacterAnim("TA_GLIND_FLIP_FR");
-	TailsAnms[32] = LoadCharacterAnim("TA_GLIND_L");
-	TailsAnms[33] = LoadCharacterAnim("TA_GLIND_R");
-	TailsAnms[34] = LoadCharacterAnim("TA_FLY_IDLE");
-	TailsAnms[35] = LoadCharacterAnim("TA_FLY_SLOW");
-	TailsAnms[36] = LoadCharacterAnim("TA_FLY_UP");
-	TailsAnms[37] = LoadCharacterAnim("TA_FLY_PULL");
-	TailsAnms[38] = LoadCharacterAnim("TA_FLY_PUSH");
-	TailsAnms[39] = LoadCharacterAnim("TA_FLY_KICK");
-	TailsAnms[40] = LoadCharacterAnim("TA_FLY_HANG_IDLE");
-	TailsAnms[41] = LoadCharacterAnim("TA_FLY_HANG_OFF");
-	TailsAnms[42] = LoadCharacterAnim("TA_FLY_HANG_ON");
-	TailsAnms[43] = LoadCharacterAnim("TA_HANG_OFF");
-	TailsAnms[44] = LoadCharacterAnim("TA_HANG_ON");
-	TailsAnms[45] = LoadCharacterAnim("TA_BREAK_A");
-	TailsAnms[46] = LoadCharacterAnim("TA_BREAK_B");
-	TailsAnms[47] = LoadCharacterAnim("TA_BREAK_C");
-	TailsAnms[48] = LoadCharacterAnim("TA_BREAK_TURN_L");
-	TailsAnms[49] = LoadCharacterAnim("TA_BREAK_TURN_R");
-	TailsAnms[50] = LoadCharacterAnim("TA_BRA_MID");
-	TailsAnms[51] = LoadCharacterAnim("TA_BRA_TOP");
-	TailsAnms[52] = LoadCharacterAnim("TA_BOB");
-	TailsAnms[53] = LoadCharacterAnim("TA_FLORT");
-	TailsAnms[54] = LoadCharacterAnim("TA_DAM_M_A");
-	TailsAnms[55] = LoadCharacterAnim("TA_DAM_M_B");
-	TailsAnms[56] = LoadCharacterAnim("TA_DAM_M_C");
-	TailsAnms[57] = LoadCharacterAnim("TA_EDGE_OTTO_A");
-	TailsAnms[58] = LoadCharacterAnim("TA_EDGE_OTTO_B");
-	TailsAnms[59] = LoadCharacterAnim("TA_EDGE_OTTO_C");
-	TailsAnms[60] = LoadCharacterAnim("TA_WIN_B");
-	TailsAnms[61] = LoadCharacterAnim("TA_TRAP_JUMP");
+	TailsAnms[0] = arc.GetAnimation("TA_WALK.saanim");
+	TailsAnms[1] = arc.GetAnimation("TA_WALK_PULL.saanim");
+	TailsAnms[2] = arc.GetAnimation("TA_WALK_PUSH.saanim");
+	TailsAnms[3] = arc.GetAnimation("TA_TURN_L.saanim");
+	TailsAnms[4] = arc.GetAnimation("TA_TURN_R.saanim");
+	TailsAnms[5] = arc.GetAnimation("TA_SLOW_RUN.saanim");
+	TailsAnms[6] = arc.GetAnimation("TA_MID_RUN.saanim");
+	TailsAnms[7] = arc.GetAnimation("TA_TOP_RUN.saanim");
+	TailsAnms[8] = arc.GetAnimation("TA_START.saanim");
+	TailsAnms[9] = arc.GetAnimation("TA_IDLE.saanim");
+	TailsAnms[10] = arc.GetAnimation("TA_IDLE_C.saanim");
+	TailsAnms[11] = arc.GetAnimation("TA_IDLE_D_HALF.saanim");
+	TailsAnms[12] = arc.GetAnimation("TA_DASH_PUSH.saanim");
+	TailsAnms[13] = arc.GetAnimation("TA_FLY_IDLE_B.saanim");
+	TailsAnms[14] = arc.GetAnimation("TA_POW_ROT.saanim");
+	TailsAnms[15] = arc.GetAnimation("TA_ATC_BOMB.saanim");
+	TailsAnms[16] = arc.GetAnimation("TA_FW_JUMP.saanim");
+	TailsAnms[17] = arc.GetAnimation("HERO_TA.saanim");
+	TailsAnms[18] = arc.GetAnimation("TA_JUMP_A.saanim");
+	TailsAnms[19] = arc.GetAnimation("TA_JUMP_B.saanim");
+	TailsAnms[20] = arc.GetAnimation("TA_JUMP_C.saanim");
+	TailsAnms[21] = arc.GetAnimation("TA_JUMP_D.saanim");
+	TailsAnms[22] = arc.GetAnimation("TA_JUMP_E.saanim");
+	TailsAnms[23] = arc.GetAnimation("TA_JUMP_F.saanim");
+	TailsAnms[24] = arc.GetAnimation("TA_JUMP_TRNGL.saanim");
+	TailsAnms[25] = arc.GetAnimation("TA_JUMP_GLIND.saanim");
+	TailsAnms[26] = arc.GetAnimation("TA_GLIND.saanim");
+	TailsAnms[27] = arc.GetAnimation("TA_GLIND_BK.saanim");
+	TailsAnms[28] = arc.GetAnimation("TA_GLIND_BK_L.saanim");
+	TailsAnms[29] = arc.GetAnimation("TA_GLIND_BK_R.saanim");
+	TailsAnms[30] = arc.GetAnimation("TA_GLIND_FLIP_BK.saanim");
+	TailsAnms[31] = arc.GetAnimation("TA_GLIND_FLIP_FR.saanim");
+	TailsAnms[32] = arc.GetAnimation("TA_GLIND_L.saanim");
+	TailsAnms[33] = arc.GetAnimation("TA_GLIND_R.saanim");
+	TailsAnms[34] = arc.GetAnimation("TA_FLY_IDLE.saanim");
+	TailsAnms[35] = arc.GetAnimation("TA_FLY_SLOW.saanim");
+	TailsAnms[36] = arc.GetAnimation("TA_FLY_UP.saanim");
+	TailsAnms[37] = arc.GetAnimation("TA_FLY_PULL.saanim");
+	TailsAnms[38] = arc.GetAnimation("TA_FLY_PUSH.saanim");
+	TailsAnms[39] = arc.GetAnimation("TA_FLY_KICK.saanim");
+	TailsAnms[40] = arc.GetAnimation("TA_FLY_HANG_IDLE.saanim");
+	TailsAnms[41] = arc.GetAnimation("TA_FLY_HANG_OFF.saanim");
+	TailsAnms[42] = arc.GetAnimation("TA_FLY_HANG_ON.saanim");
+	TailsAnms[43] = arc.GetAnimation("TA_HANG_OFF.saanim");
+	TailsAnms[44] = arc.GetAnimation("TA_HANG_ON.saanim");
+	TailsAnms[45] = arc.GetAnimation("TA_BREAK_A.saanim");
+	TailsAnms[46] = arc.GetAnimation("TA_BREAK_B.saanim");
+	TailsAnms[47] = arc.GetAnimation("TA_BREAK_C.saanim");
+	TailsAnms[48] = arc.GetAnimation("TA_BREAK_TURN_L.saanim");
+	TailsAnms[49] = arc.GetAnimation("TA_BREAK_TURN_R.saanim");
+	TailsAnms[50] = arc.GetAnimation("TA_BRA_MID.saanim");
+	TailsAnms[51] = arc.GetAnimation("TA_BRA_TOP.saanim");
+	TailsAnms[52] = arc.GetAnimation("TA_BOB.saanim");
+	TailsAnms[53] = arc.GetAnimation("TA_FLORT.saanim");
+	TailsAnms[54] = arc.GetAnimation("TA_DAM_M_A.saanim");
+	TailsAnms[55] = arc.GetAnimation("TA_DAM_M_B.saanim");
+	TailsAnms[56] = arc.GetAnimation("TA_DAM_M_C.saanim");
+	TailsAnms[57] = arc.GetAnimation("TA_EDGE_OTTO_A.saanim");
+	TailsAnms[58] = arc.GetAnimation("TA_EDGE_OTTO_B.saanim");
+	TailsAnms[59] = arc.GetAnimation("TA_EDGE_OTTO_C.saanim");
+	TailsAnms[60] = arc.GetAnimation("TA_WIN_B.saanim");
+	TailsAnms[61] = arc.GetAnimation("TA_TRAP_JUMP.saanim");
 
-	TailsAnms[62] = LoadCharacterAnim("TA_WALK_TA");
-	TailsAnms[63] = LoadCharacterAnim("TA_SLOW_RUN_TA");
-	TailsAnms[64] = LoadCharacterAnim("TA_MID_RUN_TA");
-	TailsAnms[65] = LoadCharacterAnim("TA_TOP_RUN_TA");
-	TailsAnms[66] = LoadCharacterAnim("TA_START_TA");
-	TailsAnms[67] = LoadCharacterAnim("TA_IDLE_TA");
-	TailsAnms[68] = LoadCharacterAnim("TA_JUMP_TA_A");
-	TailsAnms[69] = LoadCharacterAnim("TA_JUMP_TA_B");
-	TailsAnms[70] = LoadCharacterAnim("TA_JUMP_TA_C");
-	TailsAnms[71] = LoadCharacterAnim("TA_JUMP_TA_D");
-	TailsAnms[72] = LoadCharacterAnim("TA_JUMP_TA_E");
-	TailsAnms[73] = LoadCharacterAnim("TA_JUMP_TRNGL_TA");
-	TailsAnms[74] = LoadCharacterAnim("TA_JUMP_GLIND_TA");
-	TailsAnms[75] = LoadCharacterAnim("TA_FW_JUMP_TA");
-	TailsAnms[76] = LoadCharacterAnim("TA_TRAP_JUMP_TA");
-	TailsAnms[77] = LoadCharacterAnim("TA_FLY_IDLE_TA");
-	TailsAnms[78] = LoadCharacterAnim("TA_FLY_KICK_TA");
-	TailsAnms[79] = LoadCharacterAnim("TA_FLY_SLOW_TA");
-	TailsAnms[80] = LoadCharacterAnim("TA_GLIND_TA");
-	TailsAnms[81] = LoadCharacterAnim("TA_GLIND_BK_TA");
-	TailsAnms[82] = LoadCharacterAnim("TA_GLIND_FLIP_BK_TA");
-	TailsAnms[83] = LoadCharacterAnim("TA_GLIND_FLIP_FR_TA");
-	TailsAnms[84] = LoadCharacterAnim("TA_FLORT_TA");
-	TailsAnms[85] = LoadCharacterAnim("TA_DASH_PUSH_TA");
-	TailsAnms[86] = LoadCharacterAnim("TA_DAM_M_TA_A");
-	TailsAnms[87] = LoadCharacterAnim("TA_DAM_M_TA_B");
-	TailsAnms[88] = LoadCharacterAnim("TA_DAM_M_TA_C");
-	TailsAnms[89] = LoadCharacterAnim("TA_BREAK_TA_A");
-	TailsAnms[90] = LoadCharacterAnim("TA_BREAK_TA_B");
-	TailsAnms[91] = LoadCharacterAnim("TA_BREAK_TA_C");
-	TailsAnms[92] = LoadCharacterAnim("TA_BRA_MID_TA");
-	TailsAnms[93] = LoadCharacterAnim("TA_ATC_BOMB_TA");
-	TailsAnms[94] = LoadCharacterAnim("TA_WIN_B_TA");
-	TailsAnms[95] = LoadCharacterAnim("HERO_TA_TA");
+	TailsAnms[62] = arc.GetAnimation("TA_WALK_TA.saanim");
+	TailsAnms[63] = arc.GetAnimation("TA_SLOW_RUN_TA.saanim");
+	TailsAnms[64] = arc.GetAnimation("TA_MID_RUN_TA.saanim");
+	TailsAnms[65] = arc.GetAnimation("TA_TOP_RUN_TA.saanim");
+	TailsAnms[66] = arc.GetAnimation("TA_START_TA.saanim");
+	TailsAnms[67] = arc.GetAnimation("TA_IDLE_TA.saanim");
+	TailsAnms[68] = arc.GetAnimation("TA_JUMP_TA_A.saanim");
+	TailsAnms[69] = arc.GetAnimation("TA_JUMP_TA_B.saanim");
+	TailsAnms[70] = arc.GetAnimation("TA_JUMP_TA_C.saanim");
+	TailsAnms[71] = arc.GetAnimation("TA_JUMP_TA_D.saanim");
+	TailsAnms[72] = arc.GetAnimation("TA_JUMP_TA_E.saanim");
+	TailsAnms[73] = arc.GetAnimation("TA_JUMP_TRNGL_TA.saanim");
+	TailsAnms[74] = arc.GetAnimation("TA_JUMP_GLIND_TA.saanim");
+	TailsAnms[75] = arc.GetAnimation("TA_FW_JUMP_TA.saanim");
+	TailsAnms[76] = arc.GetAnimation("TA_TRAP_JUMP_TA.saanim");
+	TailsAnms[77] = arc.GetAnimation("TA_FLY_IDLE_TA.saanim");
+	TailsAnms[78] = arc.GetAnimation("TA_FLY_KICK_TA.saanim");
+	TailsAnms[79] = arc.GetAnimation("TA_FLY_SLOW_TA.saanim");
+	TailsAnms[80] = arc.GetAnimation("TA_GLIND_TA.saanim");
+	TailsAnms[81] = arc.GetAnimation("TA_GLIND_BK_TA.saanim");
+	TailsAnms[82] = arc.GetAnimation("TA_GLIND_FLIP_BK_TA.saanim");
+	TailsAnms[83] = arc.GetAnimation("TA_GLIND_FLIP_FR_TA.saanim");
+	TailsAnms[84] = arc.GetAnimation("TA_FLORT_TA.saanim");
+	TailsAnms[85] = arc.GetAnimation("TA_DASH_PUSH_TA.saanim");
+	TailsAnms[86] = arc.GetAnimation("TA_DAM_M_TA_A.saanim");
+	TailsAnms[87] = arc.GetAnimation("TA_DAM_M_TA_B.saanim");
+	TailsAnms[88] = arc.GetAnimation("TA_DAM_M_TA_C.saanim");
+	TailsAnms[89] = arc.GetAnimation("TA_BREAK_TA_A.saanim");
+	TailsAnms[90] = arc.GetAnimation("TA_BREAK_TA_B.saanim");
+	TailsAnms[91] = arc.GetAnimation("TA_BREAK_TA_C.saanim");
+	TailsAnms[92] = arc.GetAnimation("TA_BRA_MID_TA.saanim");
+	TailsAnms[93] = arc.GetAnimation("TA_ATC_BOMB_TA.saanim");
+	TailsAnms[94] = arc.GetAnimation("TA_WIN_B_TA.saanim");
+	TailsAnms[95] = arc.GetAnimation("HERO_TA_TA.saanim");
 
 	for (uint8_t i = 0; i < LengthOfArray(HTailsAnimData); ++i) {
 		if (TailsAnms[i] == nullptr) continue;

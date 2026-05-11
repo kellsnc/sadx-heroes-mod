@@ -1,10 +1,11 @@
 #include "stdafx.h"
+#include "ArchiveX.h"
 #include "mod.h"
 #include "utils.h"
 #include "sounds.h"
 #include "characters.h"
 
-ModelInfo* OmegaMdls[4];
+ModelInfo* OmegaMdls[5];
 AnimationFile* OmegaAnms[60];
 AnimData OmegaAnimData[60];
 
@@ -42,61 +43,54 @@ void PlaySound_Omega(int ID) {
 	}
 }
 
-inline bool DrawGammaLayerPart(NJS_OBJECT* object, const char* name) {
-	NJS_OBJECT* overlay = (NJS_OBJECT*)OmegaMdls[3]->getdata(name);
-	if (overlay && object == (NJS_OBJECT*)OmegaMdls[0]->getdata(name)) {
-		late_DrawModel(overlay->getbasicdxmodel(), LATE_WZ);
-		return true;
-	}
-	return false;
-}
-
 void OmegaCallback(NJS_OBJECT* object) {
 	NJS_OBJECT* base = OmegaMdls[0]->getmodel();
 
-	if (DrawGammaLayerPart(object, "Dummy037")) {
+	if (object == base->getnode(17)) {
 		njGetMatrix(OmegaMatrices[0]);
 		return;
 	}
-	
-	if (DrawGammaLayerPart(object, "Dummy022")) {
+
+	if (object == base->getnode(33)) {
 		njGetMatrix(OmegaMatrices[1]);
 		return;
 	}
 
-	if (DrawGammaLayerPart(object, "Dummy012")) {
+	if (object == base->getnode(6)) {
 		njGetMatrix(OmegaMatrices[2]);
 		return;
 	}
 	
-	if (DrawGammaLayerPart(object, "Dummy011")) {
+	if (object == base->getnode(7)) {
 		njGetMatrix(OmegaMatrices[3]);
 		return;
 	}
+}
 
-	if (DrawGammaLayerPart(object, "Dummy008")) return;
-	if (DrawGammaLayerPart(object, "Dummy010")) return;
-	if (DrawGammaLayerPart(object, "Dummy011")) return;
-	if (DrawGammaLayerPart(object, "Dummy012")) return;
-	if (DrawGammaLayerPart(object, "Dummy013")) return;
-	if (DrawGammaLayerPart(object, "Dummy014")) return;
-	if (DrawGammaLayerPart(object, "Dummy018")) return;
-	if (DrawGammaLayerPart(object, "Dummy019")) return;
-	if (DrawGammaLayerPart(object, "Dummy021")) return;
-	if (DrawGammaLayerPart(object, "Dummy022")) return;
-	if (DrawGammaLayerPart(object, "Dummy033")) return;
-	if (DrawGammaLayerPart(object, "Dummy034")) return;
-	if (DrawGammaLayerPart(object, "Dummy036")) return;
-	if (DrawGammaLayerPart(object, "Dummy037")) return;
-	if (DrawGammaLayerPart(object, "Dummy047")) return;
-	if (DrawGammaLayerPart(object, "Dummy050")) return;
-	if (DrawGammaLayerPart(object, "Dummy052")) return;
-	if (DrawGammaLayerPart(object, "Dummy053")) return;
-	if (DrawGammaLayerPart(object, "Dummy054")) return;
-	if (DrawGammaLayerPart(object, "Dummy055")) return;
-	if (DrawGammaLayerPart(object, "Dummy057")) return;
-	if (DrawGammaLayerPart(object, "Dummy058")) return;
-	if (DrawGammaLayerPart(object, "Dummy059")) return;
+void HideNode(NJS_OBJECT* object)
+{
+	while (object)
+	{
+		object->evalflags |= NJD_EVAL_HIDE;
+		if (object->child)
+		{
+			HideNode(object->child);
+		}
+		object = object->sibling;
+	}
+}
+
+void ShowNode(NJS_OBJECT* object)
+{
+	while (object)
+	{
+		object->evalflags |= NJD_EVAL_HIDE;
+		if (object->child)
+		{
+			HideNode(object->child);
+		}
+		object = object->sibling;
+	}
 }
 
 void OmegaHeroes_Display(ObjectMaster *obj) {
@@ -161,71 +155,65 @@ void OmegaHeroes_Display(ObjectMaster *obj) {
 		njRotateY(0, 0xC000);
 	}
 
+	njRotateX(0, 0x4000);
+
+	bool show_gun_l = omegaobj->Data1->Index == 9 || (omegaobj->Data1->Index == 11 && omegaobj->Data1->Scale.x > 60) || obj->Data1->Action == 19 || obj->Data1->Action == 20;
+	bool show_gun_r = show_gun_l;
+
+	if (show_gun_l)
+	{
+		HideNode(OmegaMdls[0]->getmodel()->getnode(34));
+	}
+
+	if (show_gun_r)
+	{
+		HideNode(OmegaMdls[0]->getmodel()->getnode(18));
+	}
+
 	*NodeCallbackFuncPtr = OmegaCallback;
 	njAction(OmegaAnimData[omegaobj->Data1->Index].Animation, omegaobj->Data1->Scale.x);
 	*NodeCallbackFuncPtr = nullptr;
 
 	switch (omegaobj->Data1->Index) {
-	case 7: case 19:
-		for (uint8_t i = 2; i < 4; ++i) {
+	case 7:
+	case 19:
+		for (int i = 2; i < 4; ++i) {
 			njSetMatrix(NULL, OmegaMatrices[i]);
-			late_DrawModel(OmegaMdls[2]->getmodel()->getbasicdxmodel(), LATE_MAT);
+			late_DrawModel(OmegaMdls[1]->getmodel()->getbasicdxmodel(), LATE_MAT);
 		}
 		
 		break;
 	}
 
-	if (omegaobj->Data1->Index == 9 || (omegaobj->Data1->Index == 11 && omegaobj->Data1->Scale.x > 60) || obj->Data1->Action == 19 || obj->Data1->Action == 20) {
-		for (uint8_t i = 23; i < 47; ++i) {
-			if (i > 32 && i < 38) continue;
-			std::string str = "Dummy0";
-			str = str + std::to_string(i);
-			NJS_OBJECT* mdl = (NJS_OBJECT*)OmegaMdls[0]->getdata(str);
-			mdl->evalflags |= NJD_EVAL_HIDE;
-		}
-
-		njSetMatrix(NULL, OmegaMatrices[0]);
-		njTranslate(0, -3.5f, 0, 0);
-		njScale(0, 1, 0.8f, 0.8f);
-		if (obj->Data1->Action == 19 || obj->Data1->Action == 20) {
-			njRotateX(0, data2->field_38);
-			dsDrawModel(OmegaMdls[1]->getmodel()->getbasicdxmodel());
-		}
-		else {
-			njTranslate(0, 2, 0, 0);
-			njRotateX(0, data2->field_38);
-			dsDrawModel(OmegaMdls[1]->getmodel()->child->child->getbasicdxmodel());
-			dsDrawModel(OmegaMdls[1]->getmodel()->child->child->child->getbasicdxmodel());
-
-			njGetMatrix(OmegaMatrices[0]);
-		}
+	if (show_gun_l)
+	{
+		ShowNode(OmegaMdls[0]->getmodel()->getnode(34));
 
 		njSetMatrix(NULL, OmegaMatrices[1]);
-		njRotateY(0, 0x8000);
-		njTranslate(0, -3.5f, 0, 0);
-		njScale(0, 1, 0.8f, 0.8f);
 		if (obj->Data1->Action == 19 || obj->Data1->Action == 20) {
-			dsDrawModel(OmegaMdls[1]->getmodel()->getbasicdxmodel());
 			njRotateX(0, data2->field_38);
+			dsDrawObject(OmegaMdls[4]->getmodel());
 		}
 		else {
-			njTranslate(0, 2, 0, 0);
 			njRotateX(0, data2->field_38);
-			dsDrawModel(OmegaMdls[1]->getmodel()->child->child->getbasicdxmodel());
-			dsDrawModel(OmegaMdls[1]->getmodel()->child->child->child->getbasicdxmodel());
+			dsDrawObject(OmegaMdls[2]->getmodel());
 			njGetMatrix(OmegaMatrices[1]);
 		}
 	}
-	else {
-		NJS_OBJECT* mdl = (NJS_OBJECT*)OmegaMdls[0]->getdata("Dummy038");
-		if (mdl->evalflags & NJD_EVAL_HIDE) {
-			for (uint8_t i = 23; i < 47; ++i) {
-				if (i > 32 && i < 38) continue;
-				std::string str = "Dummy0";
-				str = str + std::to_string(i);
-				mdl = (NJS_OBJECT*)OmegaMdls[0]->getdata(str);
-				mdl->evalflags &= ~NJD_EVAL_HIDE;
-			}
+
+	if (show_gun_r)
+	{
+		ShowNode(OmegaMdls[0]->getmodel()->getnode(18));
+
+		njSetMatrix(NULL, OmegaMatrices[0]);
+		if (obj->Data1->Action == 19 || obj->Data1->Action == 20) {
+			njRotateX(0, data2->field_38);
+			dsDrawObject(OmegaMdls[4]->getmodel());
+		}
+		else {
+			njRotateX(0, data2->field_38);
+			dsDrawObject(OmegaMdls[3]->getmodel());
+			njGetMatrix(OmegaMatrices[0]);
 		}
 	}
 
@@ -269,7 +257,7 @@ void OmegaHeroes_Main(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1;
 	EntityData2* data2 = (EntityData2*)obj->Data2;
 
-	if (!CharactersCommon_Init(obj, "omega", &OMEGA_TEXLIST)) {
+	if (!CharactersCommon_Init(obj, "heroes-omega", &OMEGA_TEXLIST)) {
 		return;
 	}
 
@@ -284,7 +272,7 @@ void OmegaHeroes_Main(ObjectMaster *obj) {
 
 	if (data->Rotation.z == 0) {
 		if (data->CharIndex == 0) {
-			CON_REGULAR_TEXNAMES[15].texaddr = OMEGA_TEXLIST.textures[14].texaddr;
+			CON_REGULAR_TEXNAMES[15].texaddr = OMEGA_TEXLIST.textures[9].texaddr;
 		}
 
 		if (CustomPhysics) {
@@ -397,71 +385,74 @@ void OmegaHeroes_Main(ObjectMaster *obj) {
 }
 
 void LoadOmegaFiles() {
-	OmegaMdls[0] = LoadCharacterModel("omega_main");
-	OmegaMdls[1] = LoadCharacterModel("omega_guns");
-	OmegaMdls[2] = LoadCharacterModel("omega_effects");
-	OmegaMdls[3] = LoadCharacterModel("omega_overlay");
+	ArchiveX arc(HelperFunctionsGlobal.GetReplaceablePath("system\\heroes-omega.arcx"));
 
-	OmegaAnms[0] = LoadCharacterAnim("OM_WALK");
-	OmegaAnms[1] = LoadCharacterAnim("OM_WALK_PULL");
-	OmegaAnms[2] = LoadCharacterAnim("OM_WALK_PUSH");
-	OmegaAnms[3] = LoadCharacterAnim("OM_TURN_L");
-	OmegaAnms[4] = LoadCharacterAnim("OM_TURN_R");
-	OmegaAnms[5] = LoadCharacterAnim("OM_SLOW_RUN");
-	OmegaAnms[6] = LoadCharacterAnim("OM_MID_RUN");
-	OmegaAnms[7] = LoadCharacterAnim("OM_TOP_RUN");
-	OmegaAnms[8] = LoadCharacterAnim("OM_START");
-	OmegaAnms[9] = LoadCharacterAnim("OM_ATC_GUN");
-	OmegaAnms[10] = LoadCharacterAnim("OM_ATC_A");
-	OmegaAnms[11] = LoadCharacterAnim("OM_ATC_A");
-	OmegaAnms[12] = LoadCharacterAnim("OM_ATC_A");
-	OmegaAnms[13] = LoadCharacterAnim("OM_JUMP_A");
-	OmegaAnms[14] = LoadCharacterAnim("OM_JUMP_B");
-	OmegaAnms[15] = LoadCharacterAnim("OM_JUMP_C");
-	OmegaAnms[16] = LoadCharacterAnim("OM_JUMP_D");
-	OmegaAnms[17] = LoadCharacterAnim("OM_JUMP_E");
-	OmegaAnms[18] = LoadCharacterAnim("OM_JUMP_F");
-	OmegaAnms[19] = LoadCharacterAnim("OM_JUMP_TRNGL");
-	OmegaAnms[20] = LoadCharacterAnim("OM_JUMP_GLIND");
-	OmegaAnms[21] = LoadCharacterAnim("OM_GLIND");
-	OmegaAnms[22] = LoadCharacterAnim("OM_GLIND_BK");
-	OmegaAnms[23] = LoadCharacterAnim("OM_GLIND_BK_L");
-	OmegaAnms[24] = LoadCharacterAnim("OM_GLIND_BK_R");
-	OmegaAnms[25] = LoadCharacterAnim("OM_GLIND_FLIP_B");
-	OmegaAnms[26] = LoadCharacterAnim("OM_GLIND_FLIP_F");
-	OmegaAnms[27] = LoadCharacterAnim("OM_GLIND_L");
-	OmegaAnms[28] = LoadCharacterAnim("OM_GLIND_R");
-	OmegaAnms[29] = LoadCharacterAnim("OM_FLY_IDLE");
-	OmegaAnms[30] = LoadCharacterAnim("OM_FLY_SLOW");
-	OmegaAnms[31] = LoadCharacterAnim("OM_FLY_GLIND");
-	OmegaAnms[32] = LoadCharacterAnim("OM_HANG_OFF");
-	OmegaAnms[33] = LoadCharacterAnim("OM_HANG_ON");
-	OmegaAnms[34] = LoadCharacterAnim("OM_BREAK_A");
-	OmegaAnms[35] = LoadCharacterAnim("OM_BREAK_B");
-	OmegaAnms[36] = LoadCharacterAnim("OM_BREAK_C");
-	OmegaAnms[37] = LoadCharacterAnim("OM_BREAK_TURN_L");
-	OmegaAnms[38] = LoadCharacterAnim("OM_BREAK_TURN_R");
-	OmegaAnms[39] = LoadCharacterAnim("OM_BRA_MID");
-	OmegaAnms[40] = LoadCharacterAnim("OM_BRA_TOP");
-	OmegaAnms[41] = LoadCharacterAnim("OM_FLORT");
-	OmegaAnms[42] = LoadCharacterAnim("OM_DAM_M_A");
-	OmegaAnms[43] = LoadCharacterAnim("OM_DAM_M_B");
-	OmegaAnms[44] = LoadCharacterAnim("OM_DAM_M_C");
-	OmegaAnms[45] = LoadCharacterAnim("OM_EDGE_OTTO_A");
-	OmegaAnms[46] = LoadCharacterAnim("OM_EDGE_OTTO_B");
-	OmegaAnms[47] = LoadCharacterAnim("OM_EDGE_OTTO_C");
-	OmegaAnms[48] = LoadCharacterAnim("OM_EDGE_OTTO_C");
-	OmegaAnms[49] = LoadCharacterAnim("OM_FW_JUMP");
-	OmegaAnms[50] = LoadCharacterAnim("OM_TRAP_JUMP");
-	OmegaAnms[51] = LoadCharacterAnim("HERO_KN");
-	OmegaAnms[52] = LoadCharacterAnim("OM_WIN");
-	OmegaAnms[53] = LoadCharacterAnim("OM_ATC_GUN");
-	OmegaAnms[54] = LoadCharacterAnim("OM_IDLE");
-	OmegaAnms[55] = LoadCharacterAnim("OM_IDLE_C");
-	OmegaAnms[56] = LoadCharacterAnim("OM_IDLE_D");
-	OmegaAnms[57] = LoadCharacterAnim("OM_BOB");
-	OmegaAnms[58] = LoadCharacterAnim("OM_BOB_L");
-	OmegaAnms[59] = LoadCharacterAnim("OM_BOB_R");
+	OmegaMdls[0] = arc.GetModel("OMEGA_LOCATOR.sa1mdl");
+	OmegaMdls[1] = arc.GetModel("EF_OMG_JET.sa1mdl");
+	OmegaMdls[2] = arc.GetModel("OMEGA_L_GUN.sa1mdl");
+	OmegaMdls[3] = arc.GetModel("OMEGA_R_GUN.sa1mdl");
+	OmegaMdls[4] = arc.GetModel("DRILL.sa1mdl");
+
+	OmegaAnms[0] = arc.GetAnimation("OM_WALK.saanim");
+	OmegaAnms[1] = arc.GetAnimation("OM_WALK_PULL.saanim");
+	OmegaAnms[2] = arc.GetAnimation("OM_WALK_PUSH.saanim");
+	OmegaAnms[3] = arc.GetAnimation("OM_TURN_L.saanim");
+	OmegaAnms[4] = arc.GetAnimation("OM_TURN_R.saanim");
+	OmegaAnms[5] = arc.GetAnimation("OM_SLOW_RUN.saanim");
+	OmegaAnms[6] = arc.GetAnimation("OM_MID_RUN.saanim");
+	OmegaAnms[7] = arc.GetAnimation("OM_TOP_RUN.saanim");
+	OmegaAnms[8] = arc.GetAnimation("OM_START.saanim");
+	OmegaAnms[9] = arc.GetAnimation("OM_ATC_GUN.saanim");
+	OmegaAnms[10] = arc.GetAnimation("OM_ATC_A.saanim");
+	OmegaAnms[11] = arc.GetAnimation("OM_ATC_A.saanim");
+	OmegaAnms[12] = arc.GetAnimation("OM_ATC_A.saanim");
+	OmegaAnms[13] = arc.GetAnimation("OM_JUMP_A.saanim");
+	OmegaAnms[14] = arc.GetAnimation("OM_JUMP_B.saanim");
+	OmegaAnms[15] = arc.GetAnimation("OM_JUMP_C.saanim");
+	OmegaAnms[16] = arc.GetAnimation("OM_JUMP_D.saanim");
+	OmegaAnms[17] = arc.GetAnimation("OM_JUMP_E.saanim");
+	OmegaAnms[18] = arc.GetAnimation("OM_JUMP_F.saanim");
+	OmegaAnms[19] = arc.GetAnimation("OM_JUMP_TRNGL.saanim");
+	OmegaAnms[20] = arc.GetAnimation("OM_JUMP_GLIND.saanim");
+	OmegaAnms[21] = arc.GetAnimation("OM_GLIND.saanim");
+	OmegaAnms[22] = arc.GetAnimation("OM_GLIND_BK.saanim");
+	OmegaAnms[23] = arc.GetAnimation("OM_GLIND_BK_L.saanim");
+	OmegaAnms[24] = arc.GetAnimation("OM_GLIND_BK_R.saanim");
+	OmegaAnms[25] = arc.GetAnimation("OM_GLIND_FLIP_B.saanim");
+	OmegaAnms[26] = arc.GetAnimation("OM_GLIND_FLIP_F.saanim");
+	OmegaAnms[27] = arc.GetAnimation("OM_GLIND_L.saanim");
+	OmegaAnms[28] = arc.GetAnimation("OM_GLIND_R.saanim");
+	OmegaAnms[29] = arc.GetAnimation("OM_FLY_IDLE.saanim");
+	OmegaAnms[30] = arc.GetAnimation("OM_FLY_SLOW.saanim");
+	OmegaAnms[31] = arc.GetAnimation("OM_FLY_GLIND.saanim");
+	OmegaAnms[32] = arc.GetAnimation("OM_HANG_OFF.saanim");
+	OmegaAnms[33] = arc.GetAnimation("OM_HANG_ON.saanim");
+	OmegaAnms[34] = arc.GetAnimation("OM_BREAK_A.saanim");
+	OmegaAnms[35] = arc.GetAnimation("OM_BREAK_B.saanim");
+	OmegaAnms[36] = arc.GetAnimation("OM_BREAK_C.saanim");
+	OmegaAnms[37] = arc.GetAnimation("OM_BREAK_TURN_L.saanim");
+	OmegaAnms[38] = arc.GetAnimation("OM_BREAK_TURN_R.saanim");
+	OmegaAnms[39] = arc.GetAnimation("OM_BRA_MID.saanim");
+	OmegaAnms[40] = arc.GetAnimation("OM_BRA_TOP.saanim");
+	OmegaAnms[41] = arc.GetAnimation("OM_FLORT.saanim");
+	OmegaAnms[42] = arc.GetAnimation("OM_DAM_M_A.saanim");
+	OmegaAnms[43] = arc.GetAnimation("OM_DAM_M_B.saanim");
+	OmegaAnms[44] = arc.GetAnimation("OM_DAM_M_C.saanim");
+	OmegaAnms[45] = arc.GetAnimation("OM_EDGE_OTTO_A.saanim");
+	OmegaAnms[46] = arc.GetAnimation("OM_EDGE_OTTO_B.saanim");
+	OmegaAnms[47] = arc.GetAnimation("OM_EDGE_OTTO_C.saanim");
+	OmegaAnms[48] = arc.GetAnimation("OM_EDGE_OTTO_C.saanim");
+	OmegaAnms[49] = arc.GetAnimation("OM_FW_JUMP.saanim");
+	OmegaAnms[50] = arc.GetAnimation("OM_TRAP_JUMP.saanim");
+	OmegaAnms[51] = arc.GetAnimation("HERO_KN.saanim");
+	OmegaAnms[52] = arc.GetAnimation("OM_WIN.saanim");
+	OmegaAnms[53] = arc.GetAnimation("OM_ATC_GUN.saanim");
+	OmegaAnms[54] = arc.GetAnimation("OM_IDLE.saanim");
+	OmegaAnms[55] = arc.GetAnimation("OM_IDLE_C.saanim");
+	OmegaAnms[56] = arc.GetAnimation("OM_IDLE_D.saanim");
+	OmegaAnms[57] = arc.GetAnimation("OM_BOB.saanim");
+	OmegaAnms[58] = arc.GetAnimation("OM_BOB_L.saanim");
+	OmegaAnms[59] = arc.GetAnimation("OM_BOB_R.saanim");
 
 	for (uint8_t i = 0; i < LengthOfArray(OmegaAnimData); ++i) {
 		if (OmegaAnms[i] == nullptr) continue;

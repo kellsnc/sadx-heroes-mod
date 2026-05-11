@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "ArchiveX.h"
 #include "mod.h"
 #include "utils.h"
 #include "sounds.h"
@@ -98,6 +99,8 @@ void ShadowHeroes_Display(ObjectMaster *obj) {
 	njRotateX(0, entity1->Rotation.x);
 	njRotateY(0, -entity1->Rotation.y - 0x4000);
 
+	njRotateX(0, 0x4000);
+
 	*NodeCallbackFuncPtr = ShadowCallback;
 	njActionWeight(HShadowAnimData[sonicobj->Data1->Index].Animation, sonicobj->Data1->Scale.x, ShadowMdls[0]->getweightinfo());
 	*NodeCallbackFuncPtr = nullptr;
@@ -125,7 +128,8 @@ void ShadowHeroes_Display(ObjectMaster *obj) {
 	if (sonicobj->Data1->Index == 6 || sonicobj->Data1->Index == 7 || sonicobj->Data1->Index == 57) {
 		for (int i = 0; i < 4; ++i) {
 			njSetMatrix(0, ShadowMatrices[i + 1]);
-			late_DrawObject(ShadowMdls[2]->getmodel()->getnode((i == 0 || i == 2) ? 5 : 2), LATE_MAT);
+			njRotateX(0, 0x8000);
+			late_DrawObject(ShadowMdls[2]->getmodel()->getnode((i == 0 || i == 2) ? 2 : 4), LATE_MAT);
 		}
 	}
 	
@@ -140,7 +144,7 @@ void ShadowHeroes_Main(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1;
 	EntityData2* data2 = (EntityData2*)obj->Data2;
 
-	if (!CharactersCommon_Init(obj, "shadow", &SHADOW_TEXLIST)) {
+	if (!CharactersCommon_Init(obj, "heroes-shadow", &SHADOW_TEXLIST)) {
 		return;
 	}
 
@@ -151,7 +155,7 @@ void ShadowHeroes_Main(ObjectMaster *obj) {
 
 	if (data->Rotation.z == 0) {
 		if (data->CharIndex == 0) {
-			CON_REGULAR_TEXNAMES[12].texaddr = SHADOW_TEXLIST.textures[1].texaddr;
+			CON_REGULAR_TEXNAMES[12].texaddr = SHADOW_TEXLIST.textures[3].texaddr;
 		}
 
 		if (CustomPhysics) {
@@ -226,71 +230,73 @@ void ShadowHeroes_Main(ObjectMaster *obj) {
 }
 
 void LoadShadowFiles() {
-	ShadowMdls[0] = LoadCharacterModel("shadow_main");
-	ShadowMdls[1] = LoadCharacterModel("shadow_pupils");
-	ShadowMdls[2] = LoadCharacterModel("shadow_air");
+	ArchiveX arc(HelperFunctionsGlobal.GetReplaceablePath("system\\heroes-shadow.arcx"));
+
+	ShadowMdls[0] = arc.GetModel("SHADOW_LOCATOR.sa1mdl");
+	ShadowMdls[1] = arc.GetModel("SHADOW_MABUTA.sa1mdl");
+	ShadowMdls[2] = arc.GetModel("SHADOW_JET.sa1mdl");
 
 	HelperFunctionsGlobal.Weights->Init(ShadowMdls[0]->getweightinfo(), ShadowMdls[0]->getmodel());
 
-	ShadowAnms[0] = LoadCharacterAnim("SH_WALK");
-	ShadowAnms[1] = LoadCharacterAnim("SH_WALK_PULL");
-	ShadowAnms[2] = LoadCharacterAnim("SH_WALK_PUSH");
-	ShadowAnms[3] = LoadCharacterAnim("SH_TURN_L");
-	ShadowAnms[4] = LoadCharacterAnim("SH_TURN_R");
-	ShadowAnms[5] = LoadCharacterAnim("SH_SLOW_RUN");
-	ShadowAnms[6] = LoadCharacterAnim("SH_SLOW_SKATE");
-	ShadowAnms[7] = LoadCharacterAnim("SH_MID_SKATE");
-	ShadowAnms[8] = LoadCharacterAnim("SH_START");
-	ShadowAnms[9] = LoadCharacterAnim("SH_JUMP_WALL");
-	ShadowAnms[10] = LoadCharacterAnim("SH_JUMP_TRIC_A");
-	ShadowAnms[11] = LoadCharacterAnim("SH_JUMP_TRIC_B");
-	ShadowAnms[12] = LoadCharacterAnim("SH_JUMP_TRIC_C");
-	ShadowAnms[13] = LoadCharacterAnim("SH_JUMP_A");
-	ShadowAnms[14] = LoadCharacterAnim("SH_JUMP_B");
-	ShadowAnms[15] = LoadCharacterAnim("SH_JUMP_C");
-	ShadowAnms[16] = LoadCharacterAnim("SH_JUMP_D");
-	ShadowAnms[17] = LoadCharacterAnim("SH_JUMP_E");
-	ShadowAnms[18] = LoadCharacterAnim("SH_JUMP_F");
-	ShadowAnms[19] = LoadCharacterAnim("SH_JUMP_TRNGL");
-	ShadowAnms[20] = LoadCharacterAnim("SH_JUMP_GLIND");
-	ShadowAnms[21] = LoadCharacterAnim("SH_GLIND");
-	ShadowAnms[22] = LoadCharacterAnim("SH_GLIND_BK");
-	ShadowAnms[23] = LoadCharacterAnim("SH_GLIND_BK_L");
-	ShadowAnms[24] = LoadCharacterAnim("SH_GLIND_BK_R");
-	ShadowAnms[25] = LoadCharacterAnim("SH_GLIND_FLIP_B");
-	ShadowAnms[26] = LoadCharacterAnim("SH_GLIND_FLIP_FR");
-	ShadowAnms[27] = LoadCharacterAnim("SH_GLIND_L");
-	ShadowAnms[28] = LoadCharacterAnim("SH_GLIND_R");
-	ShadowAnms[29] = LoadCharacterAnim("SH_FLY_IDLE");
-	ShadowAnms[30] = LoadCharacterAnim("SH_FLY_SLOW");
-	ShadowAnms[31] = LoadCharacterAnim("SH_FLY_GLIND");
-	ShadowAnms[32] = LoadCharacterAnim("SH_HANG_OFF");
-	ShadowAnms[33] = LoadCharacterAnim("SH_HANG_ON");
-	ShadowAnms[34] = LoadCharacterAnim("SH_BREAK_A");
-	ShadowAnms[35] = LoadCharacterAnim("SH_BREAK_B");
-	ShadowAnms[36] = LoadCharacterAnim("SH_BREAK_C");
-	ShadowAnms[37] = LoadCharacterAnim("SH_BREAK_TURN_L");
-	ShadowAnms[38] = LoadCharacterAnim("SH_BREAK_TURN_R");
-	ShadowAnms[39] = LoadCharacterAnim("SH_BRA_MID");
-	ShadowAnms[40] = LoadCharacterAnim("SH_BRA_TOP");
-	ShadowAnms[41] = LoadCharacterAnim("SH_FLORT");
-	ShadowAnms[42] = LoadCharacterAnim("SH_DAM_M_A");
-	ShadowAnms[43] = LoadCharacterAnim("SH_DAM_M_B");
-	ShadowAnms[44] = LoadCharacterAnim("SH_DAM_M_C");
-	ShadowAnms[45] = LoadCharacterAnim("SH_EDGE_OTTO_A");
-	ShadowAnms[46] = LoadCharacterAnim("SH_EDGE_OTTO_B");
-	ShadowAnms[47] = LoadCharacterAnim("SH_EDGE_OTTO_C");
-	ShadowAnms[48] = LoadCharacterAnim("SH_EDGE_OTTO_C");
-	ShadowAnms[49] = LoadCharacterAnim("SH_FW_JUMP");
-	ShadowAnms[50] = LoadCharacterAnim("SH_TRAP_JUMP");
-	ShadowAnms[51] = LoadCharacterAnim("SH_POW_ROT");
-	ShadowAnms[52] = LoadCharacterAnim("SH_WIN");
-	ShadowAnms[53] = LoadCharacterAnim("SH_ATC_DASH");
-	ShadowAnms[54] = LoadCharacterAnim("SH_IDLE_HALF");
-	ShadowAnms[55] = LoadCharacterAnim("SH_IDLE_B_HALF");
-	ShadowAnms[56] = LoadCharacterAnim("SH_IDLE_D_HALF");
-	ShadowAnms[57] = LoadCharacterAnim("SH_TOP_SKATE");
-	ShadowAnms[58] = LoadCharacterAnim("DARK_SH");
+	ShadowAnms[0] = arc.GetAnimation("SH_WALK.saanim");
+	ShadowAnms[1] = arc.GetAnimation("SH_WALK_PULL.saanim");
+	ShadowAnms[2] = arc.GetAnimation("SH_WALK_PUSH.saanim");
+	ShadowAnms[3] = arc.GetAnimation("SH_TURN_L.saanim");
+	ShadowAnms[4] = arc.GetAnimation("SH_TURN_R.saanim");
+	ShadowAnms[5] = arc.GetAnimation("SH_SLOW_RUN.saanim");
+	ShadowAnms[6] = arc.GetAnimation("SH_SLOW_SKATE.saanim");
+	ShadowAnms[7] = arc.GetAnimation("SH_MID_SKATE.saanim");
+	ShadowAnms[8] = arc.GetAnimation("SH_START.saanim");
+	ShadowAnms[9] = arc.GetAnimation("SH_JUMP_WALL.saanim");
+	ShadowAnms[10] = arc.GetAnimation("SH_JUMP_TRIC_A.saanim");
+	ShadowAnms[11] = arc.GetAnimation("SH_JUMP_TRIC_B.saanim");
+	ShadowAnms[12] = arc.GetAnimation("SH_JUMP_TRIC_C.saanim");
+	ShadowAnms[13] = arc.GetAnimation("SH_JUMP_A.saanim");
+	ShadowAnms[14] = arc.GetAnimation("SH_JUMP_B.saanim");
+	ShadowAnms[15] = arc.GetAnimation("SH_JUMP_C.saanim");
+	ShadowAnms[16] = arc.GetAnimation("SH_JUMP_D.saanim");
+	ShadowAnms[17] = arc.GetAnimation("SH_JUMP_E.saanim");
+	ShadowAnms[18] = arc.GetAnimation("SH_JUMP_F.saanim");
+	ShadowAnms[19] = arc.GetAnimation("SH_JUMP_TRNGL.saanim");
+	ShadowAnms[20] = arc.GetAnimation("SH_JUMP_GLIND.saanim");
+	ShadowAnms[21] = arc.GetAnimation("SH_GLIND.saanim");
+	ShadowAnms[22] = arc.GetAnimation("SH_GLIND_BK.saanim");
+	ShadowAnms[23] = arc.GetAnimation("SH_GLIND_BK_L.saanim");
+	ShadowAnms[24] = arc.GetAnimation("SH_GLIND_BK_R.saanim");
+	ShadowAnms[25] = arc.GetAnimation("SH_GLIND_FLIP_B.saanim");
+	ShadowAnms[26] = arc.GetAnimation("SH_GLIND_FLIP_FR.saanim");
+	ShadowAnms[27] = arc.GetAnimation("SH_GLIND_L.saanim");
+	ShadowAnms[28] = arc.GetAnimation("SH_GLIND_R.saanim");
+	ShadowAnms[29] = arc.GetAnimation("SH_FLY_IDLE.saanim");
+	ShadowAnms[30] = arc.GetAnimation("SH_FLY_SLOW.saanim");
+	ShadowAnms[31] = arc.GetAnimation("SH_FLY_GLIND.saanim");
+	ShadowAnms[32] = arc.GetAnimation("SH_HANG_OFF.saanim");
+	ShadowAnms[33] = arc.GetAnimation("SH_HANG_ON.saanim");
+	ShadowAnms[34] = arc.GetAnimation("SH_BREAK_A.saanim");
+	ShadowAnms[35] = arc.GetAnimation("SH_BREAK_B.saanim");
+	ShadowAnms[36] = arc.GetAnimation("SH_BREAK_C.saanim");
+	ShadowAnms[37] = arc.GetAnimation("SH_BREAK_TURN_L.saanim");
+	ShadowAnms[38] = arc.GetAnimation("SH_BREAK_TURN_R.saanim");
+	ShadowAnms[39] = arc.GetAnimation("SH_BRA_MID.saanim");
+	ShadowAnms[40] = arc.GetAnimation("SH_BRA_TOP.saanim");
+	ShadowAnms[41] = arc.GetAnimation("SH_FLORT.saanim");
+	ShadowAnms[42] = arc.GetAnimation("SH_DAM_M_A.saanim");
+	ShadowAnms[43] = arc.GetAnimation("SH_DAM_M_B.saanim");
+	ShadowAnms[44] = arc.GetAnimation("SH_DAM_M_C.saanim");
+	ShadowAnms[45] = arc.GetAnimation("SH_EDGE_OTTO_A.saanim");
+	ShadowAnms[46] = arc.GetAnimation("SH_EDGE_OTTO_B.saanim");
+	ShadowAnms[47] = arc.GetAnimation("SH_EDGE_OTTO_C.saanim");
+	ShadowAnms[48] = arc.GetAnimation("SH_EDGE_OTTO_C.saanim");
+	ShadowAnms[49] = arc.GetAnimation("SH_FW_JUMP.saanim");
+	ShadowAnms[50] = arc.GetAnimation("SH_TRAP_JUMP.saanim");
+	ShadowAnms[51] = arc.GetAnimation("SH_POW_ROT.saanim");
+	ShadowAnms[52] = arc.GetAnimation("SH_WIN.saanim");
+	ShadowAnms[53] = arc.GetAnimation("SH_ATC_DASH.saanim");
+	ShadowAnms[54] = arc.GetAnimation("SH_IDLE_HALF.saanim");
+	ShadowAnms[55] = arc.GetAnimation("SH_IDLE_B_HALF.saanim");
+	ShadowAnms[56] = arc.GetAnimation("SH_IDLE_D_HALF.saanim");
+	ShadowAnms[57] = arc.GetAnimation("SH_TOP_SKATE.saanim");
+	ShadowAnms[58] = arc.GetAnimation("DARK_SH.saanim");
 
 	for (uint8_t i = 0; i < LengthOfArray(HShadowAnimData); ++i) {
 		if (ShadowAnms[i] == nullptr) continue;

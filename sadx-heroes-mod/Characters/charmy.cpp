@@ -1,10 +1,11 @@
 #include "stdafx.h"
+#include "ArchiveX.h"
 #include "mod.h"
 #include "utils.h"
 #include "sounds.h"
 #include "characters.h"
 
-ModelInfo* CharmyMdls[4];
+ModelInfo* CharmyMdls[3];
 AnimationFile* CharmyAnms[58];
 AnimData CharmyAnimData[57];
 AnimData CWingsAnimData;
@@ -106,6 +107,8 @@ void CharmyHeroes_Display(ObjectMaster *obj) {
 		njTranslate(0, 10, 2, 0);
 	}
 
+	njRotateX(0, 0x4000);
+
 	*NodeCallbackFuncPtr = CharmyCallback;
 	njActionWeight(CharmyAnimData[Charmyobj->Data1->Index].Animation, Charmyobj->Data1->Scale.x, CharmyMdls[0]->getweightinfo());
 	*NodeCallbackFuncPtr = nullptr;
@@ -132,10 +135,9 @@ void CharmyHeroes_Display(ObjectMaster *obj) {
 
 	if (Charmyobj->Child) {
 		njSetMatrix(NULL, CharmyMatrices[1]);
-		njTranslate(0, 0, 1.2f, 0.5f);
-		njActionWeight(CWingsAnimData.Animation, Charmyobj->Child->Data1->Scale.x, CharmyMdls[2]->getweightinfo());
-		njTranslate(0, 0, -4.8f, -0.5f);
-		dsDrawModel(CharmyMdls[3]->getmodel()->child->sibling->sibling->getbasicdxmodel());
+		njTranslate(0, 0, 0.2f, -1.2f);
+		HelperFunctionsGlobal.Weights->Apply(CharmyMdls[2]->getweightinfo(), CWingsAnimData.Animation, Charmyobj->Child->Data1->Scale.x);
+		late_Action(CWingsAnimData.Animation, Charmyobj->Child->Data1->Scale.x, LATE_MAT);
 	}
 
 	njPopMatrix(1);
@@ -148,7 +150,7 @@ void CharmyHeroes_Display(ObjectMaster *obj) {
 void CharmyHeroes_Main(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1;
 
-	if (!CharactersCommon_Init(obj, "charmy", &CHARMY_TEXLIST)) {
+	if (!CharactersCommon_Init(obj, "heroes-charmy", &CHARMY_TEXLIST)) {
 		return;
 	}
 
@@ -493,71 +495,72 @@ void CharmyHeroes_Main(ObjectMaster *obj) {
 }
 
 void LoadCharmyFiles() {
-	CharmyMdls[0] = LoadCharacterModel("charmy_main");
-	CharmyMdls[1] = LoadCharacterModel("charmy_eyelashes");
-	CharmyMdls[2] = LoadCharacterModel("charmy_wings");
-	CharmyMdls[3] = LoadCharacterModel("charmy_objs");
+	ArchiveX arc(HelperFunctionsGlobal.GetReplaceablePath("system\\heroes-charmy.arcx"));
+
+	CharmyMdls[0] = arc.GetModel("BEE_LOCATOR.sa1mdl");
+	CharmyMdls[1] = arc.GetModel("BE_MABUTA.sa1mdl");
+	CharmyMdls[2] = arc.GetModel("BEE_HANE_LOCATOR.sa1mdl");
 
 	HelperFunctionsGlobal.Weights->Init(CharmyMdls[0]->getweightinfo(), CharmyMdls[0]->getmodel());
 	HelperFunctionsGlobal.Weights->Init(CharmyMdls[2]->getweightinfo(), CharmyMdls[2]->getmodel());
 
-	CharmyAnms[0] = LoadCharacterAnim("BEE_HANE_LOCATOR");
-	CharmyAnms[1] = LoadCharacterAnim("BE_WALK_PULL");
-	CharmyAnms[2] = LoadCharacterAnim("BE_WALK_PUSH");
-	CharmyAnms[3] = LoadCharacterAnim("BE_TURN_L");
-	CharmyAnms[4] = LoadCharacterAnim("BE_TURN_R");
-	CharmyAnms[5] = LoadCharacterAnim("BE_SLOW_RUN");
-	CharmyAnms[6] = LoadCharacterAnim("BE_MID_RUN");
-	CharmyAnms[7] = LoadCharacterAnim("BE_TOP_RUN");
-	CharmyAnms[8] = LoadCharacterAnim("BE_START");
-	CharmyAnms[9] = LoadCharacterAnim("BE_IDLE");
-	CharmyAnms[10] = LoadCharacterAnim("BE_IDLE_B");
-	CharmyAnms[11] = LoadCharacterAnim("BE_IDLE_C_HALF");
-	CharmyAnms[12] = LoadCharacterAnim("BE_WIN");
-	CharmyAnms[13] = LoadCharacterAnim("BE_ATC_HARI");
-	CharmyAnms[14] = LoadCharacterAnim("BE_POW_ROT");
-	CharmyAnms[15] = LoadCharacterAnim("BE_TRAP_JUMP");
-	CharmyAnms[16] = LoadCharacterAnim("BE_FW_JUMP");
-	CharmyAnms[17] = LoadCharacterAnim("CAO_BE");
-	CharmyAnms[18] = LoadCharacterAnim("BE_JUMP_A");
-	CharmyAnms[19] = LoadCharacterAnim("BE_JUMP_B");
-	CharmyAnms[20] = LoadCharacterAnim("BE_JUMP_C");
-	CharmyAnms[21] = LoadCharacterAnim("BE_JUMP_D");
-	CharmyAnms[22] = LoadCharacterAnim("BE_JUMP_E");
-	CharmyAnms[23] = LoadCharacterAnim("BE_JUMP_F");
-	CharmyAnms[24] = LoadCharacterAnim("BE_GUM");
-	CharmyAnms[25] = LoadCharacterAnim("BE_JUMP_GLIND");
-	CharmyAnms[26] = LoadCharacterAnim("BE_GLIND");
-	CharmyAnms[27] = LoadCharacterAnim("BE_GLIND_BK");
-	CharmyAnms[28] = LoadCharacterAnim("BE_GLIND_BK_L");
-	CharmyAnms[29] = LoadCharacterAnim("BE_GLIND_BK_R");
-	CharmyAnms[30] = LoadCharacterAnim("BE_GLIND_FLIP_BK");
-	CharmyAnms[31] = LoadCharacterAnim("BE_GLIND_FLIP_FR");
-	CharmyAnms[32] = LoadCharacterAnim("BE_GLIND_L");
-	CharmyAnms[33] = LoadCharacterAnim("BE_GLIND_R");
-	CharmyAnms[34] = LoadCharacterAnim("BE_FLY_IDLE");
-	CharmyAnms[35] = LoadCharacterAnim("BE_FLY_SLOW");
-	CharmyAnms[36] = LoadCharacterAnim("BE_FLY_UP");
-	CharmyAnms[37] = LoadCharacterAnim("BE_FLY_PULL");
-	CharmyAnms[38] = LoadCharacterAnim("BE_FLY_PUSH");
-	CharmyAnms[39] = LoadCharacterAnim("BE_FLY_KICK");
-	CharmyAnms[40] = LoadCharacterAnim("BE_FLY_HANG_IDLE");
-	CharmyAnms[41] = LoadCharacterAnim("BE_FLY_HANG_OFF");
-	CharmyAnms[42] = LoadCharacterAnim("BE_FLY_HANG_ON");
-	CharmyAnms[43] = LoadCharacterAnim("BE_HANG_ON");
-	CharmyAnms[44] = LoadCharacterAnim("BE_BREAK_A");
-	CharmyAnms[45] = LoadCharacterAnim("BE_BREAK_B");
-	CharmyAnms[46] = LoadCharacterAnim("BE_BREAK_C");
-	CharmyAnms[47] = LoadCharacterAnim("BE_BRA_MID");
-	CharmyAnms[48] = LoadCharacterAnim("BE_BRA_TOP");
-	CharmyAnms[49] = LoadCharacterAnim("BE_BOB");
-	CharmyAnms[50] = LoadCharacterAnim("BE_FLORT");
-	CharmyAnms[51] = LoadCharacterAnim("BE_DAM_M_A");
-	CharmyAnms[52] = LoadCharacterAnim("BE_DAM_M_B");
-	CharmyAnms[53] = LoadCharacterAnim("BE_DAM_M_C");
-	CharmyAnms[54] = LoadCharacterAnim("BE_EDGE_OTTO_A");
-	CharmyAnms[55] = LoadCharacterAnim("BE_EDGE_OTTO_B");
-	CharmyAnms[56] = LoadCharacterAnim("BE_EDGE_OTTO_C");
+	CharmyAnms[0] = arc.GetAnimation("BEE_HANE_LOCATOR.saanim");
+	CharmyAnms[1] = arc.GetAnimation("BE_WALK_PULL.saanim");
+	CharmyAnms[2] = arc.GetAnimation("BE_WALK_PUSH.saanim");
+	CharmyAnms[3] = arc.GetAnimation("BE_TURN_L.saanim");
+	CharmyAnms[4] = arc.GetAnimation("BE_TURN_R.saanim");
+	CharmyAnms[5] = arc.GetAnimation("BE_SLOW_RUN.saanim");
+	CharmyAnms[6] = arc.GetAnimation("BE_MID_RUN.saanim");
+	CharmyAnms[7] = arc.GetAnimation("BE_TOP_RUN.saanim");
+	CharmyAnms[8] = arc.GetAnimation("BE_START.saanim");
+	CharmyAnms[9] = arc.GetAnimation("BE_IDLE.saanim");
+	CharmyAnms[10] = arc.GetAnimation("BE_IDLE_B.saanim");
+	CharmyAnms[11] = arc.GetAnimation("BE_IDLE_C_HALF.saanim");
+	CharmyAnms[12] = arc.GetAnimation("BE_WIN.saanim");
+	CharmyAnms[13] = arc.GetAnimation("BE_ATC_HARI.saanim");
+	CharmyAnms[14] = arc.GetAnimation("BE_POW_ROT.saanim");
+	CharmyAnms[15] = arc.GetAnimation("BE_TRAP_JUMP.saanim");
+	CharmyAnms[16] = arc.GetAnimation("BE_FW_JUMP.saanim");
+	CharmyAnms[17] = arc.GetAnimation("CAO_BE.saanim");
+	CharmyAnms[18] = arc.GetAnimation("BE_JUMP_A.saanim");
+	CharmyAnms[19] = arc.GetAnimation("BE_JUMP_B.saanim");
+	CharmyAnms[20] = arc.GetAnimation("BE_JUMP_C.saanim");
+	CharmyAnms[21] = arc.GetAnimation("BE_JUMP_D.saanim");
+	CharmyAnms[22] = arc.GetAnimation("BE_JUMP_E.saanim");
+	CharmyAnms[23] = arc.GetAnimation("BE_JUMP_F.saanim");
+	CharmyAnms[24] = arc.GetAnimation("BE_GUM.saanim");
+	CharmyAnms[25] = arc.GetAnimation("BE_JUMP_GLIND.saanim");
+	CharmyAnms[26] = arc.GetAnimation("BE_GLIND.saanim");
+	CharmyAnms[27] = arc.GetAnimation("BE_GLIND_BK.saanim");
+	CharmyAnms[28] = arc.GetAnimation("BE_GLIND_BK_L.saanim");
+	CharmyAnms[29] = arc.GetAnimation("BE_GLIND_BK_R.saanim");
+	CharmyAnms[30] = arc.GetAnimation("BE_GLIND_FLIP_BK.saanim");
+	CharmyAnms[31] = arc.GetAnimation("BE_GLIND_FLIP_FR.saanim");
+	CharmyAnms[32] = arc.GetAnimation("BE_GLIND_L.saanim");
+	CharmyAnms[33] = arc.GetAnimation("BE_GLIND_R.saanim");
+	CharmyAnms[34] = arc.GetAnimation("BE_FLY_IDLE.saanim");
+	CharmyAnms[35] = arc.GetAnimation("BE_FLY_SLOW.saanim");
+	CharmyAnms[36] = arc.GetAnimation("BE_FLY_UP.saanim");
+	CharmyAnms[37] = arc.GetAnimation("BE_FLY_PULL.saanim");
+	CharmyAnms[38] = arc.GetAnimation("BE_FLY_PUSH.saanim");
+	CharmyAnms[39] = arc.GetAnimation("BE_FLY_KICK.saanim");
+	CharmyAnms[40] = arc.GetAnimation("BE_FLY_HANG_IDLE.saanim");
+	CharmyAnms[41] = arc.GetAnimation("BE_FLY_HANG_OFF.saanim");
+	CharmyAnms[42] = arc.GetAnimation("BE_FLY_HANG_ON.saanim");
+	CharmyAnms[43] = arc.GetAnimation("BE_HANG_ON.saanim");
+	CharmyAnms[44] = arc.GetAnimation("BE_BREAK_A.saanim");
+	CharmyAnms[45] = arc.GetAnimation("BE_BREAK_B.saanim");
+	CharmyAnms[46] = arc.GetAnimation("BE_BREAK_C.saanim");
+	CharmyAnms[47] = arc.GetAnimation("BE_BRA_MID.saanim");
+	CharmyAnms[48] = arc.GetAnimation("BE_BRA_TOP.saanim");
+	CharmyAnms[49] = arc.GetAnimation("BE_BOB.saanim");
+	CharmyAnms[50] = arc.GetAnimation("BE_FLORT.saanim");
+	CharmyAnms[51] = arc.GetAnimation("BE_DAM_M_A.saanim");
+	CharmyAnms[52] = arc.GetAnimation("BE_DAM_M_B.saanim");
+	CharmyAnms[53] = arc.GetAnimation("BE_DAM_M_C.saanim");
+	CharmyAnms[54] = arc.GetAnimation("BE_EDGE_OTTO_A.saanim");
+	CharmyAnms[55] = arc.GetAnimation("BE_EDGE_OTTO_B.saanim");
+	CharmyAnms[56] = arc.GetAnimation("BE_EDGE_OTTO_C.saanim");
 
 	for (uint8_t i = 1; i < LengthOfArray(CharmyAnimData); ++i) {
 		if (CharmyAnms[i] == nullptr) continue;

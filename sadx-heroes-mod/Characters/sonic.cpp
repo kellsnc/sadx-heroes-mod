@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "ArchiveX.h"
 #include "mod.h"
 #include "utils.h"
 #include "sounds.h"
@@ -86,6 +87,8 @@ void SonicHeroes_Display(ObjectMaster *obj) {
 	njRotateX(0, entity1->Rotation.x);
 	njRotateY(0, -entity1->Rotation.y - 0x4000);
 
+	njRotateX(0, 0x4000);
+
 	if (sonicobj->Data1->Index == 52) {
 		njRotateY(0, 0xC000);
 	}
@@ -125,7 +128,7 @@ void SonicHeroes_Main(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1;
 	EntityData2* data2 = (EntityData2*)obj->Data2;
 
-	if (!CharactersCommon_Init(obj, "sonich", &HSONIC_TEXLIST)) {
+	if (!CharactersCommon_Init(obj, "heroes-sonic", &HSONIC_TEXLIST)) {
 		return;
 	}
 
@@ -136,7 +139,7 @@ void SonicHeroes_Main(ObjectMaster *obj) {
 
 	if (data->Rotation.z == 0) {
 		if (data->CharIndex == 0) {
-			CON_REGULAR_TEXNAMES[12].texaddr = HSONIC_TEXLIST.textures[1].texaddr;
+			CON_REGULAR_TEXNAMES[12].texaddr = HSONIC_TEXLIST.textures[5].texaddr;
 		}
 
 		if (CustomPhysics) {
@@ -211,69 +214,71 @@ void SonicHeroes_Main(ObjectMaster *obj) {
 }
 
 void LoadSonicFiles() {
-	SonicMdls[0] = LoadCharacterModel("sonic_main");
-	SonicMdls[1] = LoadCharacterModel("sonic_pupils");
+	ArchiveX arc(HelperFunctionsGlobal.GetReplaceablePath("system\\heroes-sonic.arcx"));
+
+	SonicMdls[0] = arc.GetModel("SONIC_LOCATOR.sa1mdl");
+	SonicMdls[1] = arc.GetModel("SONIC_MABUTA.sa1mdl");
 
 	HelperFunctionsGlobal.Weights->Init(SonicMdls[0]->getweightinfo(), SonicMdls[0]->getmodel());
 
-	SonicAnms[0] = LoadCharacterAnim("SN_WALK");
-	SonicAnms[1] = LoadCharacterAnim("SN_WALK_PULL");
-	SonicAnms[2] = LoadCharacterAnim("SN_WALK_PUSH");
-	SonicAnms[3] = LoadCharacterAnim("SN_TURN_L");
-	SonicAnms[4] = LoadCharacterAnim("SN_TURN_R");
-	SonicAnms[5] = LoadCharacterAnim("SN_SLOW_RUN");
-	SonicAnms[6] = LoadCharacterAnim("SN_MID_RUN");
-	SonicAnms[7] = LoadCharacterAnim("SN_TOP_RUN");
-	SonicAnms[8] = LoadCharacterAnim("SN_START");
-	SonicAnms[9] = LoadCharacterAnim("SN_JUMP_WALL");
-	SonicAnms[10] = LoadCharacterAnim("SN_JUMP_TRIC_A");
-	SonicAnms[11] = LoadCharacterAnim("SN_JUMP_TRIC_B");
-	SonicAnms[12] = LoadCharacterAnim("SN_JUMP_TRIC_C");
-	SonicAnms[13] = LoadCharacterAnim("SN_JUMP_A");
-	SonicAnms[14] = LoadCharacterAnim("SN_JUMP_B");
-	SonicAnms[15] = LoadCharacterAnim("SN_JUMP_C");
-	SonicAnms[16] = LoadCharacterAnim("SN_JUMP_D");
-	SonicAnms[17] = LoadCharacterAnim("SN_JUMP_E");
-	SonicAnms[18] = LoadCharacterAnim("SN_JUMP_F");
-	SonicAnms[19] = LoadCharacterAnim("SN_JUMP_TRNGL");
-	SonicAnms[20] = LoadCharacterAnim("SN_JUMP_GLIND");
-	SonicAnms[21] = LoadCharacterAnim("SN_GLIND");
-	SonicAnms[22] = LoadCharacterAnim("SN_GLIND_BK");
-	SonicAnms[23] = LoadCharacterAnim("SN_GLIND_BK_L");
-	SonicAnms[24] = LoadCharacterAnim("SN_GLIND_BK_R");
-	SonicAnms[25] = LoadCharacterAnim("SN_GLIND_FLIP_B");
-	SonicAnms[26] = LoadCharacterAnim("SN_GLIND_FLIP_FR");
-	SonicAnms[27] = LoadCharacterAnim("SN_GLIND_L");
-	SonicAnms[28] = LoadCharacterAnim("SN_GLIND_R");
-	SonicAnms[29] = LoadCharacterAnim("SN_FLY_IDLE");
-	SonicAnms[30] = LoadCharacterAnim("SN_FLY_SLOW");
-	SonicAnms[31] = LoadCharacterAnim("SN_FLY_GLIND");
-	SonicAnms[32] = LoadCharacterAnim("SN_HANG_OFF");
-	SonicAnms[33] = LoadCharacterAnim("SN_HANG_ON");
-	SonicAnms[34] = LoadCharacterAnim("SN_BREAK_A");
-	SonicAnms[35] = LoadCharacterAnim("SN_BREAK_B");
-	SonicAnms[36] = LoadCharacterAnim("SN_BREAK_C");
-	SonicAnms[37] = LoadCharacterAnim("SN_BREAK_TURN_L");
-	SonicAnms[38] = LoadCharacterAnim("SN_BREAK_TURN_R");
-	SonicAnms[39] = LoadCharacterAnim("SN_BRA_MID");
-	SonicAnms[40] = LoadCharacterAnim("SN_BRA_TOP");
-	SonicAnms[41] = LoadCharacterAnim("SN_FLORT");
-	SonicAnms[42] = LoadCharacterAnim("SN_DAM_MID_A");
-	SonicAnms[43] = LoadCharacterAnim("SN_DAM_MID_B");
-	SonicAnms[44] = LoadCharacterAnim("SN_DAM_MID_C");
-	SonicAnms[45] = LoadCharacterAnim("SN_EDGE_OTTO_A");
-	SonicAnms[46] = LoadCharacterAnim("SN_EDGE_OTTO_B");
-	SonicAnms[47] = LoadCharacterAnim("SN_EDGE_OTTO_C");
-	SonicAnms[48] = LoadCharacterAnim("SN_EDGE_OTTO_C");
-	SonicAnms[49] = LoadCharacterAnim("SN_FW_JUMP");
-	SonicAnms[50] = LoadCharacterAnim("SN_TRAP_JUMP");
-	SonicAnms[51] = LoadCharacterAnim("SN_POW_ROT");
-	SonicAnms[52] = LoadCharacterAnim("SN_WIN_B");
-	SonicAnms[53] = LoadCharacterAnim("SN_ATC_DASH");
-	SonicAnms[54] = LoadCharacterAnim("SN_IDLE");
-	SonicAnms[55] = LoadCharacterAnim("SN_IDLE_C");
-	SonicAnms[56] = LoadCharacterAnim("SN_IDLE_D");
-	SonicAnms[57] = LoadCharacterAnim("HERO_SN");
+	SonicAnms[0] = arc.GetAnimation("SN_WALK.saanim");
+	SonicAnms[1] = arc.GetAnimation("SN_WALK_PULL.saanim");
+	SonicAnms[2] = arc.GetAnimation("SN_WALK_PUSH.saanim");
+	SonicAnms[3] = arc.GetAnimation("SN_TURN_L.saanim");
+	SonicAnms[4] = arc.GetAnimation("SN_TURN_R.saanim");
+	SonicAnms[5] = arc.GetAnimation("SN_SLOW_RUN.saanim");
+	SonicAnms[6] = arc.GetAnimation("SN_MID_RUN.saanim");
+	SonicAnms[7] = arc.GetAnimation("SN_TOP_RUN.saanim");
+	SonicAnms[8] = arc.GetAnimation("SN_START.saanim");
+	SonicAnms[9] = arc.GetAnimation("SN_JUMP_WALL.saanim");
+	SonicAnms[10] = arc.GetAnimation("SN_JUMP_TRIC_A.saanim");
+	SonicAnms[11] = arc.GetAnimation("SN_JUMP_TRIC_B.saanim");
+	SonicAnms[12] = arc.GetAnimation("SN_JUMP_TRIC_C.saanim");
+	SonicAnms[13] = arc.GetAnimation("SN_JUMP_A.saanim");
+	SonicAnms[14] = arc.GetAnimation("SN_JUMP_B.saanim");
+	SonicAnms[15] = arc.GetAnimation("SN_JUMP_C.saanim");
+	SonicAnms[16] = arc.GetAnimation("SN_JUMP_D.saanim");
+	SonicAnms[17] = arc.GetAnimation("SN_JUMP_E.saanim");
+	SonicAnms[18] = arc.GetAnimation("SN_JUMP_F.saanim");
+	SonicAnms[19] = arc.GetAnimation("SN_JUMP_TRNGL.saanim");
+	SonicAnms[20] = arc.GetAnimation("SN_JUMP_GLIND.saanim");
+	SonicAnms[21] = arc.GetAnimation("SN_GLIND.saanim");
+	SonicAnms[22] = arc.GetAnimation("SN_GLIND_BK.saanim");
+	SonicAnms[23] = arc.GetAnimation("SN_GLIND_BK_L.saanim");
+	SonicAnms[24] = arc.GetAnimation("SN_GLIND_BK_R.saanim");
+	SonicAnms[25] = arc.GetAnimation("SN_GLIND_FLIP_B.saanim");
+	SonicAnms[26] = arc.GetAnimation("SN_GLIND_FLIP_FR.saanim");
+	SonicAnms[27] = arc.GetAnimation("SN_GLIND_L.saanim");
+	SonicAnms[28] = arc.GetAnimation("SN_GLIND_R.saanim");
+	SonicAnms[29] = arc.GetAnimation("SN_FLY_IDLE.saanim");
+	SonicAnms[30] = arc.GetAnimation("SN_FLY_SLOW.saanim");
+	SonicAnms[31] = arc.GetAnimation("SN_FLY_GLIND.saanim");
+	SonicAnms[32] = arc.GetAnimation("SN_HANG_OFF.saanim");
+	SonicAnms[33] = arc.GetAnimation("SN_HANG_ON.saanim");
+	SonicAnms[34] = arc.GetAnimation("SN_BREAK_A.saanim");
+	SonicAnms[35] = arc.GetAnimation("SN_BREAK_B.saanim");
+	SonicAnms[36] = arc.GetAnimation("SN_BREAK_C.saanim");
+	SonicAnms[37] = arc.GetAnimation("SN_BREAK_TURN_L.saanim");
+	SonicAnms[38] = arc.GetAnimation("SN_BREAK_TURN_R.saanim");
+	SonicAnms[39] = arc.GetAnimation("SN_BRA_MID.saanim");
+	SonicAnms[40] = arc.GetAnimation("SN_BRA_TOP.saanim");
+	SonicAnms[41] = arc.GetAnimation("SN_FLORT.saanim");
+	SonicAnms[42] = arc.GetAnimation("SN_DAM_MID_A.saanim");
+	SonicAnms[43] = arc.GetAnimation("SN_DAM_MID_B.saanim");
+	SonicAnms[44] = arc.GetAnimation("SN_DAM_MID_C.saanim");
+	SonicAnms[45] = arc.GetAnimation("SN_EDGE_OTTO_A.saanim");
+	SonicAnms[46] = arc.GetAnimation("SN_EDGE_OTTO_B.saanim");
+	SonicAnms[47] = arc.GetAnimation("SN_EDGE_OTTO_C.saanim");
+	SonicAnms[48] = arc.GetAnimation("SN_EDGE_OTTO_C.saanim");
+	SonicAnms[49] = arc.GetAnimation("SN_FW_JUMP.saanim");
+	SonicAnms[50] = arc.GetAnimation("SN_TRAP_JUMP.saanim");
+	SonicAnms[51] = arc.GetAnimation("SN_POW_ROT.saanim");
+	SonicAnms[52] = arc.GetAnimation("SN_WIN_B.saanim");
+	SonicAnms[53] = arc.GetAnimation("SN_ATC_DASH.saanim");
+	SonicAnms[54] = arc.GetAnimation("SN_IDLE.saanim");
+	SonicAnms[55] = arc.GetAnimation("SN_IDLE_C.saanim");
+	SonicAnms[56] = arc.GetAnimation("SN_IDLE_D.saanim");
+	SonicAnms[57] = arc.GetAnimation("HERO_SN.saanim");
 
 	for (uint8_t i = 0; i < LengthOfArray(HSonicAnimData); ++i) {
 		if (SonicAnms[i] == nullptr) continue;

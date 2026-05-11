@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "ArchiveX.h"
 #include "mod.h"
 #include "utils.h"
 #include "sounds.h"
@@ -109,7 +110,7 @@ void NinjaObj(ObjectMaster* obj) {
 		njScale(0, 0.7f, 0.7f, 0.7f);
 		SetupWorldMatrix();
 		Direct3D_SetChunkModelRenderState();
-		DrawChunkModel(EspioMdls[2]->getmodel()->child->chunkmodel);
+		dsDrawModel(EspioMdls[2]->getmodel()->getbasicdxmodel());
 		Direct3D_UnsetChunkModelRenderState();
 		njPopMatrix(1);
 	}
@@ -149,6 +150,8 @@ void EspioHeroes_Display(ObjectMaster *obj) {
 	njRotateX(0, entity1->Rotation.x);
 	njRotateY(0, -entity1->Rotation.y - 0x4000);
 
+	njRotateX(0, 0x4000);
+
 	*NodeCallbackFuncPtr = EspioCallback;
 	njActionWeight(EspioAnimData[espioobj->Data1->Index].Animation, espioobj->Data1->Scale.x, EspioMdls[0]->getweightinfo());
 	*NodeCallbackFuncPtr = nullptr;
@@ -184,7 +187,7 @@ void EspioHeroes_Main(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1;
 	EntityData2* data2 = (EntityData2*)obj->Data2;
 
-	if (!CharactersCommon_Init(obj, "espio", &ESPIO_TEXLIST)) {
+	if (!CharactersCommon_Init(obj, "heroes-espio", &ESPIO_TEXLIST)) {
 		return;
 	}
 
@@ -276,72 +279,74 @@ void EspioHeroes_Main(ObjectMaster *obj) {
 }
 
 void LoadEspioFiles() {
-	EspioMdls[0] = LoadCharacterModel("espio_main");
-	EspioMdls[1] = LoadCharacterModel("espio_eyelids");
-	EspioMdls[2] = LoadCharacterModel("espio_attacks");
-	EspioMdls[3] = LoadCharacterModel("espio_objs");
+	ArchiveX arc(HelperFunctionsGlobal.GetReplaceablePath("system\\heroes-espio.arcx"));
+
+	EspioMdls[0] = arc.GetModel("ESPIO_LOCATOR.sa1mdl");
+	EspioMdls[1] = arc.GetModel("ESPIO_MABUTA.sa1mdl");
+	EspioMdls[2] = arc.GetModel("SYURUKEN.sa1mdl");
+	EspioMdls[3] = arc.GetModel("KUNAI.sa1mdl");
 
 	HelperFunctionsGlobal.Weights->Init(EspioMdls[0]->getweightinfo(), EspioMdls[0]->getmodel());
 
-	EspioAnms[0] = LoadCharacterAnim("ES_WALK");
-	EspioAnms[1] = LoadCharacterAnim("ES_WALK_PULL");
-	EspioAnms[2] = LoadCharacterAnim("ES_WALK_PUSH");
-	EspioAnms[3] = LoadCharacterAnim("ES_TURN_L");
-	EspioAnms[4] = LoadCharacterAnim("ES_TURN_R");
-	EspioAnms[5] = LoadCharacterAnim("ES_SLOW_RUN");
-	EspioAnms[6] = LoadCharacterAnim("ES_MID_RUN");
-	EspioAnms[7] = LoadCharacterAnim("ES_TOP_RUN");
-	EspioAnms[8] = LoadCharacterAnim("ES_START");
-	EspioAnms[9] = LoadCharacterAnim("ES_JUMP_WALL");
-	EspioAnms[10] = LoadCharacterAnim("ES_JUMP_TRIC_A");
-	EspioAnms[11] = LoadCharacterAnim("ES_JUMP_TRIC_B");
-	EspioAnms[12] = LoadCharacterAnim("ES_JUMP_TRIC_C");
-	EspioAnms[13] = LoadCharacterAnim("ES_JUMP_A");
-	EspioAnms[14] = LoadCharacterAnim("ES_JUMP_B");
-	EspioAnms[15] = LoadCharacterAnim("ES_JUMP_C");
-	EspioAnms[16] = LoadCharacterAnim("ES_JUMP_D");
-	EspioAnms[17] = LoadCharacterAnim("ES_JUMP_E");
-	EspioAnms[18] = LoadCharacterAnim("ES_JUMP_F");
-	EspioAnms[19] = LoadCharacterAnim("ES_JUMP_GUM");
-	EspioAnms[20] = LoadCharacterAnim("ES_JUMP_GLIND");
-	EspioAnms[21] = LoadCharacterAnim("ES_GLIND");
-	EspioAnms[22] = LoadCharacterAnim("ES_GLIND_BK");
-	EspioAnms[23] = LoadCharacterAnim("ES_GLIND_BK_L");
-	EspioAnms[24] = LoadCharacterAnim("ES_GLIND_BK_R");
-	EspioAnms[25] = LoadCharacterAnim("ES_GLIND_FLIP_B");
-	EspioAnms[26] = LoadCharacterAnim("ES_GLIND_FLIP_FR");
-	EspioAnms[27] = LoadCharacterAnim("ES_GLIND_L");
-	EspioAnms[28] = LoadCharacterAnim("ES_GLIND_R");
-	EspioAnms[29] = LoadCharacterAnim("ES_FLY_IDLE");
-	EspioAnms[30] = LoadCharacterAnim("ES_FLY_SLOW");
-	EspioAnms[31] = LoadCharacterAnim("ES_FLY_GLIND");
-	EspioAnms[32] = LoadCharacterAnim("ES_HANG_OFF");
-	EspioAnms[33] = LoadCharacterAnim("ES_HANG_ON");
-	EspioAnms[34] = LoadCharacterAnim("ES_BREAK_A");
-	EspioAnms[35] = LoadCharacterAnim("ES_BREAK_B");
-	EspioAnms[36] = LoadCharacterAnim("ES_BREAK_C");
-	EspioAnms[37] = LoadCharacterAnim("ES_BREAK_TURN_L");
-	EspioAnms[38] = LoadCharacterAnim("ES_BREAK_TURN_R");
-	EspioAnms[39] = LoadCharacterAnim("ES_BRA_MID");
-	EspioAnms[40] = LoadCharacterAnim("ES_BRA_TOP");
-	EspioAnms[41] = LoadCharacterAnim("ES_FLORT");
-	EspioAnms[42] = LoadCharacterAnim("ES_DAM_MID_A");
-	EspioAnms[43] = LoadCharacterAnim("ES_DAM_MID_B");
-	EspioAnms[44] = LoadCharacterAnim("ES_DAM_MID_C");
-	EspioAnms[45] = LoadCharacterAnim("ES_EDDGE_OTTO_A");
-	EspioAnms[46] = LoadCharacterAnim("ES_EDDGE_OTTO_B");
-	EspioAnms[47] = LoadCharacterAnim("ES_EDDGE_OTTO_C");
-	EspioAnms[48] = LoadCharacterAnim("ES_EDDGE_OTTO_C");
-	EspioAnms[49] = LoadCharacterAnim("ES_FW_JUMP");
-	EspioAnms[50] = LoadCharacterAnim("ES_TRAP_JUMP");
-	EspioAnms[51] = LoadCharacterAnim("ES_POW_ROT");
-	EspioAnms[52] = LoadCharacterAnim("ES_WIN");
-	EspioAnms[53] = LoadCharacterAnim("ES_ATC_SHURI");
-	EspioAnms[54] = LoadCharacterAnim("ES_IDLE_HALF");
-	EspioAnms[55] = LoadCharacterAnim("ES_IDLE_B_HALF");
-	EspioAnms[56] = LoadCharacterAnim("ES_IDLE_C_HALF");
-	EspioAnms[57] = LoadCharacterAnim("CAO_ES");
-	EspioAnms[58] = LoadCharacterAnim("ES_KONOHA");
+	EspioAnms[0] = arc.GetAnimation("ES_WALK.saanim");
+	EspioAnms[1] = arc.GetAnimation("ES_WALK_PULL.saanim");
+	EspioAnms[2] = arc.GetAnimation("ES_WALK_PUSH.saanim");
+	EspioAnms[3] = arc.GetAnimation("ES_TURN_L.saanim");
+	EspioAnms[4] = arc.GetAnimation("ES_TURN_R.saanim");
+	EspioAnms[5] = arc.GetAnimation("ES_SLOW_RUN.saanim");
+	EspioAnms[6] = arc.GetAnimation("ES_MID_RUN.saanim");
+	EspioAnms[7] = arc.GetAnimation("ES_TOP_RUN.saanim");
+	EspioAnms[8] = arc.GetAnimation("ES_START.saanim");
+	EspioAnms[9] = arc.GetAnimation("ES_JUMP_WALL.saanim");
+	EspioAnms[10] = arc.GetAnimation("ES_JUMP_TRIC_A.saanim");
+	EspioAnms[11] = arc.GetAnimation("ES_JUMP_TRIC_B.saanim");
+	EspioAnms[12] = arc.GetAnimation("ES_JUMP_TRIC_C.saanim");
+	EspioAnms[13] = arc.GetAnimation("ES_JUMP_A.saanim");
+	EspioAnms[14] = arc.GetAnimation("ES_JUMP_B.saanim");
+	EspioAnms[15] = arc.GetAnimation("ES_JUMP_C.saanim");
+	EspioAnms[16] = arc.GetAnimation("ES_JUMP_D.saanim");
+	EspioAnms[17] = arc.GetAnimation("ES_JUMP_E.saanim");
+	EspioAnms[18] = arc.GetAnimation("ES_JUMP_F.saanim");
+	EspioAnms[19] = arc.GetAnimation("ES_JUMP_GUM.saanim");
+	EspioAnms[20] = arc.GetAnimation("ES_JUMP_GLIND.saanim");
+	EspioAnms[21] = arc.GetAnimation("ES_GLIND.saanim");
+	EspioAnms[22] = arc.GetAnimation("ES_GLIND_BK.saanim");
+	EspioAnms[23] = arc.GetAnimation("ES_GLIND_BK_L.saanim");
+	EspioAnms[24] = arc.GetAnimation("ES_GLIND_BK_R.saanim");
+	EspioAnms[25] = arc.GetAnimation("ES_GLIND_FLIP_B.saanim");
+	EspioAnms[26] = arc.GetAnimation("ES_GLIND_FLIP_FR.saanim");
+	EspioAnms[27] = arc.GetAnimation("ES_GLIND_L.saanim");
+	EspioAnms[28] = arc.GetAnimation("ES_GLIND_R.saanim");
+	EspioAnms[29] = arc.GetAnimation("ES_FLY_IDLE.saanim");
+	EspioAnms[30] = arc.GetAnimation("ES_FLY_SLOW.saanim");
+	EspioAnms[31] = arc.GetAnimation("ES_FLY_GLIND.saanim");
+	EspioAnms[32] = arc.GetAnimation("ES_HANG_OFF.saanim");
+	EspioAnms[33] = arc.GetAnimation("ES_HANG_ON.saanim");
+	EspioAnms[34] = arc.GetAnimation("ES_BREAK_A.saanim");
+	EspioAnms[35] = arc.GetAnimation("ES_BREAK_B.saanim");
+	EspioAnms[36] = arc.GetAnimation("ES_BREAK_C.saanim");
+	EspioAnms[37] = arc.GetAnimation("ES_BREAK_TURN_L.saanim");
+	EspioAnms[38] = arc.GetAnimation("ES_BREAK_TURN_R.saanim");
+	EspioAnms[39] = arc.GetAnimation("ES_BRA_MID.saanim");
+	EspioAnms[40] = arc.GetAnimation("ES_BRA_TOP.saanim");
+	EspioAnms[41] = arc.GetAnimation("ES_FLORT.saanim");
+	EspioAnms[42] = arc.GetAnimation("ES_DAM_MID_A.saanim");
+	EspioAnms[43] = arc.GetAnimation("ES_DAM_MID_B.saanim");
+	EspioAnms[44] = arc.GetAnimation("ES_DAM_MID_C.saanim");
+	EspioAnms[45] = arc.GetAnimation("ES_EDDGE_OTTO_A.saanim");
+	EspioAnms[46] = arc.GetAnimation("ES_EDDGE_OTTO_B.saanim");
+	EspioAnms[47] = arc.GetAnimation("ES_EDDGE_OTTO_C.saanim");
+	EspioAnms[48] = arc.GetAnimation("ES_EDDGE_OTTO_C.saanim");
+	EspioAnms[49] = arc.GetAnimation("ES_FW_JUMP.saanim");
+	EspioAnms[50] = arc.GetAnimation("ES_TRAP_JUMP.saanim");
+	EspioAnms[51] = arc.GetAnimation("ES_POW_ROT.saanim");
+	EspioAnms[52] = arc.GetAnimation("ES_WIN.saanim");
+	EspioAnms[53] = arc.GetAnimation("ES_ATC_SHURI.saanim");
+	EspioAnms[54] = arc.GetAnimation("ES_IDLE_HALF.saanim");
+	EspioAnms[55] = arc.GetAnimation("ES_IDLE_B_HALF.saanim");
+	EspioAnms[56] = arc.GetAnimation("ES_IDLE_C_HALF.saanim");
+	EspioAnms[57] = arc.GetAnimation("CAO_ES.saanim");
+	EspioAnms[58] = arc.GetAnimation("ES_KONOHA.saanim");
 
 	for (uint8_t i = 0; i < LengthOfArray(EspioAnimData); ++i) {
 		if (EspioAnms[i] == nullptr) continue;

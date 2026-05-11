@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "ArchiveX.h"
 #include "mod.h"
 #include "utils.h"
 #include "sounds.h"
@@ -103,6 +104,7 @@ void KnucklesHeroes_Display(ObjectMaster *obj) {
 	njRotateZ(0, entity1->Rotation.z);
 	njRotateX(0, entity1->Rotation.x);
 	njRotateY(0, -entity1->Rotation.y - 0x4000);
+
 	if (entity1->Action == 19) njRotateX(0, -0x1000);
 	
 	if (entity1->Action == 24) {
@@ -113,6 +115,8 @@ void KnucklesHeroes_Display(ObjectMaster *obj) {
 	if (knucklesobj->Data1->Index == 52) {
 		njRotateY(0, 0xC000);
 	}
+
+	njRotateX(0, 0x4000);
 
 	*NodeCallbackFuncPtr = KnucklesCallback;
 	njActionWeight(HKnucklesAnimData[knucklesobj->Data1->Index].Animation, knucklesobj->Data1->Scale.x, KnucklesMdls[0]->getweightinfo());
@@ -145,7 +149,7 @@ void KnucklesHeroes_Main(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1;
 	EntityData2* data2 = (EntityData2*)obj->Data2;
 
-	if (!CharactersCommon_Init(obj, "knucks", &HKNUCKLES_TEXLIST)) {
+	if (!CharactersCommon_Init(obj, "heroes-knuckles", &HKNUCKLES_TEXLIST)) {
 		return;
 	}
 
@@ -156,7 +160,7 @@ void KnucklesHeroes_Main(ObjectMaster *obj) {
 
 	if (data->Rotation.z == 0) {
 		if (data->CharIndex == 0) {
-			CON_REGULAR_TEXNAMES[15].texaddr = HKNUCKLES_TEXLIST.textures[1].texaddr;
+			CON_REGULAR_TEXNAMES[15].texaddr = HKNUCKLES_TEXLIST.textures[2].texaddr;
 		}
 
 		if (CustomPhysics) {
@@ -252,71 +256,73 @@ void KnucklesHeroes_Main(ObjectMaster *obj) {
 }
 
 void LoadKnuckFiles() {
-	KnucklesMdls[0] = LoadCharacterModel("knucks_main");
-	KnucklesMdls[1] = LoadCharacterModel("knucks_eyelids");
+	ArchiveX arc(HelperFunctionsGlobal.GetReplaceablePath("system\\heroes-knuckles.arcx"));
+
+	KnucklesMdls[0] = arc.GetModel("KNUCKLES_LOCATOR.sa1mdl");
+	KnucklesMdls[1] = arc.GetModel("KN_MABUTA.sa1mdl");
 
 	HelperFunctionsGlobal.Weights->Init(KnucklesMdls[0]->getweightinfo(), KnucklesMdls[0]->getmodel());
 
-	KnucklesAnms[0] = LoadCharacterAnim("KN_WALK");
-	KnucklesAnms[1] = LoadCharacterAnim("KN_WALK_PULL");
-	KnucklesAnms[2] = LoadCharacterAnim("KN_WALK_PUSH");
-	KnucklesAnms[3] = LoadCharacterAnim("KN_TURN_L");
-	KnucklesAnms[4] = LoadCharacterAnim("KN_TURN_R");
-	KnucklesAnms[5] = LoadCharacterAnim("KN_SLOW_RUN");
-	KnucklesAnms[6] = LoadCharacterAnim("KN_MID_RUN");
-	KnucklesAnms[7] = LoadCharacterAnim("KN_TOP_RUN");
-	KnucklesAnms[8] = LoadCharacterAnim("KN_START");
-	KnucklesAnms[9] = LoadCharacterAnim("KN_ATC_SPIKE");
-	KnucklesAnms[10] = LoadCharacterAnim("KN_ATC_01");
-	KnucklesAnms[11] = LoadCharacterAnim("KN_ATC_C");
-	KnucklesAnms[12] = LoadCharacterAnim("KN_ATC_D");
-	KnucklesAnms[13] = LoadCharacterAnim("KN_JUMP_A");
-	KnucklesAnms[14] = LoadCharacterAnim("KN_JUMP_B");
-	KnucklesAnms[15] = LoadCharacterAnim("KN_JUMP_C");
-	KnucklesAnms[16] = LoadCharacterAnim("KN_JUMP_D");
-	KnucklesAnms[17] = LoadCharacterAnim("KN_JUMP_E");
-	KnucklesAnms[18] = LoadCharacterAnim("KN_JUMP_F");
-	KnucklesAnms[19] = LoadCharacterAnim("KN_JUMP_TRNGL");
-	KnucklesAnms[20] = LoadCharacterAnim("KN_JUMP_GLIND");
-	KnucklesAnms[21] = LoadCharacterAnim("KN_GLIND");
-	KnucklesAnms[22] = LoadCharacterAnim("KN_GLIND_BK");
-	KnucklesAnms[23] = LoadCharacterAnim("KN_GLIND_BK_L");
-	KnucklesAnms[24] = LoadCharacterAnim("KN_GLIND_BK_R");
-	KnucklesAnms[25] = LoadCharacterAnim("KN_GLIND_FLIP_B");
-	KnucklesAnms[26] = LoadCharacterAnim("KN_GLIND_FLIP_FR");
-	KnucklesAnms[27] = LoadCharacterAnim("KN_GLIND_L");
-	KnucklesAnms[28] = LoadCharacterAnim("KN_GLIND_R");
-	KnucklesAnms[29] = LoadCharacterAnim("KN_FLY_IDLE");
-	KnucklesAnms[30] = LoadCharacterAnim("KN_FLY_SLOW");
-	KnucklesAnms[31] = LoadCharacterAnim("KN_FLY_GLIND");
-	KnucklesAnms[32] = LoadCharacterAnim("KN_HANG_OFF");
-	KnucklesAnms[33] = LoadCharacterAnim("KN_HANG_ON");
-	KnucklesAnms[34] = LoadCharacterAnim("KN_BREAK_A");
-	KnucklesAnms[35] = LoadCharacterAnim("KN_BREAK_B");
-	KnucklesAnms[36] = LoadCharacterAnim("KN_BREAK_C");
-	KnucklesAnms[37] = LoadCharacterAnim("KN_BREAK_TURN_L");
-	KnucklesAnms[38] = LoadCharacterAnim("KN_BREAK_TURN_R");
-	KnucklesAnms[39] = LoadCharacterAnim("KN_BRA_MID");
-	KnucklesAnms[40] = LoadCharacterAnim("KN_BRA_TOP");
-	KnucklesAnms[41] = LoadCharacterAnim("KN_FLORT");
-	KnucklesAnms[42] = LoadCharacterAnim("KN_DAM_M_A");
-	KnucklesAnms[43] = LoadCharacterAnim("KN_DAM_M_B");
-	KnucklesAnms[44] = LoadCharacterAnim("KN_DAM_M_C");
-	KnucklesAnms[45] = LoadCharacterAnim("KN_EDGE_OTTO_A");
-	KnucklesAnms[46] = LoadCharacterAnim("KN_EDGE_OTTO_B");
-	KnucklesAnms[47] = LoadCharacterAnim("KN_EDGE_OTTO_C");
-	KnucklesAnms[48] = LoadCharacterAnim("KN_EDGE_OTTO_C");
-	KnucklesAnms[49] = LoadCharacterAnim("KN_FW_JUMP");
-	KnucklesAnms[50] = LoadCharacterAnim("KN_TRAP_JUMP");
-	KnucklesAnms[51] = LoadCharacterAnim("HERO_KN");
-	KnucklesAnms[52] = LoadCharacterAnim("KN_WIN_B");
-	KnucklesAnms[53] = LoadCharacterAnim("KN_ATC_RENDA");
-	KnucklesAnms[54] = LoadCharacterAnim("KN_IDLE");
-	KnucklesAnms[55] = LoadCharacterAnim("KN_IDLE_D");
-	KnucklesAnms[56] = LoadCharacterAnim("KN_IDLE_E");
-	KnucklesAnms[57] = LoadCharacterAnim("KN_BOB");
-	KnucklesAnms[58] = LoadCharacterAnim("KN_BOB_L");
-	KnucklesAnms[59] = LoadCharacterAnim("KN_BOB_R");
+	KnucklesAnms[0] = arc.GetAnimation("KN_WALK.saanim");
+	KnucklesAnms[1] = arc.GetAnimation("KN_WALK_PULL.saanim");
+	KnucklesAnms[2] = arc.GetAnimation("KN_WALK_PUSH.saanim");
+	KnucklesAnms[3] = arc.GetAnimation("KN_TURN_L.saanim");
+	KnucklesAnms[4] = arc.GetAnimation("KN_TURN_R.saanim");
+	KnucklesAnms[5] = arc.GetAnimation("KN_SLOW_RUN.saanim");
+	KnucklesAnms[6] = arc.GetAnimation("KN_MID_RUN.saanim");
+	KnucklesAnms[7] = arc.GetAnimation("KN_TOP_RUN.saanim");
+	KnucklesAnms[8] = arc.GetAnimation("KN_START.saanim");
+	KnucklesAnms[9] = arc.GetAnimation("KN_ATC_SPIKE.saanim");
+	KnucklesAnms[10] = arc.GetAnimation("KN_ATC_01.saanim");
+	KnucklesAnms[11] = arc.GetAnimation("KN_ATC_C.saanim");
+	KnucklesAnms[12] = arc.GetAnimation("KN_ATC_D.saanim");
+	KnucklesAnms[13] = arc.GetAnimation("KN_JUMP_A.saanim");
+	KnucklesAnms[14] = arc.GetAnimation("KN_JUMP_B.saanim");
+	KnucklesAnms[15] = arc.GetAnimation("KN_JUMP_C.saanim");
+	KnucklesAnms[16] = arc.GetAnimation("KN_JUMP_D.saanim");
+	KnucklesAnms[17] = arc.GetAnimation("KN_JUMP_E.saanim");
+	KnucklesAnms[18] = arc.GetAnimation("KN_JUMP_F.saanim");
+	KnucklesAnms[19] = arc.GetAnimation("KN_JUMP_TRNGL.saanim");
+	KnucklesAnms[20] = arc.GetAnimation("KN_JUMP_GLIND.saanim");
+	KnucklesAnms[21] = arc.GetAnimation("KN_GLIND.saanim");
+	KnucklesAnms[22] = arc.GetAnimation("KN_GLIND_BK.saanim");
+	KnucklesAnms[23] = arc.GetAnimation("KN_GLIND_BK_L.saanim");
+	KnucklesAnms[24] = arc.GetAnimation("KN_GLIND_BK_R.saanim");
+	KnucklesAnms[25] = arc.GetAnimation("KN_GLIND_FLIP_B.saanim");
+	KnucklesAnms[26] = arc.GetAnimation("KN_GLIND_FLIP_FR.saanim");
+	KnucklesAnms[27] = arc.GetAnimation("KN_GLIND_L.saanim");
+	KnucklesAnms[28] = arc.GetAnimation("KN_GLIND_R.saanim");
+	KnucklesAnms[29] = arc.GetAnimation("KN_FLY_IDLE.saanim");
+	KnucklesAnms[30] = arc.GetAnimation("KN_FLY_SLOW.saanim");
+	KnucklesAnms[31] = arc.GetAnimation("KN_FLY_GLIND.saanim");
+	KnucklesAnms[32] = arc.GetAnimation("KN_HANG_OFF.saanim");
+	KnucklesAnms[33] = arc.GetAnimation("KN_HANG_ON.saanim");
+	KnucklesAnms[34] = arc.GetAnimation("KN_BREAK_A.saanim");
+	KnucklesAnms[35] = arc.GetAnimation("KN_BREAK_B.saanim");
+	KnucklesAnms[36] = arc.GetAnimation("KN_BREAK_C.saanim");
+	KnucklesAnms[37] = arc.GetAnimation("KN_BREAK_TURN_L.saanim");
+	KnucklesAnms[38] = arc.GetAnimation("KN_BREAK_TURN_R.saanim");
+	KnucklesAnms[39] = arc.GetAnimation("KN_BRA_MID.saanim");
+	KnucklesAnms[40] = arc.GetAnimation("KN_BRA_TOP.saanim");
+	KnucklesAnms[41] = arc.GetAnimation("KN_FLORT.saanim");
+	KnucklesAnms[42] = arc.GetAnimation("KN_DAM_M_A.saanim");
+	KnucklesAnms[43] = arc.GetAnimation("KN_DAM_M_B.saanim");
+	KnucklesAnms[44] = arc.GetAnimation("KN_DAM_M_C.saanim");
+	KnucklesAnms[45] = arc.GetAnimation("KN_EDGE_OTTO_A.saanim");
+	KnucklesAnms[46] = arc.GetAnimation("KN_EDGE_OTTO_B.saanim");
+	KnucklesAnms[47] = arc.GetAnimation("KN_EDGE_OTTO_C.saanim");
+	KnucklesAnms[48] = arc.GetAnimation("KN_EDGE_OTTO_C.saanim");
+	KnucklesAnms[49] = arc.GetAnimation("KN_FW_JUMP.saanim");
+	KnucklesAnms[50] = arc.GetAnimation("KN_TRAP_JUMP.saanim");
+	KnucklesAnms[51] = arc.GetAnimation("HERO_KN.saanim");
+	KnucklesAnms[52] = arc.GetAnimation("KN_WIN_B.saanim");
+	KnucklesAnms[53] = arc.GetAnimation("KN_ATC_RENDA.saanim");
+	KnucklesAnms[54] = arc.GetAnimation("KN_IDLE.saanim");
+	KnucklesAnms[55] = arc.GetAnimation("KN_IDLE_D.saanim");
+	KnucklesAnms[56] = arc.GetAnimation("KN_IDLE_E.saanim");
+	KnucklesAnms[57] = arc.GetAnimation("KN_BOB.saanim");
+	KnucklesAnms[58] = arc.GetAnimation("KN_BOB_L.saanim");
+	KnucklesAnms[59] = arc.GetAnimation("KN_BOB_R.saanim");
 
 	for (uint8_t i = 0; i < LengthOfArray(HKnucklesAnimData); ++i) {
 		if (KnucklesAnms[i] == nullptr) continue;

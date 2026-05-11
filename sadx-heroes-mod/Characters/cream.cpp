@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "ArchiveX.h"
 #include "mod.h"
 #include "utils.h"
 #include "paths.h"
@@ -117,13 +118,16 @@ void Cheese_Display(ObjectMaster* obj) {
 			njRotateY(0, -data->Rotation.y - 0x4000);
 		}
 	}
-	
+
+	njPushMatrixEx();
+	njRotateX(0, 0x4000);
 	njAction(CheeseAnimData[data->Index].Animation, data->Scale.x);
+	njPopMatrixEx();
 
 	njTranslate(0, -data->Position.x, -data->Position.y, -data->Position.z);
 	njTranslateV(0, &data2->SomeCollisionVector);
 	njTranslate(0, 0, 5, -1);
-	dsDrawModel(CreamMdls[3]->getmodel()->child->getbasicdxmodel());
+	dsDrawModel(CreamMdls[3]->getmodel()->getbasicdxmodel());
 
 	njPopMatrix(1);
 
@@ -298,7 +302,9 @@ void CreamHeroes_Display(ObjectMaster *obj) {
 	njTranslateV(0, &entity1->Position);
 	njRotateZ(0, entity1->Rotation.z);
 	njRotateX(0, entity1->Rotation.x);
-	njRotateY(0, -entity1->Rotation.y - 0x4000 + creamobj->Data1->Rotation.y);
+	njRotateY(0, -entity1->Rotation.y - 0x4000);
+
+	njRotateX(0, 0x4000);
 
 	if (co2->AnimationThing.Index == 54 || co2->AnimationThing.Index == 55) {
 		njTranslate(0, 10, 2, 0);
@@ -340,7 +346,7 @@ void CreamHeroes_Display(ObjectMaster *obj) {
 void CreamHeroes_Main(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1;
 
-	if (!CharactersCommon_Init(obj, "cream", &CREAM_TEXLIST)) {
+	if (!CharactersCommon_Init(obj, "heroes-cream", &CREAM_TEXLIST)) {
 		return;
 	}
 
@@ -353,7 +359,7 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 
 	if (data->Rotation.z == 0) {
 		if (data->CharIndex == 0) {
-			CON_REGULAR_TEXNAMES[14].texaddr = CREAM_TEXLIST.textures[1].texaddr;
+			CON_REGULAR_TEXNAMES[14].texaddr = CREAM_TEXLIST.textures[2].texaddr;
 		}
 
 		if (CustomPhysics) {
@@ -684,90 +690,93 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 }
 
 void LoadCreamFiles() {
-	CreamMdls[0] = LoadCharacterModel("cream_main");
-	CreamMdls[1] = LoadCharacterModel("cream_eyelashes");
-	CreamMdls[2] = LoadCharacterModel("cheese_main");
-	CreamMdls[3] = LoadCharacterModel("cheese_ball");
+	ArchiveX arc_cr(HelperFunctionsGlobal.GetReplaceablePath("system\\heroes-cream.arcx"));
+	ArchiveX arc_ch(HelperFunctionsGlobal.GetReplaceablePath("system\\heroes-cheese.arcx"));
+
+	CreamMdls[0] = arc_cr.GetModel("CREAM_LOCATOR.sa1mdl");
+	CreamMdls[1] = arc_cr.GetModel("CR_MABUTA.sa1mdl");
+	CreamMdls[2] = arc_ch.GetModel("CHAO_LOCATOR.sa1mdl");
+	CreamMdls[3] = arc_ch.GetModel("CH_KAKU_LOCATOR.sa1mdl");
 
 	HelperFunctionsGlobal.Weights->Init(CreamMdls[0]->getweightinfo(), CreamMdls[0]->getmodel());
 
-	CreamAnms[0] = LoadCharacterAnim("CR_WALK");
-	CreamAnms[1] = LoadCharacterAnim("CR_WALK_PULL");
-	CreamAnms[2] = LoadCharacterAnim("CR_WALK_PUSH");
-	CreamAnms[3] = LoadCharacterAnim("CR_TURN_L");
-	CreamAnms[4] = LoadCharacterAnim("CR_TURN_R");
-	CreamAnms[5] = LoadCharacterAnim("CR_SLOW_RUN");
-	CreamAnms[6] = LoadCharacterAnim("CR_MID_RUN");
-	CreamAnms[7] = LoadCharacterAnim("CR_START");
-	CreamAnms[8] = LoadCharacterAnim("CR_START_IDLE");
-	CreamAnms[9] = LoadCharacterAnim("CR_IDLE_B_HALF");
-	CreamAnms[10] = LoadCharacterAnim("CR_IDLE_C_HALF");
-	CreamAnms[11] = LoadCharacterAnim("CR_IDLE_HALF");
-	CreamAnms[12] = LoadCharacterAnim("CR_IDLE_POW_HALF");
-	CreamAnms[13] = LoadCharacterAnim("CR_IDLE_POW_SHAKE");
-	CreamAnms[14] = LoadCharacterAnim("CR_POW_ROT");
-	CreamAnms[15] = LoadCharacterAnim("CR_POW_JUMP");
-	CreamAnms[16] = LoadCharacterAnim("CR_FW_JUMP");
-	CreamAnms[17] = LoadCharacterAnim("CR_FW_POW_JUMP");
-	CreamAnms[18] = LoadCharacterAnim("CR_JUMP_A");
-	CreamAnms[19] = LoadCharacterAnim("CR_JUMP_B");
-	CreamAnms[20] = LoadCharacterAnim("CR_JUMP_C");
-	CreamAnms[21] = LoadCharacterAnim("CR_JUMP_D");
-	CreamAnms[22] = LoadCharacterAnim("CR_JUMP_E");
-	CreamAnms[23] = LoadCharacterAnim("CR_JUMP_F");
-	CreamAnms[24] = LoadCharacterAnim("CR_JUMP_UMBRELLA");
-	CreamAnms[25] = LoadCharacterAnim("CR_JUMP_GLIND");
-	CreamAnms[26] = LoadCharacterAnim("CR_GLIND");
-	CreamAnms[27] = LoadCharacterAnim("CR_GLIND_BK");
-	CreamAnms[28] = LoadCharacterAnim("CR_GLIND_BK_L");
-	CreamAnms[29] = LoadCharacterAnim("CR_GLIND_BK_R");
-	CreamAnms[30] = LoadCharacterAnim("CR_GLIND_FLIP_BK");
-	CreamAnms[31] = LoadCharacterAnim("CR_GLIND_FLIP_FR");
-	CreamAnms[32] = LoadCharacterAnim("CR_GLIND_L");
-	CreamAnms[33] = LoadCharacterAnim("CR_GLIND_R");
-	CreamAnms[34] = LoadCharacterAnim("CR_FLY_IDLE");
-	CreamAnms[35] = LoadCharacterAnim("CR_FLY_SLOW");
-	CreamAnms[36] = LoadCharacterAnim("CR_FLY_UP");
-	CreamAnms[37] = LoadCharacterAnim("CR_FLY_PULL");
-	CreamAnms[38] = LoadCharacterAnim("CR_FLY_PUSH");
-	CreamAnms[39] = LoadCharacterAnim("CR_FLY_KICK");
-	CreamAnms[40] = LoadCharacterAnim("CR_FLY_HANG_IDLE");
-	CreamAnms[41] = LoadCharacterAnim("CR_FLY_HANG_OFF");
-	CreamAnms[42] = LoadCharacterAnim("CR_FLY_HANG_ON");
-	CreamAnms[43] = LoadCharacterAnim("CR_HANG_OFF");
-	CreamAnms[44] = LoadCharacterAnim("CR_HANG_ON");
-	CreamAnms[45] = LoadCharacterAnim("CR_BREAK_A");
-	CreamAnms[46] = LoadCharacterAnim("CR_BREAK_B");
-	CreamAnms[47] = LoadCharacterAnim("CR_BREAK_C");
-	CreamAnms[48] = LoadCharacterAnim("CR_BREAK_TURN_L");
-	CreamAnms[49] = LoadCharacterAnim("CR_BREAK_TURN_R");
-	CreamAnms[50] = LoadCharacterAnim("CR_BRA_MID");
-	CreamAnms[51] = LoadCharacterAnim("CR_BRA_TOP");
-	CreamAnms[52] = LoadCharacterAnim("CR_BOB");
-	CreamAnms[53] = LoadCharacterAnim("CR_FLORT");
-	CreamAnms[54] = LoadCharacterAnim("CR_DAM_MID_A");
-	CreamAnms[55] = LoadCharacterAnim("CR_DAM_MID_B");
-	CreamAnms[56] = LoadCharacterAnim("CR_DAM_MID_C");
-	CreamAnms[57] = LoadCharacterAnim("CR_EDGE_OTTO_A");
-	CreamAnms[58] = LoadCharacterAnim("CR_EDGE_OTTO_B");
-	CreamAnms[59] = LoadCharacterAnim("CR_EDGE_OTTO_C");
-	CreamAnms[60] = LoadCharacterAnim("CR_WIN");
-	CreamAnms[61] = LoadCharacterAnim("CR_ATC_CHAO");
-	CreamAnms[62] = LoadCharacterAnim("ROSE_CR");
+	CreamAnms[0] = arc_cr.GetAnimation("CR_WALK.saanim");
+	CreamAnms[1] = arc_cr.GetAnimation("CR_WALK_PULL.saanim");
+	CreamAnms[2] = arc_cr.GetAnimation("CR_WALK_PUSH.saanim");
+	CreamAnms[3] = arc_cr.GetAnimation("CR_TURN_L.saanim");
+	CreamAnms[4] = arc_cr.GetAnimation("CR_TURN_R.saanim");
+	CreamAnms[5] = arc_cr.GetAnimation("CR_SLOW_RUN.saanim");
+	CreamAnms[6] = arc_cr.GetAnimation("CR_MID_RUN.saanim");
+	CreamAnms[7] = arc_cr.GetAnimation("CR_START.saanim");
+	CreamAnms[8] = arc_cr.GetAnimation("CR_START_IDLE.saanim");
+	CreamAnms[9] = arc_cr.GetAnimation("CR_IDLE_B_HALF.saanim");
+	CreamAnms[10] = arc_cr.GetAnimation("CR_IDLE_C_HALF.saanim");
+	CreamAnms[11] = arc_cr.GetAnimation("CR_IDLE_HALF.saanim");
+	CreamAnms[12] = arc_cr.GetAnimation("CR_IDLE_POW_HALF.saanim");
+	CreamAnms[13] = arc_cr.GetAnimation("CR_IDLE_POW_SHAKE.saanim");
+	CreamAnms[14] = arc_cr.GetAnimation("CR_POW_ROT.saanim");
+	CreamAnms[15] = arc_cr.GetAnimation("CR_POW_JUMP.saanim");
+	CreamAnms[16] = arc_cr.GetAnimation("CR_FW_JUMP.saanim");
+	CreamAnms[17] = arc_cr.GetAnimation("CR_FW_POW_JUMP.saanim");
+	CreamAnms[18] = arc_cr.GetAnimation("CR_JUMP_A.saanim");
+	CreamAnms[19] = arc_cr.GetAnimation("CR_JUMP_B.saanim");
+	CreamAnms[20] = arc_cr.GetAnimation("CR_JUMP_C.saanim");
+	CreamAnms[21] = arc_cr.GetAnimation("CR_JUMP_D.saanim");
+	CreamAnms[22] = arc_cr.GetAnimation("CR_JUMP_E.saanim");
+	CreamAnms[23] = arc_cr.GetAnimation("CR_JUMP_F.saanim");
+	CreamAnms[24] = arc_cr.GetAnimation("CR_JUMP_UMBRELLA.saanim");
+	CreamAnms[25] = arc_cr.GetAnimation("CR_JUMP_GLIND.saanim");
+	CreamAnms[26] = arc_cr.GetAnimation("CR_GLIND.saanim");
+	CreamAnms[27] = arc_cr.GetAnimation("CR_GLIND_BK.saanim");
+	CreamAnms[28] = arc_cr.GetAnimation("CR_GLIND_BK_L.saanim");
+	CreamAnms[29] = arc_cr.GetAnimation("CR_GLIND_BK_R.saanim");
+	CreamAnms[30] = arc_cr.GetAnimation("CR_GLIND_FLIP_BK.saanim");
+	CreamAnms[31] = arc_cr.GetAnimation("CR_GLIND_FLIP_FR.saanim");
+	CreamAnms[32] = arc_cr.GetAnimation("CR_GLIND_L.saanim");
+	CreamAnms[33] = arc_cr.GetAnimation("CR_GLIND_R.saanim");
+	CreamAnms[34] = arc_cr.GetAnimation("CR_FLY_IDLE.saanim");
+	CreamAnms[35] = arc_cr.GetAnimation("CR_FLY_SLOW.saanim");
+	CreamAnms[36] = arc_cr.GetAnimation("CR_FLY_UP.saanim");
+	CreamAnms[37] = arc_cr.GetAnimation("CR_FLY_PULL.saanim");
+	CreamAnms[38] = arc_cr.GetAnimation("CR_FLY_PUSH.saanim");
+	CreamAnms[39] = arc_cr.GetAnimation("CR_FLY_KICK.saanim");
+	CreamAnms[40] = arc_cr.GetAnimation("CR_FLY_HANG_IDLE.saanim");
+	CreamAnms[41] = arc_cr.GetAnimation("CR_FLY_HANG_OFF.saanim");
+	CreamAnms[42] = arc_cr.GetAnimation("CR_FLY_HANG_ON.saanim");
+	CreamAnms[43] = arc_cr.GetAnimation("CR_HANG_OFF.saanim");
+	CreamAnms[44] = arc_cr.GetAnimation("CR_HANG_ON.saanim");
+	CreamAnms[45] = arc_cr.GetAnimation("CR_BREAK_A.saanim");
+	CreamAnms[46] = arc_cr.GetAnimation("CR_BREAK_B.saanim");
+	CreamAnms[47] = arc_cr.GetAnimation("CR_BREAK_C.saanim");
+	CreamAnms[48] = arc_cr.GetAnimation("CR_BREAK_TURN_L.saanim");
+	CreamAnms[49] = arc_cr.GetAnimation("CR_BREAK_TURN_R.saanim");
+	CreamAnms[50] = arc_cr.GetAnimation("CR_BRA_MID.saanim");
+	CreamAnms[51] = arc_cr.GetAnimation("CR_BRA_TOP.saanim");
+	CreamAnms[52] = arc_cr.GetAnimation("CR_BOB.saanim");
+	CreamAnms[53] = arc_cr.GetAnimation("CR_FLORT.saanim");
+	CreamAnms[54] = arc_cr.GetAnimation("CR_DAM_MID_A.saanim");
+	CreamAnms[55] = arc_cr.GetAnimation("CR_DAM_MID_B.saanim");
+	CreamAnms[56] = arc_cr.GetAnimation("CR_DAM_MID_C.saanim");
+	CreamAnms[57] = arc_cr.GetAnimation("CR_EDGE_OTTO_A.saanim");
+	CreamAnms[58] = arc_cr.GetAnimation("CR_EDGE_OTTO_B.saanim");
+	CreamAnms[59] = arc_cr.GetAnimation("CR_EDGE_OTTO_C.saanim");
+	CreamAnms[60] = arc_cr.GetAnimation("CR_WIN.saanim");
+	CreamAnms[61] = arc_cr.GetAnimation("CR_ATC_CHAO.saanim");
+	CreamAnms[62] = arc_cr.GetAnimation("ROSE_CR.saanim");
 
-	CreamAnms[63] = LoadCharacterAnim("CH_IDLE");
-	CreamAnms[64] = LoadCharacterAnim("CH_IDLE_B");
-	CreamAnms[65] = LoadCharacterAnim("CH_IDLE_B_OPT");
-	CreamAnms[66] = LoadCharacterAnim("CH_IDLE_C");
-	CreamAnms[67] = LoadCharacterAnim("CH_IDLE_C_OPT");
-	CreamAnms[68] = LoadCharacterAnim("CH_FLY");
-	CreamAnms[69] = LoadCharacterAnim("CH_ATC_CHAO_A");
-	CreamAnms[70] = LoadCharacterAnim("CH_ATC_CHAO_B");
-	CreamAnms[71] = LoadCharacterAnim("CH_WIN");
-	CreamAnms[72] = LoadCharacterAnim("CH_CHARANGE_IDLE");
-	CreamAnms[73] = LoadCharacterAnim("CH_CHARANGE_SELECT");
-	CreamAnms[74] = LoadCharacterAnim("CH_STORY_IDLE");
-	CreamAnms[75] = LoadCharacterAnim("CH_STORY_SELECT");
+	CreamAnms[63] = arc_ch.GetAnimation("CH_IDLE.saanim");
+	CreamAnms[64] = arc_ch.GetAnimation("CH_IDLE_B.saanim");
+	CreamAnms[65] = arc_ch.GetAnimation("CH_IDLE_B_OPT.saanim");
+	CreamAnms[66] = arc_ch.GetAnimation("CH_IDLE_C.saanim");
+	CreamAnms[67] = arc_ch.GetAnimation("CH_IDLE_C_OPT.saanim");
+	CreamAnms[68] = arc_ch.GetAnimation("CH_FLY.saanim");
+	CreamAnms[69] = arc_ch.GetAnimation("CH_ATC_CHAO_A.saanim");
+	CreamAnms[70] = arc_ch.GetAnimation("CH_ATC_CHAO_B.saanim");
+	CreamAnms[71] = arc_ch.GetAnimation("CH_WIN.saanim");
+	CreamAnms[72] = arc_ch.GetAnimation("CH_CHARANGE_IDLE.saanim");
+	CreamAnms[73] = arc_ch.GetAnimation("CH_CHARANGE_SELECT.saanim");
+	CreamAnms[74] = arc_ch.GetAnimation("CH_STORY_IDLE.saanim");
+	CreamAnms[75] = arc_ch.GetAnimation("CH_STORY_SELECT.saanim");
 
 	for (uint8_t i = 0; i < LengthOfArray(CreamAnimData); ++i) {
 		if (CreamAnms[i] == nullptr) continue;

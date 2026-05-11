@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "ArchiveX.h"
 #include "mod.h"
 #include "utils.h"
 #include "sounds.h"
@@ -103,6 +104,7 @@ void VectorHeroes_Display(ObjectMaster *obj) {
 	njRotateZ(0, entity1->Rotation.z);
 	njRotateX(0, entity1->Rotation.x);
 	njRotateY(0, -entity1->Rotation.y - 0x4000);
+
 	if (entity1->Action == 19) njRotateX(0, -0x1000);
 
 	if (entity1->Action == 24) {
@@ -113,6 +115,8 @@ void VectorHeroes_Display(ObjectMaster *obj) {
 	if (knucklesobj->Data1->Index == 52) {
 		njRotateY(0, 0xC000);
 	}
+
+	njRotateX(0, 0x4000);
 
 	*NodeCallbackFuncPtr = VectorCallback;
 	njActionWeight(VectorAnimData[knucklesobj->Data1->Index].Animation, knucklesobj->Data1->Scale.x, VectorMdls[0]->getweightinfo());
@@ -140,8 +144,8 @@ void VectorHeroes_Display(ObjectMaster *obj) {
 
 	if (entity1->Action == 11) {
 		njSetMatrix(NULL, VectorMatrices[1]);
-		njTranslate(0, 0, -2, -7);
-		dsDrawModel(VectorMdls[2]->getmodel()->child->getbasicdxmodel());
+		njTranslate(0, 0.0f, -7.0f, 2.0f);
+		dsDrawModel(VectorMdls[2]->getmodel()->getbasicdxmodel());
 	}
 	
 	njPopMatrix(1);
@@ -155,7 +159,7 @@ void VectorHeroes_Main(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1;
 	EntityData2* data2 = (EntityData2*)obj->Data2;
 
-	if (!CharactersCommon_Init(obj, "vector", &VECTOR_TEXLIST)) {
+	if (!CharactersCommon_Init(obj, "heroes-vector", &VECTOR_TEXLIST)) {
 		return;
 	}
 
@@ -166,7 +170,7 @@ void VectorHeroes_Main(ObjectMaster *obj) {
 
 	if (data->Rotation.z == 0) {
 		if (data->CharIndex == 0) {
-			CON_REGULAR_TEXNAMES[15].texaddr = VECTOR_TEXLIST.textures[1].texaddr;
+			CON_REGULAR_TEXNAMES[15].texaddr = VECTOR_TEXLIST.textures[6].texaddr;
 		}
 
 		if (CustomPhysics) {
@@ -304,75 +308,77 @@ void VectorHeroes_Main(ObjectMaster *obj) {
 }
 
 void LoadVectorFiles() {
-	VectorMdls[0] = LoadCharacterModel("vector_main");
-	VectorMdls[1] = LoadCharacterModel("vector_eyelids");
-	VectorMdls[2] = LoadCharacterModel("vector_objs");
+	ArchiveX arc(HelperFunctionsGlobal.GetReplaceablePath("system\\heroes-vector.arcx"));
+
+	VectorMdls[0] = arc.GetModel("VECTOR_LOCATOR.sa1mdl");
+	VectorMdls[1] = arc.GetModel("VE_MABUTA.sa1mdl");
+	VectorMdls[2] = arc.GetModel("GUM_LOCATOR.sa1mdl");
 
 	HelperFunctionsGlobal.Weights->Init(VectorMdls[0]->getweightinfo(), VectorMdls[0]->getmodel());
 
-	VectorAnms[0] = LoadCharacterAnim("VE_WALK");
-	VectorAnms[1] = LoadCharacterAnim("VE_WALK_PULL");
-	VectorAnms[2] = LoadCharacterAnim("VE_WALK_PUSH");
-	VectorAnms[3] = LoadCharacterAnim("VE_TURN_L");
-	VectorAnms[4] = LoadCharacterAnim("VE_TURN_R");
-	VectorAnms[5] = LoadCharacterAnim("VE_SLOW_RUN");
-	VectorAnms[6] = LoadCharacterAnim("VE_MID_RUN");
-	VectorAnms[7] = LoadCharacterAnim("VE_TOP_RUN");
-	VectorAnms[8] = LoadCharacterAnim("VE_START");
-	VectorAnms[9] = LoadCharacterAnim("VE_JUMP_ATC");
-	VectorAnms[10] = LoadCharacterAnim("VE_ATC_DOWN");
-	VectorAnms[11] = LoadCharacterAnim("VE_ATC_A");
-	VectorAnms[12] = LoadCharacterAnim("VE_ATC_B");
-	VectorAnms[13] = LoadCharacterAnim("VE_JUMP_A");
-	VectorAnms[14] = LoadCharacterAnim("VE_JUMP_B");
-	VectorAnms[15] = LoadCharacterAnim("VE_JUMP_C");
-	VectorAnms[16] = LoadCharacterAnim("VE_JUMP_D");
-	VectorAnms[17] = LoadCharacterAnim("VE_JUMP_E");
-	VectorAnms[18] = LoadCharacterAnim("VE_JUMP_F");
-	VectorAnms[19] = LoadCharacterAnim("VE_GUM");
-	VectorAnms[20] = LoadCharacterAnim("VE_JUMP_GLIND");
-	VectorAnms[21] = LoadCharacterAnim("VE_GLIND");
-	VectorAnms[22] = LoadCharacterAnim("VE_GLIND_BK");
-	VectorAnms[23] = LoadCharacterAnim("VE_GLIND_BK_L");
-	VectorAnms[24] = LoadCharacterAnim("VE_GLIND_BK_R");
-	VectorAnms[25] = LoadCharacterAnim("VE_GLIND_FLIP_B");
-	VectorAnms[26] = LoadCharacterAnim("VE_GLIND_FLIP_F");
-	VectorAnms[27] = LoadCharacterAnim("VE_GLIND_L");
-	VectorAnms[28] = LoadCharacterAnim("VE_GLIND_R");
-	VectorAnms[29] = LoadCharacterAnim("VE_FLY_IDLE");
-	VectorAnms[30] = LoadCharacterAnim("VE_FLY_SLOW");
-	VectorAnms[31] = LoadCharacterAnim("VE_FLY_GLIND");
-	VectorAnms[32] = LoadCharacterAnim("VE_HANG_OFF");
-	VectorAnms[33] = LoadCharacterAnim("VE_HANG_ON");
-	VectorAnms[34] = LoadCharacterAnim("VE_BREAK_A");
-	VectorAnms[35] = LoadCharacterAnim("VE_BREAK_B");
-	VectorAnms[36] = LoadCharacterAnim("VE_BREAK_C");
-	VectorAnms[37] = LoadCharacterAnim("VE_BREAK_TURN_L");
-	VectorAnms[38] = LoadCharacterAnim("VE_BREAK_TURN_R");
-	VectorAnms[39] = LoadCharacterAnim("VE_BRA_MID");
-	VectorAnms[40] = LoadCharacterAnim("VE_BRA_TOP");
-	VectorAnms[41] = LoadCharacterAnim("VE_FLORT");
-	VectorAnms[42] = LoadCharacterAnim("VE_DAM_M_A");
-	VectorAnms[43] = LoadCharacterAnim("VE_DAM_M_B");
-	VectorAnms[44] = LoadCharacterAnim("VE_DAM_M_C");
-	VectorAnms[45] = LoadCharacterAnim("VE_EDGE_OTTO_A");
-	VectorAnms[46] = LoadCharacterAnim("VE_EDGE_OTTO_B");
-	VectorAnms[47] = LoadCharacterAnim("VE_EDGE_OTTO_C");
-	VectorAnms[48] = LoadCharacterAnim("CAO_MIC");
-	VectorAnms[49] = LoadCharacterAnim("VE_FW_JUMP");
-	VectorAnms[50] = LoadCharacterAnim("VE_TRAP_JUMP");
-	VectorAnms[51] = LoadCharacterAnim("CAO_VE");
-	VectorAnms[52] = LoadCharacterAnim("VE_WIN");
-	VectorAnms[53] = LoadCharacterAnim("VE_ATC_A");
-	VectorAnms[54] = LoadCharacterAnim("VE_IDLE_HALF");
-	VectorAnms[55] = LoadCharacterAnim("VE_IDLE_B_HALF");
-	VectorAnms[56] = LoadCharacterAnim("VE_IDLE_C_HALF");
-	VectorAnms[57] = LoadCharacterAnim("VE_BOB");
-	VectorAnms[58] = LoadCharacterAnim("VE_BOB_L");
-	VectorAnms[59] = LoadCharacterAnim("VE_BOB_R");
-	VectorAnms[60] = LoadCharacterAnim("VE_START_IDLE");
-	VectorAnms[61] = LoadCharacterAnim("VE_GLIND_DASH");
-	VectorAnms[62] = LoadCharacterAnim("VE_GLIND_BK_DASH");
+	VectorAnms[0] = arc.GetAnimation("VE_WALK.saanim");
+	VectorAnms[1] = arc.GetAnimation("VE_WALK_PULL.saanim");
+	VectorAnms[2] = arc.GetAnimation("VE_WALK_PUSH.saanim");
+	VectorAnms[3] = arc.GetAnimation("VE_TURN_L.saanim");
+	VectorAnms[4] = arc.GetAnimation("VE_TURN_R.saanim");
+	VectorAnms[5] = arc.GetAnimation("VE_SLOW_RUN.saanim");
+	VectorAnms[6] = arc.GetAnimation("VE_MID_RUN.saanim");
+	VectorAnms[7] = arc.GetAnimation("VE_TOP_RUN.saanim");
+	VectorAnms[8] = arc.GetAnimation("VE_START.saanim");
+	VectorAnms[9] = arc.GetAnimation("VE_JUMP_ATC.saanim");
+	VectorAnms[10] = arc.GetAnimation("VE_ATC_DOWN.saanim");
+	VectorAnms[11] = arc.GetAnimation("VE_ATC_A.saanim");
+	VectorAnms[12] = arc.GetAnimation("VE_ATC_B.saanim");
+	VectorAnms[13] = arc.GetAnimation("VE_JUMP_A.saanim");
+	VectorAnms[14] = arc.GetAnimation("VE_JUMP_B.saanim");
+	VectorAnms[15] = arc.GetAnimation("VE_JUMP_C.saanim");
+	VectorAnms[16] = arc.GetAnimation("VE_JUMP_D.saanim");
+	VectorAnms[17] = arc.GetAnimation("VE_JUMP_E.saanim");
+	VectorAnms[18] = arc.GetAnimation("VE_JUMP_F.saanim");
+	VectorAnms[19] = arc.GetAnimation("VE_GUM.saanim");
+	VectorAnms[20] = arc.GetAnimation("VE_JUMP_GLIND.saanim");
+	VectorAnms[21] = arc.GetAnimation("VE_GLIND.saanim");
+	VectorAnms[22] = arc.GetAnimation("VE_GLIND_BK.saanim");
+	VectorAnms[23] = arc.GetAnimation("VE_GLIND_BK_L.saanim");
+	VectorAnms[24] = arc.GetAnimation("VE_GLIND_BK_R.saanim");
+	VectorAnms[25] = arc.GetAnimation("VE_GLIND_FLIP_B.saanim");
+	VectorAnms[26] = arc.GetAnimation("VE_GLIND_FLIP_F.saanim");
+	VectorAnms[27] = arc.GetAnimation("VE_GLIND_L.saanim");
+	VectorAnms[28] = arc.GetAnimation("VE_GLIND_R.saanim");
+	VectorAnms[29] = arc.GetAnimation("VE_FLY_IDLE.saanim");
+	VectorAnms[30] = arc.GetAnimation("VE_FLY_SLOW.saanim");
+	VectorAnms[31] = arc.GetAnimation("VE_FLY_GLIND.saanim");
+	VectorAnms[32] = arc.GetAnimation("VE_HANG_OFF.saanim");
+	VectorAnms[33] = arc.GetAnimation("VE_HANG_ON.saanim");
+	VectorAnms[34] = arc.GetAnimation("VE_BREAK_A.saanim");
+	VectorAnms[35] = arc.GetAnimation("VE_BREAK_B.saanim");
+	VectorAnms[36] = arc.GetAnimation("VE_BREAK_C.saanim");
+	VectorAnms[37] = arc.GetAnimation("VE_BREAK_TURN_L.saanim");
+	VectorAnms[38] = arc.GetAnimation("VE_BREAK_TURN_R.saanim");
+	VectorAnms[39] = arc.GetAnimation("VE_BRA_MID.saanim");
+	VectorAnms[40] = arc.GetAnimation("VE_BRA_TOP.saanim");
+	VectorAnms[41] = arc.GetAnimation("VE_FLORT.saanim");
+	VectorAnms[42] = arc.GetAnimation("VE_DAM_M_A.saanim");
+	VectorAnms[43] = arc.GetAnimation("VE_DAM_M_B.saanim");
+	VectorAnms[44] = arc.GetAnimation("VE_DAM_M_C.saanim");
+	VectorAnms[45] = arc.GetAnimation("VE_EDGE_OTTO_A.saanim");
+	VectorAnms[46] = arc.GetAnimation("VE_EDGE_OTTO_B.saanim");
+	VectorAnms[47] = arc.GetAnimation("VE_EDGE_OTTO_C.saanim");
+	VectorAnms[48] = arc.GetAnimation("CAO_MIC.saanim");
+	VectorAnms[49] = arc.GetAnimation("VE_FW_JUMP.saanim");
+	VectorAnms[50] = arc.GetAnimation("VE_TRAP_JUMP.saanim");
+	VectorAnms[51] = arc.GetAnimation("CAO_VE.saanim");
+	VectorAnms[52] = arc.GetAnimation("VE_WIN.saanim");
+	VectorAnms[53] = arc.GetAnimation("VE_ATC_A.saanim");
+	VectorAnms[54] = arc.GetAnimation("VE_IDLE_HALF.saanim");
+	VectorAnms[55] = arc.GetAnimation("VE_IDLE_B_HALF.saanim");
+	VectorAnms[56] = arc.GetAnimation("VE_IDLE_C_HALF.saanim");
+	VectorAnms[57] = arc.GetAnimation("VE_BOB.saanim");
+	VectorAnms[58] = arc.GetAnimation("VE_BOB_L.saanim");
+	VectorAnms[59] = arc.GetAnimation("VE_BOB_R.saanim");
+	VectorAnms[60] = arc.GetAnimation("VE_START_IDLE.saanim");
+	VectorAnms[61] = arc.GetAnimation("VE_GLIND_DASH.saanim");
+	VectorAnms[62] = arc.GetAnimation("VE_GLIND_BK_DASH.saanim");
 
 	for (uint8_t i = 0; i < LengthOfArray(VectorAnimData); ++i) {
 		if (VectorAnms[i] == nullptr) continue;

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "ArchiveX.h"
 #include "mod.h"
 #include "utils.h"
 #include "sounds.h"
@@ -89,6 +90,8 @@ void AmyHeroes_Display(ObjectMaster *obj) {
 	njRotateX(0, entity1->Rotation.x);
 	njRotateY(0, -entity1->Rotation.y - 0x4000);
 
+	njRotateX(0, 0x4000);
+
 	if (amyobj->Data1->Index == 52) {
 		njTranslate(0, -10, 5, 0);
 	}
@@ -122,9 +125,7 @@ void AmyHeroes_Display(ObjectMaster *obj) {
 	
 	if (amyobj->Data1->Index == 53 || amyobj->Data1->Index == 61) {
 		njSetMatrix(NULL, AmyMatrices[1]);
-		njTranslate(0, 0, 0, 0.5f);
-		njRotateZ(0, 0xC000);
-		dsDrawModel(AmyMdls[2]->getmodel()->child->getbasicdxmodel());
+		dsDrawObject(AmyMdls[2]->getmodel());
 	}
 	
 	njPopMatrix(1);
@@ -138,7 +139,7 @@ void AmyHeroes_Main(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1;
 	EntityData2* data2 = (EntityData2*)obj->Data2;
 
-	if (!CharactersCommon_Init(obj, "amyh", &HAMY_TEXLIST)) {
+	if (!CharactersCommon_Init(obj, "heroes-amy", &HAMY_TEXLIST)) {
 		return;
 	}
 
@@ -239,74 +240,76 @@ void AmyHeroes_Main(ObjectMaster *obj) {
 }
 
 void LoadAmyFiles() {
-	AmyMdls[0] = LoadCharacterModel("amy_main");
-	AmyMdls[1] = LoadCharacterModel("amy_eyelashes");
-	AmyMdls[2] = LoadCharacterModel("amy_hammer");
+	ArchiveX arc(HelperFunctionsGlobal.GetReplaceablePath("system\\heroes-amy.arcx"));
+
+	AmyMdls[0] = arc.GetModel("AMY_LOCATOR.sa1mdl");
+	AmyMdls[1] = arc.GetModel("AMY_MABUTA.sa1mdl");
+	AmyMdls[2] = arc.GetModel("AMY_HAMMER.sa1mdl");
 
 	HelperFunctionsGlobal.Weights->Init(AmyMdls[0]->getweightinfo(), AmyMdls[0]->getmodel());
 
-	AmyAnms[0] = LoadCharacterAnim("AM_WALK");
-	AmyAnms[1] = LoadCharacterAnim("AM_WALK_PULL");
-	AmyAnms[2] = LoadCharacterAnim("AM_WALK_PUSH");
-	AmyAnms[3] = LoadCharacterAnim("AM_TURN_L_HALF");
-	AmyAnms[4] = LoadCharacterAnim("AM_TURN_R_HALF");
-	AmyAnms[5] = LoadCharacterAnim("AM_SLOW_RUN");
-	AmyAnms[6] = LoadCharacterAnim("AM_MID_RUN");
-	AmyAnms[7] = LoadCharacterAnim("AM_TOP_RUN");
-	AmyAnms[8] = LoadCharacterAnim("AM_START");
-	AmyAnms[9] = LoadCharacterAnim("AM_JUMP_WALL");
-	AmyAnms[10] = LoadCharacterAnim("AM_JUMP_TRIC_A");
-	AmyAnms[11] = LoadCharacterAnim("AM_JUMP_TRIC_B");
-	AmyAnms[12] = LoadCharacterAnim("AM_JUMP_TRIC_C");
-	AmyAnms[13] = LoadCharacterAnim("AM_JUMP_A");
-	AmyAnms[14] = LoadCharacterAnim("AM_JUMP_B_HALF");
-	AmyAnms[15] = LoadCharacterAnim("AM_JUMP_C");
-	AmyAnms[16] = LoadCharacterAnim("AM_JUMP_D");
-	AmyAnms[17] = LoadCharacterAnim("AM_JUMP_E");
-	AmyAnms[18] = LoadCharacterAnim("AM_JUMP_F");
-	AmyAnms[19] = LoadCharacterAnim("AM_JUMP_UMBRELLA");
-	AmyAnms[20] = LoadCharacterAnim("AM_JUMP_GLIND");
-	AmyAnms[21] = LoadCharacterAnim("AM_GLIND");
-	AmyAnms[22] = LoadCharacterAnim("AM_GLIND_BK");
-	AmyAnms[23] = LoadCharacterAnim("AM_GLIND_BK_L");
-	AmyAnms[24] = LoadCharacterAnim("AM_GLIND_BK_R");
-	AmyAnms[25] = LoadCharacterAnim("AM_GLIND_FLIP_B");
-	AmyAnms[26] = LoadCharacterAnim("AM_GLIND_FLIP_F");
-	AmyAnms[27] = LoadCharacterAnim("AM_GLIND_L");
-	AmyAnms[28] = LoadCharacterAnim("AM_GLIND_R");
-	AmyAnms[29] = LoadCharacterAnim("AM_FLY_IDLE");
-	AmyAnms[30] = LoadCharacterAnim("AM_FLY_SLOW");
-	AmyAnms[31] = LoadCharacterAnim("AM_FLY_GLIND");
-	AmyAnms[32] = LoadCharacterAnim("AM_HANG_OFF");
-	AmyAnms[33] = LoadCharacterAnim("AM_HANG_ON");
-	AmyAnms[34] = LoadCharacterAnim("AM_BREAK_A");
-	AmyAnms[35] = LoadCharacterAnim("AM_BREAK_B");
-	AmyAnms[36] = LoadCharacterAnim("AM_BREAK_C");
-	AmyAnms[37] = LoadCharacterAnim("AM_BREAK_TURN_L");
-	AmyAnms[38] = LoadCharacterAnim("AM_BREAK_TURN_R");
-	AmyAnms[39] = LoadCharacterAnim("AM_BRA_MID");
-	AmyAnms[40] = LoadCharacterAnim("AM_BRA_TOP");
-	AmyAnms[41] = LoadCharacterAnim("AM_FLORT");
-	AmyAnms[42] = LoadCharacterAnim("AM_DAM_M_A");
-	AmyAnms[43] = LoadCharacterAnim("AM_DAM_M_B");
-	AmyAnms[44] = LoadCharacterAnim("AM_DAM_M_C");
-	AmyAnms[45] = LoadCharacterAnim("AM_EDGE_OTTO_A");
-	AmyAnms[46] = LoadCharacterAnim("AM_EDGE_OTTO_B");
-	AmyAnms[47] = LoadCharacterAnim("AM_EDGE_OTTO_C");
-	AmyAnms[48] = LoadCharacterAnim("AM_EDGE_OTTO_C");
-	AmyAnms[49] = LoadCharacterAnim("AM_FW_JUMP");
-	AmyAnms[50] = LoadCharacterAnim("AM_TRAP_JUMP");
-	AmyAnms[51] = LoadCharacterAnim("AM_POW_ROT_HALF");
-	AmyAnms[52] = LoadCharacterAnim("AM_WIN");
-	AmyAnms[53] = LoadCharacterAnim("AM_ATC_HAM");
-	AmyAnms[54] = LoadCharacterAnim("AM_IDLE_HALF");
-	AmyAnms[55] = LoadCharacterAnim("AM_IDLE_B_HALF");
-	AmyAnms[56] = LoadCharacterAnim("AM_IDLE_C_HALF");
-	AmyAnms[57] = LoadCharacterAnim("ROSE_AM");
-	AmyAnms[58] = LoadCharacterAnim("AM_IDLE_POW_HALF");
-	AmyAnms[59] = LoadCharacterAnim("AM_IDLE_POW_SHAKE");
-	AmyAnms[60] = LoadCharacterAnim("AM_START_IDLE");
-	AmyAnms[61] = LoadCharacterAnim("AM_ATC_TRNADE");
+	AmyAnms[0] = arc.GetAnimation("AM_WALK.saanim");
+	AmyAnms[1] = arc.GetAnimation("AM_WALK_PULL.saanim");
+	AmyAnms[2] = arc.GetAnimation("AM_WALK_PUSH.saanim");
+	AmyAnms[3] = arc.GetAnimation("AM_TURN_L_HALF.saanim");
+	AmyAnms[4] = arc.GetAnimation("AM_TURN_R_HALF.saanim");
+	AmyAnms[5] = arc.GetAnimation("AM_SLOW_RUN.saanim");
+	AmyAnms[6] = arc.GetAnimation("AM_MID_RUN.saanim");
+	AmyAnms[7] = arc.GetAnimation("AM_TOP_RUN.saanim");
+	AmyAnms[8] = arc.GetAnimation("AM_START.saanim");
+	AmyAnms[9] = arc.GetAnimation("AM_JUMP_WALL.saanim");
+	AmyAnms[10] =  arc.GetAnimation("AM_JUMP_TRIC_A.saanim");
+	AmyAnms[11] =  arc.GetAnimation("AM_JUMP_TRIC_B.saanim");
+	AmyAnms[12] =  arc.GetAnimation("AM_JUMP_TRIC_C.saanim");
+	AmyAnms[13] =  arc.GetAnimation("AM_JUMP_A.saanim");
+	AmyAnms[14] =  arc.GetAnimation("AM_JUMP_B_HALF.saanim");
+	AmyAnms[15] =  arc.GetAnimation("AM_JUMP_C.saanim");
+	AmyAnms[16] =  arc.GetAnimation("AM_JUMP_D.saanim");
+	AmyAnms[17] =  arc.GetAnimation("AM_JUMP_E.saanim");
+	AmyAnms[18] =  arc.GetAnimation("AM_JUMP_F.saanim");
+	AmyAnms[19] =  arc.GetAnimation("AM_JUMP_UMBRELLA.saanim");
+	AmyAnms[20] =  arc.GetAnimation("AM_JUMP_GLIND.saanim");
+	AmyAnms[21] =  arc.GetAnimation("AM_GLIND.saanim");
+	AmyAnms[22] =  arc.GetAnimation("AM_GLIND_BK.saanim");
+	AmyAnms[23] =  arc.GetAnimation("AM_GLIND_BK_L.saanim");
+	AmyAnms[24] =  arc.GetAnimation("AM_GLIND_BK_R.saanim");
+	AmyAnms[25] =  arc.GetAnimation("AM_GLIND_FLIP_B.saanim");
+	AmyAnms[26] =  arc.GetAnimation("AM_GLIND_FLIP_F.saanim");
+	AmyAnms[27] =  arc.GetAnimation("AM_GLIND_L.saanim");
+	AmyAnms[28] =  arc.GetAnimation("AM_GLIND_R.saanim");
+	AmyAnms[29] =  arc.GetAnimation("AM_FLY_IDLE.saanim");
+	AmyAnms[30] =  arc.GetAnimation("AM_FLY_SLOW.saanim");
+	AmyAnms[31] =  arc.GetAnimation("AM_FLY_GLIND.saanim");
+	AmyAnms[32] =  arc.GetAnimation("AM_HANG_OFF.saanim");
+	AmyAnms[33] =  arc.GetAnimation("AM_HANG_ON.saanim");
+	AmyAnms[34] =  arc.GetAnimation("AM_BREAK_A.saanim");
+	AmyAnms[35] =  arc.GetAnimation("AM_BREAK_B.saanim");
+	AmyAnms[36] =  arc.GetAnimation("AM_BREAK_C.saanim");
+	AmyAnms[37] =  arc.GetAnimation("AM_BREAK_TURN_L.saanim");
+	AmyAnms[38] =  arc.GetAnimation("AM_BREAK_TURN_R.saanim");
+	AmyAnms[39] =  arc.GetAnimation("AM_BRA_MID.saanim");
+	AmyAnms[40] =  arc.GetAnimation("AM_BRA_TOP.saanim");
+	AmyAnms[41] =  arc.GetAnimation("AM_FLORT.saanim");
+	AmyAnms[42] =  arc.GetAnimation("AM_DAM_M_A.saanim");
+	AmyAnms[43] =  arc.GetAnimation("AM_DAM_M_B.saanim");
+	AmyAnms[44] =  arc.GetAnimation("AM_DAM_M_C.saanim");
+	AmyAnms[45] =  arc.GetAnimation("AM_EDGE_OTTO_A.saanim");
+	AmyAnms[46] =  arc.GetAnimation("AM_EDGE_OTTO_B.saanim");
+	AmyAnms[47] =  arc.GetAnimation("AM_EDGE_OTTO_C.saanim");
+	AmyAnms[48] =  arc.GetAnimation("AM_EDGE_OTTO_C.saanim");
+	AmyAnms[49] =  arc.GetAnimation("AM_FW_JUMP.saanim");
+	AmyAnms[50] =  arc.GetAnimation("AM_TRAP_JUMP.saanim");
+	AmyAnms[51] =  arc.GetAnimation("AM_POW_ROT_HALF.saanim");
+	AmyAnms[52] =  arc.GetAnimation("AM_WIN.saanim");
+	AmyAnms[53] =  arc.GetAnimation("AM_ATC_HAM.saanim");
+	AmyAnms[54] =  arc.GetAnimation("AM_IDLE_HALF.saanim");
+	AmyAnms[55] =  arc.GetAnimation("AM_IDLE_B_HALF.saanim");
+	AmyAnms[56] =  arc.GetAnimation("AM_IDLE_C_HALF.saanim");
+	AmyAnms[57] =  arc.GetAnimation("ROSE_AM.saanim");
+	AmyAnms[58] =  arc.GetAnimation("AM_IDLE_POW_HALF.saanim");
+	AmyAnms[59] =  arc.GetAnimation("AM_IDLE_POW_SHAKE.saanim");
+	AmyAnms[60] =  arc.GetAnimation("AM_START_IDLE.saanim");
+	AmyAnms[61] =  arc.GetAnimation("AM_ATC_TRNADE.saanim");
 
 	for (uint8_t i = 0; i < LengthOfArray(HAmyAnimData); ++i) {
 		if (AmyAnms[i] == nullptr) continue;
