@@ -845,8 +845,6 @@ void Heroes_Display(ObjectMaster* obj) {
 		return;
 	}
 
-	HelperFunctionsGlobal.PushInterpolationFix();
-
 	if (obj->Data1->CharID == Characters_Sonic && SuperSonicFlag && HeroesChars[obj->Data1->CharIndex]) {
 		Sonic_Display(obj);
 		obj->DisplaySub = Sonic_Display;
@@ -855,8 +853,6 @@ void Heroes_Display(ObjectMaster* obj) {
 
 	if (HeroesChars[obj->Data1->CharIndex]->Data1->LoopData) 
 		DisplayFuncs[HeroesChars[obj->Data1->CharIndex]->Data1->CharID - 9](obj);
-
-	HelperFunctionsGlobal.PopInterpolationFix();
 }
 
 //Hijack the sound functions of Sonic, Tails and Knuckles to redirect those
@@ -900,10 +896,10 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 	const std::string FlyCharacter = config->getString("2- Characters", "FlyCharacter", "None");
 	const std::string PowerCharacter = config->getString("2- Characters", "PowerCharacter", "None");
 
-	CustomPhysics = config->getBool("2- Characters", "CustomPhysics", true);
-	CustomActions = config->getBool("2- Characters", "CustomActions", false);
-	JumpBallEnabled = config->getBool("2- Characters", "JumpBallEnabled", true);
-	P2SoundsEnabled = config->getBool("2- Characters", "P2SoundsEnabled", false);
+	CustomPhysics = config->getBool("Characters", "CustomPhysics", true);
+	CustomActions = config->getBool("Characters", "CustomActions", false);
+	JumpBallEnabled = config->getBool("Characters", "JumpBallEnabled", true);
+	P2SoundsEnabled = config->getBool("Characters", "P2SoundsEnabled", false);
 
 	if (!SpeedCharacter.compare("Sonic")) {
 		SpeedCharEnabled = Characters_HeroesSonic;
