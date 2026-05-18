@@ -226,29 +226,34 @@ NJS_VECTOR GetCheesePoint(NJS_VECTOR* pos, Rotation3* rot) {
 	return point;
 }
 
-ObjectMaster* Cheese_GetClosestEnemy(NJS_VECTOR* pos) {
-	ObjectMaster * current = ObjectListThing[3];
-	while (1) {
-		if (current->MainSub == Kiki_Main || current->MainSub == RhinoTank_Main || current->MainSub == Sweep_Main
-			|| current->MainSub == SpinnerA_Main || current->MainSub == SpinnerB_Main || current->MainSub == SpinnerC_Main
-			|| current->MainSub == UnidusA_Main || current->MainSub == UnidusB_Main || current->MainSub == UnidusC_Main
-			|| current->MainSub == Leon_Main || current->MainSub == BoaBoa_Main || current->MainSub == ESman) {
-			float dist = GetDistance(pos, &current->Data1->Position);
-			if (GetDistance(pos, &current->Data1->Position) < 200) return current;
-			else {
-				if (current->Next) {
-					current = current->Next;
-					continue;
-				}
-				else break;
-			}
+ObjectMaster* Cheese_GetClosestEnemy(int pnum, float max_dist)
+{
+	colaround* ael; // todo: multiplayer mod compatibility
+	if (pnum)
+		ael = around_enemy_list_p1;
+	else
+		ael = around_enemy_list_p0;
+
+	taskwk* tgt_twp = NULL;
+	float tgt_dst = max_dist * max_dist;
+
+	while (ael->twp)
+	{
+		if (ael->dist < tgt_dst)
+		{
+			tgt_dst = ael->dist;
+			tgt_twp = ael->twp;
+
 		}
-		else {
-			if (current->Next) current = current->Next;
-			else break;
-		}
+		++ael;
 	}
-	return nullptr;
+
+	if (tgt_twp)
+	{
+		return (ObjectMaster*)tgt_twp->cwp->mytask;
+	}
+
+	return NULL;
 }
 
 void Cheese_Display(ObjectMaster* obj) {
@@ -384,7 +389,7 @@ void Cheese_Main(ObjectMaster* obj) {
 
 		break;
 	case 2: //cheese special attack, get the closest enemy
-		data->LoopData = (Loop*)Cheese_GetClosestEnemy(&playerdata->Position);
+		data->LoopData = (Loop*)Cheese_GetClosestEnemy(data->CharIndex, 200.0f);
 		
 		if (data->LoopData) {
 			data->NextAction = 0;
@@ -407,7 +412,7 @@ void Cheese_Main(ObjectMaster* obj) {
 
 		if (!enemydata) {
 			data->InvulnerableTime = 0;
-			data->LoopData = (Loop*)Cheese_GetClosestEnemy(&playerdata->Position);
+			data->LoopData = (Loop*)Cheese_GetClosestEnemy(data->CharIndex, 200.0f);
 			if (data->LoopData) {
 				data->NextAction = 0;
 				break;
