@@ -269,17 +269,10 @@ void BigHeroes_Display(ObjectMaster *obj) {
 	if (!Bigobj) return;
 	EntityData2* data2 = (EntityData2*)Bigobj->Data2;
 
-	WriteData<5>((void*)0x472649, 0x90);
-	WriteData<5>((void*)0x47258B, 0x90);
-	WriteData<5>((void*)0x472626, 0x90);
-	Big_Display(obj);
-	WriteCall((void*)0x472649, njAction);
-	WriteCall((void*)0x47258B, njAction);
-	WriteCall((void*)0x472626, njAction);
-
 	EntityData1* entity1 = obj->Data1;
 	EntityData2* entity2 = (EntityData2*)obj->Data2;
 	CharObj2* co2 = entity2->CharacterData;
+	playerwk_heroes* pwp_heroes = (playerwk_heroes*)Bigobj->UnknownB_ptr;
 
 	if (Bigobj->Data1->Index == 42 || Bigobj->Data1->Index == 43 || Bigobj->Data1->Index == 44) {
 		if (FrameCounterUnpaused % 5 == 0) {
@@ -326,7 +319,7 @@ void BigHeroes_Display(ObjectMaster *obj) {
 
 	njRotateX(0, 0x4000);
 
-	mtnjvwk* mtn = (mtnjvwk*)Bigobj->Data1->Object;
+	mtnjvwk* mtn = &pwp_heroes->mm;
 
 	int action = mtn->reqaction;
 	NJS_ACTION* actptr = mtn->plactptr[action].actptr;
@@ -360,7 +353,7 @@ void BigHeroes_Main(ObjectMaster *obj) {
 	EntityData1* playerdata = EntityData1Ptrs[data->CharIndex];
 	EntityData2* playerdata2 = EntityData2Ptrs[data->CharIndex];
 	CharObj2* playerco2 = CharObj2Ptrs[data->CharIndex];
-	mtnjvwk* mtn = (mtnjvwk*)data->Object;
+	playerwk_heroes* pwp_heroes = (playerwk_heroes*)obj->UnknownB_ptr;
 
 	if (!playerco2 || playerdata->CharID != Characters_Knuckles)
 	{
@@ -404,18 +397,18 @@ void BigHeroes_Main(ObjectMaster *obj) {
 			playerco2->IdleTime = 0;
 		}
 
-		KnucklesAnimConverter(mtn, Characters_HeroesBig, (taskwk*)playerdata, (playerwk*)playerco2);
+		KnucklesAnimConverter(&pwp_heroes->mm, Characters_HeroesBig, (taskwk*)playerdata, (playerwk*)playerco2);
 
 		break;
 	case 3:
 		switch (PowerLaunchTrick(data, data2, playerco2, playerdata)) {
 		case 1:
 			PlayHeroesSound(BigSound_Combo1);
-			mtn->reqaction = 11;
+			pwp_heroes->mm.reqaction = 11;
 			break;
 		case 2:
 			PlayHeroesSound(BigSound_Combo2);
-			mtn->reqaction = 9;
+			pwp_heroes->mm.reqaction = 9;
 			break;
 		case 3:
 			PlayHeroesSound(BigSound_Combo3);
@@ -432,7 +425,7 @@ void BigHeroes_Main(ObjectMaster *obj) {
 			}
 			
 			data->Scale.x = data->Scale.y;
-			mtn->reqaction = 12;
+			pwp_heroes->mm.reqaction = 12;
 			break;
 		case 5:
 			playerco2->Speed.x = 0;
@@ -458,7 +451,7 @@ void BigHeroes_Main(ObjectMaster *obj) {
 			}
 
 			data->Scale.x = data->Scale.y;
-			mtn->reqaction = 12;
+			pwp_heroes->mm.reqaction = 12;
 			break;
 		}
 		
@@ -496,12 +489,12 @@ void BigHeroes_Main(ObjectMaster *obj) {
 			
 		}
 
-		mtn->reqaction = 10;
+		pwp_heroes->mm.reqaction = 10;
 		break;
 	}
 
 	CharactersCommon_DrawBall(playerdata, data);
-	PSetMotion(mtn);
+	PSetMotion(&pwp_heroes->mm);
 
 	if (FrameCounterUnpaused % 200 == 0) {
 		data->InvulnerableTime = 1;

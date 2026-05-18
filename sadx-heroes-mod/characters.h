@@ -155,26 +155,25 @@ enum {
 	MTN_POW_MAX,
 };
 
+struct playerwk_heroes
+{
+	mtnjvwk mm;
+	mtnjvwk mm_sub;
+	NJS_TEXLIST* texlist;
+};
+
 typedef void(__cdecl *PlaySoundFuncPtr)(int);
 typedef void(__cdecl *VoidFunction)();
 
-void DrawChunkModel(NJS_CNK_MODEL* model);
-void njCnkAction_Queue(NJS_ACTION* action, float frame, QueuedModelFlagsB flags);
-void njCnkAction(NJS_ACTION* action, float frame);
-void SetupWorldMatrix();
-void PlayHeroesAnimation(ObjectMaster *obj, uint8_t ID, AnimData* animdata, float forcespeed, float forcestate);
 void HeroesChars_InitPlayer(task* tp, TEX_PVMTABLE pvm, int lifeicontex, PL_ACTION* pl_action);
-bool CharactersCommon_Init(ObjectMaster* obj, const char* name, NJS_TEXLIST* tex);
 void CharactersCommon_DrawBall(EntityData1* playerdata, EntityData1* data);
-
-bool CanDoTricks(EntityData1* player);
 
 void SonicAnimConverter(mtnjvwk* mtn, int heroes_plno, taskwk* pltwp, playerwk* pwp);
 void KnucklesAnimConverter(mtnjvwk* mtn, int heroes_plno, taskwk* pltwp, playerwk* pwp);
 
+bool CanDoTricks(EntityData1* player);
 void TornadoTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, EntityData1* playerdata);
 bool KickTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, EntityData1* playerdata);
-
 int PowerComboTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, EntityData1* playerdata);
 int PowerLaunchTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, EntityData1* playerdata);
 bool FlightPunchTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, EntityData1* playerdata);

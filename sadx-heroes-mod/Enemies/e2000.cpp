@@ -572,7 +572,7 @@ void e2000_Main(ObjectMaster* obj) {
 		break;
 	}
 
-	PlayHeroesAnimation(obj, (uint8_t)e2kdata->anim, e2000AnimData, 0, 0);
+	//PlayHeroesAnimation(obj, (uint8_t)e2kdata->anim, e2000AnimData, 0, 0);
 	AddToCollisionList(data);
 	obj->DisplaySub(obj);
 	RunObjectChildren(obj);

@@ -197,6 +197,7 @@ void ShadowHeroes_Display(ObjectMaster *obj) {
 	EntityData1* entity1 = obj->Data1;
 	EntityData2* entity2 = (EntityData2*)obj->Data2;
 	CharObj2* co2 = entity2->CharacterData;
+	playerwk_heroes* pwp_heroes = (playerwk_heroes*)sonicobj->UnknownB_ptr;
 
 	if (entity1->Action == 16 || entity1->Action == 86) {
 		if (FrameCounterUnpaused % 5 == 0) {
@@ -224,7 +225,7 @@ void ShadowHeroes_Display(ObjectMaster *obj) {
 
 	njRotateX(0, 0x4000);
 
-	mtnjvwk* mtn = (mtnjvwk*)sonicobj->Data1->Object;
+	mtnjvwk* mtn = &pwp_heroes->mm;
 
 	int action = mtn->reqaction;
 	NJS_ACTION* actptr = mtn->plactptr[action].actptr;
@@ -281,7 +282,7 @@ void ShadowHeroes_Main(ObjectMaster *obj) {
 	EntityData1* playerdata = EntityData1Ptrs[data->CharIndex];
 	EntityData2* playerdata2 = EntityData2Ptrs[data->CharIndex];
 	CharObj2* playerco2 = CharObj2Ptrs[data->CharIndex];
-	mtnjvwk* mtn = (mtnjvwk*)data->Object;
+	playerwk_heroes* pwp_heroes = (playerwk_heroes*)obj->UnknownB_ptr;
 
 	if (!playerco2 || playerdata->CharID != Characters_Sonic)
 	{
@@ -324,12 +325,12 @@ void ShadowHeroes_Main(ObjectMaster *obj) {
 			playerco2->IdleTime = 0;
 		}
 
-		SonicAnimConverter(mtn, Characters_Shadow, (taskwk*)playerdata, (playerwk*)playerco2);
+		SonicAnimConverter(&pwp_heroes->mm, Characters_Shadow, (taskwk*)playerdata, (playerwk*)playerco2);
 
 		break;
 	case 3:
 		KickTrick(data, data2, playerco2, playerdata);
-		mtn->reqaction = MTN_SPD_ATC;
+		pwp_heroes->mm.reqaction = MTN_SPD_ATC;
 		break;
 	case 4:
 		TornadoTrick(data, data2, playerco2, playerdata);
@@ -337,7 +338,7 @@ void ShadowHeroes_Main(ObjectMaster *obj) {
 	}
 
 	CharactersCommon_DrawBall(playerdata, data);
-	PSetMotion(mtn);
+	PSetMotion(&pwp_heroes->mm);
 
 	if (FrameCounterUnpaused % 200 == 0) {
 		data->InvulnerableTime = 1;

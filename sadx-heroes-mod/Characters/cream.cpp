@@ -89,9 +89,9 @@ enum {
 };
 
 ModelInfo* CreamMdls[4];
-AnimationFile* CreamAnms[62];
+AnimationFile* CreamAnms[63];
 AnimationFile* CheeseAnms[34];
-NJS_ACTION CreamActs[62];
+NJS_ACTION CreamActs[63];
 NJS_ACTION CheeseActs[34];
 
 PL_ACTION cream_action_heroes[] = {
@@ -256,6 +256,7 @@ void Cheese_Display(ObjectMaster* obj) {
 	EntityData2* data2 = (EntityData2*)obj->Data2;
 	EntityData1* playerdata = EntityData1Ptrs[obj->Parent->Data1->CharIndex];
 	CharObj2* playerco2 = CharObj2Ptrs[obj->Parent->Data1->CharIndex];
+	playerwk_heroes* pwp_heroes = (playerwk_heroes*)obj->Parent->UnknownB_ptr;
 
 	Direct3D_SetZFunc(1u);
 	Direct3D_PerformLighting(2);
@@ -264,7 +265,7 @@ void Cheese_Display(ObjectMaster* obj) {
 
 	njPushMatrix(0);
 
-	mtnjvwk* mtn = (mtnjvwk*)data->Object;
+	mtnjvwk* mtn = &pwp_heroes->mm_sub;
 
 	int action = mtn->reqaction;
 	NJS_ACTION* actptr = mtn->plactptr[action].actptr;
@@ -316,7 +317,7 @@ void Cheese_Main(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1;
 	EntityData2* data2 = (EntityData2*)obj->Data2;
 	EntityData1* playerdata = EntityData1Ptrs[obj->Parent->Data1->CharIndex];
-	mtnjvwk* mtn = (mtnjvwk*)data->Object;
+	playerwk_heroes* pwp_heroes = (playerwk_heroes*)obj->Parent->UnknownB_ptr;
 
 	float dist = GetDistance(&data2->VelocityDirection, &data->Position);
 
@@ -329,14 +330,10 @@ void Cheese_Main(ObjectMaster* obj) {
 		data->Position = GetCheesePoint(&playerdata->Position, &playerdata->Rotation);
 		Collision_Init(obj, &Cheese_Col, 1, 3u);
 
-		mtn = new mtnjvwk;
-		mtn->plactptr = cheese_action;
-		mtn->mtnmode = MD_MTN_INIT;
-		mtn->reqaction = 0;
-		mtn->spdp = &playerpwp[data->CharIndex]->spd.x;
-		mtn->workp = &playerpwp[data->CharIndex]->work.f;
-		PSetMotion(mtn);
-		data->Object = (NJS_OBJECT*)mtn;
+		pwp_heroes->mm_sub.plactptr = cheese_action;
+		pwp_heroes->mm_sub.mtnmode = MD_MTN_INIT;
+		pwp_heroes->mm_sub.reqaction = 0;
+		PSetMotion(&pwp_heroes->mm_sub);
 
 		data->Action = 1;
 		break;
@@ -349,7 +346,7 @@ void Cheese_Main(ObjectMaster* obj) {
 		if (dist < 5) {
 			data->Position = GetPathPosition(&data->Position, &data2->VelocityDirection, dist / (100 + (400 - dist)));
 			data2->SomeCollisionVector = data->Position;
-			mtn->reqaction = 0;
+			pwp_heroes->mm_sub.reqaction = 0;
 			if (GetDistance(&data2->VelocityDirection, &data->Position) < 1) {
 				data->Position = data2->VelocityDirection;
 				data->Action = 1;
@@ -359,29 +356,29 @@ void Cheese_Main(ObjectMaster* obj) {
 			data->Position = GetPathPosition(&data->Position, &data2->VelocityDirection, dist / 400);
 			data2->SomeCollisionVector = GetPathPosition(&data->Position, &data2->VelocityDirection, (dist / 400) - 0.1f);
 			data->Rotation.y = fPositionToRotation(&data->Position, &data2->VelocityDirection).y;
-			mtn->reqaction = 5;
+			pwp_heroes->mm_sub.reqaction = 5;
 		}
 		else {
 			data->Position = GetPathPosition(&data->Position, &data2->VelocityDirection, dist / 300);
 			data2->SomeCollisionVector = GetPathPosition(&data->Position, &data2->VelocityDirection, (dist / 300) - 0.1f);
 			data->Rotation.y = fPositionToRotation(&data->Position, &data2->VelocityDirection).y;
-			mtn->reqaction = 5;
+			pwp_heroes->mm_sub.reqaction = 5;
 		}
 
 		switch (CharObj2Ptrs[obj->Parent->Data1->CharIndex]->AnimationThing.Index) {
 		case 6:
-			if (obj->Parent->Data1->Index == 8)  mtn->reqaction = 1;
-			else  mtn->reqaction = 2;
+			if (obj->Parent->Data1->Index == 8)  pwp_heroes->mm_sub.reqaction = 1;
+			else  pwp_heroes->mm_sub.reqaction = 2;
 			break;
 		case 33:
-			if (dist < 30)  mtn->reqaction = 3;
+			if (dist < 30)  pwp_heroes->mm_sub.reqaction = 3;
 			break;
 		case 54:
 		case 55:
-			mtn->reqaction = 8;
+			pwp_heroes->mm_sub.reqaction = 8;
 			break;
 		case 150:
-			mtn->reqaction = 12;
+			pwp_heroes->mm_sub.reqaction = 12;
 			break;
 		}
 
@@ -428,7 +425,7 @@ void Cheese_Main(ObjectMaster* obj) {
 	}
 	
 	AddToCollisionList(data);
-	PSetMotion(mtn);
+	PSetMotion(&pwp_heroes->mm_sub);
 
 	obj->DisplaySub(obj);
 }
@@ -447,11 +444,11 @@ void CreamHeroes_Display(ObjectMaster *obj) {
 	if (MissedFrames) return;
 
 	ObjectMaster* creamobj = HeroesChars[obj->Data1->CharIndex];
-	if (!creamobj) return;
-
+	
 	EntityData1* entity1 = obj->Data1;
 	EntityData2* entity2 = (EntityData2*)obj->Data2;
 	CharObj2* co2 = entity2->CharacterData;
+	playerwk_heroes* pwp_heroes = (playerwk_heroes*)creamobj->UnknownB_ptr;
 
 	if (entity1->Action == 13 || entity1->Action == 60) {
 		if (FrameCounterUnpaused % 5 == 0) {
@@ -483,7 +480,7 @@ void CreamHeroes_Display(ObjectMaster *obj) {
 
 	njRotateX(0, 0x4000);
 
-	mtnjvwk* mtn = (mtnjvwk*)creamobj->Data1->Object;
+	mtnjvwk* mtn = &pwp_heroes->mm;
 
 	int action = mtn->reqaction;
 	NJS_ACTION* actptr = mtn->plactptr[action].actptr;
@@ -722,18 +719,12 @@ void CreamAnimConverter(mtnjvwk* mtn, int heroes_plno, taskwk* pltwp, playerwk* 
 
 void CreamHeroes_Main(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1;
+	playerwk_heroes* pwp_heroes = (playerwk_heroes*)obj->UnknownB_ptr;
 
 	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
 	EntityData1* playerdata = EntityData1Ptrs[data->CharIndex];
 	EntityData2* playerdata2 = EntityData2Ptrs[data->CharIndex];
 	CharObj2* playerco2 = CharObj2Ptrs[data->CharIndex];
-	mtnjvwk* mtn = (mtnjvwk*)data->Object;
-	mtnjvwk* mtn_sub = *(mtnjvwk**)&data->Scale.z;
-
-	if (!playerco2 || playerdata->CharID != Characters_Tails)
-	{
-		return;
-	}
 
 	switch (data->Action)
 	{
@@ -779,7 +770,7 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 			playerco2->IdleTime = 0;
 		}
 
-		CreamAnimConverter(mtn, Characters_HeroesTails, (taskwk*)playerdata, (playerwk*)playerco2);
+		CreamAnimConverter(&pwp_heroes->mm, Characters_HeroesTails, (taskwk*)playerdata, (playerwk*)playerco2);
 
 		break;
 	case 3:
@@ -805,7 +796,7 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 			}
 		}
 
-		mtn->reqaction = 61;
+		pwp_heroes->mm.reqaction = 61;
 		break;
 	case 4:
 		if (++data->field_A == 100) {
@@ -817,12 +808,12 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 			playerco2->Powerups |= Powerups_Invincibility;
 		}
 
-		mtn->reqaction = 39;
+		pwp_heroes->mm.reqaction = 39;
 		break;
 	}
 
 	CharactersCommon_DrawBall(playerdata, data);
-	PSetMotion(mtn);
+	PSetMotion(&pwp_heroes->mm);
 
 	if (FrameCounterUnpaused % 200 == 0) {
 		data->InvulnerableTime = 1;

@@ -231,10 +231,7 @@ void NinjaObj(ObjectMaster* obj) {
 		njRotateX(0, data->Rotation.x);
 		njRotateY(0, data->Scale.y);
 		njScale(0, 0.7f, 0.7f, 0.7f);
-		SetupWorldMatrix();
-		Direct3D_SetChunkModelRenderState();
 		dsDrawModel(EspioMdls[2]->getmodel()->getbasicdxmodel());
-		Direct3D_UnsetChunkModelRenderState();
 		njPopMatrix(1);
 	}
 }
@@ -248,6 +245,7 @@ void EspioHeroes_Display(ObjectMaster *obj) {
 	EntityData1* entity1 = obj->Data1;
 	EntityData2* entity2 = (EntityData2*)obj->Data2;
 	CharObj2* co2 = entity2->CharacterData;
+	playerwk_heroes* pwp_heroes = (playerwk_heroes*)espioobj->UnknownB_ptr;
 
 	if (entity1->Action == 16 || entity1->Action == 86) {
 		if (FrameCounterUnpaused % 5 == 0) {
@@ -275,7 +273,7 @@ void EspioHeroes_Display(ObjectMaster *obj) {
 
 	njRotateX(0, 0x4000);
 
-	mtnjvwk* mtn = (mtnjvwk*)espioobj->Data1->Object;
+	mtnjvwk* mtn = (mtnjvwk*)&pwp_heroes->mm;
 
 	int action = mtn->reqaction;
 	NJS_ACTION* actptr = mtn->plactptr[action].actptr;
@@ -324,7 +322,7 @@ void EspioHeroes_Main(ObjectMaster *obj) {
 	EntityData1* playerdata = EntityData1Ptrs[data->CharIndex];
 	EntityData2* playerdata2 = EntityData2Ptrs[data->CharIndex];
 	CharObj2* playerco2 = CharObj2Ptrs[data->CharIndex];
-	mtnjvwk* mtn = (mtnjvwk*)data->Object;
+	playerwk_heroes* pwp_heroes = (playerwk_heroes*)obj->UnknownB_ptr;
 
 	if (!playerco2 || playerdata->CharID != Characters_Sonic)
 	{
@@ -367,7 +365,7 @@ void EspioHeroes_Main(ObjectMaster *obj) {
 			playerco2->IdleTime = 0;
 		}
 
-		SonicAnimConverter(mtn, Characters_Espio, (taskwk*)playerdata, (playerwk*)playerco2);
+		SonicAnimConverter(&pwp_heroes->mm, Characters_Espio, (taskwk*)playerdata, (playerwk*)playerco2);
 
 		break;
 	case 3:
@@ -377,7 +375,7 @@ void EspioHeroes_Main(ObjectMaster *obj) {
 			obj->Data1->Rotation = playerdata->Rotation;
 			playerco2->Speed.x = 2;
 		}
-		mtn->reqaction = MTN_SPD_ATC;
+		pwp_heroes->mm.reqaction = MTN_SPD_ATC;
 		break;
 	case 4:
 		TornadoTrick(data, data2, playerco2, playerdata);
@@ -393,7 +391,7 @@ void EspioHeroes_Main(ObjectMaster *obj) {
 	}
 
 	CharactersCommon_DrawBall(playerdata, data);
-	PSetMotion(mtn);
+	PSetMotion(&pwp_heroes->mm);
 
 	RunObjectChildren(obj);
 }

@@ -305,6 +305,7 @@ void TailsHeroes_Display(ObjectMaster *obj) {
 	EntityData1* entity1 = obj->Data1;
 	EntityData2* entity2 = (EntityData2*)obj->Data2;
 	CharObj2* co2 = entity2->CharacterData;
+	playerwk_heroes* pwp_heroes = (playerwk_heroes*)tailsobj->UnknownB_ptr;
 
 	if (entity1->Action == 13 || entity1->Action == 60) {
 		if (FrameCounterUnpaused % 5 == 0) {
@@ -336,18 +337,18 @@ void TailsHeroes_Display(ObjectMaster *obj) {
 
 	njRotateX(0, 0x4000);
 
-	mtnjvwk* mtn = (mtnjvwk*)tailsobj->Data1->Object;
+	mtnjvwk* mm = &pwp_heroes->mm;
 
-	int action = mtn->reqaction;
-	NJS_ACTION* actptr = mtn->plactptr[action].actptr;
-	if (mtn->mtnmode == MD_MTN_CHNG)
+	int action = mm->reqaction;
+	NJS_ACTION* actptr = mm->plactptr[action].actptr;
+	if (mm->mtnmode == MD_MTN_CHNG)
 	{
-		action = mtn->action;
-		actptr = mtn->actwkptr;
+		action = mm->action;
+		actptr = mm->actwkptr;
 	}
 
 	*NodeCallbackFuncPtr = TailsCallback;
-	njActionWeight(actptr, mtn->nframe, TailsMdls[0]->getweightinfo());
+	njActionWeight(actptr, mm->nframe, TailsMdls[0]->getweightinfo());
 	*NodeCallbackFuncPtr = nullptr;
 
 	njSetMatrix(NULL, TailsMatrices[0]);
@@ -372,11 +373,11 @@ void TailsHeroes_Display(ObjectMaster *obj) {
 
 	njSetMatrix(NULL, TailsMatrices[1]);
 	njTranslate(0, 0, 0.2f, 0.5f);
-	mtn = *(mtnjvwk**)&tailsobj->Data1->Scale.z;
-	actptr = mtn->plactptr[mtn->reqaction].actptr;
-	if (mtn->mtnmode == MD_MTN_CHNG)
-		actptr = mtn->actwkptr;
-	njActionWeight(actptr, mtn->nframe, TailsMdls[2]->getweightinfo());
+	mtnjvwk* mm_sub = &pwp_heroes->mm_sub;
+	actptr = mm_sub->plactptr[mm_sub->reqaction].actptr;
+	if (mm_sub->mtnmode == MD_MTN_CHNG)
+		actptr = mm_sub->actwkptr;
+	njActionWeight(actptr, mm_sub->nframe, TailsMdls[2]->getweightinfo());
 	
 	njPopMatrix(1);
 
@@ -648,8 +649,7 @@ void TailsHeroes_Main(ObjectMaster *obj) {
 	EntityData1* playerdata = EntityData1Ptrs[data->CharIndex];
 	EntityData2* playerdata2 = EntityData2Ptrs[data->CharIndex];
 	CharObj2* playerco2 = CharObj2Ptrs[data->CharIndex];
-	mtnjvwk* mtn = (mtnjvwk*)data->Object;
-	mtnjvwk* mtn_sub = *(mtnjvwk**)&data->Scale.z;
+	playerwk_heroes* pwp_heroes = (playerwk_heroes*)obj->UnknownB_ptr;
 
 	if (!playerco2 || playerdata->CharID != Characters_Tails)
 	{
@@ -661,14 +661,12 @@ void TailsHeroes_Main(ObjectMaster *obj) {
 	case 0:
 		HeroesChars_InitPlayer((task*)obj, { "heroes-tails", &TAILS_TEXLIST }, 3, tails_action_heroes);
 
-		mtn_sub = new mtnjvwk;
-		mtn_sub->plactptr = sippo_action;
-		mtn_sub->mtnmode = MD_MTN_INIT;
-		mtn_sub->reqaction = 0;
-		mtn_sub->spdp = &playerpwp[data->CharIndex]->spd.x;
-		mtn_sub->workp = &playerpwp[data->CharIndex]->work.f;
-		PSetMotion(mtn_sub);
-		data->Scale.z = *(float*)&mtn_sub;
+		pwp_heroes->mm_sub.plactptr = sippo_action;
+		pwp_heroes->mm_sub.mtnmode = MD_MTN_INIT;
+		pwp_heroes->mm_sub.reqaction = 0;
+		pwp_heroes->mm_sub.spdp = &playerpwp[data->CharIndex]->spd.x;
+		pwp_heroes->mm_sub.workp = &playerpwp[data->CharIndex]->work.f;
+		PSetMotion(&pwp_heroes->mm_sub);
 
 		data->Action = 2;
 		return;
@@ -710,7 +708,7 @@ void TailsHeroes_Main(ObjectMaster *obj) {
 			playerco2->IdleTime = 0;
 		}
 
-		TailsAnimConverter(mtn, Characters_HeroesTails, (taskwk*)playerdata, (playerwk*)playerco2);
+		TailsAnimConverter(&pwp_heroes->mm, Characters_HeroesTails, (taskwk*)playerdata, (playerwk*)playerco2);
 
 		break;
 	case 3:
@@ -747,7 +745,7 @@ void TailsHeroes_Main(ObjectMaster *obj) {
 			}
 		}
 
-		mtn->reqaction = 15;
+		pwp_heroes->mm.reqaction = 15;
 		break;
 	case 4:
 		if (++data->field_A == 48) {
@@ -759,15 +757,15 @@ void TailsHeroes_Main(ObjectMaster *obj) {
 			playerco2->Powerups |= Powerups_Invincibility;
 		}
 
-		mtn->reqaction = 39;
+		pwp_heroes->mm.reqaction = 39;
 		break;
 	}
 
 	CharactersCommon_DrawBall(playerdata, data);
-	TailsSippoAnim(mtn_sub, mtn->reqaction);
+	TailsSippoAnim(&pwp_heroes->mm_sub, pwp_heroes->mm.reqaction);
 
-	PSetMotion(mtn);
-	PSetMotion(mtn_sub);
+	PSetMotion(&pwp_heroes->mm);
+	PSetMotion(&pwp_heroes->mm_sub);
 
 	if (FrameCounterUnpaused % 200 == 0) {
 		data->InvulnerableTime = 1;

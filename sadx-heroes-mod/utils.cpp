@@ -503,16 +503,6 @@ void DrawChunkModel(NJS_CNK_MODEL* model)
 	DrawChunkModel_(model->vlist, model->plist);
 }
 
-void njCnkAction_Queue(NJS_ACTION* action, float frame, QueuedModelFlagsB flags)
-{
-	DisplayAnimationFrame(action, frame, flags, 0, (void(__cdecl*)(NJS_MODEL_SADX*, int, int))DrawChunkModel);
-}
-
-void njCnkAction(NJS_ACTION* action, float frame)
-{
-	DisplayAnimationFrame(action, frame, (QueuedModelFlagsB)0, 0, (void(__cdecl*)(NJS_MODEL_SADX*, int, int))DrawChunkModel);
-}
-
 void SetupWorldMatrix()
 {
 	ProjectToWorldSpace();
@@ -547,6 +537,8 @@ void njScaleZ(float f) {
 
 void njActionWeight(NJS_ACTION* action, Float frame, WeightInfo* weight)
 {
+	if (action->motion == nullptr)
+		return;
 	HelperFunctionsGlobal.Weights->Apply(weight, action, frame);
 	njAction(action, frame);
 }

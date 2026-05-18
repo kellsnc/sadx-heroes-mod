@@ -138,7 +138,7 @@ void Flyer_Main(ObjectMaster* obj) {
 			njAddVector(&data->Position, &data2->StartPosition);
 		}
 		
-		PlayHeroesAnimation(obj, 0, &FlyerAnimData, 0, 0);
+		//PlayHeroesAnimation(obj, 0, &FlyerAnimData, 0, 0);
 		AddToCollisionList(data);
 		obj->DisplaySub(obj);
 		RunObjectChildren(obj);

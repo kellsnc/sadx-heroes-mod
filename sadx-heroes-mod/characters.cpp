@@ -132,85 +132,106 @@ VoidFunction UnloadFilesFuncs[]{
 FunctionHook<void, task*> SonicTheHedgehog_h(0x49A9B0);
 FunctionHook<void, task*> MilesTalesPrower_h(0x461700);
 FunctionHook<void, task*> KnucklesTheEchidna_h(0x47A770);
+FunctionHook<void, task*> SonicDisplay_h(0x4948C0);
+FunctionHook<void, task*> MilesDisplay_h(0x460C40);
+FunctionHook<void, task*> KnucklesDisplay_h(0x4721B0);
 
-//Store the current player id at the start of their function
-//to get which character triggered a sound, as PlaySound doesn't keep track of the entity
+void InitHeroesPlayer(task* tp, int heroes_plno)
+{
+	taskwk* twp = tp->twp;
+	if (heroes_plno != 0)
+	{
+		int player = twp->counter.b[0];
+
+		if (HeroesChars[player])
+		{
+			FreeTask((task*)HeroesChars[player]);
+			HeroesChars[player] = NULL;
+		}
+
+		HeroesChars[player] = LoadObject((LoadObj)(LoadObj_Data1 | LoadObj_Data2), 1, MainFuncs[heroes_plno - 9]);
+		HeroesChars[player]->Data1->CharIndex = player;
+		HeroesChars[player]->Data1->CharID = heroes_plno;
+		HeroesChars[player]->UnknownB_ptr = (anywk*)CAlloc(1, sizeof(playerwk_heroes));
+	}
+}
 
 void SonicTheHedgehog_r(task* tp)
 {
+	taskwk* twp = tp->twp;
+
 	CurrentPlayer = tp->twp->counter.b[0];
+
+	if (twp->mode == 0)
+	{
+		InitHeroesPlayer(tp, SpeedCharEnabled);
+	}
+
 	SonicTheHedgehog_h.Original(tp);
 }
 
 void MilesTalesPrower_r(task* tp)
 {
+	taskwk* twp = tp->twp;
+
 	CurrentPlayer = tp->twp->counter.b[0];
 
-	//Player 2 can play sounds
-	if (P2SoundsEnabled && HeroesChars[CurrentPlayer]) {
-		WriteData((char*)0x45C02C, (char)0x99);
-		WriteData((char*)0x45BDF3, (char)0x99);
-		WriteData((char*)0x45BF7F, (char)0x99);
+	if (twp->mode == 0)
+	{
+		InitHeroesPlayer(tp, FlyCharEnabled);
 	}
 
 	MilesTalesPrower_h.Original(tp);
-
-	if (P2SoundsEnabled && HeroesChars[CurrentPlayer]) {
-		WriteData((char*)0x45C02C, (char)0x01);
-		WriteData((char*)0x45BDF3, (char)0x01);
-		WriteData((char*)0x45BF7F, (char)0x01);
-	}
 }
 
 void KnucklesTheEchidna_r(task* tp)
 {
+	taskwk* twp = tp->twp;
+
 	CurrentPlayer = tp->twp->counter.b[0];
+
+	if (twp->mode == 0)
+	{
+		InitHeroesPlayer(tp, PowerCharEnabled);
+	}
+
 	KnucklesTheEchidna_h.Original(tp);
 }
 
-//Character Animation like Sonic Heroes does
-void PlayHeroesAnimation(ObjectMaster* obj, uint8_t ID, AnimData* animdata, float forcespeed, float forcestate) {
-	EntityData1* data = obj->Data1;
-	
-	if (data->Index != ID) {
-		data->Index = ID;
-		data->Scale.x = 0;
-		data->Unknown = 0;
+bool HeroesChar_Display(task* tp)
+{
+	int pnum = tp->twp->counter.b[0];
+	if (HeroesChars[pnum])
+	{
+		if (HeroesChars[pnum]->Data1->Action != 0)
+			DisplayFuncs[HeroesChars[pnum]->Data1->CharID - 9]((ObjectMaster*)tp);
+		return true;
 	}
+	return false;
+}
 
-	float frame = data->Scale.x;
-
-	if (forcestate) {
-		frame = forcestate - 1;
+void SonicDisplay_r(task* tp)
+{
+	if (!HeroesChar_Display(tp))
+	{
+		SonicDisplay_h.Original(tp);
 	}
-	else {
-		if (forcespeed) {
-			frame += forcespeed;
-		}
-		else {
-			frame += animdata[ID].AnimationSpeed;
-		}
-	}
-	
-	if (frame == animdata[ID].Animation->motion->nbFrame - 1) {
-  		frame = 0;
+}
 
-		if (animdata[ID].Property == 1) {
-			frame = animdata[ID].Animation->motion->nbFrame - 2;
-			if (data->Unknown == 0) data->Unknown = 1;
-		}
-		
-		if (animdata[ID].NextAnim != ID) {
-			data->Index = animdata[ID].NextAnim;
-		}
-		else {
-			if (data->Unknown < 256) {
-				data->Unknown += 1;
-			}
-		}
+void MilesDisplay_r(task* tp)
+{
+	if (!HeroesChar_Display(tp))
+	{
+		MilesDisplay_h.Original(tp);
 	}
+}
 
-	data->Scale.x = frame;
+void KnucklesDisplay_r(task* tp)
+{
+	if (!HeroesChar_Display(tp))
+	{
+		KnucklesDisplay_h.Original(tp);
+	}
 }
 
 //Common player removal function
@@ -223,121 +244,28 @@ void CharactersCommon_Delete(ObjectMaster* obj) {
 		njReleaseTexture((NJS_TEXLIST*)obj->Data1->LoopData);
 		UnloadFilesFuncs[obj->Data1->CharID - 9]();
 	}
-	
-	if (obj->Data1->Object)
+
+	playerwk_heroes* pwp_heroes = (playerwk_heroes*)obj->UnknownB_ptr;
+	if (pwp_heroes)
 	{
-		delete obj->Data1->Object;
-	}
-
-	if (obj->Data1->Scale.z)
-	{
-		delete *(int**)&obj->Data1->Scale.z;
-	}
-	
-	/*ObjectMaster* playerobj = PlayerPtrs[obj->Data1->CharIndex];
-	if (playerobj) {
-		EntityData2* playerdata2 = (EntityData2*)playerobj->Data2;
-		CharObj2* playerco2 = playerdata2->CharacterData;
-
-		switch (playerobj->Data1->CharID) {
-		case Characters_Sonic:
-			playerobj->DisplaySub = Sonic_Display;
-			break;
-		case Characters_Tails:
-			playerobj->DisplaySub = Tails_Display;
-			break;
-		case Characters_Knuckles:
-			playerobj->DisplaySub = Knuckles_Display;
-			break;
+		if (pwp_heroes->mm.mtnmode)
+		{
+			pwp_heroes->mm.mtnmode = MD_MTN_END;
+			PSetMotion(&pwp_heroes->mm);
 		}
 
-		playerco2->PhysicsData.MaxAccel = PhysicsArray[2].MaxAccel;
-		playerco2->PhysicsData.field_14 = PhysicsArray[2].field_14;
-		playerco2->PhysicsData.AirAccel = PhysicsArray[2].AirAccel;
-	}*/
-}
-
-//Display the ball and dash effects
-void BallObject(ObjectMaster* obj) {
-	EntityData1* data = obj->Data1;
-	
-	if (GameState != 16) {
-		if (data->Index != 0) {
-			DeleteObject_(obj);
-			return;
+		if (pwp_heroes->mm_sub.mtnmode)
+		{
+			pwp_heroes->mm_sub.mtnmode = MD_MTN_END;
+			PSetMotion(&pwp_heroes->mm_sub);
 		}
-	}
-	
-	njPushMatrix(0);
-	njSetTexture(&SHCommonTextures);
-	njTranslateV(0, &obj->Data1->Position);
-	njRotateZ(0, obj->Data1->Rotation.z);
-	njRotateX(0, obj->Data1->Rotation.x);
-	njRotateY(0, -obj->Data1->Rotation.y - 0x4000);
-	
-	if (data->Action == 0) {
-		njTranslate(0, 0, 5.5f, -2);
-		if (obj->Data1->Scale.x) njScale(0, obj->Data1->Scale.x, obj->Data1->Scale.x, obj->Data1->Scale.x);
-		CharMdls[0]->getmodel()->basicdxmodel->mats[0].diffuse.color = CharColours[obj->Data1->CharID - 9];
-		njDrawModel_SADX(CharMdls[0]->getmodel()->basicdxmodel);
-	}
-	else {
-		njTranslate(0, 0, 4, -4);
-		njScale(0, 0.9f, 0.9f, 0.9f);
-		njRotateZ(0, 0x4000);
-		njRotateX(0, 0x4000);
-		njRotateY(0, 0x7000);
-		CharMdls[0]->getmodel()->child->basicdxmodel->mats[0].diffuse.color = CharColours[obj->Data1->CharID - 9];
-		njDrawModel_SADX(CharMdls[0]->getmodel()->child->basicdxmodel);
-	}
-	
-	njPopMatrix(1);
-
-	obj->Data1->Index = 1;
-}
-
-void CharactersCommon_DrawBall(EntityData1* playerdata, EntityData1* data) {
-	if (!JumpBallEnabled) return;
-	
-	if (playerdata->CharID == Characters_Sonic) {
-		if (data->Scale.z != 14) {
-			data->Scale.z = playerdata->Action;
-		}
-		else {
-			if (++data->Scale.y > 50 || playerdata->Status & Status_Ground) {
-				data->Scale.z = 0;
-				data->Scale.y = 0;
-			}
-		}
-	}
-
-	mtnjvwk* mtn = (mtnjvwk*)data->Object;
-
-	if ((playerdata->CharID == Characters_Sonic && mtn->reqaction == MTN_SPD_JUMP_B) ||
-		(playerdata->CharID == Characters_Knuckles && mtn->reqaction == MTN_SPD_JUMP_B) ||
-		(playerdata->CharID == Characters_Tails && mtn->reqaction == MTN_SPD_JUMP_TRNGL)) {
-
-		ObjectMaster * ball = LoadObject(LoadObj_Data1, 5, BallObject);
-		ball->DisplaySub = ball->MainSub;
-		ball->Data1->Position = playerdata->Position;
-		ball->Data1->Rotation = playerdata->Rotation;
-		ball->Data1->CharID = data->CharID;
-		if (data->CharID == Characters_HeroesBig) ball->Data1->Scale.x = 2;
-		if (data->CharID == Characters_Vector) ball->Data1->Scale.x = 1.5f;
-	}
-	else if ((playerdata->CharID == Characters_Sonic && mtn->reqaction == MTN_SPD_FW_JUMP) && data->Scale.z == 14) {
-		ObjectMaster * ball = LoadObject(LoadObj_Data1, 5, BallObject);
-		ball->DisplaySub = ball->MainSub;
-		ball->Data1->Position = playerdata->Position;
-		ball->Data1->Rotation = playerdata->Rotation;
-		ball->Data1->CharID = data->CharID;
-		ball->Data1->Action = 1;
 	}
 }
 
 void HeroesChars_InitPlayer(task* tp, TEX_PVMTABLE pvm, int lifeicontex, PL_ACTION* pl_action)
 {
 	taskwk* twp = tp->twp;
+	playerwk_heroes* pwp_heroes = (playerwk_heroes*)tp->awp;
 
 	int pnum = twp->counter.b[0];
 	int heroes_plno = twp->counter.b[1];
@@ -375,62 +303,108 @@ void HeroesChars_InitPlayer(task* tp, TEX_PVMTABLE pvm, int lifeicontex, PL_ACTI
 
 	++CharFilesLoaded[heroes_plno - 9];
 
-	twp->value.ptr = pvm.ptexlist;
+	pwp_heroes->texlist = pvm.ptexlist;
 
-	mtnjvwk* mtn = new mtnjvwk;
-	mtn->plactptr = pl_action;
-	mtn->mtnmode = MD_MTN_INIT;
-	mtn->reqaction = 0;
-	mtn->spdp = &playerpwp[pnum]->spd.x;
-	mtn->workp = &playerpwp[pnum]->work.f;
-	PSetMotion(mtn);
-	twp->timer.ptr = (NJS_OBJECT*)mtn;
+	pwp_heroes->mm.plactptr = pl_action;
+	pwp_heroes->mm.mtnmode = MD_MTN_INIT;
+	pwp_heroes->mm.reqaction = 0;
+	pwp_heroes->mm.spdp = &playerpwp[pnum]->spd.x;
+	pwp_heroes->mm.workp = &playerpwp[pnum]->work.f;
+	PSetMotion(&pwp_heroes->mm);
 
 	playertp[pnum]->disp = (TaskFuncPtr)DisplayFuncs[heroes_plno - 9];
 }
 
-//Common player init function
-bool CharactersCommon_Init(ObjectMaster* obj, const char* name, NJS_TEXLIST* tex) {
+
+//Display the ball and dash effects
+void BallObject(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1;
-	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
-	
+
+	if (GameState != 16) {
+		if (data->Index != 0) {
+			DeleteObject_(obj);
+			return;
+		}
+	}
+
+	njPushMatrix(0);
+	njSetTexture(&SHCommonTextures);
+	njTranslateV(0, &obj->Data1->Position);
+	njRotateZ(0, obj->Data1->Rotation.z);
+	njRotateX(0, obj->Data1->Rotation.x);
+	njRotateY(0, -obj->Data1->Rotation.y - 0x4000);
+
 	if (data->Action == 0) {
-		obj->DeleteSub = CharactersCommon_Delete;
-		data->Action = 1;
+		njTranslate(0, 0, 5.5f, -2);
+		if (obj->Data1->Scale.x) njScale(0, obj->Data1->Scale.x, obj->Data1->Scale.x, obj->Data1->Scale.x);
+		CharMdls[0]->getmodel()->basicdxmodel->mats[0].diffuse.color = CharColours[obj->Data1->CharID - 9];
+		njDrawModel_SADX(CharMdls[0]->getmodel()->basicdxmodel);
+	}
+	else {
+		njTranslate(0, 0, 4, -4);
+		njScale(0, 0.9f, 0.9f, 0.9f);
+		njRotateZ(0, 0x4000);
+		njRotateX(0, 0x4000);
+		njRotateY(0, 0x7000);
+		CharMdls[0]->getmodel()->child->basicdxmodel->mats[0].diffuse.color = CharColours[obj->Data1->CharID - 9];
+		njDrawModel_SADX(CharMdls[0]->getmodel()->child->basicdxmodel);
+	}
 
-		if (!CharFilesLoaded[data->CharID - 9]) {
-			LoadFilesFuncs[data->CharID - 9]();
-			CharFilesLoaded[data->CharID - 9] = true;
-			LoadPVM(name, tex);
+	njPopMatrix(1);
+
+	obj->Data1->Index = 1;
+}
+
+void CharactersCommon_DrawBall(EntityData1* playerdata, EntityData1* data)
+{
+	if (!JumpBallEnabled)
+		return;
+	
+	playerwk_heroes* pwp_heroes = (playerwk_heroes*)HeroesChars[data->CharIndex]->UnknownB_ptr;
+
+	if (!pwp_heroes)
+		return;
+
+	if (playerdata->CharID == Characters_Sonic)
+	{
+		if (data->Scale.z != 14)
+		{
+			data->Scale.z = playerdata->Action;
 		}
-
-		data->LoopData = (Loop*)tex;
-
-		return false;
-	}
-	else if (data->Action == 1) {
-		if (playerobj->Data1) {
-			obj->Data1->Action = 2;
-			return true;
+		else
+		{
+			if (++data->Scale.y > 50 || playerdata->Status & Status_Ground)
+			{
+				data->Scale.z = 0;
+				data->Scale.y = 0;
+			}
 		}
-		
-		return false;
 	}
 
-	if (!playerobj) {
-		DeleteObject_(obj);
-		return false;
-	}
+	mtnjvwk* mtn = &pwp_heroes->mm;
 
-	char charid = playerobj->Data1->CharID;
-	if ((charid == Characters_Sonic && (data->CharID < Characters_HeroesSonic || data->CharID > Characters_Espio)) ||
-		(charid == Characters_Tails && data->CharID > Characters_HeroesTails) ||
-		(charid == Characters_Knuckles && data->CharID < Characters_HeroesKnuckles) || !playerobj) {
-		DeleteObject_(obj);
-		return false;
-	}
+	if ((playerdata->CharID == Characters_Sonic && mtn->reqaction == MTN_SPD_JUMP_B) ||
+		(playerdata->CharID == Characters_Knuckles && mtn->reqaction == MTN_SPD_JUMP_B) ||
+		(playerdata->CharID == Characters_Tails && mtn->reqaction == MTN_SPD_JUMP_TRNGL))
+	{
 
-	return true;
+		ObjectMaster* ball = LoadObject(LoadObj_Data1, 5, BallObject);
+		ball->DisplaySub = ball->MainSub;
+		ball->Data1->Position = playerdata->Position;
+		ball->Data1->Rotation = playerdata->Rotation;
+		ball->Data1->CharID = data->CharID;
+		if (data->CharID == Characters_HeroesBig) ball->Data1->Scale.x = 2;
+		if (data->CharID == Characters_Vector) ball->Data1->Scale.x = 1.5f;
+	}
+	else if ((playerdata->CharID == Characters_Sonic && mtn->reqaction == MTN_SPD_FW_JUMP) && data->Scale.z == 14)
+	{
+		ObjectMaster* ball = LoadObject(LoadObj_Data1, 5, BallObject);
+		ball->DisplaySub = ball->MainSub;
+		ball->Data1->Position = playerdata->Position;
+		ball->Data1->Rotation = playerdata->Rotation;
+		ball->Data1->CharID = data->CharID;
+		ball->Data1->Action = 1;
+	}
 }
 
 void SonicAnimConverter(mtnjvwk* mtn, int heroes_plno, taskwk* pltwp, playerwk* pwp)
@@ -569,6 +543,7 @@ void KnucklesAnimConverter(mtnjvwk* mtn, int heroes_plno, taskwk* pltwp, playerw
 }
 
 bool CanDoTricks(EntityData1* player) {
+	return true;
 	if (CustomActions == true && player->field_A < PlayerState_OnRail) {
 		return true;
 	}
@@ -871,34 +846,6 @@ bool OhNoImDead2(EntityData1 *a1, ObjectData2 *a2) {
 	return original(a1, a2);
 }
 
-//Redirect the player's display sub if a Heroes character is loaded on top of it.
-void Heroes_Display(ObjectMaster* obj) {
-	if (!HeroesChars[obj->Data1->CharIndex]) {
-		switch (EntityData1Ptrs[obj->Data1->CharIndex]->CharID) {
-		case Characters_Sonic:
-			Sonic_Display(obj);
-			break;
-		case Characters_Tails:
-			Tails_Display(obj);
-			break;
-		case Characters_Knuckles:
-			Knuckles_Display(obj);
-			break;
-		}
-
-		return;
-	}
-
-	if (obj->Data1->CharID == Characters_Sonic && SuperSonicFlag && HeroesChars[obj->Data1->CharIndex]) {
-		Sonic_Display(obj);
-		obj->DisplaySub = Sonic_Display;
-		DeleteObject_(HeroesChars[obj->Data1->CharIndex]);
-	}
-
-	if (HeroesChars[obj->Data1->CharIndex]->Data1->LoopData) 
-		DisplayFuncs[HeroesChars[obj->Data1->CharIndex]->Data1->CharID - 9](obj);
-}
-
 //Hijack the sound functions of Sonic, Tails and Knuckles to redirect those
 //to play custom character sounds, as they do not keep track of the entity
 void PlayVoice_HeroesChar(int ID) {
@@ -985,7 +932,6 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 	}
 
 	if (SpeedCharEnabled) {
-		WriteCall((void*)0x49BF04, Heroes_Display);
 		WriteCall((void*)0x495EAA, PlaySound_HeroesChar); //jump
 		WriteCall((void*)0x494BE7, PlaySound_HeroesChar); //dash
 		WriteCall((void*)0x492E96, PlaySound_HeroesChar); //hurt
@@ -995,8 +941,7 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 		WriteCall((void*)0x446A26, PlaySound_HeroesChar); //death
 
 		SonicTheHedgehog_h.Hook(SonicTheHedgehog_r);
-		MilesTalesPrower_h.Hook(MilesTalesPrower_r);
-		KnucklesTheEchidna_h.Hook(KnucklesTheEchidna_r);
+		SonicDisplay_h.Hook(SonicDisplay_r);
 
 		//Common special effects
 		CharMdls[1] = LoadObjectModel(CharMdls[1], "effect_tornado");
@@ -1014,7 +959,8 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 	}
 
 	if (FlyCharEnabled) {
-		WriteCall((void*)0x462456, Heroes_Display);
+		MilesTalesPrower_h.Hook(MilesTalesPrower_r);
+		MilesDisplay_h.Hook(MilesDisplay_r);
 		WriteCall((void*)0x45C037, PlaySound_HeroesChar); //jump
 		WriteCall((void*)0x45BE01, PlaySound_HeroesChar); //fly
 		WriteCall((void*)0x45BF8D, PlaySound_HeroesChar); //hurt
@@ -1022,7 +968,8 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 	}
 
 	if (PowerCharEnabled) {
-		WriteCall((void*)0x47B489, Heroes_Display);
+		KnucklesTheEchidna_h.Hook(KnucklesTheEchidna_r);
+		KnucklesDisplay_h.Hook(KnucklesDisplay_r);
 		WriteCall((void*)0x473766, PlaySound_HeroesChar); //jump
 		WriteCall((void*)0x4507AC, PlaySound_HeroesChar); //hurt
 		WriteCall((void*)0x446A49, PlaySound_HeroesChar); //death
@@ -1031,28 +978,5 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 	if (SpeedCharEnabled || FlyCharEnabled || PowerCharEnabled) {
 		CharMdls[0] = LoadCommonModel("effect_ball");
 		WriteCall((void*)0x45BE57, PlayVoice_HeroesChar); //win
-	}
-}
-
-//Replace characters if they are loaded
-void Characters_OnFrame() {
-	for (uint8_t player = 0; player < MaxPlayers; ++player) {
-		if (!EntityData1Ptrs[player] || HeroesChars[player]) continue;
-
-		if (SpeedCharEnabled && EntityData1Ptrs[player]->CharID == Characters_Sonic && !SuperSonicFlag) {
-			HeroesChars[player] = LoadObject((LoadObj)(LoadObj_Data1 | LoadObj_Data2), 1, MainFuncs[SpeedCharEnabled - 9]);
-			HeroesChars[player]->Data1->CharIndex = player;
-			HeroesChars[player]->Data1->CharID = SpeedCharEnabled;
-		}
-		else if (FlyCharEnabled && EntityData1Ptrs[player]->CharID == Characters_Tails) {
-			HeroesChars[player] = LoadObject(LoadObj_Data1, 1, MainFuncs[FlyCharEnabled - 9]);
-			HeroesChars[player]->Data1->CharIndex = player;
-			HeroesChars[player]->Data1->CharID = FlyCharEnabled;
-		}
-		else if (PowerCharEnabled && EntityData1Ptrs[player]->CharID == Characters_Knuckles) {
-			HeroesChars[player] = LoadObject((LoadObj)(LoadObj_Data1 | LoadObj_Data2), 1, MainFuncs[PowerCharEnabled - 9]);
-			HeroesChars[player]->Data1->CharIndex = player;
-			HeroesChars[player]->Data1->CharID = PowerCharEnabled;
-		}
 	}
 }

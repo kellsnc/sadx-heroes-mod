@@ -777,7 +777,7 @@ void EggPawn_Main(ObjectMaster* obj) {
 			break;
 		}
 
-		PlayHeroesAnimation(obj, (uint8_t)pawndata->pawnanim, EggPawnAnimData, 0, frame);
+		//PlayHeroesAnimation(obj, (uint8_t)pawndata->pawnanim, EggPawnAnimData, 0, frame);
 		AddToCollisionList(data);
 	}
 	else {

@@ -185,17 +185,10 @@ void KnucklesHeroes_Display(ObjectMaster *obj) {
 	if (!knucklesobj) return;
 	EntityData2* data2 = (EntityData2*)knucklesobj->Data2;
 
-	WriteData<5>((void*)0x472649, 0x90);
-	WriteData<5>((void*)0x47258B, 0x90);
-	WriteData<5>((void*)0x472626, 0x90);
-	Knuckles_Display(obj);
-	WriteCall((void*)0x472649, njAction);
-	WriteCall((void*)0x47258B, njAction);
-	WriteCall((void*)0x472626, njAction);
-
 	EntityData1* entity1 = obj->Data1;
 	EntityData2* entity2 = (EntityData2*)obj->Data2;
 	CharObj2* co2 = entity2->CharacterData;
+	playerwk_heroes* pwp_heroes = (playerwk_heroes*)knucklesobj->UnknownB_ptr;
 
 	if (knucklesobj->Data1->Index == 42 || knucklesobj->Data1->Index == 43 || knucklesobj->Data1->Index == 44) {
 		if (FrameCounterUnpaused % 5 == 0) {
@@ -243,7 +236,7 @@ void KnucklesHeroes_Display(ObjectMaster *obj) {
 
 	njRotateX(0, 0x4000);
 
-	mtnjvwk* mtn = (mtnjvwk*)knucklesobj->Data1->Object;
+	mtnjvwk* mtn = &pwp_heroes->mm;
 
 	int action = mtn->reqaction;
 	NJS_ACTION* actptr = mtn->plactptr[action].actptr;
@@ -288,7 +281,7 @@ void KnucklesHeroes_Main(ObjectMaster *obj) {
 	EntityData1* playerdata = EntityData1Ptrs[data->CharIndex];
 	EntityData2* playerdata2 = EntityData2Ptrs[data->CharIndex];
 	CharObj2* playerco2 = CharObj2Ptrs[data->CharIndex];
-	mtnjvwk* mtn = (mtnjvwk*)data->Object;
+	playerwk_heroes* pwp_heroes = (playerwk_heroes*)obj->UnknownB_ptr;
 
 	if (!playerco2 || playerdata->CharID != Characters_Knuckles)
 	{
@@ -331,7 +324,7 @@ void KnucklesHeroes_Main(ObjectMaster *obj) {
 			playerco2->IdleTime = 0;
 		}
 
-		KnucklesAnimConverter(mtn, Characters_HeroesKnuckles, (taskwk*)playerdata, (playerwk*)playerco2);
+		KnucklesAnimConverter(&pwp_heroes->mm, Characters_HeroesKnuckles, (taskwk*)playerdata, (playerwk*)playerco2);
 		
 		break;
 	case 3:
@@ -356,17 +349,17 @@ void KnucklesHeroes_Main(ObjectMaster *obj) {
 			break;
 		}
 		
-		mtn->reqaction = 11;
+		pwp_heroes->mm.reqaction = 11;
 		break;
 	case 4:
 		if (FlightPunchTrick(data, data2, playerco2, playerdata)) PlayHeroesSound(KnucklesSound_Trick);
 
-		mtn->reqaction = 12;
+		pwp_heroes->mm.reqaction = 12;
 		break;
 	}
 
 	CharactersCommon_DrawBall(playerdata, data);
-	PSetMotion(mtn);
+	PSetMotion(&pwp_heroes->mm);
 
 	if (FrameCounterUnpaused % 200 == 0) {
 		data->InvulnerableTime = 1;

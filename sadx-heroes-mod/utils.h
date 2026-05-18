@@ -75,8 +75,6 @@ NJS_VECTOR UnitMatrix_GetPoint(NJS_VECTOR* orig, Rotation3* rot, float x, float 
 
 FastcallFunctionPointer(void, DrawChunkModel_, (Sint32* a1, Sint16* a2), 0x7917F0);
 void DrawChunkModel(NJS_CNK_MODEL* model);
-void njCnkAction_Queue(NJS_ACTION* action, float frame, QueuedModelFlagsB flags);
-void njCnkAction(NJS_ACTION* action, float frame);
 void SetupWorldMatrix();
 
 void njTranslateX(float f);

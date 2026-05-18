@@ -213,6 +213,7 @@ void RougeHeroes_Display(ObjectMaster *obj) {
 	EntityData1* entity1 = obj->Data1;
 	EntityData2* entity2 = (EntityData2*)obj->Data2;
 	CharObj2* co2 = entity2->CharacterData;
+	playerwk_heroes* pwp_heroes = (playerwk_heroes*)rougeobj->UnknownB_ptr;
 
 	if (entity1->Action == 13 || entity1->Action == 60) {
 		if (FrameCounterUnpaused % 5 == 0) {
@@ -244,7 +245,7 @@ void RougeHeroes_Display(ObjectMaster *obj) {
 
 	njRotateX(0, 0x4000);
 
-	mtnjvwk* mtn = (mtnjvwk*)rougeobj->Data1->Object;
+	mtnjvwk* mtn = (mtnjvwk*)&pwp_heroes->mm;
 
 	int action = mtn->reqaction;
 	NJS_ACTION* actptr = mtn->plactptr[action].actptr;
@@ -279,11 +280,11 @@ void RougeHeroes_Display(ObjectMaster *obj) {
 
 	njSetMatrix(NULL, RougeMatrices[1]);
 	njTranslate(0, 0, 0.5f, -0.8f);
-	mtn = *(mtnjvwk**)&rougeobj->Data1->Scale.z;
-	actptr = mtn->plactptr[mtn->reqaction].actptr;
-	if (mtn->mtnmode == MD_MTN_CHNG)
-		actptr = mtn->actwkptr;
-	njActionWeight(actptr, mtn->nframe, RougeMdls[5]->getweightinfo());
+	mtnjvwk* mm_sub = &pwp_heroes->mm_sub;
+	actptr = mm_sub->plactptr[mm_sub->reqaction].actptr;
+	if (mm_sub->mtnmode == MD_MTN_CHNG)
+		actptr = mm_sub->actwkptr;
+	njActionWeight(actptr, mm_sub->nframe, RougeMdls[5]->getweightinfo());
 
 	njPopMatrix(1);
 
@@ -517,8 +518,7 @@ void RougeHeroes_Main(ObjectMaster *obj) {
 	EntityData1* playerdata = EntityData1Ptrs[data->CharIndex];
 	EntityData2* playerdata2 = EntityData2Ptrs[data->CharIndex];
 	CharObj2* playerco2 = CharObj2Ptrs[data->CharIndex];
-	mtnjvwk* mtn = (mtnjvwk*)data->Object;
-	mtnjvwk* mtn_sub = *(mtnjvwk**)&data->Scale.z;
+	playerwk_heroes* pwp_heroes = (playerwk_heroes*)obj->UnknownB_ptr;
 
 	if (!playerco2 || playerdata->CharID != Characters_Tails)
 	{
@@ -530,14 +530,12 @@ void RougeHeroes_Main(ObjectMaster *obj) {
 	case 0:
 		HeroesChars_InitPlayer((task*)obj, { "heroes-rouge", &ROUGE_TEXLIST }, 6, rouge_action_heroes);
 
-		mtn_sub = new mtnjvwk;
-		mtn_sub->plactptr = rouge_hane_action;
-		mtn_sub->mtnmode = MD_MTN_INIT;
-		mtn_sub->reqaction = 0;
-		mtn_sub->spdp = &playerpwp[data->CharIndex]->spd.x;
-		mtn_sub->workp = &playerpwp[data->CharIndex]->work.f;
-		PSetMotion(mtn_sub);
-		data->Scale.z = *(float*)&mtn_sub;
+		pwp_heroes->mm_sub.plactptr = rouge_hane_action;
+		pwp_heroes->mm_sub.mtnmode = MD_MTN_INIT;
+		pwp_heroes->mm_sub.reqaction = 0;
+		pwp_heroes->mm_sub.spdp = &playerpwp[data->CharIndex]->spd.x;
+		pwp_heroes->mm_sub.workp = &playerpwp[data->CharIndex]->work.f;
+		PSetMotion(&pwp_heroes->mm_sub);
 
 		data->Action = 2;
 		return;
@@ -579,7 +577,7 @@ void RougeHeroes_Main(ObjectMaster *obj) {
 			playerco2->IdleTime = 0;
 		}
 
-		RougeAnimConverter(mtn, Characters_HeroesTails, (taskwk*)playerdata, (playerwk*)playerco2);
+		RougeAnimConverter(&pwp_heroes->mm, Characters_HeroesTails, (taskwk*)playerdata, (playerwk*)playerco2);
 
 		break;
 	case 3:
@@ -609,7 +607,7 @@ void RougeHeroes_Main(ObjectMaster *obj) {
 			}
 		}
 
-		mtn->reqaction = 13;
+		pwp_heroes->mm.reqaction = 13;
 		break;
 	case 4:
 		if (++data->field_A == 48) {
@@ -621,15 +619,15 @@ void RougeHeroes_Main(ObjectMaster *obj) {
 			playerco2->Powerups |= Powerups_Invincibility;
 		}
 
-		mtn->reqaction = 39;
+		pwp_heroes->mm.reqaction = 39;
 		break;
 	}
 
 	CharactersCommon_DrawBall(playerdata, data);
-	RougeHaneAnim(mtn_sub, mtn->reqaction);
+	RougeHaneAnim(&pwp_heroes->mm_sub, pwp_heroes->mm.reqaction);
 
-	PSetMotion(mtn);
-	PSetMotion(mtn_sub);
+	PSetMotion(&pwp_heroes->mm);
+	PSetMotion(&pwp_heroes->mm_sub);
 
 
 	if (FrameCounterUnpaused % 200 == 0) {
