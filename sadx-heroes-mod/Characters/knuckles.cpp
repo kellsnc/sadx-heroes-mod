@@ -5,9 +5,134 @@
 #include "sounds.h"
 #include "characters.h"
 
+enum {
+	KN_WALK,
+	KN_WALK_PULL,
+	KN_WALK_PUSH,
+	KN_TURN_L,
+	KN_TURN_R,
+	KN_SLOW_RUN,
+	KN_MID_RUN,
+	KN_TOP_RUN,
+	KN_START,
+	KN_ATC_SPIKE,
+	KN_ATC_01,
+	KN_ATC_C,
+	KN_ATC_D,
+	KN_JUMP_A,
+	KN_JUMP_B,
+	KN_JUMP_C,
+	KN_JUMP_D,
+	KN_JUMP_E,
+	KN_JUMP_F,
+	KN_JUMP_TRNGL,
+	KN_JUMP_GLIND,
+	KN_GLIND,
+	KN_GLIND_BK,
+	KN_GLIND_BK_L,
+	KN_GLIND_BK_R,
+	KN_GLIND_FLIP_B,
+	KN_GLIND_FLIP_FR,
+	KN_GLIND_L,
+	KN_GLIND_R,
+	KN_FLY_IDLE,
+	KN_FLY_SLOW,
+	KN_FLY_GLIND,
+	KN_HANG_OFF,
+	KN_HANG_ON,
+	KN_BREAK_A,
+	KN_BREAK_B,
+	KN_BREAK_C,
+	KN_BREAK_TURN_L,
+	KN_BREAK_TURN_R,
+	KN_BRA_MID,
+	KN_BRA_TOP,
+	KN_FLORT,
+	KN_DAM_M_A,
+	KN_DAM_M_B,
+	KN_DAM_M_C,
+	KN_EDGE_OTTO_A,
+	KN_EDGE_OTTO_B,
+	KN_EDGE_OTTO_C,
+	KN_FW_JUMP,
+	KN_TRAP_JUMP,
+	HERO_KN,
+	KN_WIN_B,
+	KN_ATC_RENDA,
+	KN_IDLE,
+	KN_IDLE_D,
+	KN_IDLE_E,
+	KN_BOB,
+	KN_BOB_L,
+	KN_BOB_R,
+};
+
 ModelInfo* KnucklesMdls[2];
 AnimationFile* KnucklesAnms[60];
-AnimData HKnucklesAnimData[60];
+NJS_ACTION KnucklesActs[60];
+
+PL_ACTION knuckles_action_heroes[] = {
+	{ &KnucklesActs[KN_WALK], 44, MD_MTN_XSPD, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_WALK_PULL], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_WALK_PUSH], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_TURN_L], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_TURN_R], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_SLOW_RUN], 44, MD_MTN_XSPD, 0, 0.25f, 0.5f },
+	{ &KnucklesActs[KN_MID_RUN], 44, MD_MTN_XSPD, 0, 0.25f, 0.3f },
+	{ &KnucklesActs[KN_TOP_RUN], 44, MD_MTN_XSPD, 0, 0.25f, 0.1f },
+	{ &KnucklesActs[KN_START], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_ATC_SPIKE], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_ATC_01], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_ATC_C], 44, MD_MTN_LOOP, 0, 0.25f, 0.5f },
+	{ &KnucklesActs[KN_ATC_D], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_JUMP_A], 44, MD_MTN_NEXT, MTN_POW_JUMP_B, 0.25f, 0.5f },
+	{ &KnucklesActs[KN_JUMP_B], 44, MD_MTN_WORK, 0, 1.0f, 0.25f },
+	{ &KnucklesActs[KN_JUMP_C], 44, MD_MTN_NEXT, MTN_POW_JUMP_D, 0.25f, 0.5f },
+	{ &KnucklesActs[KN_JUMP_D], 44, MD_MTN_WORK, 0, 1.0f, 0.5f },
+	{ &KnucklesActs[KN_JUMP_E], 44, MD_MTN_NEXT, MTN_POW_JUMP_F, 0.25f, 0.5f },
+	{ &KnucklesActs[KN_JUMP_F], 44, MD_MTN_WORK, 0, 1.0f, 0.5f },
+	{ &KnucklesActs[KN_JUMP_TRNGL], 44, MD_MTN_LOOP, 0, 0.25f, 0.5f },
+	{ &KnucklesActs[KN_JUMP_GLIND], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_GLIND], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_GLIND_BK], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_GLIND_BK_L], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_GLIND_BK_R], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_GLIND_FLIP_B], 44, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_GLIND_FLIP_FR], 44, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_GLIND_L], 44, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_GLIND_R], 44, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_FLY_IDLE], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_FLY_SLOW], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_FLY_GLIND], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_HANG_OFF], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_HANG_ON], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_BREAK_A], 44, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_BREAK_B], 44, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_BREAK_C], 44, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_BREAK_TURN_L], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_BREAK_TURN_R], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_BRA_MID], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_BRA_TOP], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_FLORT], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_DAM_M_A], 44, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_DAM_M_B], 44, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_DAM_M_C], 44, MD_MTN_NEXT, MTN_POW_JUMP_E, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_EDGE_OTTO_A], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_EDGE_OTTO_B], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_EDGE_OTTO_C], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_FW_JUMP], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_TRAP_JUMP], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[HERO_KN], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_WIN_B], 44, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_ATC_RENDA], 44, MD_MTN_NEXT, MTN_SPD_IDLE, 0.1f, 1.0f },
+	{ &KnucklesActs[KN_IDLE], 44, MD_MTN_LOOP, 0, 0.25f, 0.25f },
+	{ &KnucklesActs[KN_IDLE_D], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_IDLE_E], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_BOB], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_BOB_L], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_BOB_R], 44, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &KnucklesActs[KN_JUMP_B], 44, MD_MTN_XSPD, 0, 0.25f, 0.1f },
+};
 
 NJS_TEXNAME HKNUCKLES_TEXNAMES[4];
 NJS_TEXLIST HKNUCKLES_TEXLIST = { arrayptrandlength(HKNUCKLES_TEXNAMES) };
@@ -118,8 +243,18 @@ void KnucklesHeroes_Display(ObjectMaster *obj) {
 
 	njRotateX(0, 0x4000);
 
+	mtnjvwk* mtn = (mtnjvwk*)knucklesobj->Data1->Object;
+
+	int action = mtn->reqaction;
+	NJS_ACTION* actptr = mtn->plactptr[action].actptr;
+	if (mtn->mtnmode == MD_MTN_CHNG)
+	{
+		action = mtn->action;
+		actptr = mtn->actwkptr;
+	}
+
 	*NodeCallbackFuncPtr = KnucklesCallback;
-	njActionWeight(HKnucklesAnimData[knucklesobj->Data1->Index].Animation, knucklesobj->Data1->Scale.x, KnucklesMdls[0]->getweightinfo());
+	njActionWeight(actptr, mtn->nframe, KnucklesMdls[0]->getweightinfo());
 	*NodeCallbackFuncPtr = nullptr;
 
 	njSetMatrix(NULL, KnucklesMatrix);
@@ -149,35 +284,24 @@ void KnucklesHeroes_Main(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1;
 	EntityData2* data2 = (EntityData2*)obj->Data2;
 
-	if (!CharactersCommon_Init(obj, "heroes-knuckles", &HKNUCKLES_TEXLIST)) {
+	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
+	EntityData1* playerdata = EntityData1Ptrs[data->CharIndex];
+	EntityData2* playerdata2 = EntityData2Ptrs[data->CharIndex];
+	CharObj2* playerco2 = CharObj2Ptrs[data->CharIndex];
+	mtnjvwk* mtn = (mtnjvwk*)data->Object;
+
+	if (!playerco2 || playerdata->CharID != Characters_Knuckles)
+	{
 		return;
 	}
 
-	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
-	EntityData1* playerdata = playerobj->Data1;
-	EntityData2* playerdata2 = (EntityData2*)playerobj->Data2;
-	CharObj2* playerco2 = playerdata2->CharacterData;
-
-	if (data->Rotation.z == 0) {
-		if (data->CharIndex == 0) {
-			CON_REGULAR_TEXNAMES[15].texaddr = HKNUCKLES_TEXLIST.textures[2].texaddr;
-		}
-
-		if (CustomPhysics) {
-			playerco2->PhysicsData.HSpeedCap = 15;
-			playerco2->PhysicsData.MaxAccel = 3.5f;
-			playerco2->PhysicsData.field_14 = 0.85f;
-		}
-
-		data->Rotation.z = 1;
-	}
-
-	CharactersCommon_DrawBall(playerdata, data);
-
-	switch (data->Action) {
+	switch (data->Action)
+	{
+	case 0:
+		HeroesChars_InitPlayer((task*)obj, { "heroes-knuckles", &HKNUCKLES_TEXLIST }, 2, knuckles_action_heroes);
+		data->Action = 2;
+		return;
 	case 2:
-		PlayerPtrs[data->CharIndex]->DisplaySub = KnucklesHeroes_Display;
-
 		if (CanDoTricks(playerdata)) {
 			if (playerco2->Speed.x < 2 && HeldButtons2[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground && (HeldButtons2[data->CharIndex] & Buttons_A) != Buttons_A) {
 				data->field_A = 0;
@@ -207,11 +331,8 @@ void KnucklesHeroes_Main(ObjectMaster *obj) {
 			playerco2->IdleTime = 0;
 		}
 
-		{
-			NJS_VECTOR anim = PowerAnims(data, playerdata, playerco2); //id, speed, state
-			PlayHeroesAnimation(obj, anim.x, HKnucklesAnimData, anim.y, anim.z);
-		}
-
+		KnucklesAnimConverter(mtn, Characters_HeroesKnuckles, (taskwk*)playerdata, (playerwk*)playerco2);
+		
 		break;
 	case 3:
 		switch (PowerComboTrick(data, data2, playerco2, playerdata)) {
@@ -234,15 +355,18 @@ void KnucklesHeroes_Main(ObjectMaster *obj) {
 			}
 			break;
 		}
-
-		PlayHeroesAnimation(obj, 11, HKnucklesAnimData, 0, 0);
+		
+		mtn->reqaction = 11;
 		break;
 	case 4:
 		if (FlightPunchTrick(data, data2, playerco2, playerdata)) PlayHeroesSound(KnucklesSound_Trick);
 
-		PlayHeroesAnimation(obj, 12, HKnucklesAnimData, 0, 0);
+		mtn->reqaction = 12;
 		break;
 	}
+
+	CharactersCommon_DrawBall(playerdata, data);
+	PSetMotion(mtn);
 
 	if (FrameCounterUnpaused % 200 == 0) {
 		data->InvulnerableTime = 1;
@@ -311,41 +435,22 @@ void LoadKnuckFiles() {
 	KnucklesAnms[45] = arc.GetAnimation("KN_EDGE_OTTO_A.saanim");
 	KnucklesAnms[46] = arc.GetAnimation("KN_EDGE_OTTO_B.saanim");
 	KnucklesAnms[47] = arc.GetAnimation("KN_EDGE_OTTO_C.saanim");
-	KnucklesAnms[48] = arc.GetAnimation("KN_EDGE_OTTO_C.saanim");
-	KnucklesAnms[49] = arc.GetAnimation("KN_FW_JUMP.saanim");
-	KnucklesAnms[50] = arc.GetAnimation("KN_TRAP_JUMP.saanim");
-	KnucklesAnms[51] = arc.GetAnimation("HERO_KN.saanim");
-	KnucklesAnms[52] = arc.GetAnimation("KN_WIN_B.saanim");
-	KnucklesAnms[53] = arc.GetAnimation("KN_ATC_RENDA.saanim");
-	KnucklesAnms[54] = arc.GetAnimation("KN_IDLE.saanim");
-	KnucklesAnms[55] = arc.GetAnimation("KN_IDLE_D.saanim");
-	KnucklesAnms[56] = arc.GetAnimation("KN_IDLE_E.saanim");
-	KnucklesAnms[57] = arc.GetAnimation("KN_BOB.saanim");
-	KnucklesAnms[58] = arc.GetAnimation("KN_BOB_L.saanim");
-	KnucklesAnms[59] = arc.GetAnimation("KN_BOB_R.saanim");
+	KnucklesAnms[48] = arc.GetAnimation("KN_FW_JUMP.saanim");
+	KnucklesAnms[49] = arc.GetAnimation("KN_TRAP_JUMP.saanim");
+	KnucklesAnms[50] = arc.GetAnimation("HERO_KN.saanim");
+	KnucklesAnms[51] = arc.GetAnimation("KN_WIN_B.saanim");
+	KnucklesAnms[52] = arc.GetAnimation("KN_ATC_RENDA.saanim");
+	KnucklesAnms[53] = arc.GetAnimation("KN_IDLE.saanim");
+	KnucklesAnms[54] = arc.GetAnimation("KN_IDLE_D.saanim");
+	KnucklesAnms[55] = arc.GetAnimation("KN_IDLE_E.saanim");
+	KnucklesAnms[56] = arc.GetAnimation("KN_BOB.saanim");
+	KnucklesAnms[57] = arc.GetAnimation("KN_BOB_L.saanim");
+	KnucklesAnms[58] = arc.GetAnimation("KN_BOB_R.saanim");
 
-	for (uint8_t i = 0; i < LengthOfArray(HKnucklesAnimData); ++i) {
-		if (KnucklesAnms[i] == nullptr) continue;
-		HKnucklesAnimData[i].Animation = new NJS_ACTION;
-		HKnucklesAnimData[i].Animation->object = KnucklesMdls[0]->getmodel();
-		HKnucklesAnimData[i].Animation->motion = KnucklesAnms[i]->getmotion();
-		HKnucklesAnimData[i].NextAnim = i;
-		HKnucklesAnimData[i].AnimationSpeed = 0.5f;
+	for (int i = 0; i < LengthOfArray(KnucklesActs); ++i) {
+		KnucklesActs[i].object = KnucklesMdls[0]->getmodel();
+		KnucklesActs[i].motion = KnucklesAnms[i] ? KnucklesAnms[i]->getmotion() : NULL;
 	}
-
-	HKnucklesAnimData[13].NextAnim = 14;
-	HKnucklesAnimData[15].NextAnim = 16;
-	HKnucklesAnimData[18].NextAnim = 19;
-	HKnucklesAnimData[42].Property = 1;
-	HKnucklesAnimData[43].Property = 1;
-	HKnucklesAnimData[27].Property = 1;
-	HKnucklesAnimData[33].Property = 1;
-	HKnucklesAnimData[28].Property = 1;
-	HKnucklesAnimData[20].Property = 1;
-	HKnucklesAnimData[25].Property = 1;
-	HKnucklesAnimData[26].Property = 1;
-	HKnucklesAnimData[44].NextAnim = 17;
-	HKnucklesAnimData[52].Property = 1;
 }
 
 void UnloadKnuckFiles() {

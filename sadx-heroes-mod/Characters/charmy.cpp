@@ -5,10 +5,131 @@
 #include "sounds.h"
 #include "characters.h"
 
+enum {
+	BE_WALK,
+	BE_WALK_PULL,
+	BE_WALK_PUSH,
+	BE_TURN_L,
+	BE_TURN_R,
+	BE_SLOW_RUN,
+	BE_MID_RUN,
+	BE_TOP_RUN,
+	BE_START,
+	BE_IDLE,
+	BE_IDLE_B,
+	BE_IDLE_C_HALF,
+	BE_WIN,
+	BE_ATC_HARI,
+	BE_POW_ROT,
+	BE_TRAP_JUMP,
+	BE_FW_JUMP,
+	CAO_BE,
+	BE_JUMP_A,
+	BE_JUMP_B,
+	BE_JUMP_C,
+	BE_JUMP_D,
+	BE_JUMP_E,
+	BE_JUMP_F,
+	BE_GUM,
+	BE_JUMP_GLIND,
+	BE_GLIND,
+	BE_GLIND_BK,
+	BE_GLIND_BK_L,
+	BE_GLIND_BK_R,
+	BE_GLIND_FLIP_BK,
+	BE_GLIND_FLIP_FR,
+	BE_GLIND_L,
+	BE_GLIND_R,
+	BE_FLY_IDLE,
+	BE_FLY_SLOW,
+	BE_FLY_UP,
+	BE_FLY_PULL,
+	BE_FLY_PUSH,
+	BE_FLY_KICK,
+	BE_FLY_HANG_IDLE,
+	BE_FLY_HANG_OFF,
+	BE_FLY_HANG_ON,
+	BE_HANG_ON,
+	BE_BREAK_A,
+	BE_BREAK_B,
+	BE_BREAK_C,
+	BE_BRA_MID,
+	BE_BRA_TOP,
+	BE_BOB,
+	BE_FLORT,
+	BE_DAM_M_A,
+	BE_DAM_M_B,
+	BE_DAM_M_C,
+	BE_EDGE_OTTO_A,
+	BE_EDGE_OTTO_B,
+	BE_EDGE_OTTO_C,
+};
+
 ModelInfo* CharmyMdls[3];
-AnimationFile* CharmyAnms[58];
-AnimData CharmyAnimData[57];
-AnimData CWingsAnimData;
+AnimationFile* CharmyAnms[57];
+NJS_ACTION CharmyActs[57];
+NJS_ACTION CharmyHaneAct;
+
+PL_ACTION charmy_action_heroes[] = {
+	{ &CharmyActs[BE_SLOW_RUN], 46, MD_MTN_XSPD, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_WALK_PULL], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_WALK_PUSH], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_TURN_L], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_TURN_R], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_SLOW_RUN], 46, MD_MTN_XSPD, 0, 0.25f, 0.5f },
+	{ &CharmyActs[BE_MID_RUN], 46, MD_MTN_XSPD, 0, 0.25f, 0.5f },
+	{ &CharmyActs[BE_TOP_RUN], 46, MD_MTN_XSPD, 0, 0.25f, 0.5f },
+	{ &CharmyActs[BE_START], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_IDLE], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_IDLE_B], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_IDLE_C_HALF], 46, MD_MTN_NEXT, BE_IDLE, 0.25f, 0.5f },
+	{ &CharmyActs[BE_WIN], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_ATC_HARI], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_POW_ROT], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_TRAP_JUMP], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_FW_JUMP], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[CAO_BE], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_JUMP_A], 46, MD_MTN_NEXT, BE_JUMP_B, 0.25f, 0.5f },
+	{ &CharmyActs[BE_JUMP_B], 46, MD_MTN_WORK, 0, 0.25f, 0.5f },
+	{ &CharmyActs[BE_JUMP_C], 46, MD_MTN_NEXT, BE_JUMP_D, 0.25f, 0.5f },
+	{ &CharmyActs[BE_JUMP_D], 46, MD_MTN_WORK, 0, 0.25f, 0.5f },
+	{ &CharmyActs[BE_JUMP_E], 46, MD_MTN_NEXT, BE_JUMP_F, 0.25f, 0.5f },
+	{ &CharmyActs[BE_JUMP_F], 46, MD_MTN_WORK, 0, 0.25f, 0.5f },
+	{ &CharmyActs[BE_GUM], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_JUMP_GLIND], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_GLIND], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_GLIND_BK], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_GLIND_BK_L], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_GLIND_BK_R], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_GLIND_FLIP_BK], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_GLIND_FLIP_FR], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_GLIND_L], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_GLIND_R], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_FLY_IDLE], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_FLY_SLOW], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_FLY_UP], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_FLY_PULL], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_FLY_PUSH], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_FLY_KICK], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_FLY_HANG_IDLE], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_FLY_HANG_OFF], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_FLY_HANG_ON], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_HANG_ON], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_BREAK_A], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_BREAK_B], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_BREAK_C], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_BRA_MID], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_BRA_TOP], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_BOB], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_FLORT], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_DAM_M_A], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_DAM_M_B], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_DAM_M_C], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_EDGE_OTTO_A], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_EDGE_OTTO_B], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_EDGE_OTTO_C], 46, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CharmyActs[BE_JUMP_B], 46, MD_MTN_XSPD, 0, 0.25f, 0.5f },
+};
 
 NJS_TEXNAME CHARMY_TEXNAMES[5];
 NJS_TEXLIST CHARMY_TEXLIST = { arrayptrandlength(CHARMY_TEXNAMES) };
@@ -47,17 +168,6 @@ void PlaySound_Charmy(int ID) {
 	}
 }
 
-void CharmyWings_Main(ObjectMaster* obj) {
-	EntityData1* data = obj->Data1;
-	EntityData1* charmydata = obj->Parent->Data1;
-	CharObj2* co2 = CharObj2Ptrs[charmydata->CharIndex];
-
-	float speed = 0.7f;
-	speed += fmax(co2->Speed.x, co2->Speed.y) / 0.3f;
-
-	PlayHeroesAnimation(obj, 0, &CWingsAnimData, speed, 0);
-}
-
 void CharmyCallback(NJS_OBJECT* object) {
 	NJS_OBJECT* base = CharmyMdls[0]->getmodel();
 
@@ -67,6 +177,11 @@ void CharmyCallback(NJS_OBJECT* object) {
 	else if (object == base->getnode(2)) {
 		njGetMatrix(CharmyMatrices[1]); //wings
 	}
+}
+
+void CharmyDrawHane(void* data)
+{
+
 }
 
 void CharmyHeroes_Display(ObjectMaster *obj) {
@@ -109,8 +224,18 @@ void CharmyHeroes_Display(ObjectMaster *obj) {
 
 	njRotateX(0, 0x4000);
 
+	mtnjvwk* mtn = (mtnjvwk*)Charmyobj->Data1->Object;
+
+	int action = mtn->reqaction;
+	NJS_ACTION* actptr = mtn->plactptr[action].actptr;
+	if (mtn->mtnmode == MD_MTN_CHNG)
+	{
+		action = mtn->action;
+		actptr = mtn->actwkptr;
+	}
+
 	*NodeCallbackFuncPtr = CharmyCallback;
-	njActionWeight(CharmyAnimData[Charmyobj->Data1->Index].Animation, Charmyobj->Data1->Scale.x, CharmyMdls[0]->getweightinfo());
+	njActionWeight(actptr, mtn->nframe, CharmyMdls[0]->getweightinfo());
 	*NodeCallbackFuncPtr = nullptr;
 
 	njSetMatrix(NULL, CharmyMatrices[0]);
@@ -133,12 +258,10 @@ void CharmyHeroes_Display(ObjectMaster *obj) {
 		break;
 	}
 
-	if (Charmyobj->Child) {
-		njSetMatrix(NULL, CharmyMatrices[1]);
-		njTranslate(0, 0, 0.2f, -1.2f);
-		HelperFunctionsGlobal.Weights->Apply(CharmyMdls[2]->getweightinfo(), CWingsAnimData.Animation, Charmyobj->Child->Data1->Scale.x);
-		late_Action(CWingsAnimData.Animation, Charmyobj->Child->Data1->Scale.x, LATE_MAT);
-	}
+	njSetMatrix(NULL, CharmyMatrices[1]);
+	njTranslate(0, 0, 0.2f, -1.2f);
+	HelperFunctionsGlobal.Weights->Apply(CharmyMdls[2]->getweightinfo(), &CharmyHaneAct, (float)FrameCounterUnpaused * 0.5f);
+	late_Action(&CharmyHaneAct, (float)FrameCounterUnpaused * 0.5f, LATE_MAT);
 
 	njPopMatrix(1);
 
@@ -147,45 +270,222 @@ void CharmyHeroes_Display(ObjectMaster *obj) {
 	Direct3D_ResetZFunc();
 }
 
-void CharmyHeroes_Main(ObjectMaster *obj) {
+void CharmyAnimConverter(mtnjvwk* mtn, int heroes_plno, taskwk* pltwp, playerwk* pwp)
+{
+	int anim = mtn->reqaction;
+
+	switch (pwp->mj.reqaction) {
+	case 0:
+	case 2:
+	case 7:
+	case 8:
+		anim = 9; break;
+	case 4:
+	case 5:
+	case 6:
+		anim = 10;
+		break;
+	case 9:
+		anim = 5;
+		if (pwp->spd.x < 0.02f) anim = 9;
+		break;
+	case 10:
+		anim = 5;
+		break;
+	case 11:
+		anim = 5;
+		break;
+	case 12:
+		anim = 6;
+		break;
+	case 13:
+		anim = 7;
+		break;
+	case 14: //jumping
+		if (anim < 18 || anim > 23) {
+			anim = 18;
+		}
+		//else if (anim == 19) {
+		//	if (data->Unknown > 2) {
+		//		anim = 20;
+		//	}
+		//}
+		//else if (anim == 21) {
+		//	if (playerdata->Position.y - playerco2->_struct_a3.DistanceMax < 10) anim = 22;
+		//}
+		break;
+	case 15: //rolling
+	case 16:
+		anim = 19;
+		break;
+	case 17: //spring jump
+		anim = 19;
+		break;
+	case 18: //fall after spring jump
+		anim = 21;
+		break;
+	case 19: //falling
+		anim = 21;
+		if (pwp->spd.x > 8.0f && pltwp->pos.y - pwp->shadow.y_bottom > 500.0f) {
+			anim = 16;
+			pwp->mj.reqaction = 150;
+		}
+		break;
+	case 20:
+		anim = 23;
+		break;
+	case 21: //break
+		anim = 46;
+		if (pwp->spd.x > 6) {
+			anim = 45;
+		}
+		else if (pwp->spd.x > 3) {
+			anim = 43;
+		}
+		break;
+	case 22:
+		anim = 43;
+		break;
+	case 24:
+		anim = 2;
+		break;
+	case 25:
+		anim = 2;
+		break;
+	case 26:
+		anim = 51;
+		break;
+	case 27:
+		anim = 53;
+		break;
+	case 28: //hurt
+	case 29:
+	case 30:
+	case 31:
+		anim = 52;
+		break;
+	case 32:
+		anim = 45;
+		break;
+	case 33: //thumbling
+	case 34:
+		anim = 50;
+		break;
+	case 35:
+		anim = 52;
+		break;
+	case 36:
+		anim = 21;
+		break;
+	case 37: //flying
+	case 40:
+	case 41:
+		anim = 34; //52 IF HOLDING PLAYER
+		break;
+	case 38: //flying falling
+	case 39:
+	case 42:
+		anim = 35;
+		break;
+	case 43:
+		anim = 39;
+		break;
+	case 44:
+	case 45:
+	case 46:
+	case 47:
+	case 48:
+	case 49:
+	case 50:
+	case 51:
+	case 52:
+	case 53:
+		anim = 39;
+		break;
+	case 54: //won
+	case 55:
+		anim = 12;
+		break;
+	case 56: //lost
+	case 57:
+		anim = 10;
+		break;
+	case 58:
+		anim = 43;
+		break;
+	case 72: //holding hook
+		anim = 48;
+		break;
+	case 89:
+		anim = 9;
+		break;
+	case 107: //snowboard
+	case 108:
+	case 109:
+		anim = 26;
+		break;
+	case 100:
+		anim = 48;
+		break;
+	case 110:
+	case 111:
+	case 116:
+		anim = 26;
+		break;
+	case 112:
+		if (pwp->spd.z > 0.1f) anim = 33;
+		break;
+	case 113:
+		if (pwp->spd.z < 0.1f) anim = 32;
+		break;
+	case 114:
+	case 115:
+	case 117:
+	case 118:
+	case 119:
+		anim = 30;
+		break;
+	case 120:
+	case 121:
+	case 122:
+	case 123:
+	case 124:
+	case 125:
+	case 126:
+		anim = 31;
+		break;
+	case 127:
+		anim = 27;
+		break;
+	case 150:
+		anim = 16;
+		break;
+	}
+	mtn->reqaction = anim;
+}
+
+void CharmyHeroes_Main(ObjectMaster * obj) {
 	EntityData1* data = obj->Data1;
 
-	if (!CharactersCommon_Init(obj, "heroes-charmy", &CHARMY_TEXLIST)) {
+	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
+	EntityData1* playerdata = EntityData1Ptrs[data->CharIndex];
+	EntityData2* playerdata2 = EntityData2Ptrs[data->CharIndex];
+	CharObj2* playerco2 = CharObj2Ptrs[data->CharIndex];
+	mtnjvwk* mtn = (mtnjvwk*)data->Object;
+	mtnjvwk* mtn_sub = *(mtnjvwk**)&data->Scale.z;
+
+	if (!playerco2 || playerdata->CharID != Characters_Tails)
+	{
 		return;
 	}
 
-	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
-	if (!obj->Child) LoadChildObject((LoadObj)(LoadObj_Data1 | LoadObj_Data2), CharmyWings_Main, obj);
-
-	EntityData1* playerdata = playerobj->Data1;
-	EntityData2* playerdata2 = (EntityData2*)playerobj->Data2;
-	CharObj2* playerco2 = playerdata2->CharacterData;
-
-	if (data->Rotation.z == 0) {
-		if (data->CharIndex == 0) {
-			CON_REGULAR_TEXNAMES[14].texaddr = CHARMY_TEXLIST.textures[5].texaddr;
-		}
-
-		if (CustomPhysics) {
-			playerco2->PhysicsData.MaxAccel = 2.5f;
-			playerco2->PhysicsData.field_14 = 0.8f;
-			playerco2->PhysicsData.AirAccel = 0.038999999f;
-		}
-
-		data->Rotation.z = 1;
-	}
-	
-	int anim = data->Index;
-	float speed = 0;
-	float state = 0;
-	float frame = data->Scale.x;
-
-	CharactersCommon_DrawBall(playerdata, data);
-
-	switch (data->Action) {
+	switch (data->Action)
+	{
+	case 0:
+		HeroesChars_InitPlayer((task*)obj, { "heroes-charmy", &CHARMY_TEXLIST }, 5, charmy_action_heroes);
+		data->Action = 2;
+		return;
 	case 2:
-		PlayerPtrs[data->CharIndex]->DisplaySub = CharmyHeroes_Display;
-
 		if (CanDoTricks(playerdata)) {
 			if (playerco2->Speed.x < 2 && PressedButtons[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
 				playerdata->Action = 100;
@@ -223,225 +523,7 @@ void CharmyHeroes_Main(ObjectMaster *obj) {
 			playerco2->IdleTime = 0;
 		}
 
-		switch (playerco2->AnimationThing.Index) {
-		case 0:
-		case 2:
-		case 7:
-		case 8:
-			anim = 9; data->Status = 0; break;
-		case 4:
-		case 5:
-		case 6:
-			anim = 10;
-			if (++data->Status == 100) {
-				playerco2->AnimationThing.Index = 0;
-				data->Status = 0;
-			}
-			break;
-		case 9:
-			data->Status = 0;
-			anim = 5;
-			if (playerco2->Speed.x < 0.02f) anim = 9;
-			break;
-		case 10:
-			anim = 5;
-			speed = 0.9f + playerco2->Speed.x * 0.5f;
-			break;
-		case 11:
-			anim = 5;
-			speed = 0.9f + playerco2->Speed.x * 0.3f;
-			break;
-		case 12:
-			anim = 6;
-			speed = 1.5f + playerco2->Speed.x * 0.2f;
-			break;
-		case 13:
-			anim = 7;
-			speed = 0.5f + playerco2->Speed.x * 0.1f;
-			break;
-		case 14: //jumping
-			if (anim < 18 || anim > 23) {
-				anim = 18;
-			}
-			else if (anim == 19) {
-				if (data->Unknown > 2) {
-					anim = 20;
-				}
-			}
-			else if (anim == 21) {
-				if (playerdata->Position.y - playerco2->_struct_a3.DistanceMax < 10) anim = 22;
-			}
-			break;
-		case 15: //rolling
-		case 16:
-			anim = 19;
-			break;
-		case 17: //spring jump
-			anim = 19;
-			break;
-		case 18: //fall after spring jump
-			anim = 21;
-			break;
-		case 19: //falling
-			anim = 21;
-			if (playerco2->Speed.x > 8 && playerdata->Position.y - playerco2->_struct_a3.DistanceMax > 500) {
-				anim = 16;
-				playerco2->AnimationThing.Index = 150;
-			}
-			break;
-		case 20:
-			anim = 23;
-			break;
-		case 21: //break
-			anim = 46;
-			if (playerco2->Speed.x > 6) {
-				anim = 45;
-			}
-			else if (playerco2->Speed.x > 3) {
-				anim = 43;
-			}
-			break;
-		case 22:
-			anim = 43;
-			break;
-		case 24:
-			anim = 2;
-			speed = 0;
-			break;
-		case 25:
-			anim = 2;
-			break;
-		case 26:
-			anim = 51;
-			break;
-		case 27:
-			anim = 53;
-			break;
-		case 28: //hurt
-		case 29:
-		case 30:
-		case 31:
-			anim = 52;
-			break;
-		case 32:
-			anim = 45;
-			break;
-		case 33: //thumbling
-		case 34:
-			anim = 50;
-			break;
-		case 35:
-			anim = 52;
-			break;
-		case 36:
-			anim = 21;
-			break;
-		case 37: //flying
-		case 40:
-		case 41:
-			anim = 34; //52 IF HOLDING PLAYER
-			if (HeldButtons2[data->CharIndex] & Buttons_A) speed = 0.8;
-			speed += playerco2->Speed.x * 0.5f;
-			break;
-		case 38: //flying falling
-		case 39:
-		case 42:
-			anim = 35;
-			break;
-		case 43:
-			anim = 39;
-			break;
-		case 44:
-		case 45:
-		case 46:
-		case 47:
-		case 48:
-		case 49:
-		case 50:
-		case 51:
-		case 52:
-		case 53:
-			anim = 39;
-			data->Rotation.y += 0x100;
-			break;
-		case 54: //won
-		case 55:
-			anim = 12;
-			if (data->Unknown > 1) {
-				if (frame > 124) data->Unknown = 20;
-				if (frame < 110) data->Unknown = 40;
-
-				if (data->Unknown > 20 && data->Unknown < 40) {
-					++data->Unknown;
-					state = 124 - (data->Unknown - 20);
-				}
-				else if (data->Unknown > 40) {
-					++data->Unknown;
-					state = 110 + (data->Unknown - 40);
-				}
-			}
-			break;
-		case 56: //lost
-		case 57:
-			anim = 10;
-			break;
-		case 58:
-			anim = 43;
-			break;
-		case 72: //holding hook
-			anim = 48;
-			break;
-		case 89:
-			anim = 9;
-			break;
-		case 107: //snowboard
-		case 108:
-		case 109:
-			anim = 26;
-			break;
-		case 100:
-			anim = 48;
-			break;
-		case 110:
-		case 111:
-		case 116:
-			anim = 26;
-			break;
-		case 112:
-			if (playerco2->Speed.z > 0.1f) anim = 33;
-			break;
-		case 113:
-			if (playerco2->Speed.z < 0.1f) anim = 32;
-			break;
-		case 114:
-		case 115:
-		case 117:
-		case 118:
-		case 119:
-			anim = 30;
-			break;
-		case 120:
-		case 121:
-		case 122:
-		case 123:
-		case 124:
-		case 125:
-		case 126:
-			anim = 31;
-			break;
-		case 127:
-			anim = 27;
-			break;
-		case 150:
-			anim = 16;
-			break;
-		}
-		
-		if (anim != 39) {
-			data->Rotation.y = 0;
-		}
-		
-		PlayHeroesAnimation(obj, anim, CharmyAnimData, speed, state);
+		CharmyAnimConverter(mtn, Characters_Charmy, (taskwk*)playerdata, (playerwk*)playerco2);
 
 		break;
 	case 3:
@@ -467,7 +549,7 @@ void CharmyHeroes_Main(ObjectMaster *obj) {
 			}
 		}
 
-		PlayHeroesAnimation(obj, 13, CharmyAnimData, 0, 0);
+		mtn->reqaction = 13;
 		break;
 	case 4:
 		if (++data->field_A == 48) {
@@ -479,9 +561,12 @@ void CharmyHeroes_Main(ObjectMaster *obj) {
 			playerco2->Powerups |= Powerups_Invincibility;
 		}
 
-		PlayHeroesAnimation(obj, 39, CharmyAnimData, 0, 0);
+		mtn->reqaction = 39;
 		break;
 	}
+
+	CharactersCommon_DrawBall(playerdata, data);
+	PSetMotion(mtn);
 
 	if (FrameCounterUnpaused % 200 == 0) {
 		data->InvulnerableTime = 1;
@@ -562,43 +647,13 @@ void LoadCharmyFiles() {
 	CharmyAnms[55] = arc.GetAnimation("BE_EDGE_OTTO_B.saanim");
 	CharmyAnms[56] = arc.GetAnimation("BE_EDGE_OTTO_C.saanim");
 
-	for (uint8_t i = 1; i < LengthOfArray(CharmyAnimData); ++i) {
-		if (CharmyAnms[i] == nullptr) continue;
-		CharmyAnimData[i].Animation = new NJS_ACTION;
-		CharmyAnimData[i].Animation->object = CharmyMdls[0]->getmodel();
-		CharmyAnimData[i].Animation->motion = CharmyAnms[i]->getmotion();
-		CharmyAnimData[i].NextAnim = i;
-		CharmyAnimData[i].AnimationSpeed = 0.5f;
+	for (int i = 0; i < LengthOfArray(CharmyActs); ++i) {
+		CharmyActs[i].object = CharmyMdls[0]->getmodel();
+		CharmyActs[i].motion = CharmyAnms[i] ? CharmyAnms[i]->getmotion() : NULL;
 	}
-	
-	CharmyAnimData[0] = CharmyAnimData[5];
 
-	CharmyAnimData[9].NextAnim = 8;
-	CharmyAnimData[10].NextAnim = 8;
-	CharmyAnimData[18].NextAnim = 19;
-	CharmyAnimData[20].NextAnim = 21;
-	CharmyAnimData[22].NextAnim = 23;
-	CharmyAnimData[51].Property = 1;
-	CharmyAnimData[52].Property = 1;
-	CharmyAnimData[32].Property = 1;
-	CharmyAnimData[25].Property = 1;
-	CharmyAnimData[30].Property = 1;
-	CharmyAnimData[31].Property = 1;
-	CharmyAnimData[33].Property = 1;
-	CharmyAnimData[53].NextAnim = 11;
-	CharmyAnimData[23].AnimationSpeed = 0.25f;
-
-	CharmyAnimData[18].AnimationSpeed = 1;
-	CharmyAnimData[19].AnimationSpeed = 1;
-	CharmyAnimData[20].AnimationSpeed = 1;
-	CharmyAnimData[21].AnimationSpeed = 1;
-	CharmyAnimData[22].AnimationSpeed = 1;
-	CharmyAnimData[23].AnimationSpeed = 1;
-
-	CWingsAnimData.Animation = new NJS_ACTION;
-	CWingsAnimData.Animation->object = CharmyMdls[2]->getmodel();
-	CWingsAnimData.Animation->motion = CharmyAnms[0]->getmotion();
-	CWingsAnimData.NextAnim = 0;
+	CharmyHaneAct.object = CharmyMdls[2]->getmodel();
+	CharmyHaneAct.motion = CharmyAnms[0]->getmotion();
 }
 
 void UnloadCharmyFiles() {

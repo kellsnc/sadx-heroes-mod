@@ -5,9 +5,130 @@
 #include "sounds.h"
 #include "characters.h"
 
+enum {
+	SN_WALK,
+	SN_WALK_PULL,
+	SN_WALK_PUSH,
+	SN_TURN_L,
+	SN_TURN_R,
+	SN_SLOW_RUN,
+	SN_MID_RUN,
+	SN_TOP_RUN,
+	SN_START,
+	SN_JUMP_WALL,
+	SN_JUMP_TRIC_A,
+	SN_JUMP_TRIC_B,
+	SN_JUMP_TRIC_C,
+	SN_JUMP_A,
+	SN_JUMP_B,
+	SN_JUMP_C,
+	SN_JUMP_D,
+	SN_JUMP_E,
+	SN_JUMP_F,
+	SN_JUMP_TRNGL,
+	SN_JUMP_GLIND,
+	SN_GLIND,
+	SN_GLIND_BK,
+	SN_GLIND_BK_L,
+	SN_GLIND_BK_R,
+	SN_GLIND_FLIP_B,
+	SN_GLIND_FLIP_FR,
+	SN_GLIND_L,
+	SN_GLIND_R,
+	SN_FLY_IDLE,
+	SN_FLY_SLOW,
+	SN_FLY_GLIND,
+	SN_HANG_OFF,
+	SN_HANG_ON,
+	SN_BREAK_A,
+	SN_BREAK_B,
+	SN_BREAK_C,
+	SN_BREAK_TURN_L,
+	SN_BREAK_TURN_R,
+	SN_BRA_MID,
+	SN_BRA_TOP,
+	SN_FLORT,
+	SN_DAM_MID_A,
+	SN_DAM_MID_B,
+	SN_DAM_MID_C,
+	SN_EDGE_OTTO_A,
+	SN_EDGE_OTTO_B,
+	SN_EDGE_OTTO_C,
+	SN_FW_JUMP,
+	SN_TRAP_JUMP,
+	SN_POW_ROT,
+	SN_WIN_B,
+	SN_ATC_DASH,
+	SN_IDLE,
+	SN_IDLE_C,
+	SN_IDLE_D,
+	HERO_SN,
+};
+
 ModelInfo* SonicMdls[2];
-AnimationFile* SonicAnms[58];
-AnimData HSonicAnimData[58];
+AnimationFile* SonicAnms[57];
+NJS_ACTION SonicActs[57];
+
+PL_ACTION sonic_action_heroes[] = {
+	{ &SonicActs[SN_WALK], 56, MD_MTN_XSPD, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_WALK_PULL], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_WALK_PUSH], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_TURN_L], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_TURN_R], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_SLOW_RUN], 56, MD_MTN_XSPD, 0, 0.25f, 0.5f },
+	{ &SonicActs[SN_MID_RUN], 56, MD_MTN_XSPD, 0, 0.25f, 0.3f },
+	{ &SonicActs[SN_TOP_RUN], 56, MD_MTN_XSPD, 0, 0.25f, 0.1f },
+	{ &SonicActs[SN_START], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_JUMP_WALL], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_JUMP_TRIC_A], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_JUMP_TRIC_B], 56, MD_MTN_NEXT, MTN_SPD_JUMP_F, 0.25f, 0.5f },
+	{ &SonicActs[SN_JUMP_TRIC_C], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_JUMP_A], 56, MD_MTN_NEXT, MTN_SPD_JUMP_B, 0.25f, 1.0f },
+	{ &SonicActs[SN_JUMP_B], 56, MD_MTN_WORK, 0, 0.25f, 0.5f },
+	{ &SonicActs[SN_JUMP_C], 56, MD_MTN_NEXT, MTN_SPD_JUMP_D, 0.25f, 1.0f },
+	{ &SonicActs[SN_JUMP_D], 56, MD_MTN_WORK, 0, 0.25f, 0.5f },
+	{ &SonicActs[SN_JUMP_E], 56, MD_MTN_NEXT, MTN_SPD_JUMP_F, 0.25f, 1.0f },
+	{ &SonicActs[SN_JUMP_F], 56, MD_MTN_WORK, 0, 0.25f, 0.5f },
+	{ &SonicActs[SN_JUMP_TRNGL], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_JUMP_GLIND], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_GLIND], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_GLIND_BK], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_GLIND_BK_L], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_GLIND_BK_R], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_GLIND_FLIP_B], 56, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_GLIND_FLIP_FR], 56, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_GLIND_L], 56, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_GLIND_R], 56, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_FLY_IDLE], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_FLY_SLOW], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_FLY_GLIND], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_HANG_OFF], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_HANG_ON], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_BREAK_A], 56, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_BREAK_B], 56, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_BREAK_C], 56, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_BREAK_TURN_L], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_BREAK_TURN_R], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_BRA_MID], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_BRA_TOP], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_FLORT], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_DAM_MID_A], 56, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_DAM_MID_B], 56, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_DAM_MID_C], 56, MD_MTN_NEXT, SN_JUMP_E, 0.25f, 1.0f },
+	{ &SonicActs[SN_EDGE_OTTO_A], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_EDGE_OTTO_B], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_EDGE_OTTO_C], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_FW_JUMP], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_TRAP_JUMP], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_POW_ROT], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_WIN_B], 56, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_ATC_DASH], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_IDLE], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_IDLE_C], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_IDLE_D], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[HERO_SN], 56, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &SonicActs[SN_JUMP_B], 56, MD_MTN_XSPD, 0, 0.25f, 0.5f },
+};
 
 NJS_TEXNAME HSONIC_TEXNAMES[4];
 NJS_TEXLIST HSONIC_TEXLIST = { arrayptrandlength(HSONIC_TEXNAMES) };
@@ -87,14 +208,24 @@ void SonicHeroes_Display(ObjectMaster *obj) {
 	njRotateX(0, entity1->Rotation.x);
 	njRotateY(0, -entity1->Rotation.y - 0x4000);
 
-	njRotateX(0, 0x4000);
-
 	if (sonicobj->Data1->Index == 52) {
 		njRotateY(0, 0xC000);
 	}
 
+	njRotateX(0, 0x4000);
+
+	mtnjvwk* mtn = (mtnjvwk*)sonicobj->Data1->Object;
+
+	int action = mtn->reqaction;
+	NJS_ACTION* actptr = mtn->plactptr[action].actptr;
+	if (mtn->mtnmode == MD_MTN_CHNG)
+	{
+		action = mtn->action;
+		actptr = mtn->actwkptr;
+	}
+
 	*NodeCallbackFuncPtr = SonicCallback;
-	njActionWeight(HSonicAnimData[sonicobj->Data1->Index].Animation, sonicobj->Data1->Scale.x, SonicMdls[0]->getweightinfo());
+	njActionWeight(actptr, mtn->nframe, SonicMdls[0]->getweightinfo());
 	*NodeCallbackFuncPtr = nullptr;
 
 	njSetMatrix(NULL, SonicMatrix);
@@ -128,35 +259,24 @@ void SonicHeroes_Main(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1;
 	EntityData2* data2 = (EntityData2*)obj->Data2;
 
-	if (!CharactersCommon_Init(obj, "heroes-sonic", &HSONIC_TEXLIST)) {
+	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
+	EntityData1* playerdata = EntityData1Ptrs[data->CharIndex];
+	EntityData2* playerdata2 = EntityData2Ptrs[data->CharIndex];
+	CharObj2* playerco2 = CharObj2Ptrs[data->CharIndex];
+	mtnjvwk* mtn = (mtnjvwk*)data->Object;
+
+	if (!playerco2 || playerdata->CharID != Characters_Sonic)
+	{
 		return;
 	}
 
-	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
-	EntityData1* playerdata = playerobj->Data1;
-	EntityData2* playerdata2 = (EntityData2*)playerobj->Data2;
-	CharObj2* playerco2 = playerdata2->CharacterData;
-
-	if (data->Rotation.z == 0) {
-		if (data->CharIndex == 0) {
-			CON_REGULAR_TEXNAMES[12].texaddr = HSONIC_TEXLIST.textures[5].texaddr;
-		}
-
-		if (CustomPhysics) {
-			playerco2->PhysicsData.HSpeedCap = 18;
-			playerco2->PhysicsData.MaxAccel = 4.0f;
-			playerco2->PhysicsData.field_14 = 0.95f;
-		}
-
-		data->Rotation.z = 1;
-	}
-
-	CharactersCommon_DrawBall(playerdata, data);
-
-	switch (data->Action) {
+	switch (data->Action)
+	{
+	case 0:
+		HeroesChars_InitPlayer((task*)obj, { "heroes-sonic", &HSONIC_TEXLIST }, 5, sonic_action_heroes);
+		data->Action = 2;
+		return;
 	case 2:
-		PlayerPtrs[data->CharIndex]->DisplaySub = SonicHeroes_Display;
-
 		if (CanDoTricks(playerdata)) {
 			if (playerco2->Speed.x < 2 && HeldButtons2[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
 				playerdata->Action = 5;
@@ -165,13 +285,13 @@ void SonicHeroes_Main(ObjectMaster *obj) {
 				break;
 			}
 
-			if (data->Index == 14 && (playerdata->Status & Status_Ground) != Status_Ground && PressedButtons[data->CharIndex] & Buttons_X) {
+			if (playerco2->AnimationThing.Index == 14 && (playerdata->Status & Status_Ground) != Status_Ground && PressedButtons[data->CharIndex] & Buttons_X) {
 				data->field_A = 0;
 				PlayHeroesSound(SonicSound_Attack);
 				data->Action = 4;
 			}
 		}
-		
+
 		if (FrameCounterUnpaused % 20 == 0) data->field_A = 0;
 
 		if (playerco2->IdleTime > 1000) {
@@ -186,21 +306,20 @@ void SonicHeroes_Main(ObjectMaster *obj) {
 			playerco2->IdleTime = 0;
 		}
 
-		{
-			NJS_VECTOR anim = SpeedAnims(data, playerdata, playerco2); //id, speed, state
-			PlayHeroesAnimation(obj, anim.x, HSonicAnimData, anim.y, anim.z);
-		}
-		
+		SonicAnimConverter(mtn, Characters_HeroesSonic, (taskwk*)playerdata, (playerwk*)playerco2);
+
 		break;
 	case 3:
 		KickTrick(data, data2, playerco2, playerdata);
-		PlayHeroesAnimation(obj, 53, HSonicAnimData, 0, 0);
+		mtn->reqaction = MTN_SPD_ATC;
 		break;
 	case 4:
 		TornadoTrick(data, data2, playerco2, playerdata);
-		PlayHeroesAnimation(obj, 14, HSonicAnimData, 0, 0);
 		break;
 	}
+
+	CharactersCommon_DrawBall(playerdata, data);
+	PSetMotion(mtn);
 
 	if (FrameCounterUnpaused % 200 == 0) {
 		data->InvulnerableTime = 1;
@@ -269,38 +388,20 @@ void LoadSonicFiles() {
 	SonicAnms[45] = arc.GetAnimation("SN_EDGE_OTTO_A.saanim");
 	SonicAnms[46] = arc.GetAnimation("SN_EDGE_OTTO_B.saanim");
 	SonicAnms[47] = arc.GetAnimation("SN_EDGE_OTTO_C.saanim");
-	SonicAnms[48] = arc.GetAnimation("SN_EDGE_OTTO_C.saanim");
-	SonicAnms[49] = arc.GetAnimation("SN_FW_JUMP.saanim");
-	SonicAnms[50] = arc.GetAnimation("SN_TRAP_JUMP.saanim");
-	SonicAnms[51] = arc.GetAnimation("SN_POW_ROT.saanim");
-	SonicAnms[52] = arc.GetAnimation("SN_WIN_B.saanim");
-	SonicAnms[53] = arc.GetAnimation("SN_ATC_DASH.saanim");
-	SonicAnms[54] = arc.GetAnimation("SN_IDLE.saanim");
-	SonicAnms[55] = arc.GetAnimation("SN_IDLE_C.saanim");
-	SonicAnms[56] = arc.GetAnimation("SN_IDLE_D.saanim");
-	SonicAnms[57] = arc.GetAnimation("HERO_SN.saanim");
+	SonicAnms[48] = arc.GetAnimation("SN_FW_JUMP.saanim");
+	SonicAnms[49] = arc.GetAnimation("SN_TRAP_JUMP.saanim");
+	SonicAnms[50] = arc.GetAnimation("SN_POW_ROT.saanim");
+	SonicAnms[51] = arc.GetAnimation("SN_WIN_B.saanim");
+	SonicAnms[52] = arc.GetAnimation("SN_ATC_DASH.saanim");
+	SonicAnms[53] = arc.GetAnimation("SN_IDLE.saanim");
+	SonicAnms[54] = arc.GetAnimation("SN_IDLE_C.saanim");
+	SonicAnms[55] = arc.GetAnimation("SN_IDLE_D.saanim");
+	SonicAnms[56] = arc.GetAnimation("HERO_SN.saanim");
 
-	for (uint8_t i = 0; i < LengthOfArray(HSonicAnimData); ++i) {
-		if (SonicAnms[i] == nullptr) continue;
-		HSonicAnimData[i].Animation = new NJS_ACTION;
-		HSonicAnimData[i].Animation->object = SonicMdls[0]->getmodel();
-		HSonicAnimData[i].Animation->motion = SonicAnms[i]->getmotion();
-		HSonicAnimData[i].NextAnim = i;
-		HSonicAnimData[i].AnimationSpeed = 0.5f;
+	for (int i = 0; i < LengthOfArray(SonicActs); ++i) {
+		SonicActs[i].object = SonicMdls[0]->getmodel();
+		SonicActs[i].motion = SonicAnms[i] ? SonicAnms[i]->getmotion() : NULL;
 	}
-
-	HSonicAnimData[13].NextAnim = 14;
-	HSonicAnimData[15].NextAnim = 16;
-	HSonicAnimData[18].NextAnim = 19;
-	HSonicAnimData[42].Property = 1;
-	HSonicAnimData[43].Property = 1;
-	HSonicAnimData[27].Property = 1;
-	HSonicAnimData[28].Property = 1;
-	HSonicAnimData[20].Property = 1;
-	HSonicAnimData[25].Property = 1;
-	HSonicAnimData[26].Property = 1;
-	HSonicAnimData[44].NextAnim = 17;
-	HSonicAnimData[52].Property = 1;
 }
 
 void UnloadSonicFiles() {

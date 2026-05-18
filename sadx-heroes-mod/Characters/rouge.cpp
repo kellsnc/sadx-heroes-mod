@@ -5,10 +5,156 @@
 #include "sounds.h"
 #include "characters.h"
 
+enum {
+	RO_WALK,
+	RO_WALK_PULL,
+	RO_WALK_PUSH,
+	RO_TURN_L,
+	RO_TURN_R,
+	RO_SLOW_RUN,
+	RO_MID_RUN,
+	RO_TOP_RUN,
+	RO_START,
+	RO_IDLE,
+	RO_IDLE_B,
+	RO_IDLE_C_HALF,
+	RO_WIN,
+	RO_ATC_BOMB,
+	RO_POW_ROT,
+	RO_TRAP_JUMP,
+	RO_FW_JUMP,
+	DARK_RO,
+	RO_JUMP_A,
+	RO_JUMP_B,
+	RO_JUMP_C,
+	RO_JUMP_D,
+	RO_JUMP_E,
+	RO_JUMP_F,
+	RO_JUMP_TRNGL,
+	RO_JUMP_GLIND,
+	RO_GLIND,
+	RO_GLIND_BK,
+	RO_GLIND_BK_L,
+	RO_GLIND_BK_R,
+	RO_GLIND_FLIP_B,
+	RO_GLIND_FLIP_F,
+	RO_GLIND_L,
+	RO_GLIND_R,
+	RO_FLY_IDLE,
+	RO_FLY_SLOW,
+	RO_FLY_UP,
+	RO_FLY_PULL,
+	RO_FLY_PUSH,
+	RO_FLY_KICK,
+	RO_FLY_HANG_IDLE,
+	RO_FLY_HANG_OFF,
+	RO_FLY_HANG_ON,
+	RO_HANG_OFF,
+	RO_HANG_ON,
+	RO_BREAK_A,
+	RO_BREAK_B,
+	RO_BREAK_C,
+	RO_BREAK_TURN_L,
+	RO_BREAK_TURN_R,
+	RO_BRA_MID,
+	RO_BRA_TOP,
+	RO_BOB,
+	RO_FLORT,
+	RO_DAM_M_A,
+	RO_DAM_M_B,
+	RO_DAM_M_C,
+	RO_EDGE_OTTO_A,
+	RO_EDGE_OTTO_B,
+	RO_EDGE_OTTO_C,
+};
+
+enum {
+	RO_FLY_IDLE_WNGL,
+	RO_FLY_UP_WING,
+	RO_IDLE_C_HANE_HALF,
+	RO_IDLE_WNGS,
+	SL_HANE,
+	RO_WING_WIN,
+};
+
 ModelInfo* RougeMdls[6];
-AnimationFile* RougeAnms[66];
-AnimData RougeAnimData[60];
-AnimData RWingsAnimData[6];
+AnimationFile* RougeAnms[59];
+AnimationFile* HaneAnms[6];
+NJS_ACTION RougeActs[60];
+NJS_ACTION HaneActs[6];
+
+PL_ACTION rouge_action_heroes[] = {
+	{ &RougeActs[RO_WALK], 45, MD_MTN_XSPD, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_WALK_PULL], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_WALK_PUSH], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_TURN_L], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_TURN_R], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_SLOW_RUN], 45, MD_MTN_XSPD, 0, 0.25f, 0.5f },
+	{ &RougeActs[RO_MID_RUN], 45, MD_MTN_XSPD, 0, 0.25f, 0.3f },
+	{ &RougeActs[RO_TOP_RUN], 45, MD_MTN_XSPD, 0, 0.25f, 0.15f },
+	{ &RougeActs[RO_START], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_IDLE], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_IDLE_B], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_IDLE_C_HALF], 45, MD_MTN_NEXT, RO_IDLE, 0.25f, 0.5f },
+	{ &RougeActs[RO_WIN], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_ATC_BOMB], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_POW_ROT], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_TRAP_JUMP], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_FW_JUMP], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[DARK_RO], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_JUMP_A], 45, MD_MTN_NEXT, RO_JUMP_B, 0.25f, 0.5f },
+	{ &RougeActs[RO_JUMP_B], 45, MD_MTN_WORK, 0, 0.25f, 0.5f },
+	{ &RougeActs[RO_JUMP_C], 45, MD_MTN_NEXT, RO_JUMP_D, 0.25f, 0.5f },
+	{ &RougeActs[RO_JUMP_D], 45, MD_MTN_WORK, 0, 0.25f, 0.5f },
+	{ &RougeActs[RO_JUMP_E], 45, MD_MTN_NEXT, RO_JUMP_F, 0.25f, 0.5f },
+	{ &RougeActs[RO_JUMP_F], 45, MD_MTN_WORK, 0, 0.25f, 0.5f },
+	{ &RougeActs[RO_JUMP_TRNGL], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_JUMP_GLIND], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_GLIND], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_GLIND_BK], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_GLIND_BK_L], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_GLIND_BK_R], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_GLIND_FLIP_B], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_GLIND_FLIP_F], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_GLIND_L], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_GLIND_R], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_FLY_IDLE], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_FLY_SLOW], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_FLY_UP], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_FLY_PULL], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_FLY_PUSH], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_FLY_KICK], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_FLY_HANG_IDLE], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_FLY_HANG_OFF], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_FLY_HANG_ON], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_HANG_OFF], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_HANG_ON], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_BREAK_A], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_BREAK_B], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_BREAK_C], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_BREAK_TURN_L], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_BREAK_TURN_R], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_BRA_MID], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_BRA_TOP], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_BOB], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_FLORT], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_DAM_M_A], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_DAM_M_B], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_DAM_M_C], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_EDGE_OTTO_A], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_EDGE_OTTO_B], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_EDGE_OTTO_C], 45, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &RougeActs[RO_JUMP_B], 45, MD_MTN_XSPD, 0, 0.25f, 0.5f },
+};
+
+PL_ACTION rouge_hane_action[] = {
+	{ &HaneActs[RO_FLY_IDLE_WNGL], 7, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &HaneActs[RO_FLY_UP_WING], 7, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &HaneActs[RO_IDLE_C_HANE_HALF], 7, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &HaneActs[RO_IDLE_WNGS], 7, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &HaneActs[SL_HANE], 7, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &HaneActs[RO_WING_WIN], 7, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+};
 
 NJS_TEXNAME ROUGE_TEXNAMES[7];
 NJS_TEXLIST ROUGE_TEXLIST = { arrayptrandlength(ROUGE_TEXNAMES) };
@@ -45,32 +191,6 @@ void PlaySound_Rouge(int ID) {
 		PlaySound(ID, 0, 0, 0);
 		break;
 	}
-}
-
-void RougeWings_Main(ObjectMaster* obj) {
-	EntityData1* data = obj->Data1;
-	EntityData1* rougedata = obj->Parent->Data1;
-
-	int anim;
-
-	anim = 3;
-
-	if (rougedata->Index >= 34 && rougedata->Index <= 42)
-	{
-		anim = 0;
-	}
-
-	if (rougedata->Index == 36)
-	{
-		anim = 1;
-	}
-
-	if (rougedata->Index == 54 || rougedata->Index == 55)
-	{
-		anim = 5;
-	}
-
-	PlayHeroesAnimation(obj, anim, RWingsAnimData, 0, 0);
 }
 
 void RougeCallback(NJS_OBJECT* object) {
@@ -118,14 +238,24 @@ void RougeHeroes_Display(ObjectMaster *obj) {
 	njRotateX(0, entity1->Rotation.x);
 	njRotateY(0, -entity1->Rotation.y - 0x4000 + rougeobj->Data1->Rotation.y);
 
-	njRotateX(0, 0x4000);
-
 	if (co2->AnimationThing.Index == 54 || co2->AnimationThing.Index == 55) {
 		njTranslate(0, 10, 2, 0);
 	}
 
+	njRotateX(0, 0x4000);
+
+	mtnjvwk* mtn = (mtnjvwk*)rougeobj->Data1->Object;
+
+	int action = mtn->reqaction;
+	NJS_ACTION* actptr = mtn->plactptr[action].actptr;
+	if (mtn->mtnmode == MD_MTN_CHNG)
+	{
+		action = mtn->action;
+		actptr = mtn->actwkptr;
+	}
+
 	*NodeCallbackFuncPtr = RougeCallback;
-	njActionWeight(RougeAnimData[rougeobj->Data1->Index].Animation, rougeobj->Data1->Scale.x, RougeMdls[0]->getweightinfo());
+	njActionWeight(actptr, mtn->nframe, RougeMdls[0]->getweightinfo());
 	*NodeCallbackFuncPtr = nullptr;
 
 	njSetMatrix(NULL, RougeMatrices[0]);
@@ -147,12 +277,14 @@ void RougeHeroes_Display(ObjectMaster *obj) {
 		break;
 	}
 
-	if (rougeobj->Child) {
-		njSetMatrix(NULL, RougeMatrices[1]);
-		njTranslate(0, 0, 0.5f, -0.8f);
-		njActionWeight(RWingsAnimData[rougeobj->Child->Data1->Index].Animation, rougeobj->Child->Data1->Scale.x, RougeMdls[5]->getweightinfo());
-	}
-	
+	njSetMatrix(NULL, RougeMatrices[1]);
+	njTranslate(0, 0, 0.5f, -0.8f);
+	mtn = *(mtnjvwk**)&rougeobj->Data1->Scale.z;
+	actptr = mtn->plactptr[mtn->reqaction].actptr;
+	if (mtn->mtnmode == MD_MTN_CHNG)
+		actptr = mtn->actwkptr;
+	njActionWeight(actptr, mtn->nframe, RougeMdls[5]->getweightinfo());
+
 	njPopMatrix(1);
 
 	Direct3D_PerformLighting(0);
@@ -160,45 +292,256 @@ void RougeHeroes_Display(ObjectMaster *obj) {
 	Direct3D_ResetZFunc();
 }
 
+void RougeAnimConverter(mtnjvwk* mtn, int heroes_plno, taskwk* pltwp, playerwk* pwp)
+{
+	int anim = mtn->reqaction;
+
+	switch (pwp->mj.reqaction) {
+	case 0:
+	case 2:
+	case 7:
+	case 8:
+		anim = 9;
+		break;
+	case 4:
+	case 5:
+	case 6:
+		anim = 10;
+		break;
+	case 9:
+		anim = 0;
+		if (pwp->spd.x < 0.02f) anim = 9;
+		break;
+	case 10:
+		anim = 0;
+		break;
+	case 11:
+		anim = 5;
+		break;
+	case 12:
+		anim = 6;
+		break;
+	case 13:
+		anim = 7;
+		break;
+	case 14: //jumping
+		if (anim < 18 || anim > 23) {
+			anim = 18;
+		}
+		//else if (anim == 19) {
+		//	if (data->Unknown > 2) {
+		//		anim = 20;
+		//	}
+		//}
+		//else if (anim == 21) {
+		//	if (playerdata->Position.y - playerco2->_struct_a3.DistanceMax < 10) anim = 22;
+		//}
+		break;
+	case 15: //rolling
+	case 16:
+		anim = 19;
+		break;
+	case 17: //spring jump
+		anim = 19;
+		break;
+	case 18: //fall after spring jump
+		anim = 21;
+		break;
+	case 19: //falling
+		anim = 21;
+		if (pwp->spd.x > 8.0f && pltwp->pos.y - pwp->shadow.y_bottom > 500.0f) {
+			anim = 16;
+			pwp->mj.reqaction = 150;
+		}
+		break;
+	case 20:
+		anim = 23;
+		break;
+	case 21: //break
+		anim = 47;
+		if (pwp->spd.x > 6) {
+			anim = 46;
+		}
+		else if (pwp->spd.x > 3) {
+			anim = 45;
+		}
+		break;
+	case 22:
+		anim = 48;
+		break;
+	case 24:
+		anim = 2;
+		break;
+	case 25:
+		anim = 2;
+		break;
+	case 26:
+		anim = 54;
+		break;
+	case 27:
+		anim = 56;
+		break;
+	case 28: //hurt
+	case 29:
+	case 30:
+	case 31:
+		anim = 55;
+		break;
+	case 32:
+		anim = 45;
+		break;
+	case 33: //thumbling
+	case 34:
+		anim = 53;
+		break;
+	case 35:
+		anim = 55;
+		break;
+	case 36:
+		anim = 21;
+		break;
+	case 37: //flying
+	case 40:
+	case 41:
+		anim = 34; //52 IF HOLDING PLAYER
+		break;
+	case 38: //flying falling
+	case 39:
+	case 42:
+		anim = 35;
+		break;
+	case 43:
+		anim = 39;
+		break;
+	case 44:
+	case 45:
+	case 46:
+	case 47:
+	case 48:
+	case 49:
+	case 50:
+	case 51:
+	case 52:
+	case 53:
+		anim = 39;
+		break;
+	case 54: //won
+	case 55:
+		anim = 12;
+		break;
+	case 56: //lost
+	case 57:
+		anim = 10;
+		break;
+	case 58:
+		anim = 44;
+		break;
+	case 72: //holding hook
+		anim = 51;
+		break;
+	case 89:
+		anim = 9;
+		break;
+	case 107: //snowboard
+	case 108:
+	case 109:
+		anim = 26;
+		break;
+	case 100:
+		anim = 51;
+		break;
+	case 110:
+	case 111:
+	case 116:
+		anim = 26;
+		break;
+	case 112:
+		if (pwp->spd.z > 0.1f) anim = 33;
+		break;
+	case 113:
+		if (pwp->spd.z < 0.1f) anim = 32;
+		break;
+	case 114:
+	case 115:
+	case 117:
+	case 118:
+	case 119:
+		anim = 30;
+		break;
+	case 120:
+	case 121:
+	case 122:
+	case 123:
+	case 124:
+	case 125:
+	case 126:
+		anim = 31;
+		break;
+	case 127:
+		anim = 27;
+		break;
+	case 150:
+		anim = 16;
+		break;
+	}
+
+	mtn->reqaction = anim;
+}
+
+void RougeHaneAnim(mtnjvwk* mtn_sub, int tails_action)
+{
+	int anim = 3;
+
+	if (tails_action >= 34 && tails_action <= 42)
+	{
+		anim = 0;
+	}
+
+	if (tails_action == 36)
+	{
+		anim = 1;
+	}
+
+	if (tails_action == 54 || tails_action == 55)
+	{
+		anim = 5;
+	}
+
+	mtn_sub->reqaction = anim;
+}
+
 void RougeHeroes_Main(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1;
 
-	if (!CharactersCommon_Init(obj, "heroes-rouge", &ROUGE_TEXLIST)) {
+	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
+	EntityData1* playerdata = EntityData1Ptrs[data->CharIndex];
+	EntityData2* playerdata2 = EntityData2Ptrs[data->CharIndex];
+	CharObj2* playerco2 = CharObj2Ptrs[data->CharIndex];
+	mtnjvwk* mtn = (mtnjvwk*)data->Object;
+	mtnjvwk* mtn_sub = *(mtnjvwk**)&data->Scale.z;
+
+	if (!playerco2 || playerdata->CharID != Characters_Tails)
+	{
 		return;
 	}
 
-	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
-	if (!obj->Child) LoadChildObject((LoadObj)(LoadObj_Data1 | LoadObj_Data2), RougeWings_Main, obj);
+	switch (data->Action)
+	{
+	case 0:
+		HeroesChars_InitPlayer((task*)obj, { "heroes-rouge", &ROUGE_TEXLIST }, 6, rouge_action_heroes);
 
-	EntityData1* playerdata = playerobj->Data1;
-	EntityData2* playerdata2 = (EntityData2*)playerobj->Data2;
-	CharObj2* playerco2 = playerdata2->CharacterData;
+		mtn_sub = new mtnjvwk;
+		mtn_sub->plactptr = rouge_hane_action;
+		mtn_sub->mtnmode = MD_MTN_INIT;
+		mtn_sub->reqaction = 0;
+		mtn_sub->spdp = &playerpwp[data->CharIndex]->spd.x;
+		mtn_sub->workp = &playerpwp[data->CharIndex]->work.f;
+		PSetMotion(mtn_sub);
+		data->Scale.z = *(float*)&mtn_sub;
 
-	if (data->Rotation.z == 0) {
-		if (data->CharIndex == 0) {
-			CON_REGULAR_TEXNAMES[14].texaddr = ROUGE_TEXLIST.textures[6].texaddr;
-		}
-
-		if (CustomPhysics) {
-			playerco2->PhysicsData.MaxAccel = 2.7f;
-			playerco2->PhysicsData.field_14 = 0.85f;
-			playerco2->PhysicsData.AirAccel = 0.038999999f;
-		}
-
-		data->Rotation.z = 1;
-	}
-
-	int anim = data->Index;
-	float speed = 0;
-	float state = 0;
-	float frame = data->Scale.x;
-
-	CharactersCommon_DrawBall(playerdata, data);
-
-	switch (data->Action) {
+		data->Action = 2;
+		return;
 	case 2:
-		PlayerPtrs[data->CharIndex]->DisplaySub = RougeHeroes_Display;
-
 		if (CanDoTricks(playerdata)) {
 			if (playerco2->Speed.x < 2 && PressedButtons[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
 				playerdata->Action = 100;
@@ -236,225 +579,7 @@ void RougeHeroes_Main(ObjectMaster *obj) {
 			playerco2->IdleTime = 0;
 		}
 
-		switch (playerco2->AnimationThing.Index) {
-		case 0:
-		case 2: 
-		case 7:
-		case 8:
-			anim = 9; data->Status = 0; break;
-		case 4:
-		case 5:
-		case 6:
-			anim = 10;
-			if (++data->Status == 100) {
-				playerco2->AnimationThing.Index = 0;
-				data->Status = 0;
-			}
-			break;
-		case 9:
-			data->Status = 0;
-			anim = 0;
-			if (playerco2->Speed.x < 0.02f) anim = 9;
-			break;
-		case 10:
-			anim = 0;
-			speed = 0.9f + playerco2->Speed.x * 0.5f;
-			break;
-		case 11:
-			anim = 5;
-			speed = 0.9f + playerco2->Speed.x * 0.3f;
-			break;
-		case 12:
-			anim = 6;
-			speed = 1.5f + playerco2->Speed.x * 0.2f;
-			break;
-		case 13:
-			anim = 7;
-			speed = 0.5f + playerco2->Speed.x * 0.1f;
-			break;
-		case 14: //jumping
-			if (anim < 18 || anim > 23) {
-				anim = 18;
-			}
-			else if (anim == 19) {
-				if (data->Unknown > 2) {
-					anim = 20;
-				}
-			}
-			else if (anim == 21) {
-				if (playerdata->Position.y - playerco2->_struct_a3.DistanceMax < 10) anim = 22;
-			}
-			break;
-		case 15: //rolling
-		case 16:
-			anim = 19;
-			break;
-		case 17: //spring jump
-			anim = 19;
-			break;
-		case 18: //fall after spring jump
-			anim = 21;
-			break;
-		case 19: //falling
-			anim = 21;
-			if (playerco2->Speed.x > 8 && playerdata->Position.y - playerco2->_struct_a3.DistanceMax > 500) {
-				anim = 16;
-				playerco2->AnimationThing.Index = 150;
-			}
-			break;
-		case 20:
-			anim = 23;
-			break;
-		case 21: //break
-			anim = 47;
-			if (playerco2->Speed.x > 6) {
-				anim = 46;
-			}
-			else if (playerco2->Speed.x > 3) {
-				anim = 45;
-			}
-			break;
-		case 22:
-			anim = 48;
-			break;
-		case 24:
-			anim = 2;
-			speed = 0;
-			break;
-		case 25:
-			anim = 2;
-			break;
-		case 26:
-			anim = 54;
-			break;
-		case 27:
-			anim = 56;
-			break;
-		case 28: //hurt
-		case 29:
-		case 30:
-		case 31:
-			anim = 55;
-			break;
-		case 32:
-			anim = 45;
-			break;
-		case 33: //thumbling
-		case 34:
-			anim = 53;
-			break;
-		case 35:
-			anim = 55;
-			break;
-		case 36:
-			anim = 21;
-			break;
-		case 37: //flying
-		case 40:
-		case 41:
-			anim = 34; //52 IF HOLDING PLAYER
-			if (HeldButtons2[data->CharIndex] & Buttons_A) speed = 0.8;
-			speed += playerco2->Speed.x * 0.5f;
-			break;
-		case 38: //flying falling
-		case 39:
-		case 42:
-			anim = 35;
-			break;
-		case 43:
-			anim = 39;
-			break;
-		case 44:
-		case 45:
-		case 46:
-		case 47:
-		case 48:
-		case 49:
-		case 50:
-		case 51:
-		case 52:
-		case 53:
-			anim = 39;
-			data->Rotation.y += 0x100;
-			break;
-		case 54: //won
-		case 55:
-			anim = 12;
-			if (data->Unknown > 1) {
-				if (frame > 124) data->Unknown = 20;
-				if (frame < 110) data->Unknown = 40;
-
-				if (data->Unknown > 20 && data->Unknown < 40) {
-					++data->Unknown;
-					state = 124 - (data->Unknown - 20);
-				}
-				else if (data->Unknown > 40) {
-					++data->Unknown;
-					state = 110 + (data->Unknown - 40);
-				}
-			}
-			break;
-		case 56: //lost
-		case 57:
-			anim = 10;
-			break;
-		case 58:
-			anim = 44;
-			break;
-		case 72: //holding hook
-			anim = 51;
-			break;
-		case 89:
-			anim = 9;
-			break;
-		case 107: //snowboard
-		case 108:
-		case 109:
-			anim = 26;
-			break;
-		case 100:
-			anim = 51;
-			break;
-		case 110:
-		case 111:
-		case 116:
-			anim = 26;
-			break;
-		case 112:
-			if (playerco2->Speed.z > 0.1f) anim = 33;
-			break;
-		case 113:
-			if (playerco2->Speed.z < 0.1f) anim = 32;
-			break;
-		case 114:
-		case 115:
-		case 117:
-		case 118:
-		case 119:
-			anim = 30;
-			break;
-		case 120:
-		case 121:
-		case 122:
-		case 123:
-		case 124:
-		case 125:
-		case 126:
-			anim = 31;
-			break;
-		case 127:
-			anim = 27;
-			break;
-		case 150:
-			anim = 16;
-			break;
-		}
-
-		if (anim != 39) {
-			data->Rotation.y = 0;
-		}
-		
-		PlayHeroesAnimation(obj, anim, RougeAnimData, speed, state);
+		RougeAnimConverter(mtn, Characters_HeroesTails, (taskwk*)playerdata, (playerwk*)playerco2);
 
 		break;
 	case 3:
@@ -484,7 +609,7 @@ void RougeHeroes_Main(ObjectMaster *obj) {
 			}
 		}
 
-		PlayHeroesAnimation(obj, 13, RougeAnimData, 0, 0);
+		mtn->reqaction = 13;
 		break;
 	case 4:
 		if (++data->field_A == 48) {
@@ -496,9 +621,16 @@ void RougeHeroes_Main(ObjectMaster *obj) {
 			playerco2->Powerups |= Powerups_Invincibility;
 		}
 
-		PlayHeroesAnimation(obj, 39, RougeAnimData, 0, 0);
+		mtn->reqaction = 39;
 		break;
 	}
+
+	CharactersCommon_DrawBall(playerdata, data);
+	RougeHaneAnim(mtn_sub, mtn->reqaction);
+
+	PSetMotion(mtn);
+	PSetMotion(mtn_sub);
+
 
 	if (FrameCounterUnpaused % 200 == 0) {
 		data->InvulnerableTime = 1;
@@ -587,48 +719,25 @@ void LoadRougeFiles() {
 	RougeAnms[58] = arc.GetAnimation("RO_EDGE_OTTO_B.saanim");
 	RougeAnms[59] = arc.GetAnimation("RO_EDGE_OTTO_C.saanim");
 
-	RougeAnms[60] = arc.GetAnimation("RO_FLY_IDLE_WNGL.saanim");
-	RougeAnms[61] = arc.GetAnimation("RO_FLY_UP_WING.saanim");
-	RougeAnms[62] = arc.GetAnimation("RO_IDLE_C_HANE_HALF.saanim");
-	RougeAnms[63] = arc.GetAnimation("RO_IDLE_WNGS.saanim");
-	RougeAnms[64] = arc.GetAnimation("SL_HANE.saanim");
-	RougeAnms[65] = arc.GetAnimation("RO_WING_WIN.saanim");
+	HaneAnms[0] = arc.GetAnimation("RO_FLY_IDLE_WNGL.saanim");
+	HaneAnms[1] = arc.GetAnimation("RO_FLY_UP_WING.saanim");
+	HaneAnms[2] = arc.GetAnimation("RO_IDLE_C_HANE_HALF.saanim");
+	HaneAnms[3] = arc.GetAnimation("RO_IDLE_WNGS.saanim");
+	HaneAnms[4] = arc.GetAnimation("SL_HANE.saanim");
+	HaneAnms[5] = arc.GetAnimation("RO_WING_WIN.saanim");
 
-	for (uint8_t i = 0; i < LengthOfArray(RougeAnimData); ++i) {
-		if (RougeAnms[i] == nullptr) continue;
-		RougeAnimData[i].Animation = new NJS_ACTION;
-		RougeAnimData[i].Animation->object = RougeMdls[0]->getmodel();
-		RougeAnimData[i].Animation->motion = RougeAnms[i]->getmotion();
-		RougeAnimData[i].NextAnim = i;
-		RougeAnimData[i].AnimationSpeed = 0.5f;
+	for (int i = 0; i < LengthOfArray(RougeActs); ++i) {
+		RougeActs[i].object = RougeMdls[0]->getmodel();
+		RougeActs[i].motion = RougeAnms[i] ? RougeAnms[i]->getmotion() : NULL;
 	}
 
-	RougeAnimData[9].NextAnim = 8;
-	RougeAnimData[10].NextAnim = 8;
-	RougeAnimData[18].NextAnim = 19;
-	RougeAnimData[20].NextAnim = 21;
-	RougeAnimData[22].NextAnim = 23;
-	RougeAnimData[54].Property = 1;
-	RougeAnimData[55].Property = 1;
-	RougeAnimData[32].Property = 1;
-	RougeAnimData[25].Property = 1;
-	RougeAnimData[30].Property = 1;
-	RougeAnimData[31].Property = 1;
-	RougeAnimData[33].Property = 1;
-	RougeAnimData[56].NextAnim = 11;
-	RougeAnimData[23].AnimationSpeed = 0.25f;
-
-	for (uint8_t i = 0; i < LengthOfArray(RWingsAnimData); ++i) {
-		if (RougeAnms[i + 60] == nullptr) continue;
-		RWingsAnimData[i].Animation = new NJS_ACTION;
-		RWingsAnimData[i].Animation->object = RougeMdls[5]->getmodel();
-		RWingsAnimData[i].Animation->motion = RougeAnms[i + 60]->getmotion();
-		RWingsAnimData[i].NextAnim = i;
-		RWingsAnimData[i].AnimationSpeed = 0.5f;
+	for (int i = 0; i < LengthOfArray(HaneActs); ++i) {
+		HaneActs[i].object = RougeMdls[5]->getmodel();
+		HaneActs[i].motion = HaneAnms[i] ? HaneAnms[i]->getmotion() : NULL;
 	}
 
-	RWingsAnimData[3].Animation->object = RougeMdls[3]->getmodel();
-	RWingsAnimData[4].Animation->object = RougeMdls[4]->getmodel();
+	HaneActs[3].object = RougeMdls[3]->getmodel();
+	HaneActs[4].object = RougeMdls[4]->getmodel();
 }
 
 void UnloadRougeFiles() {

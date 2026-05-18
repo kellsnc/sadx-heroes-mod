@@ -5,9 +5,141 @@
 #include "sounds.h"
 #include "characters.h"
 
+enum {
+	VE_WALK,
+	VE_WALK_PULL,
+	VE_WALK_PUSH,
+	VE_TURN_L,
+	VE_TURN_R,
+	VE_SLOW_RUN,
+	VE_MID_RUN,
+	VE_TOP_RUN,
+	VE_START,
+	VE_JUMP_ATC,
+	VE_ATC_DOWN,
+	VE_ATC_A,
+	VE_ATC_B,
+	VE_JUMP_A,
+	VE_JUMP_B,
+	VE_JUMP_C,
+	VE_JUMP_D,
+	VE_JUMP_E,
+	VE_JUMP_F,
+	VE_GUM,
+	VE_JUMP_GLIND,
+	VE_GLIND,
+	VE_GLIND_BK,
+	VE_GLIND_BK_L,
+	VE_GLIND_BK_R,
+	VE_GLIND_FLIP_B,
+	VE_GLIND_FLIP_F,
+	VE_GLIND_L,
+	VE_GLIND_R,
+	VE_FLY_IDLE,
+	VE_FLY_SLOW,
+	VE_FLY_GLIND,
+	VE_HANG_OFF,
+	VE_HANG_ON,
+	VE_BREAK_A,
+	VE_BREAK_B,
+	VE_BREAK_C,
+	VE_BREAK_TURN_L,
+	VE_BREAK_TURN_R,
+	VE_BRA_MID,
+	VE_BRA_TOP,
+	VE_FLORT,
+	VE_DAM_M_A,
+	VE_DAM_M_B,
+	VE_DAM_M_C,
+	VE_EDGE_OTTO_A,
+	VE_EDGE_OTTO_B,
+	VE_EDGE_OTTO_C,
+	VE_FW_JUMP,
+	VE_TRAP_JUMP,
+	CAO_VE,
+	VE_WIN,
+	VE_IDLE_HALF,
+	VE_IDLE_B_HALF,
+	VE_IDLE_C_HALF,
+	VE_BOB,
+	VE_BOB_L,
+	VE_BOB_R,
+	VE_START_IDLE,
+	VE_GLIND_DASH,
+	VE_GLIND_BK_DASH,
+	CAO_MIC,
+};
+
 ModelInfo* VectorMdls[3];
 AnimationFile* VectorAnms[63];
-AnimData VectorAnimData[63];
+NJS_ACTION VectorActs[63];
+
+PL_ACTION vector_action_heroes[] = {
+	{ &VectorActs[VE_WALK], 50, MD_MTN_XSPD, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_WALK_PULL], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_WALK_PUSH], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_TURN_L], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_TURN_R], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_SLOW_RUN], 50, MD_MTN_XSPD, 0, 0.25f, 0.5f },
+	{ &VectorActs[VE_MID_RUN], 50, MD_MTN_XSPD, 0, 0.25f, 0.3f },
+	{ &VectorActs[VE_TOP_RUN], 50, MD_MTN_XSPD, 0, 0.25f, 0.1f },
+	{ &VectorActs[VE_START], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_JUMP_ATC], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_ATC_DOWN], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_ATC_A], 50, MD_MTN_LOOP, 0, 0.25f, 0.5f },
+	{ &VectorActs[VE_ATC_B], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_JUMP_A], 50, MD_MTN_NEXT, MTN_POW_JUMP_B, 0.25f, 0.5f },
+	{ &VectorActs[VE_JUMP_B], 50, MD_MTN_WORK, 0, 1.0f, 0.25f },
+	{ &VectorActs[VE_JUMP_C], 50, MD_MTN_NEXT, MTN_POW_JUMP_D, 0.25f, 0.5f },
+	{ &VectorActs[VE_JUMP_D], 50, MD_MTN_WORK, 0, 1.0f, 0.5f },
+	{ &VectorActs[VE_JUMP_E], 50, MD_MTN_NEXT, MTN_POW_JUMP_F, 0.25f, 0.5f },
+	{ &VectorActs[VE_JUMP_F], 50, MD_MTN_WORK, 0, 1.0f, 0.5f },
+	{ &VectorActs[VE_GUM], 50, MD_MTN_LOOP, 0, 0.25f, 0.5f },
+	{ &VectorActs[VE_JUMP_GLIND], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_GLIND], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_GLIND_BK], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_GLIND_BK_L], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_GLIND_BK_R], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_GLIND_FLIP_B], 50, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_GLIND_FLIP_F], 50, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_GLIND_L], 50, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_GLIND_R], 50, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_FLY_IDLE], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_FLY_SLOW], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_FLY_GLIND], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_HANG_OFF], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_HANG_ON], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_BREAK_A], 50, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_BREAK_B], 50, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_BREAK_C], 50, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_BREAK_TURN_L], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_BREAK_TURN_R], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_BRA_MID], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_BRA_TOP], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_FLORT], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_DAM_M_A], 50, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_DAM_M_B], 50, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_DAM_M_C], 50, MD_MTN_NEXT, MTN_POW_JUMP_E, 0.25f, 1.0f },
+	{ &VectorActs[VE_EDGE_OTTO_A], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_EDGE_OTTO_B], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_EDGE_OTTO_C], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_FW_JUMP], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_TRAP_JUMP], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[CAO_VE], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_WIN], 50, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_ATC_A], 50, MD_MTN_NEXT, MTN_SPD_IDLE, 0.1f, 1.0f },
+	{ &VectorActs[VE_IDLE_HALF], 50, MD_MTN_LOOP, 0, 0.25f, 0.25f },
+	{ &VectorActs[VE_IDLE_B_HALF], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_IDLE_C_HALF], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_BOB], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_BOB_L], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_BOB_R], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_JUMP_B], 50, MD_MTN_XSPD, 0, 0.25f, 0.1f },
+	{ &VectorActs[VE_START_IDLE], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_GLIND_DASH], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[VE_GLIND_BK_DASH], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &VectorActs[CAO_MIC], 50, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+};
 
 NJS_TEXNAME VECTOR_TEXNAMES[7];
 NJS_TEXLIST VECTOR_TEXLIST = { arrayptrandlength(VECTOR_TEXNAMES) };
@@ -118,8 +250,18 @@ void VectorHeroes_Display(ObjectMaster *obj) {
 
 	njRotateX(0, 0x4000);
 
+	mtnjvwk* mtn = (mtnjvwk*)knucklesobj->Data1->Object;
+
+	int action = mtn->reqaction;
+	NJS_ACTION* actptr = mtn->plactptr[action].actptr;
+	if (mtn->mtnmode == MD_MTN_CHNG)
+	{
+		action = mtn->action;
+		actptr = mtn->actwkptr;
+	}
+
 	*NodeCallbackFuncPtr = VectorCallback;
-	njActionWeight(VectorAnimData[knucklesobj->Data1->Index].Animation, knucklesobj->Data1->Scale.x, VectorMdls[0]->getweightinfo());
+	njActionWeight(actptr, mtn->nframe, VectorMdls[0]->getweightinfo());
 	*NodeCallbackFuncPtr = nullptr;
 
 	njSetMatrix(NULL, VectorMatrices[0]);
@@ -159,40 +301,24 @@ void VectorHeroes_Main(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1;
 	EntityData2* data2 = (EntityData2*)obj->Data2;
 
-	if (!CharactersCommon_Init(obj, "heroes-vector", &VECTOR_TEXLIST)) {
+	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
+	EntityData1* playerdata = EntityData1Ptrs[data->CharIndex];
+	EntityData2* playerdata2 = EntityData2Ptrs[data->CharIndex];
+	CharObj2* playerco2 = CharObj2Ptrs[data->CharIndex];
+	mtnjvwk* mtn = (mtnjvwk*)data->Object;
+
+	if (!playerco2 || playerdata->CharID != Characters_Knuckles)
+	{
 		return;
 	}
 
-	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
-	EntityData1* playerdata = playerobj->Data1;
-	EntityData2* playerdata2 = (EntityData2*)playerobj->Data2;
-	CharObj2* playerco2 = playerdata2->CharacterData;
-
-	if (data->Rotation.z == 0) {
-		if (data->CharIndex == 0) {
-			CON_REGULAR_TEXNAMES[15].texaddr = VECTOR_TEXLIST.textures[6].texaddr;
-		}
-
-		if (CustomPhysics) {
-			playerdata->CollisionInfo->CollisionArray->a = 8.0f;
-			playerco2->PhysicsData.CollisionSize = 8.0f;
-			playerco2->PhysicsData.RippleSize = 0.5f;
-			playerco2->_struct_a3.ShadowScale = 1.5f;
-
-			playerco2->PhysicsData.HSpeedCap = 15;
-			playerco2->PhysicsData.MaxAccel = 3.5f;
-			playerco2->PhysicsData.field_14 = 0.85f;
-		}
-
-		data->Rotation.z = 1;
-	}
-
-	CharactersCommon_DrawBall(playerdata, data);
-
-	switch (data->Action) {
+	switch (data->Action)
+	{
+	case 0:
+		HeroesChars_InitPlayer((task*)obj, { "heroes-vector", &VECTOR_TEXLIST }, 6, vector_action_heroes);
+		data->Action = 2;
+		return;
 	case 2:
-		PlayerPtrs[data->CharIndex]->DisplaySub = VectorHeroes_Display;
-
 		if (CanDoTricks(playerdata)) {
 			if (playerco2->Speed.x < 2 && HeldButtons2[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground && (HeldButtons2[data->CharIndex] & Buttons_A) != Buttons_A) {
 				data->field_A = 0;
@@ -223,21 +349,18 @@ void VectorHeroes_Main(ObjectMaster *obj) {
 			playerco2->IdleTime = 0;
 		}
 
-		{
-			NJS_VECTOR anim = PowerAnims(data, playerdata, playerco2); //id, speed, state
-			PlayHeroesAnimation(obj, anim.x, VectorAnimData, anim.y, anim.z);
-		}
+		KnucklesAnimConverter(mtn, Characters_Vector, (taskwk*)playerdata, (playerwk*)playerco2);
 
 		break;
 	case 3:
 		switch (PowerLaunchTrick(data, data2, playerco2, playerdata)) {
 		case 1:
 			PlayHeroesSound(VectorSound_Combo1);
-			PlayHeroesAnimation(obj, 11, VectorAnimData, 0, 0);
+			mtn->reqaction = 11;
 			break;
 		case 2:
 			PlayHeroesSound(VectorSound_Combo2);
-			PlayHeroesAnimation(obj, 9, VectorAnimData, 0, 0);
+			mtn->reqaction = 9;
 			break;
 		case 3:
 			PlayHeroesSound(VectorSound_Combo3);
@@ -253,10 +376,7 @@ void VectorHeroes_Main(ObjectMaster *obj) {
 				data->Action = 2;
 			}
 
-			PlayHeroesAnimation(obj, 12, VectorAnimData, 1, 0);
-			break;
-		default:
-			PlayHeroesAnimation(obj, data->Index, VectorAnimData, 0, 0);
+			mtn->reqaction = 12;
 			break;
 		}
 
@@ -292,9 +412,12 @@ void VectorHeroes_Main(ObjectMaster *obj) {
 
 		}
 
-		PlayHeroesAnimation(obj, 10, VectorAnimData, 0, 0);
+		mtn->reqaction = 10;
 		break;
 	}
+
+	CharactersCommon_DrawBall(playerdata, data);
+	PSetMotion(mtn);
 
 	if (FrameCounterUnpaused % 200 == 0) {
 		data->InvulnerableTime = 1;
@@ -364,44 +487,25 @@ void LoadVectorFiles() {
 	VectorAnms[45] = arc.GetAnimation("VE_EDGE_OTTO_A.saanim");
 	VectorAnms[46] = arc.GetAnimation("VE_EDGE_OTTO_B.saanim");
 	VectorAnms[47] = arc.GetAnimation("VE_EDGE_OTTO_C.saanim");
-	VectorAnms[48] = arc.GetAnimation("CAO_MIC.saanim");
-	VectorAnms[49] = arc.GetAnimation("VE_FW_JUMP.saanim");
-	VectorAnms[50] = arc.GetAnimation("VE_TRAP_JUMP.saanim");
-	VectorAnms[51] = arc.GetAnimation("CAO_VE.saanim");
-	VectorAnms[52] = arc.GetAnimation("VE_WIN.saanim");
-	VectorAnms[53] = arc.GetAnimation("VE_ATC_A.saanim");
-	VectorAnms[54] = arc.GetAnimation("VE_IDLE_HALF.saanim");
-	VectorAnms[55] = arc.GetAnimation("VE_IDLE_B_HALF.saanim");
-	VectorAnms[56] = arc.GetAnimation("VE_IDLE_C_HALF.saanim");
-	VectorAnms[57] = arc.GetAnimation("VE_BOB.saanim");
-	VectorAnms[58] = arc.GetAnimation("VE_BOB_L.saanim");
-	VectorAnms[59] = arc.GetAnimation("VE_BOB_R.saanim");
-	VectorAnms[60] = arc.GetAnimation("VE_START_IDLE.saanim");
-	VectorAnms[61] = arc.GetAnimation("VE_GLIND_DASH.saanim");
-	VectorAnms[62] = arc.GetAnimation("VE_GLIND_BK_DASH.saanim");
-
-	for (uint8_t i = 0; i < LengthOfArray(VectorAnimData); ++i) {
-		if (VectorAnms[i] == nullptr) continue;
-		VectorAnimData[i].Animation = new NJS_ACTION;
-		VectorAnimData[i].Animation->object = VectorMdls[0]->getmodel();
-		VectorAnimData[i].Animation->motion = VectorAnms[i]->getmotion();
-		VectorAnimData[i].NextAnim = i;
-		VectorAnimData[i].AnimationSpeed = 0.5f;
+	VectorAnms[48] = arc.GetAnimation("VE_FW_JUMP.saanim");
+	VectorAnms[49] = arc.GetAnimation("VE_TRAP_JUMP.saanim");
+	VectorAnms[50] = arc.GetAnimation("CAO_VE.saanim");
+	VectorAnms[51] = arc.GetAnimation("VE_WIN.saanim");
+	VectorAnms[52] = arc.GetAnimation("VE_IDLE_HALF.saanim");
+	VectorAnms[53] = arc.GetAnimation("VE_IDLE_B_HALF.saanim");
+	VectorAnms[54] = arc.GetAnimation("VE_IDLE_C_HALF.saanim");
+	VectorAnms[55] = arc.GetAnimation("VE_BOB.saanim");
+	VectorAnms[56] = arc.GetAnimation("VE_BOB_L.saanim");
+	VectorAnms[57] = arc.GetAnimation("VE_BOB_R.saanim");
+	VectorAnms[58] = arc.GetAnimation("VE_START_IDLE.saanim");
+	VectorAnms[59] = arc.GetAnimation("VE_GLIND_DASH.saanim");
+	VectorAnms[60] = arc.GetAnimation("VE_GLIND_BK_DASH.saanim");
+	VectorAnms[61] = arc.GetAnimation("CAO_MIC.saanim");
+	
+	for (int i = 0; i < LengthOfArray(VectorActs); ++i) {
+		VectorActs[i].object = VectorMdls[0]->getmodel();
+		VectorActs[i].motion = VectorAnms[i] ? VectorAnms[i]->getmotion() : NULL;
 	}
-
-	VectorAnimData[13].NextAnim = 14;
-	VectorAnimData[15].NextAnim = 16;
-	VectorAnimData[18].NextAnim = 19;
-	VectorAnimData[42].Property = 1;
-	VectorAnimData[43].Property = 1;
-	VectorAnimData[27].Property = 1;
-	VectorAnimData[33].Property = 1;
-	VectorAnimData[28].Property = 1;
-	VectorAnimData[20].Property = 1;
-	VectorAnimData[25].Property = 1;
-	VectorAnimData[26].Property = 1;
-	VectorAnimData[44].NextAnim = 17;
-	VectorAnimData[52].Property = 1;
 }
 
 void UnloadVectorFiles() {

@@ -5,9 +5,132 @@
 #include "sounds.h"
 #include "characters.h"
 
+enum {
+	SH_WALK,
+	SH_WALK_PULL,
+	SH_WALK_PUSH,
+	SH_TURN_L,
+	SH_TURN_R,
+	SH_SLOW_RUN,
+	SH_SLOW_SKATE,
+	SH_MID_SKATE,
+	SH_START,
+	SH_JUMP_WALL,
+	SH_JUMP_TRIC_A,
+	SH_JUMP_TRIC_B,
+	SH_JUMP_TRIC_C,
+	SH_JUMP_A,
+	SH_JUMP_B,
+	SH_JUMP_C,
+	SH_JUMP_D,
+	SH_JUMP_E,
+	SH_JUMP_F,
+	SH_JUMP_TRNGL,
+	SH_JUMP_GLIND,
+	SH_GLIND,
+	SH_GLIND_BK,
+	SH_GLIND_BK_L,
+	SH_GLIND_BK_R,
+	SH_GLIND_FLIP_B,
+	SH_GLIND_FLIP_FR,
+	SH_GLIND_L,
+	SH_GLIND_R,
+	SH_FLY_IDLE,
+	SH_FLY_SLOW,
+	SH_FLY_GLIND,
+	SH_HANG_OFF,
+	SH_HANG_ON,
+	SH_BREAK_A,
+	SH_BREAK_B,
+	SH_BREAK_C,
+	SH_BREAK_TURN_L,
+	SH_BREAK_TURN_R,
+	SH_BRA_MID,
+	SH_BRA_TOP,
+	SH_FLORT,
+	SH_DAM_M_A,
+	SH_DAM_M_B,
+	SH_DAM_M_C,
+	SH_EDGE_OTTO_A,
+	SH_EDGE_OTTO_B,
+	SH_EDGE_OTTO_C,
+	SH_FW_JUMP,
+	SH_TRAP_JUMP,
+	SH_POW_ROT,
+	SH_WIN,
+	SH_ATC_DASH,
+	SH_IDLE_HALF,
+	SH_IDLE_B_HALF,
+	SH_IDLE_D_HALF,
+	DARK_SH,
+	SH_TOP_SKATE,
+};
+
 ModelInfo* ShadowMdls[3];
-AnimationFile* ShadowAnms[59];
-AnimData HShadowAnimData[59];
+AnimationFile* ShadowAnms[58];
+NJS_ACTION ShadowActs[58];
+
+PL_ACTION shadow_action_heroes[] = {
+	{ &ShadowActs[SH_WALK], 53, MD_MTN_XSPD, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_WALK_PULL], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_WALK_PUSH], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_TURN_L], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_TURN_R], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_SLOW_RUN], 53, MD_MTN_XSPD, 0, 0.25f, 0.5f },
+	{ &ShadowActs[SH_SLOW_SKATE], 53, MD_MTN_XSPD, 0, 0.25f, 0.3f },
+	{ &ShadowActs[SH_MID_SKATE], 53, MD_MTN_XSPD, 0, 0.25f, 0.1f },
+	{ &ShadowActs[SH_START], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_JUMP_WALL], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_JUMP_TRIC_A], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_JUMP_TRIC_B], 53, MD_MTN_NEXT, MTN_SPD_JUMP_F, 0.25f, 0.5f },
+	{ &ShadowActs[SH_JUMP_TRIC_C], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_JUMP_A], 53, MD_MTN_NEXT, MTN_SPD_JUMP_B, 0.25f, 0.5f },
+	{ &ShadowActs[SH_JUMP_B], 53, MD_MTN_WORK, 0, 1.0f, 0.5f },
+	{ &ShadowActs[SH_JUMP_C], 53, MD_MTN_NEXT, MTN_SPD_JUMP_D, 0.25f, 0.5f },
+	{ &ShadowActs[SH_JUMP_D], 53, MD_MTN_WORK, 0, 1.0f, 0.5f },
+	{ &ShadowActs[SH_JUMP_E], 53, MD_MTN_NEXT, MTN_SPD_JUMP_F, 0.25f, 0.5f },
+	{ &ShadowActs[SH_JUMP_F], 53, MD_MTN_WORK, 0, 1.0f, 0.5f },
+	{ &ShadowActs[SH_JUMP_TRNGL], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_JUMP_GLIND], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_GLIND], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_GLIND_BK], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_GLIND_BK_L], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_GLIND_BK_R], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_GLIND_FLIP_B], 53, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_GLIND_FLIP_FR], 53, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_GLIND_L], 53, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_GLIND_R], 53, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_FLY_IDLE], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_FLY_SLOW], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_FLY_GLIND], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_HANG_OFF], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_HANG_ON], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_BREAK_A], 53, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_BREAK_B], 53, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_BREAK_C], 53, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_BREAK_TURN_L], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_BREAK_TURN_R], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_BRA_MID], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_BRA_TOP], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_FLORT], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_DAM_M_A], 53, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_DAM_M_B], 53, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_DAM_M_C], 53, MD_MTN_NEXT, SH_JUMP_E, 0.25f, 1.0f },
+	{ &ShadowActs[SH_EDGE_OTTO_A], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_EDGE_OTTO_B], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_EDGE_OTTO_C], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_FW_JUMP], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_TRAP_JUMP], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_POW_ROT], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_WIN], 53, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_ATC_DASH], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_IDLE_HALF], 53, MD_MTN_LOOP, 0, 0.25f, 0.25f },
+	{ &ShadowActs[SH_IDLE_B_HALF], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_IDLE_D_HALF], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[DARK_SH], 53, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &ShadowActs[SH_JUMP_B], 53, MD_MTN_XSPD, 0, 0.25f, 0.1f },
+	{ &ShadowActs[SH_TOP_SKATE], 53, MD_MTN_XSPD, 0, 0.25f, 0.1f },
+};
 
 NJS_TEXNAME SHADOW_TEXNAMES[4];
 NJS_TEXLIST SHADOW_TEXLIST = { arrayptrandlength(SHADOW_TEXNAMES) };
@@ -101,8 +224,18 @@ void ShadowHeroes_Display(ObjectMaster *obj) {
 
 	njRotateX(0, 0x4000);
 
+	mtnjvwk* mtn = (mtnjvwk*)sonicobj->Data1->Object;
+
+	int action = mtn->reqaction;
+	NJS_ACTION* actptr = mtn->plactptr[action].actptr;
+	if (mtn->mtnmode == MD_MTN_CHNG)
+	{
+		action = mtn->action;
+		actptr = mtn->actwkptr;
+	}
+
 	*NodeCallbackFuncPtr = ShadowCallback;
-	njActionWeight(HShadowAnimData[sonicobj->Data1->Index].Animation, sonicobj->Data1->Scale.x, ShadowMdls[0]->getweightinfo());
+	njActionWeight(actptr, mtn->nframe, ShadowMdls[0]->getweightinfo());
 	*NodeCallbackFuncPtr = nullptr;
 
 	njSetMatrix(NULL, ShadowMatrices[0]);
@@ -125,7 +258,7 @@ void ShadowHeroes_Display(ObjectMaster *obj) {
 		break;
 	}
 
-	if (sonicobj->Data1->Index == 6 || sonicobj->Data1->Index == 7 || sonicobj->Data1->Index == 57) {
+	if (action == MTN_SPD_MID_RUN || action == MTN_SPD_TOP_RUN || action == MTN_SH_TOP_SKATE || action == MTN_SPD_FW_JUMP) {
 		for (int i = 0; i < 4; ++i) {
 			njSetMatrix(0, ShadowMatrices[i + 1]);
 			njRotateX(0, 0x8000);
@@ -144,35 +277,24 @@ void ShadowHeroes_Main(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1;
 	EntityData2* data2 = (EntityData2*)obj->Data2;
 
-	if (!CharactersCommon_Init(obj, "heroes-shadow", &SHADOW_TEXLIST)) {
+	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
+	EntityData1* playerdata = EntityData1Ptrs[data->CharIndex];
+	EntityData2* playerdata2 = EntityData2Ptrs[data->CharIndex];
+	CharObj2* playerco2 = CharObj2Ptrs[data->CharIndex];
+	mtnjvwk* mtn = (mtnjvwk*)data->Object;
+
+	if (!playerco2 || playerdata->CharID != Characters_Sonic)
+	{
 		return;
 	}
 
-	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
-	EntityData1* playerdata = playerobj->Data1;
-	EntityData2* playerdata2 = (EntityData2*)playerobj->Data2;
-	CharObj2* playerco2 = playerdata2->CharacterData;
-
-	if (data->Rotation.z == 0) {
-		if (data->CharIndex == 0) {
-			CON_REGULAR_TEXNAMES[12].texaddr = SHADOW_TEXLIST.textures[3].texaddr;
-		}
-
-		if (CustomPhysics) {
-			playerco2->PhysicsData.HSpeedCap = 18;
-			playerco2->PhysicsData.MaxAccel = 4.0f;
-			playerco2->PhysicsData.field_14 = 0.95f;
-		}
-
-		data->Rotation.z = 1;
-	}
-
-	CharactersCommon_DrawBall(playerdata, data);
-
-	switch (data->Action) {
+	switch (data->Action)
+	{
+	case 0:
+		HeroesChars_InitPlayer((task*)obj, { "heroes-shadow", &SHADOW_TEXLIST }, 3, shadow_action_heroes);
+		data->Action = 2;
+		return;
 	case 2:
-		PlayerPtrs[data->CharIndex]->DisplaySub = ShadowHeroes_Display;
-
 		if (CanDoTricks(playerdata)) {
 			if (playerco2->Speed.x < 2 && HeldButtons2[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
 				playerdata->Action = 5;
@@ -181,7 +303,7 @@ void ShadowHeroes_Main(ObjectMaster *obj) {
 				break;
 			}
 
-			if (data->Index == 14 && (playerdata->Status & Status_Ground) != Status_Ground && PressedButtons[data->CharIndex] & Buttons_X) {
+			if (playerco2->AnimationThing.Index == 14 && (playerdata->Status & Status_Ground) != Status_Ground && PressedButtons[data->CharIndex] & Buttons_X) {
 				data->field_A = 0;
 				PlayHeroesSound(ShadowSound_Attack);
 				data->Action = 4;
@@ -202,21 +324,20 @@ void ShadowHeroes_Main(ObjectMaster *obj) {
 			playerco2->IdleTime = 0;
 		}
 
-		{
-			NJS_VECTOR anim = SpeedAnims(data, playerdata, playerco2); //id, speed, state
-			PlayHeroesAnimation(obj, anim.x, HShadowAnimData, anim.y, anim.z);
-		}
+		SonicAnimConverter(mtn, Characters_Shadow, (taskwk*)playerdata, (playerwk*)playerco2);
 
 		break;
 	case 3:
 		KickTrick(data, data2, playerco2, playerdata);
-		PlayHeroesAnimation(obj, 53, HShadowAnimData, 0, 0);
+		mtn->reqaction = MTN_SPD_ATC;
 		break;
 	case 4:
 		TornadoTrick(data, data2, playerco2, playerdata);
-		PlayHeroesAnimation(obj, 14, HShadowAnimData, 0, 0);
 		break;
 	}
+
+	CharactersCommon_DrawBall(playerdata, data);
+	PSetMotion(mtn);
 
 	if (FrameCounterUnpaused % 200 == 0) {
 		data->InvulnerableTime = 1;
@@ -286,38 +407,21 @@ void LoadShadowFiles() {
 	ShadowAnms[45] = arc.GetAnimation("SH_EDGE_OTTO_A.saanim");
 	ShadowAnms[46] = arc.GetAnimation("SH_EDGE_OTTO_B.saanim");
 	ShadowAnms[47] = arc.GetAnimation("SH_EDGE_OTTO_C.saanim");
-	ShadowAnms[48] = arc.GetAnimation("SH_EDGE_OTTO_C.saanim");
-	ShadowAnms[49] = arc.GetAnimation("SH_FW_JUMP.saanim");
-	ShadowAnms[50] = arc.GetAnimation("SH_TRAP_JUMP.saanim");
-	ShadowAnms[51] = arc.GetAnimation("SH_POW_ROT.saanim");
-	ShadowAnms[52] = arc.GetAnimation("SH_WIN.saanim");
-	ShadowAnms[53] = arc.GetAnimation("SH_ATC_DASH.saanim");
-	ShadowAnms[54] = arc.GetAnimation("SH_IDLE_HALF.saanim");
-	ShadowAnms[55] = arc.GetAnimation("SH_IDLE_B_HALF.saanim");
-	ShadowAnms[56] = arc.GetAnimation("SH_IDLE_D_HALF.saanim");
+	ShadowAnms[48] = arc.GetAnimation("SH_FW_JUMP.saanim");
+	ShadowAnms[49] = arc.GetAnimation("SH_TRAP_JUMP.saanim");
+	ShadowAnms[50] = arc.GetAnimation("SH_POW_ROT.saanim");
+	ShadowAnms[51] = arc.GetAnimation("SH_WIN.saanim");
+	ShadowAnms[52] = arc.GetAnimation("SH_ATC_DASH.saanim");
+	ShadowAnms[53] = arc.GetAnimation("SH_IDLE_HALF.saanim");
+	ShadowAnms[54] = arc.GetAnimation("SH_IDLE_B_HALF.saanim");
+	ShadowAnms[55] = arc.GetAnimation("SH_IDLE_D_HALF.saanim");
+	ShadowAnms[56] = arc.GetAnimation("DARK_SH.saanim");
 	ShadowAnms[57] = arc.GetAnimation("SH_TOP_SKATE.saanim");
-	ShadowAnms[58] = arc.GetAnimation("DARK_SH.saanim");
 
-	for (uint8_t i = 0; i < LengthOfArray(HShadowAnimData); ++i) {
-		if (ShadowAnms[i] == nullptr) continue;
-		HShadowAnimData[i].Animation = new NJS_ACTION;
-		HShadowAnimData[i].Animation->object = ShadowMdls[0]->getmodel();
-		HShadowAnimData[i].Animation->motion = ShadowAnms[i]->getmotion();
-		HShadowAnimData[i].NextAnim = i;
-		HShadowAnimData[i].AnimationSpeed = 0.5f;
+	for (int i = 0; i < LengthOfArray(ShadowActs); ++i) {
+		ShadowActs[i].object = ShadowMdls[0]->getmodel();
+		ShadowActs[i].motion = ShadowAnms[i] ? ShadowAnms[i]->getmotion() : NULL;
 	}
-
-	HShadowAnimData[13].NextAnim = 14;
-	HShadowAnimData[15].NextAnim = 16;
-	HShadowAnimData[18].NextAnim = 19;
-	HShadowAnimData[42].Property = 1;
-	HShadowAnimData[43].Property = 1;
-	HShadowAnimData[27].Property = 1;
-	HShadowAnimData[28].Property = 1;
-	HShadowAnimData[20].Property = 1;
-	HShadowAnimData[25].Property = 1;
-	HShadowAnimData[26].Property = 1;
-	HShadowAnimData[44].NextAnim = 17;
 }
 
 void UnloadShadowFiles() {

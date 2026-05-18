@@ -2,6 +2,24 @@
 
 #include "objects.h"
 
+enum {
+	MD_MTN_INIT,
+	MD_MTN_SET,
+	MD_MTN_CHNG,
+	MD_MTN_LOOP,
+	MD_MTN_NEXT,
+	MD_MTN_STOP,
+	MD_MTN_TXEN,
+	MD_MTN_POTS,
+	MD_MTN_COMB,
+	MD_MTN_XSPD,
+	MD_MTN_WORK,
+	MD_MTN_WKNX,
+	MD_MTN_MANU,
+	MD_MTN_TRNS,
+	MD_MTN_END
+};
+
 FunctionPointer(void, SetCameraMode_, (int a1), 0x4348F0);
 FunctionPointer(Uint32, GetCameraMode_, (), 0x434930);
 

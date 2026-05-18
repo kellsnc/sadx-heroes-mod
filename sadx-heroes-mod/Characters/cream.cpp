@@ -6,10 +6,176 @@
 #include "sounds.h"
 #include "characters.h"
 
+enum {
+	CR_WALK,
+	CR_WALK_PULL,
+	CR_WALK_PUSH,
+	CR_TURN_L,
+	CR_TURN_R,
+	CR_SLOW_RUN,
+	CR_MID_RUN,
+	CR_START,
+	CR_START_IDLE,
+	CR_IDLE_B_HALF,
+	CR_IDLE_C_HALF,
+	CR_IDLE_HALF,
+	CR_IDLE_POW_HALF,
+	CR_IDLE_POW_SHAKE,
+	CR_POW_ROT,
+	CR_POW_JUMP,
+	CR_FW_JUMP,
+	CR_FW_POW_JUMP,
+	CR_JUMP_A,
+	CR_JUMP_B,
+	CR_JUMP_C,
+	CR_JUMP_D,
+	CR_JUMP_E,
+	CR_JUMP_F,
+	CR_JUMP_UMBRELLA,
+	CR_JUMP_GLIND,
+	CR_GLIND,
+	CR_GLIND_BK,
+	CR_GLIND_BK_L,
+	CR_GLIND_BK_R,
+	CR_GLIND_FLIP_BK,
+	CR_GLIND_FLIP_FR,
+	CR_GLIND_L,
+	CR_GLIND_R,
+	CR_FLY_IDLE,
+	CR_FLY_SLOW,
+	CR_FLY_UP,
+	CR_FLY_PULL,
+	CR_FLY_PUSH,
+	CR_FLY_KICK,
+	CR_FLY_HANG_IDLE,
+	CR_FLY_HANG_OFF,
+	CR_FLY_HANG_ON,
+	CR_HANG_OFF,
+	CR_HANG_ON,
+	CR_BREAK_A,
+	CR_BREAK_B,
+	CR_BREAK_C,
+	CR_BREAK_TURN_L,
+	CR_BREAK_TURN_R,
+	CR_BRA_MID,
+	CR_BRA_TOP,
+	CR_BOB,
+	CR_FLORT,
+	CR_DAM_MID_A,
+	CR_DAM_MID_B,
+	CR_DAM_MID_C,
+	CR_EDGE_OTTO_A,
+	CR_EDGE_OTTO_B,
+	CR_EDGE_OTTO_C,
+	CR_WIN,
+	CR_ATC_CHAO,
+	ROSE_CR,
+};
+
+enum {
+	CH_IDLE,
+	CH_IDLE_B,
+	CH_IDLE_B_OPT,
+	CH_IDLE_C,
+	CH_IDLE_C_OPT,
+	CH_FLY,
+	CH_ATC_CHAO_A,
+	CH_ATC_CHAO_B,
+	CH_WIN,
+	CH_CHARANGE_IDLE,
+	CH_CHARANGE_SELECT,
+	CH_STORY_IDLE,
+	CH_STORY_SELECT,
+};
+
 ModelInfo* CreamMdls[4];
-AnimationFile* CreamAnms[76];
-AnimData CreamAnimData[63];
-AnimData CheeseAnimData[13];
+AnimationFile* CreamAnms[62];
+AnimationFile* CheeseAnms[34];
+NJS_ACTION CreamActs[62];
+NJS_ACTION CheeseActs[34];
+
+PL_ACTION cream_action_heroes[] = {
+	{ &CreamActs[CR_WALK], 55, MD_MTN_XSPD, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_WALK_PULL], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_WALK_PUSH], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_TURN_L], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_TURN_R], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_SLOW_RUN], 55, MD_MTN_XSPD, 0, 0.25f, 0.25f },
+	{ &CreamActs[CR_MID_RUN], 55, MD_MTN_XSPD, 0, 0.25f, 0.2f },
+	{ &CreamActs[CR_START], 55, MD_MTN_XSPD, 0, 0.25f, 0.5f },
+	{ &CreamActs[CR_START_IDLE], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_IDLE_B_HALF], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_IDLE_C_HALF], 55, MD_MTN_NEXT, CR_START_IDLE, 0.25f, 0.5f },
+	{ &CreamActs[CR_IDLE_HALF], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_IDLE_POW_HALF], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_IDLE_POW_SHAKE], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_POW_ROT], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_POW_JUMP], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_FW_JUMP], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_FW_POW_JUMP], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_JUMP_A], 48, MD_MTN_NEXT, CR_JUMP_B, 0.25f, 0.5f },
+	{ &CreamActs[CR_JUMP_B], 48, MD_MTN_WORK, 0, 0.25f, 0.5f },
+	{ &CreamActs[CR_JUMP_C], 48, MD_MTN_NEXT, CR_JUMP_D, 0.25f, 0.5f },
+	{ &CreamActs[CR_JUMP_D], 48, MD_MTN_WORK, 0, 0.25f, 0.5f },
+	{ &CreamActs[CR_JUMP_E], 48, MD_MTN_NEXT, CR_JUMP_F, 0.25f, 0.5f },
+	{ &CreamActs[CR_JUMP_F], 48, MD_MTN_WORK, 0, 0.25f, 0.5f },
+	{ &CreamActs[CR_JUMP_UMBRELLA], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_JUMP_GLIND], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_GLIND], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_GLIND_BK], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_GLIND_BK_L], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_GLIND_BK_R], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_GLIND_FLIP_BK], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_GLIND_FLIP_FR], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_GLIND_L], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_GLIND_R], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_FLY_IDLE], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_FLY_SLOW], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_FLY_UP], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_FLY_PULL], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_FLY_PUSH], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_FLY_KICK], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_FLY_HANG_IDLE], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_FLY_HANG_OFF], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_FLY_HANG_ON], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_HANG_OFF], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_HANG_ON], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_BREAK_A], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_BREAK_B], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_BREAK_C], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_BREAK_TURN_L], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_BREAK_TURN_R], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_BRA_MID], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_BRA_TOP], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_BOB], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_FLORT], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_DAM_MID_A], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_DAM_MID_B], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_DAM_MID_C], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_EDGE_OTTO_A], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_EDGE_OTTO_B], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_EDGE_OTTO_C], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_WIN], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_ATC_CHAO], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[ROSE_CR], 55, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CreamActs[CR_JUMP_B], 48, MD_MTN_XSPD, 0, 0.25f, 0.5f },
+};
+
+PL_ACTION cheese_action[] = {
+	{ &CheeseActs[CH_IDLE], 12, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CheeseActs[CH_IDLE_B], 12, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CheeseActs[CH_IDLE_B_OPT], 12, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CheeseActs[CH_IDLE_C], 12, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CheeseActs[CH_IDLE_C_OPT], 12, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CheeseActs[CH_FLY], 12, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CheeseActs[CH_ATC_CHAO_A], 12, MD_MTN_NEXT, CH_ATC_CHAO_B, 0.25f, 1.0f },
+	{ &CheeseActs[CH_ATC_CHAO_B], 12, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CheeseActs[CH_WIN], 12, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &CheeseActs[CH_CHARANGE_IDLE], 12, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CheeseActs[CH_CHARANGE_SELECT], 12, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CheeseActs[CH_STORY_IDLE], 12, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &CheeseActs[CH_STORY_SELECT], 12, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+};
 
 NJS_TEXNAME CREAM_TEXNAMES[4];
 NJS_TEXLIST CREAM_TEXLIST = { arrayptrandlength(CREAM_TEXNAMES) };
@@ -98,6 +264,16 @@ void Cheese_Display(ObjectMaster* obj) {
 
 	njPushMatrix(0);
 
+	mtnjvwk* mtn = (mtnjvwk*)data->Object;
+
+	int action = mtn->reqaction;
+	NJS_ACTION* actptr = mtn->plactptr[action].actptr;
+	if (mtn->mtnmode == MD_MTN_CHNG)
+	{
+		action = mtn->action;
+		actptr = mtn->actwkptr;
+	}
+
 	if (playerco2 && (playerco2->AnimationThing.Index == 54 || playerco2->AnimationThing.Index == 55)) {
 		njTranslateV(0, &playerdata->Position);
 		njTranslate(0, 10, 12, 0);
@@ -110,7 +286,7 @@ void Cheese_Display(ObjectMaster* obj) {
 		njRotateZ(0, data->Rotation.z);
 		njRotateX(0, data->Rotation.x);
 
-		if (data->Index == 0) {
+		if (action == 0) {
 			njRotateY(0, data2->Forward.y += 0x100);
 			njTranslate(0, 2, 0, 0);
 		}
@@ -121,7 +297,7 @@ void Cheese_Display(ObjectMaster* obj) {
 
 	njPushMatrixEx();
 	njRotateX(0, 0x4000);
-	njAction(CheeseAnimData[data->Index].Animation, data->Scale.x);
+	njAction(actptr, mtn->nframe);
 	njPopMatrixEx();
 
 	njTranslate(0, -data->Position.x, -data->Position.y, -data->Position.z);
@@ -140,9 +316,9 @@ void Cheese_Main(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1;
 	EntityData2* data2 = (EntityData2*)obj->Data2;
 	EntityData1* playerdata = EntityData1Ptrs[obj->Parent->Data1->CharIndex];
+	mtnjvwk* mtn = (mtnjvwk*)data->Object;
 
 	float dist = GetDistance(&data2->VelocityDirection, &data->Position);
-	uint8_t anim = data->Index;
 
 	float state = 0;
 	float frame = data->Scale.x;
@@ -152,6 +328,16 @@ void Cheese_Main(ObjectMaster* obj) {
 		obj->DisplaySub = Cheese_Display;
 		data->Position = GetCheesePoint(&playerdata->Position, &playerdata->Rotation);
 		Collision_Init(obj, &Cheese_Col, 1, 3u);
+
+		mtn = new mtnjvwk;
+		mtn->plactptr = cheese_action;
+		mtn->mtnmode = MD_MTN_INIT;
+		mtn->reqaction = 0;
+		mtn->spdp = &playerpwp[data->CharIndex]->spd.x;
+		mtn->workp = &playerpwp[data->CharIndex]->work.f;
+		PSetMotion(mtn);
+		data->Object = (NJS_OBJECT*)mtn;
+
 		data->Action = 1;
 		break;
 	case 1:
@@ -163,7 +349,7 @@ void Cheese_Main(ObjectMaster* obj) {
 		if (dist < 5) {
 			data->Position = GetPathPosition(&data->Position, &data2->VelocityDirection, dist / (100 + (400 - dist)));
 			data2->SomeCollisionVector = data->Position;
-			anim = 0;
+			mtn->reqaction = 0;
 			if (GetDistance(&data2->VelocityDirection, &data->Position) < 1) {
 				data->Position = data2->VelocityDirection;
 				data->Action = 1;
@@ -173,42 +359,29 @@ void Cheese_Main(ObjectMaster* obj) {
 			data->Position = GetPathPosition(&data->Position, &data2->VelocityDirection, dist / 400);
 			data2->SomeCollisionVector = GetPathPosition(&data->Position, &data2->VelocityDirection, (dist / 400) - 0.1f);
 			data->Rotation.y = fPositionToRotation(&data->Position, &data2->VelocityDirection).y;
-			anim = 5;
+			mtn->reqaction = 5;
 		}
 		else {
 			data->Position = GetPathPosition(&data->Position, &data2->VelocityDirection, dist / 300);
 			data2->SomeCollisionVector = GetPathPosition(&data->Position, &data2->VelocityDirection, (dist / 300) - 0.1f);
 			data->Rotation.y = fPositionToRotation(&data->Position, &data2->VelocityDirection).y;
-			anim = 5;
+			mtn->reqaction = 5;
 		}
 
 		switch (CharObj2Ptrs[obj->Parent->Data1->CharIndex]->AnimationThing.Index) {
 		case 6:
-			if (obj->Parent->Data1->Index == 8) anim = 1;
-			else anim = 2;
+			if (obj->Parent->Data1->Index == 8)  mtn->reqaction = 1;
+			else  mtn->reqaction = 2;
 			break;
 		case 33:
-			if (dist < 30) anim = 3;
+			if (dist < 30)  mtn->reqaction = 3;
 			break;
 		case 54:
 		case 55:
-			anim = 8;
-			if (data->Unknown > 1) {
-				if (frame > 154) data->Unknown = 20;
-				if (frame < 114) data->Unknown = 40;
-
-				if (data->Unknown > 20 && data->Unknown < 40) {
-					++data->Unknown;
-					state = 154 - (data->Unknown - 20);
-				}
-				else if (data->Unknown > 40) {
-					++data->Unknown;
-					state = 114 + (data->Unknown - 40);
-				}
-			}
+			mtn->reqaction = 8;
 			break;
 		case 150:
-			anim = 12;
+			mtn->reqaction = 12;
 			break;
 		}
 
@@ -255,7 +428,7 @@ void Cheese_Main(ObjectMaster* obj) {
 	}
 	
 	AddToCollisionList(data);
-	PlayHeroesAnimation(obj, anim, CheeseAnimData, 0, state);
+	PSetMotion(mtn);
 
 	obj->DisplaySub(obj);
 }
@@ -304,14 +477,24 @@ void CreamHeroes_Display(ObjectMaster *obj) {
 	njRotateX(0, entity1->Rotation.x);
 	njRotateY(0, -entity1->Rotation.y - 0x4000);
 
-	njRotateX(0, 0x4000);
-
 	if (co2->AnimationThing.Index == 54 || co2->AnimationThing.Index == 55) {
 		njTranslate(0, 10, 2, 0);
 	}
 
+	njRotateX(0, 0x4000);
+
+	mtnjvwk* mtn = (mtnjvwk*)creamobj->Data1->Object;
+
+	int action = mtn->reqaction;
+	NJS_ACTION* actptr = mtn->plactptr[action].actptr;
+	if (mtn->mtnmode == MD_MTN_CHNG)
+	{
+		action = mtn->action;
+		actptr = mtn->actwkptr;
+	}
+
 	*NodeCallbackFuncPtr = CreamCallback;
-	njActionWeight(CreamAnimData[creamobj->Data1->Index].Animation, creamobj->Data1->Scale.x, CreamMdls[0]->getweightinfo());
+	njActionWeight(actptr, mtn->nframe, CreamMdls[0]->getweightinfo());
 	*NodeCallbackFuncPtr = nullptr;
 
 	njSetMatrix(NULL, EyeLashesMatrix);
@@ -343,45 +526,223 @@ void CreamHeroes_Display(ObjectMaster *obj) {
 	Direct3D_ResetZFunc();
 }
 
+void CreamAnimConverter(mtnjvwk* mtn, int heroes_plno, taskwk* pltwp, playerwk* pwp)
+{
+	int anim = mtn->reqaction;
+
+	switch (pwp->mj.reqaction) {
+	case 0:
+	case 7:
+	case 8:
+		anim = 11; break;
+	case 2: anim = 8; break;
+	case 4:
+	case 5:
+	case 6:
+		anim = 10;
+		break;
+	case 9:
+		anim = 0;
+		break;
+	case 10:
+		anim = 0;
+		break;
+	case 11:
+		anim = 0;
+		break;
+	case 12:
+		anim = 5;
+		break;
+	case 13:
+		anim = 6;
+		break;
+	case 14: //jumping
+		if (anim < 18 || anim > 23) {
+			anim = 18;
+		}
+		//else if (anim == 19) {
+		//	if (data->Unknown > 2) {
+		//		anim = 20;
+		//	}
+		//}
+		//else if (anim == 21) {
+		//	if (playerdata->Position.y - playerco2->_struct_a3.DistanceMax < 10) anim = 22;
+		//}
+		break;
+	case 15: //rolling
+	case 16:
+		anim = 19;
+		break;
+	case 17: //spring jump
+		anim = 19;
+		break;
+	case 18: //fall after spring jump
+		anim = 21;
+		break;
+	case 19: //falling
+		anim = 21;
+		if (pwp->spd.x > 8.0f && pltwp->pos.y - pwp->shadow.y_bottom > 500.0f) {
+			anim = 16;
+			pwp->mj.reqaction = 150;
+		}
+		break;
+	case 20:
+		anim = 23;
+		break;
+	case 21: //break
+		anim = 47;
+		if (pwp->spd.x > 6) {
+			anim = 46;
+		}
+		else if (pwp->spd.x > 3) {
+			anim = 45;
+		}
+		break;
+	case 22:
+		anim = 48;
+		break;
+	case 24:
+		anim = 2;
+		break;
+	case 25:
+		anim = 2;
+		break;
+	case 26:
+		anim = 54;
+		break;
+	case 27:
+		anim = 56;
+		break;
+	case 28: //hurt
+	case 29:
+	case 30:
+	case 31:
+		anim = 55;
+		break;
+	case 32:
+		anim = 45;
+		break;
+	case 33: //thumbling
+	case 34:
+		anim = 53;
+		break;
+	case 35:
+		anim = 55;
+		break;
+	case 36:
+		anim = 21;
+		break;
+	case 37: //flying
+	case 40:
+	case 41:
+		anim = 34; //52 IF HOLDING PLAYER
+		break;
+	case 38: //flying falling
+	case 39:
+	case 42:
+		anim = 35;
+		break;
+	case 43:
+		anim = 39;
+		break;
+	case 44:
+	case 45:
+	case 46:
+	case 47:
+	case 48:
+	case 49:
+	case 50:
+	case 51:
+	case 52:
+	case 53:
+		anim = 39;
+		break;
+	case 54: //won
+	case 55:
+		anim = 60;
+		break;
+	case 56: //lost
+	case 57:
+		anim = 10;
+		break;
+	case 58:
+		anim = 44;
+		break;
+	case 72: //holding hook
+		anim = 51;
+		break;
+	case 89:
+		anim = 11;
+		break;
+	case 107: //snowboard
+	case 108:
+	case 109:
+		anim = 26;
+		break;
+	case 100:
+		anim = 51;
+		break;
+	case 110:
+	case 111:
+	case 116:
+		anim = 26;
+		break;
+	case 112:
+		if (pwp->spd.z > 0.1f) anim = 33;
+		break;
+	case 113:
+		if (pwp->spd.z < 0.1f) anim = 32;
+		break;
+	case 114:
+	case 115:
+	case 117:
+	case 118:
+	case 119:
+		anim = 30;
+		break;
+	case 120:
+	case 121:
+	case 122:
+	case 123:
+	case 124:
+	case 125:
+	case 126:
+		anim = 31;
+		break;
+	case 127:
+		anim = 27;
+		break;
+	case 150:
+		anim = 16;
+		break;
+	}
+
+	mtn->reqaction = anim;
+}
+
 void CreamHeroes_Main(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1;
 
-	if (!CharactersCommon_Init(obj, "heroes-cream", &CREAM_TEXLIST)) {
+	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
+	EntityData1* playerdata = EntityData1Ptrs[data->CharIndex];
+	EntityData2* playerdata2 = EntityData2Ptrs[data->CharIndex];
+	CharObj2* playerco2 = CharObj2Ptrs[data->CharIndex];
+	mtnjvwk* mtn = (mtnjvwk*)data->Object;
+	mtnjvwk* mtn_sub = *(mtnjvwk**)&data->Scale.z;
+
+	if (!playerco2 || playerdata->CharID != Characters_Tails)
+	{
 		return;
 	}
 
-	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
-	if (!obj->Child) LoadChildObject((LoadObj)(LoadObj_Data1 | LoadObj_Data2), Cheese_Main, obj);
-
-	EntityData1* playerdata = playerobj->Data1;
-	EntityData2* playerdata2 = (EntityData2*)playerobj->Data2;
-	CharObj2* playerco2 = playerdata2->CharacterData;
-
-	if (data->Rotation.z == 0) {
-		if (data->CharIndex == 0) {
-			CON_REGULAR_TEXNAMES[14].texaddr = CREAM_TEXLIST.textures[2].texaddr;
-		}
-
-		if (CustomPhysics) {
-			playerco2->PhysicsData.MaxAccel = 2.5f;
-			playerco2->PhysicsData.field_14 = 0.8f;
-			playerco2->PhysicsData.AirAccel = 0.035999999f;
-		}
-
-		data->Rotation.z = 1;
-	}
-	
-	int anim = data->Index;
-	float speed = 0;
-	float state = 0;
-	float frame = data->Scale.x;
-
-	CharactersCommon_DrawBall(playerdata, data);
-
-	switch (data->Action) {
+	switch (data->Action)
+	{
+	case 0:
+		HeroesChars_InitPlayer((task*)obj, { "heroes-cream", &CREAM_TEXLIST }, 2, cream_action_heroes);
+		LoadChildObject((LoadObj)(LoadObj_Data1 | LoadObj_Data2), Cheese_Main, obj);
+		data->Action = 2;
+		return;
 	case 2:
-		PlayerPtrs[data->CharIndex]->DisplaySub = CreamHeroes_Display;
-
 		if (playerdata->field_A < PlayerState_OnRail && playerco2->Speed.x < 2 && PressedButtons[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
 			playerdata->Action = 100;
 			data->Action = 3;
@@ -418,225 +779,7 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 			playerco2->IdleTime = 0;
 		}
 
-		switch (playerco2->AnimationThing.Index) {
-		case 0: 
-		case 7:
-		case 8:
-			anim = 11; data->Status = 0; break;
-		case 2: anim = 8; data->Status = 0; break;
-		case 4:
-		case 5:
-		case 6:
-			anim = 10;
-			if (++data->Status == 100) {
-				playerco2->AnimationThing.Index = 0;
-				data->Status = 0;
-			}
-			break;
-		case 9:
-			data->Status = 0;
-			anim = 0;
-			if (playerco2->Speed.x < 0.02f) anim = 11;
-			break;
-		case 10:
-			anim = 0;
-			speed = 0.9f + playerco2->Speed.x * 0.2f;
-			break;
-		case 11:
-			anim = 0;
-			speed = 0.9f + playerco2->Speed.x * 0.2f;
-			break;
-		case 12:
-			anim = 5;
-			speed = 1.5f + playerco2->Speed.x * 0.1f;
-			break;
-		case 13:
-			anim = 6;
-			speed = 0.5f + playerco2->Speed.x * 0.1f;
-			break;
-		case 14: //jumping
-			if (anim < 18 || anim > 23) {
-				anim = 18;
-			}
-			else if (anim == 19) {
-				if (data->Unknown > 2) {
-					anim = 20;
-				}
-			}
-			else if (anim == 21) {
-				if (playerdata->Position.y - playerco2->_struct_a3.DistanceMax < 10) anim = 22;
-			}
-			break;
-		case 15: //rolling
-		case 16:
-			anim = 19;
-			break;
-		case 17: //spring jump
-			anim = 19;
-			break;
-		case 18: //fall after spring jump
-			anim = 21;
-			break;
-		case 19: //falling
-			anim = 21;
-			if (playerco2->Speed.x > 8 && playerdata->Position.y - playerco2->_struct_a3.DistanceMax > 500) {
-				anim = 16;
-				playerco2->AnimationThing.Index = 150;
-			}
-			break;
-		case 20:
-			anim = 23;
-			break;
-		case 21: //break
-			anim = 47;
-			if (playerco2->Speed.x > 6) {
-				anim = 46;
-			}
-			else if (playerco2->Speed.x > 3) {
-				anim = 45;
-			}
-			break;
-		case 22:
-			anim = 48;
-			break;
-		case 24:
-			anim = 2;
-			speed = 0;
-			break;
-		case 25:
-			anim = 2;
-			break;
-		case 26:
-			anim = 54;
-			break;
-		case 27:
-			anim = 56;
-			break;
-		case 28: //hurt
-		case 29:
-		case 30:
-		case 31:
-			anim = 55;
-			break;
-		case 32:
-			anim = 45;
-			break;
-		case 33: //thumbling
-		case 34:
-			anim = 53;
-			break;
-		case 35:
-			anim = 55;
-			break;
-		case 36:
-			anim = 21;
-			break;
-		case 37: //flying
-		case 40:
-		case 41:
-			anim = 34; //52 IF HOLDING PLAYER
-			if (HeldButtons2[data->CharIndex] & Buttons_A) speed = 0.8;
-			speed += playerco2->Speed.x * 0.5f;
-			break;
-		case 38: //flying falling
-		case 39:
-		case 42:
-			anim = 35;
-			break;
-		case 43:
-			anim = 39;
-			break;
-		case 44:
-		case 45:
-		case 46:
-		case 47:
-		case 48:
-		case 49:
-		case 50:
-		case 51:
-		case 52:
-		case 53:
-			anim = 39;
-			data->Rotation.y += 0x100;
-			break;
-		case 54: //won
-		case 55:
-			anim = 60;
-			if (data->Unknown > 1) {
-				if (frame > 124) data->Unknown = 20;
-				if (frame < 110) data->Unknown = 40;
-
-				if (data->Unknown > 20 && data->Unknown < 40) {
-					++data->Unknown;
-					state = 124 - (data->Unknown - 20);
-				}
-				else if (data->Unknown > 40) {
-					++data->Unknown;
-					state = 110 + (data->Unknown - 40);
-				}
-			}
-			break;
-		case 56: //lost
-		case 57:
-			anim = 10;
-			break;
-		case 58:
-			anim = 44;
-			break;
-		case 72: //holding hook
-			anim = 51;
-			break;
-		case 89:
-			anim = 11;
-			break;
-		case 107: //snowboard
-		case 108:
-		case 109:
-			anim = 26;
-			break;
-		case 100:
-			anim = 51;
-			break;
-		case 110:
-		case 111:
-		case 116:
-			anim = 26;
-			break;
-		case 112:
-			if (playerco2->Speed.z > 0.1f) anim = 33;
-			break;
-		case 113:
-			if (playerco2->Speed.z < 0.1f) anim = 32;
-			break;
-		case 114:
-		case 115:
-		case 117:
-		case 118:
-		case 119:
-			anim = 30;
-			break;
-		case 120:
-		case 121:
-		case 122:
-		case 123:
-		case 124:
-		case 125:
-		case 126:
-			anim = 31;
-			break;
-		case 127:
-			anim = 27;
-			break;
-		case 150:
-			anim = 16;
-			break;
-		}
-
-		if (anim != 39) {
-			data->Rotation.y = 0;
-		}
-		
-		PlayHeroesAnimation(obj, anim, CreamAnimData, speed, state);
+		CreamAnimConverter(mtn, Characters_HeroesTails, (taskwk*)playerdata, (playerwk*)playerco2);
 
 		break;
 	case 3:
@@ -662,7 +805,7 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 			}
 		}
 
-		PlayHeroesAnimation(obj, 61, CreamAnimData, 0, 0);
+		mtn->reqaction = 61;
 		break;
 	case 4:
 		if (++data->field_A == 100) {
@@ -673,10 +816,13 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 		else {
 			playerco2->Powerups |= Powerups_Invincibility;
 		}
-		
-		PlayHeroesAnimation(obj, 39, CreamAnimData, 0, 0);
+
+		mtn->reqaction = 39;
 		break;
 	}
+
+	CharactersCommon_DrawBall(playerdata, data);
+	PSetMotion(mtn);
 
 	if (FrameCounterUnpaused % 200 == 0) {
 		data->InvulnerableTime = 1;
@@ -764,57 +910,29 @@ void LoadCreamFiles() {
 	CreamAnms[61] = arc_cr.GetAnimation("CR_ATC_CHAO.saanim");
 	CreamAnms[62] = arc_cr.GetAnimation("ROSE_CR.saanim");
 
-	CreamAnms[63] = arc_ch.GetAnimation("CH_IDLE.saanim");
-	CreamAnms[64] = arc_ch.GetAnimation("CH_IDLE_B.saanim");
-	CreamAnms[65] = arc_ch.GetAnimation("CH_IDLE_B_OPT.saanim");
-	CreamAnms[66] = arc_ch.GetAnimation("CH_IDLE_C.saanim");
-	CreamAnms[67] = arc_ch.GetAnimation("CH_IDLE_C_OPT.saanim");
-	CreamAnms[68] = arc_ch.GetAnimation("CH_FLY.saanim");
-	CreamAnms[69] = arc_ch.GetAnimation("CH_ATC_CHAO_A.saanim");
-	CreamAnms[70] = arc_ch.GetAnimation("CH_ATC_CHAO_B.saanim");
-	CreamAnms[71] = arc_ch.GetAnimation("CH_WIN.saanim");
-	CreamAnms[72] = arc_ch.GetAnimation("CH_CHARANGE_IDLE.saanim");
-	CreamAnms[73] = arc_ch.GetAnimation("CH_CHARANGE_SELECT.saanim");
-	CreamAnms[74] = arc_ch.GetAnimation("CH_STORY_IDLE.saanim");
-	CreamAnms[75] = arc_ch.GetAnimation("CH_STORY_SELECT.saanim");
+	CheeseAnms[0] = arc_ch.GetAnimation("CH_IDLE.saanim");
+	CheeseAnms[1] = arc_ch.GetAnimation("CH_IDLE_B.saanim");
+	CheeseAnms[2] = arc_ch.GetAnimation("CH_IDLE_B_OPT.saanim");
+	CheeseAnms[3] = arc_ch.GetAnimation("CH_IDLE_C.saanim");
+	CheeseAnms[4] = arc_ch.GetAnimation("CH_IDLE_C_OPT.saanim");
+	CheeseAnms[5] = arc_ch.GetAnimation("CH_FLY.saanim");
+	CheeseAnms[6] = arc_ch.GetAnimation("CH_ATC_CHAO_A.saanim");
+	CheeseAnms[7] = arc_ch.GetAnimation("CH_ATC_CHAO_B.saanim");
+	CheeseAnms[8] = arc_ch.GetAnimation("CH_WIN.saanim");
+	CheeseAnms[9] = arc_ch.GetAnimation("CH_CHARANGE_IDLE.saanim");
+	CheeseAnms[10] = arc_ch.GetAnimation("CH_CHARANGE_SELECT.saanim");
+	CheeseAnms[11] = arc_ch.GetAnimation("CH_STORY_IDLE.saanim");
+	CheeseAnms[12] = arc_ch.GetAnimation("CH_STORY_SELECT.saanim");
 
-	for (uint8_t i = 0; i < LengthOfArray(CreamAnimData); ++i) {
-		if (CreamAnms[i] == nullptr) continue;
-		CreamAnimData[i].Animation = new NJS_ACTION;
-		CreamAnimData[i].Animation->object = CreamMdls[0]->getmodel();
-		CreamAnimData[i].Animation->motion = CreamAnms[i]->getmotion();
-		CreamAnimData[i].NextAnim = i;
-		CreamAnimData[i].AnimationSpeed = 0.5f;
+	for (int i = 0; i < LengthOfArray(CreamActs); ++i) {
+		CreamActs[i].object = CreamMdls[0]->getmodel();
+		CreamActs[i].motion = CreamAnms[i] ? CreamAnms[i]->getmotion() : NULL;
 	}
 
-	CreamAnimData[9].NextAnim = 8;
-	CreamAnimData[10].NextAnim = 8;
-	CreamAnimData[18].NextAnim = 19;
-	CreamAnimData[20].NextAnim = 21;
-	CreamAnimData[22].NextAnim = 23;
-	CreamAnimData[54].Property = 1;
-	CreamAnimData[55].Property = 1;
-	CreamAnimData[60].Property = 1;
-	CreamAnimData[32].Property = 1;
-	CreamAnimData[25].Property = 1;
-	CreamAnimData[30].Property = 1;
-	CreamAnimData[31].Property = 1;
-	CreamAnimData[33].Property = 1;
-	CreamAnimData[56].NextAnim = 11;
-	CreamAnimData[61].Property = 1;
-	CreamAnimData[23].AnimationSpeed = 0.25f;
-
-	for (uint8_t i = 0; i < LengthOfArray(CheeseAnimData); ++i) {
-		if (CreamAnms[i + 63] == nullptr) continue;
-		CheeseAnimData[i].Animation = new NJS_ACTION;
-		CheeseAnimData[i].Animation->object = CreamMdls[2]->getmodel();
-		CheeseAnimData[i].Animation->motion = CreamAnms[i + 63]->getmotion();
-		CheeseAnimData[i].NextAnim = i;
-		CheeseAnimData[i].AnimationSpeed = 0.5f;
+	for (int i = 0; i < LengthOfArray(CheeseActs); ++i) {
+		CheeseActs[i].object = CreamMdls[2]->getmodel();
+		CheeseActs[i].motion = CheeseAnms[i] ? CheeseAnms[i]->getmotion() : NULL;
 	}
-
-	CheeseAnimData[6].NextAnim = 7;
-	CheeseAnimData[8].Property = 1;
 }
 
 void UnloadCreamFiles() {

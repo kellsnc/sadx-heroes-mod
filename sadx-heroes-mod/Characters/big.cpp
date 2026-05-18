@@ -5,9 +5,140 @@
 #include "sounds.h"
 #include "characters.h"
 
+enum {
+	BI_WALK,
+	BI_WALK_PULL,
+	BI_WALK_PUSH,
+	BI_TURN_L,
+	BI_TURN_R,
+	BI_SLOW_RUN,
+	BI_MID_RUN,
+	BI_TOP_RUN,
+	BI_START,
+	BI_ATC_BATT,
+	BI_ATC_PRESS,
+	BI_ATC_START,
+	BI_FISH,
+	BI_JUMP_A,
+	BI_JUMP_B,
+	BI_JUMP_C,
+	BI_JUMP_D,
+	BI_JUMP_E,
+	BI_JUMP_F,
+	BI_JUMP_UMBRELLA,
+	BI_JUMP_GLIND,
+	BI_GLIND,
+	BI_GLIND_BK,
+	BI_GLIND_BK_L,
+	BI_GLIND_BK_R,
+	BI_GLIND_FLIP_BK,
+	BI_GLIND_FLIP_FR,
+	BI_GLIND_L,
+	BI_GLIND_R,
+	BI_FLY_IDLE,
+	BI_FLY_SLOW,
+	BI_FLY_GLIND,
+	BI_HANG_OFF,
+	BI_HANG_ON,
+	BI_BREAK_A,
+	BI_BREAK_B,
+	BI_BREAK_C,
+	BI_BREAK_TURN_L,
+	BI_BREAK_TURN_R,
+	BI_BRA_MID,
+	BI_BRA_TOP,
+	BI_FLORT,
+	BI_DAM_M_A,
+	BI_DAM_M_B,
+	BI_DAM_M_C,
+	BI_EDGE_OTTO_A,
+	BI_EDGE_OTTO_B,
+	BI_EDGE_OTTO_C,
+	BI_FW_JUMP,
+	BI_TRAP_JUMP,
+	ROSE_BI,
+	BI_WIN,
+	BI_JUMP_BATT,
+	BI_IDLE_HALF,
+	BI_IDLE_B_HALF,
+	BI_IDLE_C_HALF,
+	BI_BOB,
+	BI_BOB_L,
+	BI_BOB_R,
+	BI_START_IDLE,
+	BI_GLIND_DASH,
+	BI_GLIND_BK_DASH,
+};
+
 ModelInfo* BigMdls[4];
 AnimationFile* BigAnms[63];
-AnimData HBigAnimData[63];
+NJS_ACTION BigActs[63];
+
+PL_ACTION big_action_heroes[] = {
+	{ &BigActs[BI_WALK], 47, MD_MTN_XSPD, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_WALK_PULL], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_WALK_PUSH], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_TURN_L], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_TURN_R], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_SLOW_RUN], 47, MD_MTN_XSPD, 0, 0.25f, 0.5f },
+	{ &BigActs[BI_MID_RUN], 47, MD_MTN_XSPD, 0, 0.25f, 0.3f },
+	{ &BigActs[BI_TOP_RUN], 47, MD_MTN_XSPD, 0, 0.25f, 0.1f },
+	{ &BigActs[BI_START], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_ATC_BATT], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_ATC_PRESS], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_ATC_START], 47, MD_MTN_LOOP, 0, 0.25f, 0.5f },
+	{ &BigActs[BI_FISH], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_JUMP_A], 47, MD_MTN_NEXT, MTN_POW_JUMP_B, 0.25f, 0.5f },
+	{ &BigActs[BI_JUMP_B], 47, MD_MTN_WORK, 0, 1.0f, 0.25f },
+	{ &BigActs[BI_JUMP_C], 47, MD_MTN_NEXT, MTN_POW_JUMP_D, 0.25f, 0.5f },
+	{ &BigActs[BI_JUMP_D], 47, MD_MTN_WORK, 0, 1.0f, 0.5f },
+	{ &BigActs[BI_JUMP_E], 47, MD_MTN_NEXT, MTN_POW_JUMP_F, 0.25f, 0.5f },
+	{ &BigActs[BI_JUMP_F], 47, MD_MTN_WORK, 0, 1.0f, 0.5f },
+	{ &BigActs[BI_JUMP_UMBRELLA], 47, MD_MTN_LOOP, 0, 0.25f, 0.5f },
+	{ &BigActs[BI_JUMP_GLIND], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_GLIND], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_GLIND_BK], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_GLIND_BK_L], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_GLIND_BK_R], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_GLIND_FLIP_BK], 47, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_GLIND_FLIP_FR], 47, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_GLIND_L], 47, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_GLIND_R], 47, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_FLY_IDLE], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_FLY_SLOW], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_FLY_GLIND], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_HANG_OFF], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_HANG_ON], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_BREAK_A], 47, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_BREAK_B], 47, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_BREAK_C], 47, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_BREAK_TURN_L], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_BREAK_TURN_R], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_BRA_MID], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_BRA_TOP], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_FLORT], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_DAM_M_A], 47, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_DAM_M_B], 47, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_DAM_M_C], 47, MD_MTN_NEXT, MTN_POW_JUMP_E, 0.25f, 1.0f },
+	{ &BigActs[BI_EDGE_OTTO_A], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_EDGE_OTTO_B], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_EDGE_OTTO_C], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_FW_JUMP], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_TRAP_JUMP], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[ROSE_BI], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_WIN], 47, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_JUMP_BATT], 47, MD_MTN_NEXT, MTN_SPD_IDLE, 0.1f, 1.0f },
+	{ &BigActs[BI_IDLE_HALF], 47, MD_MTN_LOOP, 0, 0.25f, 0.25f },
+	{ &BigActs[BI_IDLE_B_HALF], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_IDLE_C_HALF], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_BOB], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_BOB_L], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_BOB_R], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_JUMP_B], 47, MD_MTN_XSPD, 0, 0.25f, 0.1f },
+	{ &BigActs[BI_START_IDLE], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_GLIND_DASH], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &BigActs[BI_GLIND_BK_DASH], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+};
 
 NJS_TEXNAME HBIG_TEXNAMES[7];
 NJS_TEXLIST HBIG_TEXLIST = { arrayptrandlength(HBIG_TEXNAMES) };
@@ -134,14 +265,14 @@ void LureObj_Main(ObjectMaster *obj) {
 void BigHeroes_Display(ObjectMaster *obj) {
 	if (MissedFrames) return;
 
-	ObjectMaster* knucklesobj = HeroesChars[obj->Data1->CharIndex];
-	if (!knucklesobj) return;
-	EntityData2* data2 = (EntityData2*)knucklesobj->Data2;
+	ObjectMaster* Bigobj = HeroesChars[obj->Data1->CharIndex];
+	if (!Bigobj) return;
+	EntityData2* data2 = (EntityData2*)Bigobj->Data2;
 
 	WriteData<5>((void*)0x472649, 0x90);
 	WriteData<5>((void*)0x47258B, 0x90);
 	WriteData<5>((void*)0x472626, 0x90);
-	Knuckles_Display(obj);
+	Big_Display(obj);
 	WriteCall((void*)0x472649, njAction);
 	WriteCall((void*)0x47258B, njAction);
 	WriteCall((void*)0x472626, njAction);
@@ -150,17 +281,17 @@ void BigHeroes_Display(ObjectMaster *obj) {
 	EntityData2* entity2 = (EntityData2*)obj->Data2;
 	CharObj2* co2 = entity2->CharacterData;
 
-	if (knucklesobj->Data1->Index == 42 || knucklesobj->Data1->Index == 43 || knucklesobj->Data1->Index == 44) {
+	if (Bigobj->Data1->Index == 42 || Bigobj->Data1->Index == 43 || Bigobj->Data1->Index == 44) {
 		if (FrameCounterUnpaused % 5 == 0) {
-			if (knucklesobj->Data1->NextAction == 0) knucklesobj->Data1->NextAction = 1;
-			else knucklesobj->Data1->NextAction = 0;
+			if (Bigobj->Data1->NextAction == 0) Bigobj->Data1->NextAction = 1;
+			else Bigobj->Data1->NextAction = 0;
 		}
 	}
 	else {
-		knucklesobj->Data1->NextAction = 0;
+		Bigobj->Data1->NextAction = 0;
 	}
 
-	if (knucklesobj->Data1->NextAction) return;
+	if (Bigobj->Data1->NextAction) return;
 
 	Direct3D_SetZFunc(1u);
 	Direct3D_PerformLighting(2);
@@ -189,20 +320,30 @@ void BigHeroes_Display(ObjectMaster *obj) {
 		njTranslate(0, 0, 0, 2);
 	}
 
-	if (knucklesobj->Data1->Index == 52) {
+	if (Bigobj->Data1->Index == 52) {
 		njRotateY(0, 0xC000);
 	}
 
 	njRotateX(0, 0x4000);
 
+	mtnjvwk* mtn = (mtnjvwk*)Bigobj->Data1->Object;
+
+	int action = mtn->reqaction;
+	NJS_ACTION* actptr = mtn->plactptr[action].actptr;
+	if (mtn->mtnmode == MD_MTN_CHNG)
+	{
+		action = mtn->action;
+		actptr = mtn->actwkptr;
+	}
+
 	*NodeCallbackFuncPtr = BigCallback;
-	njActionWeight(HBigAnimData[knucklesobj->Data1->Index].Animation, knucklesobj->Data1->Scale.x, BigMdls[0]->getweightinfo());
+	njActionWeight(actptr, mtn->nframe, BigMdls[0]->getweightinfo());
 	*NodeCallbackFuncPtr = nullptr;
 
 	memcpy(_nj_current_matrix_ptr_, BigMatrix, sizeof(NJS_MATRIX));
 	njRotateX(0, 0xC000);
-	if (knucklesobj->Data1->Index == 19) dsDrawModel(BigMdls[2]->getmodel()->getbasicdxmodel());
-	if (knucklesobj->Data1->Index == 9 || knucklesobj->Data1->Index == 11 || knucklesobj->Data1->Index == 12) dsDrawModel(BigMdls[1]->getmodel()->getbasicdxmodel());
+	if (action == 19) dsDrawModel(BigMdls[2]->getmodel()->getbasicdxmodel());
+	if (action == 9 || action == 11 || action == 12) dsDrawModel(BigMdls[1]->getmodel()->getbasicdxmodel());
 
 	njPopMatrix(1);
 
@@ -215,40 +356,24 @@ void BigHeroes_Main(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1;
 	EntityData2* data2 = (EntityData2*)obj->Data2;
 
-	if (!CharactersCommon_Init(obj, "heroes-big", &HBIG_TEXLIST)) {
+	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
+	EntityData1* playerdata = EntityData1Ptrs[data->CharIndex];
+	EntityData2* playerdata2 = EntityData2Ptrs[data->CharIndex];
+	CharObj2* playerco2 = CharObj2Ptrs[data->CharIndex];
+	mtnjvwk* mtn = (mtnjvwk*)data->Object;
+
+	if (!playerco2 || playerdata->CharID != Characters_Knuckles)
+	{
 		return;
 	}
 
-	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
-	EntityData1* playerdata = playerobj->Data1;
-	EntityData2* playerdata2 = (EntityData2*)playerobj->Data2;
-	CharObj2* playerco2 = playerdata2->CharacterData;
-
-	if (data->Rotation.z == 0) {
-		if (data->CharIndex == 0) {
-			CON_REGULAR_TEXNAMES[15].texaddr = HBIG_TEXLIST.textures[8].texaddr;
-		}
-
-		if (CustomPhysics) {
-			playerdata->CollisionInfo->CollisionArray->a = 8.0f;
-			playerco2->PhysicsData.CollisionSize = 8.0f;
-			playerco2->PhysicsData.RippleSize = 0.5f;
-			playerco2->_struct_a3.ShadowScale = 2.0f;
-
-			playerco2->PhysicsData.HSpeedCap = 15;
-			playerco2->PhysicsData.MaxAccel = 3.5f;
-			playerco2->PhysicsData.field_14 = 0.85f;
-		}
-
-		data->Rotation.z = 1;
-	}
-
-	CharactersCommon_DrawBall(playerdata, data);
-
-	switch (data->Action) {
+	switch (data->Action)
+	{
+	case 0:
+		HeroesChars_InitPlayer((task*)obj, { "heroes-big", &HBIG_TEXLIST }, 8, big_action_heroes);
+		data->Action = 2;
+		return;
 	case 2:
-		PlayerPtrs[data->CharIndex]->DisplaySub = BigHeroes_Display;
-
 		if (CanDoTricks(playerdata)) {
 			if (playerco2->Speed.x < 2 && HeldButtons2[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground && (HeldButtons2[data->CharIndex] & Buttons_A) != Buttons_A) {
 				data->field_A = 0;
@@ -279,21 +404,18 @@ void BigHeroes_Main(ObjectMaster *obj) {
 			playerco2->IdleTime = 0;
 		}
 
-		{
-			NJS_VECTOR anim = PowerAnims(data, playerdata, playerco2); //id, speed, state
-			PlayHeroesAnimation(obj, anim.x, HBigAnimData, anim.y, anim.z);
-		}
+		KnucklesAnimConverter(mtn, Characters_HeroesBig, (taskwk*)playerdata, (playerwk*)playerco2);
 
 		break;
 	case 3:
 		switch (PowerLaunchTrick(data, data2, playerco2, playerdata)) {
 		case 1:
 			PlayHeroesSound(BigSound_Combo1);
-			PlayHeroesAnimation(obj, 11, HBigAnimData, 0, 0);
+			mtn->reqaction = 11;
 			break;
 		case 2:
 			PlayHeroesSound(BigSound_Combo2);
-			PlayHeroesAnimation(obj, 9, HBigAnimData, 0, 0);
+			mtn->reqaction = 9;
 			break;
 		case 3:
 			PlayHeroesSound(BigSound_Combo3);
@@ -310,7 +432,7 @@ void BigHeroes_Main(ObjectMaster *obj) {
 			}
 			
 			data->Scale.x = data->Scale.y;
-			PlayHeroesAnimation(obj, 12, HBigAnimData, 0, 0);
+			mtn->reqaction = 12;
 			break;
 		case 5:
 			playerco2->Speed.x = 0;
@@ -336,11 +458,7 @@ void BigHeroes_Main(ObjectMaster *obj) {
 			}
 
 			data->Scale.x = data->Scale.y;
-			PlayHeroesAnimation(obj, 12, HBigAnimData, 0, 0);
-			break;
-		default:
-
-			PlayHeroesAnimation(obj, data->Index, HBigAnimData, 0, 0);
+			mtn->reqaction = 12;
 			break;
 		}
 		
@@ -378,8 +496,19 @@ void BigHeroes_Main(ObjectMaster *obj) {
 			
 		}
 
-		PlayHeroesAnimation(obj, 10, HBigAnimData, 0, 0);
+		mtn->reqaction = 10;
 		break;
+	}
+
+	CharactersCommon_DrawBall(playerdata, data);
+	PSetMotion(mtn);
+
+	if (FrameCounterUnpaused % 200 == 0) {
+		data->InvulnerableTime = 1;
+	}
+
+	if (data->InvulnerableTime != 0 && FrameCounterUnpaused % 2 == 0) {
+		if (++data->InvulnerableTime > 5) data->InvulnerableTime = 0;
 	}
 
 	RunObjectChildren(obj);
@@ -445,44 +574,25 @@ void LoadBigFiles() {
 	BigAnms[45] = arc.GetAnimation("BI_EDGE_OTTO_A.saanim");
 	BigAnms[46] = arc.GetAnimation("BI_EDGE_OTTO_B.saanim");
 	BigAnms[47] = arc.GetAnimation("BI_EDGE_OTTO_C.saanim");
-	BigAnms[48] = arc.GetAnimation("BI_EDGE_OTTO_C.saanim");
-	BigAnms[49] = arc.GetAnimation("BI_FW_JUMP.saanim");
-	BigAnms[50] = arc.GetAnimation("BI_TRAP_JUMP.saanim");
-	BigAnms[51] = arc.GetAnimation("ROSE_BI.saanim");
-	BigAnms[52] = arc.GetAnimation("BI_WIN.saanim");
-	BigAnms[53] = arc.GetAnimation("BI_JUMP_BATT.saanim");
-	BigAnms[54] = arc.GetAnimation("BI_IDLE_HALF.saanim");
-	BigAnms[55] = arc.GetAnimation("BI_IDLE_B_HALF.saanim");
-	BigAnms[56] = arc.GetAnimation("BI_IDLE_C_HALF.saanim");
-	BigAnms[57] = arc.GetAnimation("BI_BOB.saanim");
-	BigAnms[58] = arc.GetAnimation("BI_BOB_L.saanim");
-	BigAnms[59] = arc.GetAnimation("BI_BOB_R.saanim");
-	BigAnms[60] = arc.GetAnimation("BI_START_IDLE.saanim");
-	BigAnms[61] = arc.GetAnimation("BI_GLIND_DASH.saanim");
-	BigAnms[62] = arc.GetAnimation("BI_GLIND_BK_DASH.saanim");
+	BigAnms[48] = arc.GetAnimation("BI_FW_JUMP.saanim");
+	BigAnms[49] = arc.GetAnimation("BI_TRAP_JUMP.saanim");
+	BigAnms[50] = arc.GetAnimation("ROSE_BI.saanim");
+	BigAnms[51] = arc.GetAnimation("BI_WIN.saanim");
+	BigAnms[52] = arc.GetAnimation("BI_JUMP_BATT.saanim");
+	BigAnms[53] = arc.GetAnimation("BI_IDLE_HALF.saanim");
+	BigAnms[54] = arc.GetAnimation("BI_IDLE_B_HALF.saanim");
+	BigAnms[55] = arc.GetAnimation("BI_IDLE_C_HALF.saanim");
+	BigAnms[56] = arc.GetAnimation("BI_BOB.saanim");
+	BigAnms[57] = arc.GetAnimation("BI_BOB_L.saanim");
+	BigAnms[58] = arc.GetAnimation("BI_BOB_R.saanim");
+	BigAnms[59] = arc.GetAnimation("BI_START_IDLE.saanim");
+	BigAnms[60] = arc.GetAnimation("BI_GLIND_DASH.saanim");
+	BigAnms[61] = arc.GetAnimation("BI_GLIND_BK_DASH.saanim");
 
-	for (uint8_t i = 0; i < LengthOfArray(HBigAnimData); ++i) {
-		if (BigAnms[i] == nullptr) continue;
-		HBigAnimData[i].Animation = new NJS_ACTION;
-		HBigAnimData[i].Animation->object = BigMdls[0]->getmodel();
-		HBigAnimData[i].Animation->motion = BigAnms[i]->getmotion();
-		HBigAnimData[i].NextAnim = i;
-		HBigAnimData[i].AnimationSpeed = 0.5f;
+	for (int i = 0; i < LengthOfArray(BigActs); ++i) {
+		BigActs[i].object = BigMdls[0]->getmodel();
+		BigActs[i].motion = BigAnms[i] ? BigAnms[i]->getmotion() : NULL;
 	}
-
-	HBigAnimData[13].NextAnim = 14;
-	HBigAnimData[15].NextAnim = 16;
-	HBigAnimData[18].NextAnim = 19;
-	HBigAnimData[42].Property = 1;
-	HBigAnimData[43].Property = 1;
-	HBigAnimData[27].Property = 1;
-	HBigAnimData[33].Property = 1;
-	HBigAnimData[28].Property = 1;
-	HBigAnimData[20].Property = 1;
-	HBigAnimData[25].Property = 1;
-	HBigAnimData[26].Property = 1;
-	HBigAnimData[44].NextAnim = 17;
-	HBigAnimData[52].Property = 1;
 }
 
 void UnloadBigFiles() {

@@ -5,9 +5,133 @@
 #include "sounds.h"
 #include "characters.h"
 
+enum {
+	OM_WALK,
+	OM_WALK_PULL,
+	OM_WALK_PUSH,
+	OM_TURN_L,
+	OM_TURN_R,
+	OM_SLOW_RUN,
+	OM_MID_RUN,
+	OM_TOP_RUN,
+	OM_START,
+	OM_ATC_GUN,
+	OM_ATC_A,
+	OM_ATC_A2,
+	OM_ATC_A3,
+	OM_JUMP_A,
+	OM_JUMP_B,
+	OM_JUMP_C,
+	OM_JUMP_D,
+	OM_JUMP_E,
+	OM_JUMP_F,
+	OM_JUMP_TRNGL,
+	OM_JUMP_GLIND,
+	OM_GLIND,
+	OM_GLIND_BK,
+	OM_GLIND_BK_L,
+	OM_GLIND_BK_R,
+	OM_GLIND_FLIP_B,
+	OM_GLIND_FLIP_F,
+	OM_GLIND_L,
+	OM_GLIND_R,
+	OM_FLY_IDLE,
+	OM_FLY_SLOW,
+	OM_FLY_GLIND,
+	OM_HANG_OFF,
+	OM_HANG_ON,
+	OM_BREAK_A,
+	OM_BREAK_B,
+	OM_BREAK_C,
+	OM_BREAK_TURN_L,
+	OM_BREAK_TURN_R,
+	OM_BRA_MID,
+	OM_BRA_TOP,
+	OM_FLORT,
+	OM_DAM_M_A,
+	OM_DAM_M_B,
+	OM_DAM_M_C,
+	OM_EDGE_OTTO_A,
+	OM_EDGE_OTTO_B,
+	OM_EDGE_OTTO_C,
+	OM_FW_JUMP,
+	OM_TRAP_JUMP,
+	DARK_OM,
+	OM_WIN,
+	OM_IDLE,
+	OM_IDLE_C,
+	OM_IDLE_D,
+	OM_BOB,
+	OM_BOB_L,
+	OM_BOB_R,
+};
+
 ModelInfo* OmegaMdls[5];
 AnimationFile* OmegaAnms[60];
-AnimData OmegaAnimData[60];
+NJS_ACTION OmegaActs[60];
+
+PL_ACTION omega_action_heroes[] = {
+	{ &OmegaActs[OM_WALK], 57, MD_MTN_XSPD, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_WALK_PULL], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_WALK_PUSH], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_TURN_L], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_TURN_R], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_SLOW_RUN], 57, MD_MTN_XSPD, 0, 0.25f, 0.5f },
+	{ &OmegaActs[OM_MID_RUN], 57, MD_MTN_XSPD, 0, 0.25f, 0.3f },
+	{ &OmegaActs[OM_TOP_RUN], 57, MD_MTN_XSPD, 0, 0.25f, 0.1f },
+	{ &OmegaActs[OM_START], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_ATC_GUN], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_ATC_A], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_ATC_A], 57, MD_MTN_LOOP, 0, 0.25f, 0.5f },
+	{ &OmegaActs[OM_ATC_A], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_JUMP_A], 57, MD_MTN_NEXT, MTN_POW_JUMP_B, 0.25f, 0.5f },
+	{ &OmegaActs[OM_JUMP_B], 57, MD_MTN_WORK, 0, 1.0f, 0.25f },
+	{ &OmegaActs[OM_JUMP_C], 57, MD_MTN_NEXT, MTN_POW_JUMP_D, 0.25f, 0.5f },
+	{ &OmegaActs[OM_JUMP_D], 57, MD_MTN_WORK, 0, 1.0f, 0.5f },
+	{ &OmegaActs[OM_JUMP_E], 57, MD_MTN_NEXT, MTN_POW_JUMP_F, 0.25f, 0.5f },
+	{ &OmegaActs[OM_JUMP_F], 57, MD_MTN_WORK, 0, 1.0f, 0.5f },
+	{ &OmegaActs[OM_JUMP_TRNGL], 57, MD_MTN_LOOP, 0, 0.25f, 0.5f },
+	{ &OmegaActs[OM_JUMP_GLIND], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_GLIND], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_GLIND_BK], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_GLIND_BK_L], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_GLIND_BK_R], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_GLIND_FLIP_B], 57, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_GLIND_FLIP_F], 57, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_GLIND_L], 57, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_GLIND_R], 57, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_FLY_IDLE], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_FLY_SLOW], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_FLY_GLIND], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_HANG_OFF], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_HANG_ON], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_BREAK_A], 57, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_BREAK_B], 57, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_BREAK_C], 57, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_BREAK_TURN_L], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_BREAK_TURN_R], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_BRA_MID], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_BRA_TOP], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_FLORT], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_DAM_M_A], 57, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_DAM_M_B], 57, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_DAM_M_C], 57, MD_MTN_NEXT, MTN_POW_JUMP_E, 0.25f, 1.0f },
+	{ &OmegaActs[OM_EDGE_OTTO_A], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_EDGE_OTTO_B], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_EDGE_OTTO_C], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_FW_JUMP], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_TRAP_JUMP], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[DARK_OM], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_WIN], 57, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_ATC_GUN], 57, MD_MTN_NEXT, MTN_SPD_IDLE, 0.1f, 1.0f },
+	{ &OmegaActs[OM_IDLE], 57, MD_MTN_LOOP, 0, 0.25f, 0.25f },
+	{ &OmegaActs[OM_IDLE_C], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_IDLE_D], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_BOB], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_BOB_L], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_BOB_R], 57, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &OmegaActs[OM_JUMP_B], 57, MD_MTN_XSPD, 0, 0.25f, 0.1f },
+};
 
 NJS_TEXNAME OMEGA_TEXNAMES[15];
 NJS_TEXLIST OMEGA_TEXLIST = { arrayptrandlength(OMEGA_TEXNAMES) };
@@ -157,7 +281,17 @@ void OmegaHeroes_Display(ObjectMaster *obj) {
 
 	njRotateX(0, 0x4000);
 
-	bool show_gun_l = omegaobj->Data1->Index == 9 || (omegaobj->Data1->Index == 11 && omegaobj->Data1->Scale.x > 60) || obj->Data1->Action == 19 || obj->Data1->Action == 20;
+	mtnjvwk* mtn = (mtnjvwk*)omegaobj->Data1->Object;
+
+	int action = mtn->reqaction;
+	NJS_ACTION* actptr = mtn->plactptr[action].actptr;
+	if (mtn->mtnmode == MD_MTN_CHNG)
+	{
+		action = mtn->action;
+		actptr = mtn->actwkptr;
+	}
+
+	bool show_gun_l = action == MTN_POW_ATC_A || (action == MTN_POW_ATC_C && omegaobj->Data1->Scale.x > 60) || obj->Data1->Action == 19 || obj->Data1->Action == 20;
 	bool show_gun_r = show_gun_l;
 
 	if (show_gun_l)
@@ -171,17 +305,16 @@ void OmegaHeroes_Display(ObjectMaster *obj) {
 	}
 
 	*NodeCallbackFuncPtr = OmegaCallback;
-	njAction(OmegaAnimData[omegaobj->Data1->Index].Animation, omegaobj->Data1->Scale.x);
+	njAction(actptr, mtn->nframe);
 	*NodeCallbackFuncPtr = nullptr;
 
-	switch (omegaobj->Data1->Index) {
+	switch (action) {
 	case 7:
 	case 19:
 		for (int i = 2; i < 4; ++i) {
 			njSetMatrix(NULL, OmegaMatrices[i]);
 			late_DrawModel(OmegaMdls[1]->getmodel()->getbasicdxmodel(), LATE_MAT);
 		}
-		
 		break;
 	}
 
@@ -257,42 +390,24 @@ void OmegaHeroes_Main(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1;
 	EntityData2* data2 = (EntityData2*)obj->Data2;
 
-	if (!CharactersCommon_Init(obj, "heroes-omega", &OMEGA_TEXLIST)) {
+	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
+	EntityData1* playerdata = EntityData1Ptrs[data->CharIndex];
+	EntityData2* playerdata2 = EntityData2Ptrs[data->CharIndex];
+	CharObj2* playerco2 = CharObj2Ptrs[data->CharIndex];
+	mtnjvwk* mtn = (mtnjvwk*)data->Object;
+
+	if (!playerco2 || playerdata->CharID != Characters_Knuckles)
+	{
 		return;
 	}
 
-	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
-	EntityData1* playerdata = playerobj->Data1;
-	EntityData2* playerdata2 = (EntityData2*)playerobj->Data2;
-	CharObj2* playerco2 = playerdata2->CharacterData;
-
-	if (playerdata->Action == 19 || playerdata->Action == 20) {
-		data2->field_38 += 0x1000;
-	}
-
-	if (data->Rotation.z == 0) {
-		if (data->CharIndex == 0) {
-			CON_REGULAR_TEXNAMES[15].texaddr = OMEGA_TEXLIST.textures[9].texaddr;
-		}
-
-		if (CustomPhysics) {
-			playerdata->CollisionInfo->CollisionArray->a = 8.0f;
-			playerco2->PhysicsData.CollisionSize = 8.0f;
-			playerco2->PhysicsData.RippleSize = 0.5f;
-			playerco2->_struct_a3.ShadowScale = 1.5f;
-
-			playerco2->PhysicsData.HSpeedCap = 15;
-			playerco2->PhysicsData.MaxAccel = 3.5f;
-			playerco2->PhysicsData.field_14 = 0.85f;
-		}
-
-		data->Rotation.z = 1;
-	}
-
-	switch (data->Action) {
+	switch (data->Action)
+	{
+	case 0:
+		HeroesChars_InitPlayer((task*)obj, { "heroes-omega", &OMEGA_TEXLIST }, 9, omega_action_heroes);
+		data->Action = 2;
+		return;
 	case 2:
-		PlayerPtrs[data->CharIndex]->DisplaySub = OmegaHeroes_Display;
-
 		if (CanDoTricks(playerdata)) {
 			if (playerco2->Speed.x < 2 && HeldButtons2[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground && (HeldButtons2[data->CharIndex] & Buttons_A) != Buttons_A) {
 				data->field_A = 0;
@@ -321,10 +436,7 @@ void OmegaHeroes_Main(ObjectMaster *obj) {
 			playerco2->IdleTime = 0;
 		}
 
-		{
-			NJS_VECTOR anim = PowerAnims(data, playerdata, playerco2); //id, speed, state
-			PlayHeroesAnimation(obj, anim.x, OmegaAnimData, anim.y, anim.z);
-		}
+		KnucklesAnimConverter(mtn, Characters_Omega, (taskwk*)playerdata, (playerwk*)playerco2);
 
 		break;
 	case 3:
@@ -354,7 +466,7 @@ void OmegaHeroes_Main(ObjectMaster *obj) {
 			break;
 		}
 
-		PlayHeroesAnimation(obj, 11, OmegaAnimData, 0, 0);
+		mtn->reqaction = 11;
 		break;
 	case 4:
 		if (FlightPunchTrick(data, data2, playerco2, playerdata)) PlayHeroesSound(OmegaSound_Trick);
@@ -375,10 +487,20 @@ void OmegaHeroes_Main(ObjectMaster *obj) {
 
 			OmegaDrawMissilesList();
 		}
-		
 
-		PlayHeroesAnimation(obj, 9, OmegaAnimData, 0, 0);
+		mtn->reqaction = 9;
 		break;
+	}
+
+	CharactersCommon_DrawBall(playerdata, data);
+	PSetMotion(mtn);
+
+	if (FrameCounterUnpaused % 200 == 0) {
+		data->InvulnerableTime = 1;
+	}
+
+	if (data->InvulnerableTime != 0 && FrameCounterUnpaused % 2 == 0) {
+		if (++data->InvulnerableTime > 7) data->InvulnerableTime = 0;
 	}
 
 	RunObjectChildren(obj);
@@ -441,41 +563,21 @@ void LoadOmegaFiles() {
 	OmegaAnms[45] = arc.GetAnimation("OM_EDGE_OTTO_A.saanim");
 	OmegaAnms[46] = arc.GetAnimation("OM_EDGE_OTTO_B.saanim");
 	OmegaAnms[47] = arc.GetAnimation("OM_EDGE_OTTO_C.saanim");
-	OmegaAnms[48] = arc.GetAnimation("OM_EDGE_OTTO_C.saanim");
-	OmegaAnms[49] = arc.GetAnimation("OM_FW_JUMP.saanim");
-	OmegaAnms[50] = arc.GetAnimation("OM_TRAP_JUMP.saanim");
-	OmegaAnms[51] = arc.GetAnimation("HERO_KN.saanim");
-	OmegaAnms[52] = arc.GetAnimation("OM_WIN.saanim");
-	OmegaAnms[53] = arc.GetAnimation("OM_ATC_GUN.saanim");
-	OmegaAnms[54] = arc.GetAnimation("OM_IDLE.saanim");
-	OmegaAnms[55] = arc.GetAnimation("OM_IDLE_C.saanim");
-	OmegaAnms[56] = arc.GetAnimation("OM_IDLE_D.saanim");
-	OmegaAnms[57] = arc.GetAnimation("OM_BOB.saanim");
-	OmegaAnms[58] = arc.GetAnimation("OM_BOB_L.saanim");
-	OmegaAnms[59] = arc.GetAnimation("OM_BOB_R.saanim");
+	OmegaAnms[48] = arc.GetAnimation("OM_FW_JUMP.saanim");
+	OmegaAnms[49] = arc.GetAnimation("OM_TRAP_JUMP.saanim");
+	OmegaAnms[50] = arc.GetAnimation("DARK_OM.saanim");
+	OmegaAnms[51] = arc.GetAnimation("OM_WIN.saanim");
+	OmegaAnms[52] = arc.GetAnimation("OM_IDLE.saanim");
+	OmegaAnms[53] = arc.GetAnimation("OM_IDLE_C.saanim");
+	OmegaAnms[54] = arc.GetAnimation("OM_IDLE_D.saanim");
+	OmegaAnms[55] = arc.GetAnimation("OM_BOB.saanim");
+	OmegaAnms[56] = arc.GetAnimation("OM_BOB_L.saanim");
+	OmegaAnms[57] = arc.GetAnimation("OM_BOB_R.saanim");
 
-	for (uint8_t i = 0; i < LengthOfArray(OmegaAnimData); ++i) {
-		if (OmegaAnms[i] == nullptr) continue;
-		OmegaAnimData[i].Animation = new NJS_ACTION;
-		OmegaAnimData[i].Animation->object = OmegaMdls[0]->getmodel();
-		OmegaAnimData[i].Animation->motion = OmegaAnms[i]->getmotion();
-		OmegaAnimData[i].NextAnim = i;
-		OmegaAnimData[i].AnimationSpeed = 0.5f;
+	for (int i = 0; i < LengthOfArray(OmegaActs); ++i) {
+		OmegaActs[i].object = OmegaMdls[0]->getmodel();
+		OmegaActs[i].motion = OmegaAnms[i] ? OmegaAnms[i]->getmotion() : NULL;
 	}
-
-	OmegaAnimData[13].NextAnim = 14;
-	OmegaAnimData[15].NextAnim = 16;
-	OmegaAnimData[18].NextAnim = 19;
-	OmegaAnimData[42].Property = 1;
-	OmegaAnimData[43].Property = 1;
-	OmegaAnimData[27].Property = 1;
-	OmegaAnimData[33].Property = 1;
-	OmegaAnimData[28].Property = 1;
-	OmegaAnimData[20].Property = 1;
-	OmegaAnimData[25].Property = 1;
-	OmegaAnimData[26].Property = 1;
-	OmegaAnimData[44].NextAnim = 17;
-	OmegaAnimData[52].Property = 1;
 }
 
 void UnloadOmegaFiles() {

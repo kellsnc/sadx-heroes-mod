@@ -5,9 +5,138 @@
 #include "sounds.h"
 #include "characters.h"
 
+enum {
+	AM_WALK,
+	AM_WALK_PULL,
+	AM_WALK_PUSH,
+	AM_TURN_L_HALF,
+	AM_TURN_R_HALF,
+	AM_SLOW_RUN,
+	AM_MID_RUN,
+	AM_TOP_RUN,
+	AM_START,
+	AM_JUMP_WALL,
+	AM_JUMP_TRIC_A,
+	AM_JUMP_TRIC_B,
+	AM_JUMP_TRIC_C,
+	AM_JUMP_A,
+	AM_JUMP_B_HALF,
+	AM_JUMP_C,
+	AM_JUMP_D,
+	AM_JUMP_E,
+	AM_JUMP_F,
+	AM_JUMP_UMBRELLA,
+	AM_JUMP_GLIND,
+	AM_GLIND,
+	AM_GLIND_BK,
+	AM_GLIND_BK_L,
+	AM_GLIND_BK_R,
+	AM_GLIND_FLIP_B,
+	AM_GLIND_FLIP_F,
+	AM_GLIND_L,
+	AM_GLIND_R,
+	AM_FLY_IDLE,
+	AM_FLY_SLOW,
+	AM_FLY_GLIND,
+	AM_HANG_OFF,
+	AM_HANG_ON,
+	AM_BREAK_A,
+	AM_BREAK_B,
+	AM_BREAK_C,
+	AM_BREAK_TURN_L,
+	AM_BREAK_TURN_R,
+	AM_BRA_MID,
+	AM_BRA_TOP,
+	AM_FLORT,
+	AM_DAM_M_A,
+	AM_DAM_M_B,
+	AM_DAM_M_C,
+	AM_EDGE_OTTO_A,
+	AM_EDGE_OTTO_B,
+	AM_EDGE_OTTO_C,
+	AM_FW_JUMP,
+	AM_TRAP_JUMP,
+	AM_POW_ROT_HALF,
+	AM_WIN,
+	AM_ATC_HAM,
+	AM_IDLE_HALF,
+	AM_IDLE_B_HALF,
+	AM_IDLE_C_HALF,
+	ROSE_AM,
+	AM_IDLE_POW_HALF,
+	AM_IDLE_POW_SHAKE,
+	AM_START_IDLE,
+	AM_ATC_TRNADE,
+};
+
 ModelInfo* AmyMdls[3];
-AnimationFile* AmyAnms[62];
-AnimData HAmyAnimData[62];
+AnimationFile* AmyAnms[61];
+NJS_ACTION AmyActs[61];
+
+PL_ACTION amy_action_heroes[] = {
+	{ &AmyActs[AM_WALK], 47, MD_MTN_XSPD, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_WALK_PULL], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_WALK_PUSH], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_TURN_L_HALF], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_TURN_R_HALF], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_SLOW_RUN], 47, MD_MTN_XSPD, 0, 0.25f, 0.5f },
+	{ &AmyActs[AM_MID_RUN], 47, MD_MTN_XSPD, 0, 0.25f, 0.3f },
+	{ &AmyActs[AM_TOP_RUN], 47, MD_MTN_XSPD, 0, 0.25f, 0.1f },
+	{ &AmyActs[AM_START], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_JUMP_WALL], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_JUMP_TRIC_A], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_JUMP_TRIC_B], 47, MD_MTN_NEXT, MTN_SPD_JUMP_F, 0.25f, 0.5f },
+	{ &AmyActs[AM_JUMP_TRIC_C], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_JUMP_A], 47, MD_MTN_NEXT, MTN_SPD_JUMP_B, 0.25f, 0.5f },
+	{ &AmyActs[AM_JUMP_B_HALF], 47, MD_MTN_WORK, 0, 1.0f, 0.5f },
+	{ &AmyActs[AM_JUMP_C], 47, MD_MTN_NEXT, MTN_SPD_JUMP_D, 0.25f, 0.5f },
+	{ &AmyActs[AM_JUMP_D], 47, MD_MTN_WORK, 0, 1.0f, 0.5f },
+	{ &AmyActs[AM_JUMP_E], 47, MD_MTN_NEXT, MTN_SPD_JUMP_F, 0.25f, 0.5f },
+	{ &AmyActs[AM_JUMP_F], 47, MD_MTN_WORK, 0, 1.0f, 0.5f },
+	{ &AmyActs[AM_JUMP_UMBRELLA], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_JUMP_GLIND], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_GLIND], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_GLIND_BK], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_GLIND_BK_L], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_GLIND_BK_R], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_GLIND_FLIP_B], 47, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_GLIND_FLIP_F], 47, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_GLIND_L], 47, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_GLIND_R], 47, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_FLY_IDLE], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_FLY_SLOW], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_FLY_GLIND], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_HANG_OFF], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_HANG_ON], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_BREAK_A], 47, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_BREAK_B], 47, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_BREAK_C], 47, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_BREAK_TURN_L], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_BREAK_TURN_R], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_BRA_MID], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_BRA_TOP], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_FLORT], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_DAM_M_A], 47, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_DAM_M_B], 47, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_DAM_M_C], 47, MD_MTN_NEXT, MTN_SPD_JUMP_E, 0.25f, 1.0f },
+	{ &AmyActs[AM_EDGE_OTTO_A], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_EDGE_OTTO_B], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_EDGE_OTTO_C], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_FW_JUMP], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_TRAP_JUMP], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_POW_ROT_HALF], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_WIN], 47, MD_MTN_STOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_ATC_HAM], 47, MD_MTN_NEXT, MTN_SPD_IDLE, 0.1f, 1.0f },
+	{ &AmyActs[AM_IDLE_HALF], 47, MD_MTN_LOOP, 0, 0.25f, 0.25f },
+	{ &AmyActs[AM_IDLE_B_HALF], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_IDLE_C_HALF], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[ROSE_AM], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_JUMP_B_HALF], 47, MD_MTN_XSPD, 0, 0.25f, 0.1f },
+	{ &AmyActs[AM_IDLE_POW_HALF], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_IDLE_POW_SHAKE], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_START_IDLE], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+	{ &AmyActs[AM_ATC_TRNADE], 47, MD_MTN_LOOP, 0, 0.25f, 1.0f },
+};
 
 NJS_TEXNAME HAMY_TEXNAMES[4];
 NJS_TEXLIST HAMY_TEXLIST = { arrayptrandlength(HAMY_TEXNAMES) };
@@ -96,8 +225,18 @@ void AmyHeroes_Display(ObjectMaster *obj) {
 		njTranslate(0, -10, 5, 0);
 	}
 
+	mtnjvwk* mtn = (mtnjvwk*)amyobj->Data1->Object;
+
+	int action = mtn->reqaction;
+	NJS_ACTION* actptr = mtn->plactptr[action].actptr;
+	if (mtn->mtnmode == MD_MTN_CHNG)
+	{
+		action = mtn->action;
+		actptr = mtn->actwkptr;
+	}
+
 	*NodeCallbackFuncPtr = AmyCallback;
-	njActionWeight(HAmyAnimData[amyobj->Data1->Index].Animation, amyobj->Data1->Scale.x, AmyMdls[0]->getweightinfo());
+	njActionWeight(actptr, mtn->nframe, AmyMdls[0]->getweightinfo());
 	*NodeCallbackFuncPtr = nullptr;
 
 	njSetMatrix(NULL, AmyMatrices[0]);
@@ -123,7 +262,7 @@ void AmyHeroes_Display(ObjectMaster *obj) {
 		break;
 	}
 	
-	if (amyobj->Data1->Index == 53 || amyobj->Data1->Index == 61) {
+	if (action == MTN_SPD_ATC || action == MTN_AM_ATC_TRNADE) {
 		njSetMatrix(NULL, AmyMatrices[1]);
 		dsDrawObject(AmyMdls[2]->getmodel());
 	}
@@ -139,44 +278,34 @@ void AmyHeroes_Main(ObjectMaster *obj) {
 	EntityData1* data = obj->Data1;
 	EntityData2* data2 = (EntityData2*)obj->Data2;
 
-	if (!CharactersCommon_Init(obj, "heroes-amy", &HAMY_TEXLIST)) {
+	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
+	EntityData1* playerdata = EntityData1Ptrs[data->CharIndex];
+	EntityData2* playerdata2 = EntityData2Ptrs[data->CharIndex];
+	CharObj2* playerco2 = CharObj2Ptrs[data->CharIndex];
+	mtnjvwk* mtn = (mtnjvwk*)data->Object;
+
+	if (!playerco2 || playerdata->CharID != Characters_Sonic)
+	{
 		return;
 	}
 
-	ObjectMaster* playerobj = PlayerPtrs[data->CharIndex];
-	EntityData1* playerdata = playerobj->Data1;
-	EntityData2* playerdata2 = (EntityData2*)playerobj->Data2;
-	CharObj2* playerco2 = playerdata2->CharacterData;
-
-	if (data->Rotation.z == 0) {
-		if (data->CharIndex == 0) {
-			CON_REGULAR_TEXNAMES[12].texaddr = HAMY_TEXLIST.textures[1].texaddr;
-		}
-
-		if (CustomPhysics) {
-			playerco2->PhysicsData.HSpeedCap = 17;
-			playerco2->PhysicsData.MaxAccel = 3.8f;
-			playerco2->PhysicsData.field_14 = 0.90f;
-		}
-
-		data->Rotation.z = 1;
-	}
-
-	CharactersCommon_DrawBall(playerdata, data);
-
-	switch (data->Action) {
+	switch (data->Action)
+	{
+	case 0:
+		HeroesChars_InitPlayer((task*)obj, { "heroes-amy", &HAMY_TEXLIST }, 1, amy_action_heroes);
+		data->Action = 2;
+		return;
 	case 2:
-		PlayerPtrs[data->CharIndex]->DisplaySub = AmyHeroes_Display;
-
 		if (CanDoTricks(playerdata)) {
 			if (playerco2->Speed.x < 2 && PressedButtons[data->CharIndex] & Buttons_X && playerdata->Status & Status_Ground) {
 				playerdata->Action = 5;
 				PlayHeroesSound(AmySound_Ya);
 				data->Action = 3;
+				mtn->reqaction = MTN_SPD_ATC;
 				break;
 			}
 
-			if (data->Index == 14 && (playerdata->Status & Status_Ground) != Status_Ground && PressedButtons[data->CharIndex] & Buttons_X) {
+			if (playerco2->AnimationThing.Index == 14 && (playerdata->Status & Status_Ground) != Status_Ground && PressedButtons[data->CharIndex] & Buttons_X) {
 				data->field_A = 0;
 				PlayHeroesSound(AmySound_Attack);
 				data->Action = 4;
@@ -197,36 +326,27 @@ void AmyHeroes_Main(ObjectMaster *obj) {
 			playerco2->IdleTime = 0;
 		}
 
-		{
-			NJS_VECTOR anim = SpeedAnims(data, playerdata, playerco2); //id, speed, state
-			PlayHeroesAnimation(obj, anim.x, HAmyAnimData, anim.y, anim.z);
-		}
+		SonicAnimConverter(mtn, Characters_HeroesAmy, (taskwk*)playerdata, (playerwk*)playerco2);
 
 		break;
 	case 3:
-		if (data->field_A == 0) {
-			data->Scale.x = 0;
-			data->field_A = 1;
+		if (mtn->reqaction == MTN_SPD_ATC) {
 			playerco2->Powerups |= Powerups_Invincibility;
-		}
-		else if (data->field_A < 119) {
-			++data->field_A;
-			
+			NullifyVelocity(playerdata2, playerco2);
 		}
 		else {
-			data->field_A = 0;
 			playerco2->Powerups &= ~Powerups_Invincibility;
 			playerdata->Action = 2;
 			data->Action = 2;
 		}
-
-		PlayHeroesAnimation(obj, 53, HAmyAnimData, 0, 0);
 		break;
 	case 4:
 		TornadoTrick(data, data2, playerco2, playerdata);
-		PlayHeroesAnimation(obj, 14, HAmyAnimData, 0, 0);
 		break;
 	}
+
+	CharactersCommon_DrawBall(playerdata, data);
+	PSetMotion(mtn);
 
 	if (FrameCounterUnpaused % 200 == 0) {
 		data->InvulnerableTime = 1;
@@ -296,42 +416,24 @@ void LoadAmyFiles() {
 	AmyAnms[45] =  arc.GetAnimation("AM_EDGE_OTTO_A.saanim");
 	AmyAnms[46] =  arc.GetAnimation("AM_EDGE_OTTO_B.saanim");
 	AmyAnms[47] =  arc.GetAnimation("AM_EDGE_OTTO_C.saanim");
-	AmyAnms[48] =  arc.GetAnimation("AM_EDGE_OTTO_C.saanim");
-	AmyAnms[49] =  arc.GetAnimation("AM_FW_JUMP.saanim");
-	AmyAnms[50] =  arc.GetAnimation("AM_TRAP_JUMP.saanim");
-	AmyAnms[51] =  arc.GetAnimation("AM_POW_ROT_HALF.saanim");
-	AmyAnms[52] =  arc.GetAnimation("AM_WIN.saanim");
-	AmyAnms[53] =  arc.GetAnimation("AM_ATC_HAM.saanim");
-	AmyAnms[54] =  arc.GetAnimation("AM_IDLE_HALF.saanim");
-	AmyAnms[55] =  arc.GetAnimation("AM_IDLE_B_HALF.saanim");
-	AmyAnms[56] =  arc.GetAnimation("AM_IDLE_C_HALF.saanim");
-	AmyAnms[57] =  arc.GetAnimation("ROSE_AM.saanim");
-	AmyAnms[58] =  arc.GetAnimation("AM_IDLE_POW_HALF.saanim");
-	AmyAnms[59] =  arc.GetAnimation("AM_IDLE_POW_SHAKE.saanim");
-	AmyAnms[60] =  arc.GetAnimation("AM_START_IDLE.saanim");
-	AmyAnms[61] =  arc.GetAnimation("AM_ATC_TRNADE.saanim");
+	AmyAnms[48] = arc.GetAnimation("AM_FW_JUMP.saanim");
+	AmyAnms[49] = arc.GetAnimation("AM_TRAP_JUMP.saanim");
+	AmyAnms[50] = arc.GetAnimation("AM_POW_ROT_HALF.saanim");
+	AmyAnms[51] = arc.GetAnimation("AM_WIN.saanim");
+	AmyAnms[52] = arc.GetAnimation("AM_ATC_HAM.saanim");
+	AmyAnms[53] = arc.GetAnimation("AM_IDLE_HALF.saanim");
+	AmyAnms[54] = arc.GetAnimation("AM_IDLE_B_HALF.saanim");
+	AmyAnms[55] = arc.GetAnimation("AM_IDLE_C_HALF.saanim");
+	AmyAnms[56] = arc.GetAnimation("ROSE_AM.saanim");
+	AmyAnms[57] = arc.GetAnimation("AM_IDLE_POW_HALF.saanim");
+	AmyAnms[58] = arc.GetAnimation("AM_IDLE_POW_SHAKE.saanim");
+	AmyAnms[59] = arc.GetAnimation("AM_START_IDLE.saanim");
+	AmyAnms[60] = arc.GetAnimation("AM_ATC_TRNADE.saanim");
 
-	for (uint8_t i = 0; i < LengthOfArray(HAmyAnimData); ++i) {
-		if (AmyAnms[i] == nullptr) continue;
-		HAmyAnimData[i].Animation = new NJS_ACTION;
-		HAmyAnimData[i].Animation->object = AmyMdls[0]->getmodel();
-		HAmyAnimData[i].Animation->motion = AmyAnms[i]->getmotion();
-		HAmyAnimData[i].NextAnim = i;
-		HAmyAnimData[i].AnimationSpeed = 0.5f;
+	for (int i = 0; i < LengthOfArray(AmyActs); ++i) {
+		AmyActs[i].object = AmyMdls[0]->getmodel();
+		AmyActs[i].motion = AmyAnms[i] ? AmyAnms[i]->getmotion() : NULL;
 	}
-
-	HAmyAnimData[13].NextAnim = 14;
-	HAmyAnimData[15].NextAnim = 16;
-	HAmyAnimData[18].NextAnim = 19;
-	HAmyAnimData[42].Property = 1;
-	HAmyAnimData[43].Property = 1;
-	HAmyAnimData[27].Property = 1;
-	HAmyAnimData[28].Property = 1;
-	HAmyAnimData[20].Property = 1;
-	HAmyAnimData[25].Property = 1;
-	HAmyAnimData[26].Property = 1;
-	HAmyAnimData[44].NextAnim = 17;
-	HAmyAnimData[52].Property = 1;
 }
 
 void UnloadAmyFiles() {

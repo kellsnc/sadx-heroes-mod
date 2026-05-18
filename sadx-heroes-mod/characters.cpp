@@ -16,7 +16,7 @@ bool JumpBallEnabled	= true;
 bool P2SoundsEnabled	= false;
 
 ObjectMaster* HeroesChars[8];
-bool CharFilesLoaded[12];
+int CharFilesLoaded[12];
 int CurrentPlayer;
 
 ModelInfo* CharMdls[2];
@@ -217,26 +217,21 @@ void PlayHeroesAnimation(ObjectMaster* obj, uint8_t ID, AnimData* animdata, floa
 void CharactersCommon_Delete(ObjectMaster* obj) {
 	HeroesChars[obj->Data1->CharIndex] = nullptr;
 	
-	if (GameState == GameState_ExitLevel || (GameState == GameState_Death && Lives == 0)) {
-		int character = obj->Data1->CharID;
-		bool ArethereOthers = false;
+	int character = obj->Data1->CharID;
 
-		for (uint8_t player = 0; player < MaxPlayers; ++player) {
-			if (player != obj->Data1->CharIndex && HeroesChars[player]) {
-				if (HeroesChars[player]->Data1->CharID == character) ArethereOthers = true;
-			}
-		}
-
-		if (!ArethereOthers) {
-			njReleaseTexture((NJS_TEXLIST*)obj->Data1->LoopData);
-			UnloadFilesFuncs[obj->Data1->CharID - 9]();
-			CharFilesLoaded[character - 9] = false;
-		}
-	}
-	else if (GameState != GameState_Restart && GameState != GameState_Death) {
+	if (CharFilesLoaded[character - 9] && --CharFilesLoaded[character - 9] == 0) {
 		njReleaseTexture((NJS_TEXLIST*)obj->Data1->LoopData);
 		UnloadFilesFuncs[obj->Data1->CharID - 9]();
-		CharFilesLoaded[obj->Data1->CharID - 9] = false;
+	}
+	
+	if (obj->Data1->Object)
+	{
+		delete obj->Data1->Object;
+	}
+
+	if (obj->Data1->Scale.z)
+	{
+		delete *(int**)&obj->Data1->Scale.z;
 	}
 	
 	/*ObjectMaster* playerobj = PlayerPtrs[obj->Data1->CharIndex];
@@ -315,10 +310,12 @@ void CharactersCommon_DrawBall(EntityData1* playerdata, EntityData1* data) {
 			}
 		}
 	}
-	
-	if ((playerdata->CharID == Characters_Sonic && data->Index == 14) ||
-		(playerdata->CharID == Characters_Knuckles && data->Index == 14) ||
-		(playerdata->CharID == Characters_Tails && data->Index == 19)) {
+
+	mtnjvwk* mtn = (mtnjvwk*)data->Object;
+
+	if ((playerdata->CharID == Characters_Sonic && mtn->reqaction == MTN_SPD_JUMP_B) ||
+		(playerdata->CharID == Characters_Knuckles && mtn->reqaction == MTN_SPD_JUMP_B) ||
+		(playerdata->CharID == Characters_Tails && mtn->reqaction == MTN_SPD_JUMP_TRNGL)) {
 
 		ObjectMaster * ball = LoadObject(LoadObj_Data1, 5, BallObject);
 		ball->DisplaySub = ball->MainSub;
@@ -328,7 +325,7 @@ void CharactersCommon_DrawBall(EntityData1* playerdata, EntityData1* data) {
 		if (data->CharID == Characters_HeroesBig) ball->Data1->Scale.x = 2;
 		if (data->CharID == Characters_Vector) ball->Data1->Scale.x = 1.5f;
 	}
-	else if ((playerdata->CharID == Characters_Sonic && data->Index == 49) && data->Scale.z == 14) {
+	else if ((playerdata->CharID == Characters_Sonic && mtn->reqaction == MTN_SPD_FW_JUMP) && data->Scale.z == 14) {
 		ObjectMaster * ball = LoadObject(LoadObj_Data1, 5, BallObject);
 		ball->DisplaySub = ball->MainSub;
 		ball->Data1->Position = playerdata->Position;
@@ -336,6 +333,60 @@ void CharactersCommon_DrawBall(EntityData1* playerdata, EntityData1* data) {
 		ball->Data1->CharID = data->CharID;
 		ball->Data1->Action = 1;
 	}
+}
+
+void HeroesChars_InitPlayer(task* tp, TEX_PVMTABLE pvm, int lifeicontex, PL_ACTION* pl_action)
+{
+	taskwk* twp = tp->twp;
+
+	int pnum = twp->counter.b[0];
+	int heroes_plno = twp->counter.b[1];
+
+	if (!CharFilesLoaded[heroes_plno - 9])
+	{
+		LoadFilesFuncs[heroes_plno - 9]();
+		LoadPVM(pvm.pname, pvm.ptexlist);
+
+		int zanki_num = 0;
+		switch (heroes_plno)
+		{
+		case Characters_Cream:
+		case Characters_Rouge:
+		case Characters_Charmy:
+		case Characters_HeroesTails:
+			zanki_num = 14;
+			break;
+		case Characters_HeroesSonic:
+		case Characters_Shadow:
+		case Characters_HeroesAmy:
+		case Characters_Espio:
+			zanki_num = 12;
+			break;
+		case Characters_HeroesKnuckles:
+		case Characters_Omega:
+		case Characters_HeroesBig:
+		case Characters_Vector:
+			zanki_num = 15;
+			break;
+		}
+		if (zanki_num)
+			CON_REGULAR_TEXNAMES[zanki_num].texaddr = pvm.ptexlist->textures[lifeicontex].texaddr;
+	}
+
+	++CharFilesLoaded[heroes_plno - 9];
+
+	twp->value.ptr = pvm.ptexlist;
+
+	mtnjvwk* mtn = new mtnjvwk;
+	mtn->plactptr = pl_action;
+	mtn->mtnmode = MD_MTN_INIT;
+	mtn->reqaction = 0;
+	mtn->spdp = &playerpwp[pnum]->spd.x;
+	mtn->workp = &playerpwp[pnum]->work.f;
+	PSetMotion(mtn);
+	twp->timer.ptr = (NJS_OBJECT*)mtn;
+
+	playertp[pnum]->disp = (TaskFuncPtr)DisplayFuncs[heroes_plno - 9];
 }
 
 //Common player init function
@@ -382,149 +433,139 @@ bool CharactersCommon_Init(ObjectMaster* obj, const char* name, NJS_TEXLIST* tex
 	return true;
 }
 
-//Speed characters common anims
-NJS_VECTOR SpeedAnims(EntityData1* data, EntityData1* playerdata, CharObj2* playerco2) {
-	int anim = data->Index;
-	float speed = 0;
-	float state = 0;
-	float frame = data->Scale.x;
+void SonicAnimConverter(mtnjvwk* mtn, int heroes_plno, taskwk* pltwp, playerwk* pwp)
+{
+	int anim = mtn->reqaction;
 
-	switch (playerco2->AnimationThing.Index) {
-	case 0: case 1:	case 2:	case 7: case 8:anim = 54; data->Status = 0; 
-		if (playerco2->AnimationThing.Index == 0 && playerdata->Position.y - playerco2->_struct_a3.DistanceMax > 500 && playerdata->Action > 5) anim = 49; break; //stance
-	case 3: case 4: case 5: case 6: anim = 55; if (++data->Status == 100) { playerco2->AnimationThing.Index = 0; data->Status = 0; } break; //idle
-	case 9: data->Status = 0; anim = 0; if (playerco2->Speed.x < 0.02f) anim = 5; break;
-	case 10: anim = 0; speed = 0.9f + playerco2->Speed.x * 0.2f; break;
-	case 11: anim = 5; speed = 0.9f + playerco2->Speed.x * 0.2f; break;
-	case 12: anim = 6; speed = 1.5f + playerco2->Speed.x * 0.1f; 
-		if (data->CharID == Characters_Shadow && playerco2->Speed.x > 3) anim = 7; break;
-	case 13: anim = 7; speed = 0.5f + playerco2->Speed.x * 0.1f; 
-		if (data->CharID == Characters_Shadow && playerco2->Speed.x > 3) anim = 57; break;
+	switch (pwp->mj.reqaction) {
+	case 0: case 7: case 8: anim = MTN_SPD_IDLE; break; // idle
+	case 1:	case 2: anim = MTN_SPD_IDLE; break; //stance
+	case 3: case 4: case 5: case 6: anim = MTN_SPD_IDLE_B; break; //idle
+	case 9: anim = MTN_SPD_WALK; if (pwp->spd.x < 0.02f) anim = MTN_SPD_SLOW_RUN; break;
+	case 10: anim = MTN_SPD_WALK; break;
+	case 11: anim = MTN_SPD_SLOW_RUN; break;
+	case 12: anim = MTN_SPD_MID_RUN; break;
+	case 13: anim = MTN_SPD_TOP_RUN;
+		if (heroes_plno == Characters_Shadow && pwp->spd.x > 6.0) anim = MTN_SH_TOP_SKATE; break;
 	case 14: //jumping
-		if (anim < 13 || anim > 18) { anim = 13; }
-		else if (anim == 14) { if (data->Unknown > 2 && (playerdata->Status & Status_Ground) != Status_Ground) anim = 15; }
-		else if (anim == 16) { if (playerdata->Position.y - playerco2->_struct_a3.DistanceMax < 10) anim = 17; } break;
-	case 15: case 16: case 17: anim = 14; break; //roll
+		if (anim < 13 || anim > 18) { anim = MTN_SPD_JUMP_A; } break;
+		//else if (anim == 14) { if (data->Unknown > 2 && (playerdata->Status & Status_Ground) != Status_Ground) anim = MTN_SPD_JUMP_C; }
+		//else if (anim == 16) { if (pltwp->pos.y - pwp->shadow.y_bottom < 10.0f) anim = MTN_SPD_JUMP_D; } break;
+	case 15: case 16: case 17: anim = MTN_SPD_ROLL; break; //roll
 	case 18: //fall after spring jump
-		if (playerco2->Speed.x > 1 || playerdata->Action == 14) anim = 49;
-		else if (playerco2->Speed.y > 2 && playerco2->Speed.x < 1) anim = 50;
-		else anim = 16; break;
-	case 19: anim = 18; //falling
-		if (playerco2->Speed.x > 8 && playerdata->Position.y - playerco2->_struct_a3.DistanceMax > 500) {
-			anim = 49;
-			playerco2->AnimationThing.Index = 150;
+		if (pwp->spd.x > 1 || pltwp->mode == 14) anim = MTN_SPD_FW_JUMP;
+		else if (pwp->spd.y > 2 && pwp->spd.x < 1) anim = MTN_SPD_TRAP_JUMP;
+		else anim = MTN_SPD_JUMP_D; break;
+	case 19: anim = MTN_SPD_JUMP_F; //falling
+		if (pwp->spd.x > 8.0f && pltwp->pos.y - pwp->shadow.y_bottom > 500.0f) {
+			anim = MTN_SPD_FW_JUMP;
+			pwp->mj.reqaction = 150;
 		}
 		break;
-	case 20: case 25: anim = 36; //break
-		if (playerco2->Speed.x > 6) anim = 35;
-		else if (playerco2->Speed.x > 3) anim = 34; break;
-	case 21: case 22: anim = 48; break; //push
-	case 23: case 24: anim = 42; break; //hurt
-	case 26: case 46: anim = 41; break; //updraft
-	case 27: case 28: anim = 42; break;
-	case 29: anim = 18; break;
-	case 30: anim = 37; break;
+	case 20: case 25: anim = MTN_SPD_BREAK_C; //break
+		if (pwp->spd.x > 6) anim = MTN_SPD_BREAK_B;
+		else if (pwp->spd.x > 3) anim = MTN_SPD_BREAK_A; break;
+	case 21: case 22: anim = MTN_SPD_EDDGE_OTTO_C; break; //push
+	case 23: case 24: anim = MTN_SPD_DAM_MID_A; break; //hurt
+	case 26: case 46: anim = MTN_SPD_FLORT; break; //updraft
+	case 27: case 28: anim = MTN_SPD_DAM_MID_A; break;
+	case 29: anim = MTN_SPD_JUMP_F; break;
+	case 30: anim = MTN_SPD_BREAK_TURN_L; break;
 	case 31: //ball
 	case 32: case 39: case 40: case 41: case 42: case 43: case 45: case 83: case 125: anim = 14; break;
-	case 44: anim = 9; break;
-	case 47: anim = 40; break;
-	case 48: anim = 1; break; //pull
+	case 44: anim = MTN_SPD_JUMP_WALL; break;
+	case 47: anim = MTN_SPD_BRA_TOP; break;
+	case 48: anim = MTN_SPD_WALK_PULL; break; //pull
 	case 49: //shake tree
 	case 50: //pickup
 	case 51: //shake
 	case 53: case 55: case 56:
 	case 65: //car
 	case 77: //rocket
-	case 130: case 131: anim = 33; break; //grab
-	case 52: case 57: case 58: case 59: case 60: case 61: case 62: case 63: case 132: anim = 32; break; //put
+	case 130: case 131: anim = MTN_SPD_HANG_ON; break; //grab
+	case 52: case 57: case 58: case 59: case 60: case 61: case 62: case 63: case 132: anim = MTN_SPD_HANG_OFF; break; //put
 	case 64:
 	case 70:
-	case 79: anim = 49; break; //rocket
-	case 71: anim = 0; break; //ice
+	case 79: anim = MTN_SPD_FW_JUMP; break; //rocket
+	case 71: anim = MTN_SPD_WALK; break; //ice
 	case 75: case 76: //won
-		anim = 52;
-		if (data->CharID == Characters_Espio) anim = 55;
+		anim = MTN_SPD_WIN;
+		if (heroes_plno == Characters_Espio) anim = MTN_SPD_IDLE_B;
 		break;
-	case 82: anim = 42; speed = 0; break;
-	case 84: anim = 45; break;
-	case 85: case 86: case 87: anim = 42; break;
-	case 88: anim = 53; break;
-	case 102: case 105: case 109: case 110: case 111: case 112: case 113: case 114: case 115: anim = 21; break; //snowboard
+	case 82: anim = MTN_SPD_DAM_MID_A; break;
+	case 84: anim = MTN_SPD_EDDGE_OTTO_A; break;
+	case 85: case 86: case 87: anim = MTN_SPD_DAM_MID_A; break;
+	case 88: anim = MTN_SPD_ATC; break;
+	case 102: case 105: case 109: case 110: case 111: case 112: case 113: case 114: case 115: anim = MTN_SPD_GLIND; break; //snowboard
 	case 103: case 107: //snowboard right
-		if (playerco2->Speed.z > 0.1f) anim = 28;
-		else anim = 26;
+		if (pwp->spd.z > 0.1f) anim = MTN_SPD_GLIND_R;
+		else anim = MTN_SPD_GLIND_FLIP_FR;
 		break;
 	case 104: case 108: //snowboard left
-		if (playerco2->Speed.z < 0.1f) anim = 27;
-		else anim = 26;
+		if (pwp->spd.z < 0.1f) anim = MTN_SPD_GLIND_L;
+		else anim = MTN_SPD_GLIND_FLIP_FR;
 		break;
-	case 106: anim = 20; break;
-	case 116: case 117: case 118: case 119: case 120: case 121: case 122: case 123: anim = 25; break;
-	case 124: anim = 22; break;
-	case 126: case 127: case 128: anim = 56; break;
-	case 129: anim = 11;
+	case 106: anim = MTN_SPD_JUMP_GLIND; break;
+	case 116: case 117: case 118: case 119: case 120: case 121: case 122: case 123: anim = MTN_SPD_GLIND_FLIP_B; break;
+	case 124: anim = MTN_SPD_GLIND_BK; break;
+	case 126: case 127: case 128: anim = MTN_SPD_IDLE_C; break;
+	case 129: anim = MTN_SPD_JUMP_TRIC_B;
 	}
 
-	return { (float)anim, speed, state };
+	mtn->reqaction = anim;
 }
 
-NJS_VECTOR PowerAnims(EntityData1* data, EntityData1* playerdata, CharObj2* playerco2) {
-	int anim = data->Index;
-	float speed = 0;
-	float state = 0;
-	float frame = data->Scale.x;
+void KnucklesAnimConverter(mtnjvwk* mtn, int heroes_plno, taskwk* pltwp, playerwk* pwp)
+{
+	int anim = mtn->reqaction;
 
-	switch (playerco2->AnimationThing.Index) {
-	case 0: case 1:	case 2:	case 7: case 8: anim = 54; data->Status = 0; 
-		if (playerco2->AnimationThing.Index == 0 && playerdata->Position.y - playerco2->_struct_a3.DistanceMax > 500 && playerdata->Action > 5) anim = 49; break; //stance
-	case 3: case 4: case 5: case 6: anim = 55; if (++data->Status == 100) { playerco2->AnimationThing.Index = 0; data->Status = 0; } break; //idle
-	case 9: data->Status = 0; anim = 0; if (playerco2->Speed.x < 0.02f) anim = 5; break;
-	case 10: anim = 0; speed = 0.9f + playerco2->Speed.x * 0.2f; break;
-	case 11: anim = 5; speed = 0.9f + playerco2->Speed.x * 0.2f; break;
-	case 12: anim = 6; speed = 1.5f + playerco2->Speed.x * 0.1f;
-		if (data->CharID == Characters_Shadow && playerco2->Speed.x > 3) anim = 7; break;
-	case 13: anim = 7; speed = 0.5f + playerco2->Speed.x * 0.1f;
-		if (data->CharID == Characters_Shadow && playerco2->Speed.x > 3) anim = 57; break;
+	switch (pwp->mj.reqaction) {
+	case 0: case 1:	case 2:	case 7: case 8: anim = MTN_POW_IDLE; break; //stance
+	case 3: case 4: case 5: case 6: anim = MTN_POW_IDLE_B; break; //idle
+	case 9: anim = MTN_POW_WALK; if (pwp->spd.x < 0.02f) anim = MTN_POW_SLOW_RUN; break;
+	case 10: anim = MTN_POW_WALK; break;
+	case 11: anim = MTN_POW_SLOW_RUN; break;
+	case 12: anim = MTN_POW_MID_RUN; break;
+	case 13: anim = MTN_POW_TOP_RUN; break;
 	case 14: //jumping
-		if (anim < 13 || anim > 18) { anim = 13; }
-		else if (anim == 14) { if (data->Unknown > 2) anim = 15; }
-		else if (anim == 16) { if (playerdata->Position.y - playerco2->_struct_a3.DistanceMax < 10) anim = 17; } break;
-	case 15: case 16: case 17: case 34: anim = 14; break; //roll
+		if (anim < MTN_POW_JUMP_A || anim > MTN_POW_JUMP_F) { anim = MTN_POW_JUMP_A; } break;
+		//else if (anim == 14) { if (data->Unknown > 2) anim = 15; }
+		//else if (anim == 16) { if (playerdata->Position.y - playerco2->_struct_a3.DistanceMax < 10) anim = 17; } break;
+	case 15: case 16: case 17: case 34: anim = MTN_POW_ROLL; break; //roll
 	case 18: //fall after spring jump
-		if (playerco2->Speed.x > 1 || playerdata->Action == 14) anim = 49;
-		else if (playerco2->Speed.y > 2 && playerco2->Speed.x < 1) anim = 50;
-		else anim = 16; break;
-	case 19: anim = 16; //falling
-		if (playerco2->Speed.x > 8 && playerdata->Position.y - playerco2->_struct_a3.DistanceMax > 500) {
-			anim = 49;
+		if (pwp->spd.x > 1 || pltwp->mode == 14) anim = MTN_POW_FW_JUMP;
+		else if (pwp->spd.y > 2 && pwp->spd.x < 1) anim = MTN_POW_TRAP_JUMP;
+		else anim = MTN_POW_JUMP_D; break;
+	case 19: anim = MTN_POW_JUMP_F; //falling
+		if (pwp->spd.x > 8.0f && pltwp->pos.y - pwp->shadow.y_bottom > 500.0f) {
+			anim = MTN_POW_FW_JUMP;
 		}
 		break;
-	case 20: anim = 18; break;
-	case 21: anim = 36; //break
-		if (playerco2->Speed.x > 6) anim = 35;
-		else if (playerco2->Speed.x > 3) anim = 34; break;
-	case 22: anim = 38; break;
-	case 23: case 24: anim = 2; break; //push
-	case 25: case 27: case 28: case 38: anim = 42; break; //hurt, drowning
-	case 30: anim = 41; break;
-	case 33: anim = 18; break;
-	case 39: case 40: anim = 52; break;
-	case 41: case 42: case 43: case 44: anim = 10; break;
-	case 45: anim = 45; break;
-	case 51: anim = 19; 
-		if (data->field_A == 0) {
-			data->field_A = 1;
+	case 20: anim = MTN_POW_JUMP_F; break;
+	case 21: anim = MTN_POW_BREAK_C; //break
+		if (pwp->spd.x > 6) anim = MTN_POW_BREAK_B;
+		else if (pwp->spd.x > 3) anim = MTN_POW_BREAK_A; break;
+	case 22: anim = MTN_POW_BREAK_TURN_R; break;
+	case 23: case 24: anim = MTN_POW_WALK_PUSH; break; //push
+	case 25: case 27: case 28: case 38: anim = MTN_POW_DAM_M_A; break; //hurt, drowning
+	case 30: anim = MTN_POW_FLORT; break;
+	case 33: anim = MTN_POW_JUMP_F; break;
+	case 39: case 40: anim = MTN_POW_WIN_B; break;
+	case 41: case 42: case 43: case 44: anim = MTN_POW_ATC_B; break;
+	case 45: anim = MTN_POW_EDGE_OTTO_A; break;
+	case 51: anim = MTN_POW_JUMP_TRNGL;
+		if (mtn->reqaction != anim) {
 			PlayHeroesSound(CommonSound_GlideBegin);
 		} break; //gliding
-	case 46: case 47: case 48: anim = 1; break;
-	case 49: case 52: anim = 33; break;
-	case 50: anim = 47; break;
-	case 54: case 55: case 56: anim = 11; break; //attack
-	case 70: case 71: case 72: case 73: case 74: case 75: case 85: case 86: case 104: case 107: anim = 1; break;
-	case 84: case 101: case 102: case 103: case 108: case 109: case 110: anim = 29; break;
+	case 46: case 47: case 48: anim = MTN_POW_WALK_PULL; break;
+	case 49: case 52: anim = MTN_POW_HANG_ON; break;
+	case 50: anim = MTN_POW_EDGE_OTTO_C; break;
+	case 54: case 55: case 56: anim = MTN_POW_ATC_C; break; //attack
+	case 70: case 71: case 72: case 73: case 74: case 75: case 85: case 86: case 104: case 107: anim = MTN_POW_WALK_PULL; break;
+	case 84: case 101: case 102: case 103: case 108: case 109: case 110: anim = MTN_POW_FLY_IDLE; break;
 	}
 
-	return { (float)anim, speed, state };
+	mtn->reqaction = anim;
 }
 
 bool CanDoTricks(EntityData1* player) {
@@ -609,6 +650,9 @@ void TornadoTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, En
 
 			PlayHeroesSound_Entity(CommonSound_Tornado, tornado, 500, false);
 		}
+
+		playerco2->AnimationThing.Index = 14;
+		playerco2->SpindashSpeed = 5.0f;
 		
 		playerco2->Powerups |= Powerups_Invincibility;
 		data->Rotation.z += 0x500;
