@@ -266,7 +266,7 @@ void TrapRing_Main(ObjectMaster* obj) {
 		ring->Data1->Position = data->Position;
 		ring->Data1->Rotation = data->Rotation;
 
-		Collision_Init(obj, &Cheese_Col, 1, 3u);
+		Collision_Init(obj, &Cheese_Col, 1, CID_BULLET);
 		data->CollisionInfo->colli_range = 2.0f;
 		
 		data->Action = 1;

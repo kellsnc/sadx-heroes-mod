@@ -20,9 +20,7 @@ int CharFilesLoaded[12];
 int CurrentPlayer;
 
 ModelInfo* CharMdls[2];
-CollisionData Tornado_Col = { 0, 0, 0, 0, 0, { 0.0f, 0.0f, 0.0f }, 20.0f, 0.0f, 0.0f };
-
-float bombsize;
+CollisionData Tornado_Col = { 0, CI_FORM_CYLINDER, CI_PUSH_TH_ALL, CI_DMG_SET(3, 3) | CI_DMG_ENEMY, CI_ATTR_DAMAGE, { 0.0f, 0.0f, 0.0f }, 25.0f, 40.0f, 0.0f };
 
 ObjectFuncPtr DisplayFuncs[]{
 	CreamHeroes_Display,
@@ -621,7 +619,7 @@ void TornadoTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, En
 				tornado->Data1->Position.y -= 20;
 
 			tornado->Data1->CharID = data->CharID;
-			Collision_Init(tornado, &Tornado_Col, 1, 3u);
+			Collision_Init(tornado, &Tornado_Col, 1, CID_BULLET);
 
 			PlayHeroesSound_Entity(CommonSound_Tornado, tornado, 500, false);
 		}
@@ -665,8 +663,8 @@ bool KickTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, Entit
 }
 
 void ExploseEnemies(NJS_VECTOR* pos, float size) {
-	bombpos = *pos;
-	bombsize = size * 10;
+	explosion_p = *pos;
+	explosion_r = size * 10;
 }
 
 //Power combo trick, return the attacks' number as it launches, 4 is custom character attack.
@@ -823,27 +821,6 @@ bool FlightPunchTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2
 	}
 
 	return false;
-}
-
-//Add new weaknesses for enemies: cheese, tails' trap rings, tornadoes, etc.
-bool OhNoImDead2(EntityData1 *a1, ObjectData2 *a2);
-Trampoline OhNoImDead2_t(0x004CE030, 0x004CE036, OhNoImDead2);
-bool OhNoImDead2(EntityData1 *a1, ObjectData2 *a2) {
-	if (a1->CollisionInfo->CollidingObject) {
-		if (a1->CollisionInfo->CollidingObject->Object->MainSub == Cheese_Main
-			|| a1->CollisionInfo->CollidingObject->Object->MainSub == TrapRing_Main
-			|| a1->CollisionInfo->CollidingObject->Object->MainSub == TornadoObj
-			|| a1->CollisionInfo->CollidingObject->Object->MainSub == LureObj_Main
-			|| a1->CollisionInfo->CollidingObject->Object->MainSub == NinjaObj) return 1;
-	}
-
-	if (bombsize && GetDistance(&bombpos, &a1->Position) < bombsize) {
-		bombsize = 0;
-		return 1;
-	}
-
-	FunctionPointer(bool, original, (EntityData1 *a1, ObjectData2 *a2), OhNoImDead2_t.Target());
-	return original(a1, a2);
 }
 
 //Hijack the sound functions of Sonic, Tails and Knuckles to redirect those

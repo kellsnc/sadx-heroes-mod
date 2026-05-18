@@ -807,7 +807,7 @@ void EggPawn_Init(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1;
 	
 	//	If the configs are ok, load an Egg Pawn
-	if (Enemies_CanSwap || data->Scale.x == 99) {
+	if (0) {
 
 		//	Load the files only once
 		if (IsEggPawnInitialized == false) {

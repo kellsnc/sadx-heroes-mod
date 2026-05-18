@@ -145,7 +145,7 @@ NJS_TEXLIST HBIG_TEXLIST = { arrayptrandlength(HBIG_TEXNAMES) };
 
 NJS_MATRIX BigMatrix;
 
-CollisionData Lure_Col = { 0, 0, 0, 0, 0, { 0.0f, 0.0f, 0.0f }, 5.5, 0.0f, 0.0f };
+CollisionData Lure_Col = { 0, CI_FORM_SPHERE, CI_PUSH_TH_ALL, CI_DMG_SET(3, 3) | CI_DMG_ENEMY, CI_ATTR_DAMAGE, { 0.0f, 0.0f, 0.0f }, 5.5, 0.0f, 0.0f };
 
 void PlayVoice_Big(int ID) {
 	switch (ID) {
@@ -229,7 +229,7 @@ void LureObj_Main(ObjectMaster *obj) {
 	switch (obj->Data1->Action) {
 	case 0:
 		obj->DisplaySub = LureObj_Display;
-		Collision_Init(obj, &Lure_Col, 1, 3u);
+		Collision_Init(obj, &Lure_Col, 1, CID_BULLET);
 		obj->Data1->Action = 1;
 		break;
 	case 1:

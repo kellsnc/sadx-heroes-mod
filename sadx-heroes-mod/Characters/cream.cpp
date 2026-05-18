@@ -180,7 +180,7 @@ PL_ACTION cheese_action[] = {
 NJS_TEXNAME CREAM_TEXNAMES[4];
 NJS_TEXLIST CREAM_TEXLIST = { arrayptrandlength(CREAM_TEXNAMES) };
 
-CollisionData Cheese_Col = { 0, 0, 0, 0, 0, { 0.0f, 0.0f, 0.0f }, 4.5, 0.0f, 0.0f };
+CollisionData Cheese_Col = { 0, CI_FORM_SPHERE, CI_PUSH_TH_ALL, CI_DMG_SET(3, 3) | CI_DMG_ENEMY, CI_ATTR_DAMAGE, { 0.0f, 0.0f, 0.0f }, 4.5f, 0.0f, 0.0f};
 
 void PlayVoice_Cream(int ID) {
 	switch (ID) {
@@ -328,7 +328,7 @@ void Cheese_Main(ObjectMaster* obj) {
 	case 0:
 		obj->DisplaySub = Cheese_Display;
 		data->Position = GetCheesePoint(&playerdata->Position, &playerdata->Rotation);
-		Collision_Init(obj, &Cheese_Col, 1, 3u);
+		Collision_Init(obj, &Cheese_Col, 1, CID_BULLET);
 
 		pwp_heroes->mm_sub.plactptr = cheese_action;
 		pwp_heroes->mm_sub.mtnmode = MD_MTN_INIT;

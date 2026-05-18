@@ -363,11 +363,6 @@ bool CheckObjectDamage(EntityData1* data) {
 		return true;
 	}
 
-	if (bombsize && GetDistance(&bombpos, &data->Position) < bombsize) {
-		bombsize = 0;
-		return true;
-	}
-
 	return false;
 }
 
