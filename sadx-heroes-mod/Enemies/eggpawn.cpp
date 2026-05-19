@@ -806,67 +806,59 @@ void EggPawn_LoadFiles() {
 void EggPawn_Init(ObjectMaster* obj) {
 	EntityData1* data = obj->Data1;
 	
-	//	If the configs are ok, load an Egg Pawn
-	if (0) {
+	//	Load the files only once
+	if (IsEggPawnInitialized == false) {
+		IsEggPawnInitialized = true;
+		EggPawn_LoadFiles();
+	}
 
-		//	Load the files only once
-		if (IsEggPawnInitialized == false) {
-			IsEggPawnInitialized = true;
-			EggPawn_LoadFiles();
-		}
+	//	Init the enemy handler (used for Gamma's missile, Sonic's attacks)
+	PawnCustomData* pawndata = (PawnCustomData*)AllocateObjectData2(obj, data);
+	ObjectData2_SetStartPosition(data, (ObjectData2*)pawndata);
 
-		//	Init the enemy handler (used for Gamma's missile, Sonic's attacks)
-		PawnCustomData* pawndata = (PawnCustomData*)AllocateObjectData2(obj, data);
-		ObjectData2_SetStartPosition(data, (ObjectData2*)pawndata);
+	//	Init the collision (with the "hurt player if not attacking" and "target" flags)
+	Collision_Init(obj, EggPawnCollisionData, 2, 3);
 
-		//	Init the collision (with the "hurt player if not attacking" and "target" flags)
-		Collision_Init(obj, EggPawnCollisionData, 2, 3);
+	//	Populate the ObjectData unused stuff with our own struct
+	//	using the data in the setfile
+	pawndata->startaction = (EggPawnActions)(int)data->Scale.x;
+	pawndata->pawnweapon = (EggPawnWeapon)(int)data->Scale.y;
+	pawndata->pawnshield = (EggPawnShield)(int)data->Scale.z;
+	pawndata->pawntype = (EggPawnType)data->Rotation.x;
+	pawndata->miny = data->Rotation.z;
 
-		//	Populate the ObjectData unused stuff with our own struct
-		//	using the data in the setfile
-		pawndata->startaction =	(EggPawnActions)(int)data->Scale.x;
-		pawndata->pawnweapon =	(EggPawnWeapon)(int)data->Scale.y;
-		pawndata->pawnshield =	(EggPawnShield)(int)data->Scale.z;
-		pawndata->pawntype =	(EggPawnType)data->Rotation.x;
-		pawndata->miny = data->Rotation.z;
-
-		if (data->Action == 1 && CurrentLevel != HeroesLevelID_EggFleet && IsCurrentHeroesLevel() == true) {
-			data->Action = 0;
-		}
-		else {
-			data->Action = pawndata->startaction;
-		}
-		
-
-		//	The King type is another model, swap
-		if (pawndata->pawntype == EggPawnType::King) {
-			data->Object = EggPawnMdls[1]->getmodel();
-		}
-		else {
-			data->Object = EggPawnMdls[0]->getmodel();
-		}
-
-		if (pawndata->pawnweapon > EggPawnWeapon::None && pawndata->pawnweapon <= EggPawnWeapon::Cannon) {
-			LoadChildObject(LoadObj_Data1, EggPawnWeapon_Main, obj);
-		}
-
-		if (pawndata->pawnshield > EggPawnShield::None && pawndata->pawnshield <= EggPawnShield::Rock) {
-			LoadChildObject(LoadObj_Data1, EggPawnShield_Main, obj);
-		}
-
-		EggPawn_SetDefaultTextures();
-
-		//	Reset the object properties
-		data->Position.y -= 4;
-		data->Rotation = { 0, data->Rotation.y + 0x8000 , 0 };
-		data->Scale = { 0, 0, 0 };
-
-		//	Object functions
-		obj->MainSub = EggPawn_Main;
-		obj->DisplaySub = EggPawn_Display;
+	if (data->Action == 1 && CurrentLevel != HeroesLevelID_EggFleet && IsCurrentHeroesLevel() == true) {
+		data->Action = 0;
 	}
 	else {
-		ObjectFunc(original, KikiTrampoline->Target()); // Otherwise, load a kiki.
-		original(obj);
+		data->Action = pawndata->startaction;
 	}
+
+
+	//	The King type is another model, swap
+	if (pawndata->pawntype == EggPawnType::King) {
+		data->Object = EggPawnMdls[1]->getmodel();
+	}
+	else {
+		data->Object = EggPawnMdls[0]->getmodel();
+	}
+
+	if (pawndata->pawnweapon > EggPawnWeapon::None && pawndata->pawnweapon <= EggPawnWeapon::Cannon) {
+		LoadChildObject(LoadObj_Data1, EggPawnWeapon_Main, obj);
+	}
+
+	if (pawndata->pawnshield > EggPawnShield::None && pawndata->pawnshield <= EggPawnShield::Rock) {
+		LoadChildObject(LoadObj_Data1, EggPawnShield_Main, obj);
+	}
+
+	EggPawn_SetDefaultTextures();
+
+	//	Reset the object properties
+	data->Position.y -= 4;
+	data->Rotation = { 0, data->Rotation.y + 0x8000 , 0 };
+	data->Scale = { 0, 0, 0 };
+
+	//	Object functions
+	obj->MainSub = EggPawn_Main;
+	obj->DisplaySub = EggPawn_Display;
 }

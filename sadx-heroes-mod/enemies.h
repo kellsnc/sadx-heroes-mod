@@ -10,7 +10,6 @@ void LoadMissile(NJS_VECTOR* pos, Rotation3* dir, float scale);
 extern bool EnableEnemiesSAStages;
 extern bool Enemies_CanSwap;
 
-extern Trampoline* KikiTrampoline;
 void EggPawn_Init(ObjectMaster* obj);
 void EggPawn_DeleteFiles();
 
