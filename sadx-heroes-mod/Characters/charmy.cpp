@@ -523,7 +523,7 @@ void CharmyHeroes_Main(ObjectMaster * obj) {
 			playerco2->IdleTime = 0;
 		}
 
-		CharmyAnimConverter(&pwp_heroes->mm, Characters_Charmy, (taskwk*)playerdata, (playerwk*)playerco2);
+		CharmyAnimConverter(&pwp_heroes->mm, HeroesChars_Charmy, (taskwk*)playerdata, (playerwk*)playerco2);
 
 		break;
 	case 3:

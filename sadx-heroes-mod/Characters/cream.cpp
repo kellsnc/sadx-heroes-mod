@@ -775,7 +775,7 @@ void CreamHeroes_Main(ObjectMaster *obj) {
 			playerco2->IdleTime = 0;
 		}
 
-		CreamAnimConverter(&pwp_heroes->mm, Characters_HeroesTails, (taskwk*)playerdata, (playerwk*)playerco2);
+		CreamAnimConverter(&pwp_heroes->mm, HeroesChars_Tails, (taskwk*)playerdata, (playerwk*)playerco2);
 
 		break;
 	case 3:

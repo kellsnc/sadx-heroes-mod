@@ -134,10 +134,35 @@ FunctionHook<void, task*> SonicDisplay_h(0x4948C0);
 FunctionHook<void, task*> MilesDisplay_h(0x460C40);
 FunctionHook<void, task*> KnucklesDisplay_h(0x4721B0);
 
+void HeroesChars_Dest(ObjectMaster* obj)
+{
+	playerwk_heroes* pwp_heroes = (playerwk_heroes*)obj->UnknownB_ptr;
+
+	HeroesChars[obj->Data1->CharIndex] = nullptr;
+
+	if (CharFilesLoaded[pwp_heroes->appearanceno - 1] && --CharFilesLoaded[pwp_heroes->appearanceno - 1] == 0)
+	{
+		njReleaseTexture(pwp_heroes->texlist);
+		UnloadFilesFuncs[pwp_heroes->appearanceno - 1]();
+	}
+
+	if (pwp_heroes->mm.mtnmode)
+	{
+		pwp_heroes->mm.mtnmode = MD_MTN_END;
+		PSetMotion(&pwp_heroes->mm);
+	}
+
+	if (pwp_heroes->mm_sub.mtnmode)
+	{
+		pwp_heroes->mm_sub.mtnmode = MD_MTN_END;
+		PSetMotion(&pwp_heroes->mm_sub);
+	}
+}
+
 void InitHeroesPlayer(task* tp, int heroes_plno)
 {
 	taskwk* twp = tp->twp;
-	if (heroes_plno != 0)
+	if (heroes_plno > 0)
 	{
 		int player = twp->counter.b[0];
 
@@ -147,10 +172,15 @@ void InitHeroesPlayer(task* tp, int heroes_plno)
 			HeroesChars[player] = NULL;
 		}
 
-		HeroesChars[player] = LoadObject((LoadObj)(LoadObj_Data1 | LoadObj_Data2), 1, MainFuncs[heroes_plno - 9]);
+		HeroesChars[player] = LoadObject((LoadObj)(LoadObj_Data1 | LoadObj_Data2), 1, MainFuncs[heroes_plno - 1]);
+		HeroesChars[player]->DeleteSub = HeroesChars_Dest;
+
 		HeroesChars[player]->Data1->CharIndex = player;
 		HeroesChars[player]->Data1->CharID = heroes_plno;
-		HeroesChars[player]->UnknownB_ptr = (anywk*)CAlloc(1, sizeof(playerwk_heroes));
+
+		playerwk_heroes* pwp_heroes = (playerwk_heroes*)CAlloc(1, sizeof(playerwk_heroes));
+		HeroesChars[player]->UnknownB_ptr = pwp_heroes;
+		pwp_heroes->appearanceno = heroes_plno;
 	}
 }
 
@@ -196,13 +226,13 @@ void KnucklesTheEchidna_r(task* tp)
 	KnucklesTheEchidna_h.Original(tp);
 }
 
-bool HeroesChar_Display(task* tp)
+bool HeroesChars_Disp(task* tp)
 {
 	int pnum = tp->twp->counter.b[0];
 	if (HeroesChars[pnum])
 	{
 		if (HeroesChars[pnum]->Data1->Action != 0)
-			DisplayFuncs[HeroesChars[pnum]->Data1->CharID - 9]((ObjectMaster*)tp);
+			DisplayFuncs[HeroesChars[pnum]->Data1->CharID - 1]((ObjectMaster*)tp);
 		return true;
 	}
 	return false;
@@ -210,7 +240,7 @@ bool HeroesChar_Display(task* tp)
 
 void SonicDisplay_r(task* tp)
 {
-	if (!HeroesChar_Display(tp))
+	if (!HeroesChars_Disp(tp))
 	{
 		SonicDisplay_h.Original(tp);
 	}
@@ -218,7 +248,7 @@ void SonicDisplay_r(task* tp)
 
 void MilesDisplay_r(task* tp)
 {
-	if (!HeroesChar_Display(tp))
+	if (!HeroesChars_Disp(tp))
 	{
 		MilesDisplay_h.Original(tp);
 	}
@@ -226,37 +256,9 @@ void MilesDisplay_r(task* tp)
 
 void KnucklesDisplay_r(task* tp)
 {
-	if (!HeroesChar_Display(tp))
+	if (!HeroesChars_Disp(tp))
 	{
 		KnucklesDisplay_h.Original(tp);
-	}
-}
-
-//Common player removal function
-void CharactersCommon_Delete(ObjectMaster* obj) {
-	HeroesChars[obj->Data1->CharIndex] = nullptr;
-	
-	int character = obj->Data1->CharID;
-
-	if (CharFilesLoaded[character - 9] && --CharFilesLoaded[character - 9] == 0) {
-		njReleaseTexture((NJS_TEXLIST*)obj->Data1->LoopData);
-		UnloadFilesFuncs[obj->Data1->CharID - 9]();
-	}
-
-	playerwk_heroes* pwp_heroes = (playerwk_heroes*)obj->UnknownB_ptr;
-	if (pwp_heroes)
-	{
-		if (pwp_heroes->mm.mtnmode)
-		{
-			pwp_heroes->mm.mtnmode = MD_MTN_END;
-			PSetMotion(&pwp_heroes->mm);
-		}
-
-		if (pwp_heroes->mm_sub.mtnmode)
-		{
-			pwp_heroes->mm_sub.mtnmode = MD_MTN_END;
-			PSetMotion(&pwp_heroes->mm_sub);
-		}
 	}
 }
 
@@ -266,32 +268,31 @@ void HeroesChars_InitPlayer(task* tp, TEX_PVMTABLE pvm, int lifeicontex, PL_ACTI
 	playerwk_heroes* pwp_heroes = (playerwk_heroes*)tp->awp;
 
 	int pnum = twp->counter.b[0];
-	int heroes_plno = twp->counter.b[1];
 
-	if (!CharFilesLoaded[heroes_plno - 9])
+	if (!CharFilesLoaded[pwp_heroes->appearanceno - 1])
 	{
-		LoadFilesFuncs[heroes_plno - 9]();
+		LoadFilesFuncs[pwp_heroes->appearanceno - 1]();
 		LoadPVM(pvm.pname, pvm.ptexlist);
 
 		int zanki_num = 0;
-		switch (heroes_plno)
+		switch (pwp_heroes->appearanceno)
 		{
-		case Characters_Cream:
-		case Characters_Rouge:
-		case Characters_Charmy:
-		case Characters_HeroesTails:
+		case HeroesChars_Cream:
+		case HeroesChars_Rouge:
+		case HeroesChars_Charmy:
+		case HeroesChars_Tails:
 			zanki_num = 14;
 			break;
-		case Characters_HeroesSonic:
-		case Characters_Shadow:
-		case Characters_HeroesAmy:
-		case Characters_Espio:
+		case HeroesChars_Sonic:
+		case HeroesChars_Shadow:
+		case HeroesChars_Amy:
+		case HeroesChars_Espio:
 			zanki_num = 12;
 			break;
-		case Characters_HeroesKnuckles:
-		case Characters_Omega:
-		case Characters_HeroesBig:
-		case Characters_Vector:
+		case HeroesChars_Knuckles:
+		case HeroesChars_Omega:
+		case HeroesChars_Big:
+		case HeroesChars_Vector:
 			zanki_num = 15;
 			break;
 		}
@@ -299,7 +300,7 @@ void HeroesChars_InitPlayer(task* tp, TEX_PVMTABLE pvm, int lifeicontex, PL_ACTI
 			CON_REGULAR_TEXNAMES[zanki_num].texaddr = pvm.ptexlist->textures[lifeicontex].texaddr;
 	}
 
-	++CharFilesLoaded[heroes_plno - 9];
+	++CharFilesLoaded[pwp_heroes->appearanceno - 1];
 
 	pwp_heroes->texlist = pvm.ptexlist;
 
@@ -310,9 +311,8 @@ void HeroesChars_InitPlayer(task* tp, TEX_PVMTABLE pvm, int lifeicontex, PL_ACTI
 	pwp_heroes->mm.workp = &playerpwp[pnum]->work.f;
 	PSetMotion(&pwp_heroes->mm);
 
-	playertp[pnum]->disp = (TaskFuncPtr)DisplayFuncs[heroes_plno - 9];
+	playertp[pnum]->disp = (TaskFuncPtr)DisplayFuncs[pwp_heroes->appearanceno - 1];
 }
-
 
 //Display the ball and dash effects
 void BallObject(ObjectMaster* obj) {
@@ -335,7 +335,7 @@ void BallObject(ObjectMaster* obj) {
 	if (data->Action == 0) {
 		njTranslate(0, 0, 5.5f, -2);
 		if (obj->Data1->Scale.x) njScale(0, obj->Data1->Scale.x, obj->Data1->Scale.x, obj->Data1->Scale.x);
-		CharMdls[0]->getmodel()->basicdxmodel->mats[0].diffuse.color = CharColours[obj->Data1->CharID - 9];
+		CharMdls[0]->getmodel()->basicdxmodel->mats[0].diffuse.color = CharColours[obj->Data1->CharID - 1];
 		njDrawModel_SADX(CharMdls[0]->getmodel()->basicdxmodel);
 	}
 	else {
@@ -344,7 +344,7 @@ void BallObject(ObjectMaster* obj) {
 		njRotateZ(0, 0x4000);
 		njRotateX(0, 0x4000);
 		njRotateY(0, 0x7000);
-		CharMdls[0]->getmodel()->child->basicdxmodel->mats[0].diffuse.color = CharColours[obj->Data1->CharID - 9];
+		CharMdls[0]->getmodel()->child->basicdxmodel->mats[0].diffuse.color = CharColours[obj->Data1->CharID - 1];
 		njDrawModel_SADX(CharMdls[0]->getmodel()->child->basicdxmodel);
 	}
 
@@ -391,8 +391,8 @@ void CharactersCommon_DrawBall(EntityData1* playerdata, EntityData1* data)
 		ball->Data1->Position = playerdata->Position;
 		ball->Data1->Rotation = playerdata->Rotation;
 		ball->Data1->CharID = data->CharID;
-		if (data->CharID == Characters_HeroesBig) ball->Data1->Scale.x = 2;
-		if (data->CharID == Characters_Vector) ball->Data1->Scale.x = 1.5f;
+		if (data->CharID == HeroesChars_Big) ball->Data1->Scale.x = 2;
+		if (data->CharID == HeroesChars_Vector) ball->Data1->Scale.x = 1.5f;
 	}
 	else if ((playerdata->CharID == Characters_Sonic && mtn->reqaction == MTN_SPD_FW_JUMP) && data->Scale.z == 14)
 	{
@@ -418,7 +418,7 @@ void SonicAnimConverter(mtnjvwk* mtn, int heroes_plno, taskwk* pltwp, playerwk* 
 	case 11: anim = MTN_SPD_SLOW_RUN; break;
 	case 12: anim = MTN_SPD_MID_RUN; break;
 	case 13: anim = MTN_SPD_TOP_RUN;
-		if (heroes_plno == Characters_Shadow && pwp->spd.x > 6.0) anim = MTN_SH_TOP_SKATE; break;
+		if (heroes_plno == HeroesChars_Shadow && pwp->spd.x > 6.0) anim = MTN_SH_TOP_SKATE; break;
 	case 14: //jumping
 		if (anim < 13 || anim > 18) { anim = MTN_SPD_JUMP_A; } break;
 		//else if (anim == 14) { if (data->Unknown > 2 && (playerdata->Status & Status_Ground) != Status_Ground) anim = MTN_SPD_JUMP_C; }
@@ -462,7 +462,7 @@ void SonicAnimConverter(mtnjvwk* mtn, int heroes_plno, taskwk* pltwp, playerwk* 
 	case 71: anim = MTN_SPD_WALK; break; //ice
 	case 75: case 76: //won
 		anim = MTN_SPD_WIN;
-		if (heroes_plno == Characters_Espio) anim = MTN_SPD_IDLE_B;
+		if (heroes_plno == HeroesChars_Espio) anim = MTN_SPD_IDLE_B;
 		break;
 	case 82: anim = MTN_SPD_DAM_MID_A; break;
 	case 84: anim = MTN_SPD_EDDGE_OTTO_A; break;
@@ -541,7 +541,6 @@ void KnucklesAnimConverter(mtnjvwk* mtn, int heroes_plno, taskwk* pltwp, playerw
 }
 
 bool CanDoTricks(EntityData1* player) {
-	return true;
 	if (CustomActions == true && player->field_A < PlayerState_OnRail) {
 		return true;
 	}
@@ -575,17 +574,17 @@ void TornadoObj(ObjectMaster* obj) {
 		njScale(0, 0.8f, 0.7f, 0.8f);
 
 		njRotateXYZ(0, 0x4000, obj->Data1->Rotation.y, 0);
-		CharMdls[1]->getmodel()->basicdxmodel->mats[0].diffuse.color = CharColours[obj->Data1->CharID - 9];
+		CharMdls[1]->getmodel()->basicdxmodel->mats[0].diffuse.color = CharColours[obj->Data1->CharID - 1];
 		if (obj->Data1->Scale.x) CharMdls[1]->getmodel()->basicdxmodel->mats[0].diffuse.argb.a = obj->Data1->Scale.x;
 		njDrawModel_SADX(CharMdls[1]->getmodel()->basicdxmodel);
 
 		njRotateY(0, obj->Data1->Rotation.x);
-		CharMdls[1]->getmodel()->child->basicdxmodel->mats[0].diffuse.color = CharColours[obj->Data1->CharID - 9];
+		CharMdls[1]->getmodel()->child->basicdxmodel->mats[0].diffuse.color = CharColours[obj->Data1->CharID - 1];
 		if (obj->Data1->Scale.x) CharMdls[1]->getmodel()->child->basicdxmodel->mats[0].diffuse.argb.a = obj->Data1->Scale.x;
 		njDrawModel_SADX(CharMdls[1]->getmodel()->child->basicdxmodel);
 
 		njRotateY(0, obj->Data1->Rotation.z);
-		CharMdls[1]->getmodel()->child->child->basicdxmodel->mats[0].diffuse.color = CharColours[obj->Data1->CharID - 9];
+		CharMdls[1]->getmodel()->child->child->basicdxmodel->mats[0].diffuse.color = CharColours[obj->Data1->CharID - 1];
 		if (obj->Data1->Scale.x) CharMdls[1]->getmodel()->child->child ->basicdxmodel->mats[0].diffuse.argb.a = obj->Data1->Scale.x;
 		njDrawModel_SADX(CharMdls[1]->getmodel()->child->child->basicdxmodel);
 
@@ -833,7 +832,7 @@ void PlayVoice_HeroesChar(int ID) {
 
 	switch (ID) {
 	case 1803:
-		VoiceFuncs[HeroesChars[CurrentPlayer]->Data1->CharID - 9](ID);
+		VoiceFuncs[HeroesChars[CurrentPlayer]->Data1->CharID - 1](ID);
 		break;
 	default:
 		PlayVoice(ID);
@@ -854,7 +853,7 @@ int PlaySound_HeroesChar(int ID, void *a2, int a3, void *a4) {
 		return 0;
 	}
 	
-	SoundFuncs[HeroesChars[CurrentPlayer]->Data1->CharID - 9](ID);
+	SoundFuncs[HeroesChars[CurrentPlayer]->Data1->CharID - 1](ID);
 	return 1;
 }
 
@@ -870,42 +869,42 @@ void Characters_Init(const char *path, const HelperFunctions &helperFunctions, c
 	P2SoundsEnabled = config->getBool("Characters", "P2SoundsEnabled", false);
 
 	if (!SpeedCharacter.compare("Sonic")) {
-		SpeedCharEnabled = Characters_HeroesSonic;
+		SpeedCharEnabled = HeroesChars_Sonic;
 	}
 	else if (!SpeedCharacter.compare("Shadow")) {
-		SpeedCharEnabled = Characters_Shadow;
+		SpeedCharEnabled = HeroesChars_Shadow;
 	}
 	else if (!SpeedCharacter.compare("Amy")) {
-		SpeedCharEnabled = Characters_HeroesAmy;
+		SpeedCharEnabled = HeroesChars_Amy;
 	}
 	else if (!SpeedCharacter.compare("Espio")) {
-		SpeedCharEnabled = Characters_Espio;
+		SpeedCharEnabled = HeroesChars_Espio;
 	}
 
 	if (!FlyCharacter.compare("Cream")) {
-		FlyCharEnabled = Characters_Cream;
+		FlyCharEnabled = HeroesChars_Cream;
 	}
 	else if (!FlyCharacter.compare("Rouge")) {
-		FlyCharEnabled = Characters_Rouge;
+		FlyCharEnabled = HeroesChars_Rouge;
 	}
 	else if (!FlyCharacter.compare("Charmy")) {
-		FlyCharEnabled = Characters_Charmy;
+		FlyCharEnabled = HeroesChars_Charmy;
 	}
 	else if (!FlyCharacter.compare("Tails")) {
-		FlyCharEnabled = Characters_HeroesTails;
+		FlyCharEnabled = HeroesChars_Tails;
 	}
 	
 	if (!PowerCharacter.compare("Knuckles")) {
-		PowerCharEnabled = Characters_HeroesKnuckles;
+		PowerCharEnabled = HeroesChars_Knuckles;
 	}
 	else if (!PowerCharacter.compare("Omega")) {
-		PowerCharEnabled = Characters_Omega;
+		PowerCharEnabled = HeroesChars_Omega;
 	}
 	else if (!PowerCharacter.compare("Big")) {
-		PowerCharEnabled = Characters_HeroesBig;
+		PowerCharEnabled = HeroesChars_Big;
 	}
 	else if (!PowerCharacter.compare("Vector")) {
-		PowerCharEnabled = Characters_Vector;
+		PowerCharEnabled = HeroesChars_Vector;
 	}
 
 	if (SpeedCharEnabled) {

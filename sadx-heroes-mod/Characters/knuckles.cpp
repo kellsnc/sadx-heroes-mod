@@ -324,7 +324,7 @@ void KnucklesHeroes_Main(ObjectMaster *obj) {
 			playerco2->IdleTime = 0;
 		}
 
-		KnucklesAnimConverter(&pwp_heroes->mm, Characters_HeroesKnuckles, (taskwk*)playerdata, (playerwk*)playerco2);
+		KnucklesAnimConverter(&pwp_heroes->mm, HeroesChars_Knuckles, (taskwk*)playerdata, (playerwk*)playerco2);
 		
 		break;
 	case 3:

@@ -325,7 +325,7 @@ void ShadowHeroes_Main(ObjectMaster *obj) {
 			playerco2->IdleTime = 0;
 		}
 
-		SonicAnimConverter(&pwp_heroes->mm, Characters_Shadow, (taskwk*)playerdata, (playerwk*)playerco2);
+		SonicAnimConverter(&pwp_heroes->mm, HeroesChars_Shadow, (taskwk*)playerdata, (playerwk*)playerco2);
 
 		break;
 	case 3:

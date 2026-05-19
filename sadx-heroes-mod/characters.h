@@ -4,20 +4,20 @@ extern int CurrentPlayer;
 extern int CharFilesLoaded[];
 extern bool CustomPhysics;
 
-enum CharactersHeroes
-{
-	Characters_Cream = 9,
-	Characters_Rouge,
-	Characters_Charmy,
-	Characters_HeroesTails,
-	Characters_HeroesSonic,
-	Characters_Shadow,
-	Characters_HeroesAmy,
-	Characters_Espio,
-	Characters_HeroesKnuckles,
-	Characters_Omega,
-	Characters_HeroesBig,
-	Characters_Vector
+enum HeroesChars {
+	HeroesChars_None,
+	HeroesChars_Cream,
+	HeroesChars_Rouge,
+	HeroesChars_Charmy,
+	HeroesChars_Tails,
+	HeroesChars_Sonic,
+	HeroesChars_Shadow,
+	HeroesChars_Amy,
+	HeroesChars_Espio,
+	HeroesChars_Knuckles,
+	HeroesChars_Omega,
+	HeroesChars_Big,
+	HeroesChars_Vector
 };
 
 enum {
@@ -157,6 +157,7 @@ enum {
 
 struct playerwk_heroes
 {
+	Uint8 appearanceno;
 	mtnjvwk mm;
 	mtnjvwk mm_sub;
 	NJS_TEXLIST* texlist;
