@@ -42,21 +42,27 @@ extern "C"
 {
 	__declspec(dllexport) void __cdecl Init(const char *path, const HelperFunctions &helperFunctions)
 	{
-		//Set up function pointers for Lantern API (borrowed from PkR)
-		HMODULE LanternDLL = GetModuleHandle(L"sadx-dc-lighting");
+		if (helperFunctions.Version < 17)
+		{
+			MessageBox(WindowHandle, TEXT("Heroes Conversion failed to load because the Mod Loader is outdated. Please update it through SA Mod Manager."), TEXT("Heroes Conversion"), MB_OK | MB_ICONWARNING);
+			return;
+		}
 
-		if (LanternDLL) {
+		//Set up function pointers for Lantern API (borrowed from PkR)
+		auto lantern = helperFunctions.Mods->find_by_name("Lantern Engine");
+		if (lantern)
+		{
 			IsLantern = true;
-			set_shader_flags_ptr = (void(*)(uint32_t, bool))GetProcAddress(LanternDLL, "set_shader_flags");
-			material_register_ptr = (void(*)(const NJS_MATERIAL *const *materials, size_t length, lantern_material_cb callback))GetProcAddress(LanternDLL, "material_register");
-			set_diffuse_ptr = (void(*)(int32_t, bool))GetProcAddress(LanternDLL, "set_diffuse");
-			set_specular_ptr = (void(*)(int32_t, bool))GetProcAddress(LanternDLL, "set_specular");
-			set_blend_factor_ptr = (void(*)(float))GetProcAddress(LanternDLL, "set_blend_factor");
-			set_diffuse_blend_ptr = (void(*)(int32_t, int32_t))GetProcAddress(LanternDLL, "set_diffuse_blend");
-			set_specular_blend_ptr = (void(*)(int32_t, int32_t))GetProcAddress(LanternDLL, "set_specular_blend");
-			set_diffuse_blend_factor_ptr = (void(*)(float))GetProcAddress(LanternDLL, "set_diffuse_blend_factor");
-			set_specular_blend_factor_ptr = (void(*)(float))GetProcAddress(LanternDLL, "set_specular_blend_factor");
-			set_blend_ptr = (void(*)(int32_t, int32_t))GetProcAddress(LanternDLL, "set_blend");
+			set_shader_flags_ptr = lantern->GetDllExport<decltype(set_shader_flags_ptr)>("set_shader_flags");
+			material_register_ptr = lantern->GetDllExport<decltype(material_register_ptr)>("material_register");
+			set_diffuse_ptr = lantern->GetDllExport<decltype(set_diffuse_ptr)>("set_diffuse");
+			set_specular_ptr = lantern->GetDllExport<decltype(set_specular_ptr)>("set_specular");
+			set_blend_factor_ptr = lantern->GetDllExport<decltype(set_blend_factor_ptr)>("set_blend_factor");
+			set_diffuse_blend_ptr = lantern->GetDllExport<decltype(set_diffuse_blend_ptr)>("set_diffuse_blend");
+			set_specular_blend_ptr = lantern->GetDllExport<decltype(set_specular_blend_ptr)>("set_specular_blend");
+			set_diffuse_blend_factor_ptr = lantern->GetDllExport<decltype(set_diffuse_blend_factor_ptr)>("set_diffuse_blend_factor");
+			set_specular_blend_factor_ptr = lantern->GetDllExport<decltype(set_specular_blend_factor_ptr)>("set_specular_blend_factor");
+			set_blend_ptr = lantern->GetDllExport<decltype(set_blend_ptr)>("set_blend");
 		}
 
 		modpath = std::string(path);
