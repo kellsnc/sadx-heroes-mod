@@ -306,8 +306,17 @@ void EspioHeroes_Display(ObjectMaster *obj) {
 		dsDrawModel(pupils->child->child->child->getbasicdxmodel());
 		break;
 	}
-	
+
 	njPopMatrix(1);
+
+	if (action == MTN_SPD_JUMP_B || action == MTN_SPD_ROLL)
+	{
+		HeroesChars_EffBall((taskwk*)entity1, pwp_heroes, 0);
+	}
+	else if (action == MTN_SPD_FW_JUMP)
+	{
+		HeroesChars_EffBall((taskwk*)entity1, pwp_heroes, 1);
+	}
 
 	Direct3D_PerformLighting(0);
 	ClampGlobalColorThing_Thing();
@@ -390,7 +399,6 @@ void EspioHeroes_Main(ObjectMaster *obj) {
 		if (++data->InvulnerableTime > 7) data->InvulnerableTime = 0;
 	}
 
-	CharactersCommon_DrawBall(playerdata, data);
 	PSetMotion(&pwp_heroes->mm);
 
 	RunObjectChildren(obj);

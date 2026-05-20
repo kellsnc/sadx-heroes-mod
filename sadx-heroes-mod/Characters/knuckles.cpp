@@ -268,6 +268,15 @@ void KnucklesHeroes_Display(ObjectMaster *obj) {
 
 	njPopMatrix(1);
 
+	if (action == MTN_POW_JUMP_B || action == MTN_POW_ROLL)
+	{
+		HeroesChars_EffBall((taskwk*)entity1, pwp_heroes, 0);
+	}
+	else if (action == MTN_POW_FW_JUMP)
+	{
+		HeroesChars_EffBall((taskwk*)entity1, pwp_heroes, 1);
+	}
+
 	Direct3D_PerformLighting(0);
 	ClampGlobalColorThing_Thing();
 	Direct3D_ResetZFunc();
@@ -358,7 +367,6 @@ void KnucklesHeroes_Main(ObjectMaster *obj) {
 		break;
 	}
 
-	CharactersCommon_DrawBall(playerdata, data);
 	PSetMotion(&pwp_heroes->mm);
 
 	if (FrameCounterUnpaused % 200 == 0) {

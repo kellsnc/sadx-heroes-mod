@@ -63,6 +63,7 @@ enum {
 	BE_EDGE_OTTO_A,
 	BE_EDGE_OTTO_B,
 	BE_EDGE_OTTO_C,
+	BE_ROLL
 };
 
 ModelInfo* CharmyMdls[3];
@@ -265,6 +266,15 @@ void CharmyHeroes_Display(ObjectMaster *obj) {
 	late_Action(&CharmyHaneAct, (float)FrameCounterUnpaused * 0.5f, LATE_MAT);
 
 	njPopMatrix(1);
+
+	if (action == BE_JUMP_B || action == BE_ROLL)
+	{
+		HeroesChars_EffBall((taskwk*)entity1, pwp_heroes, 0);
+	}
+	else if (action == BE_FW_JUMP)
+	{
+		HeroesChars_EffBall((taskwk*)entity1, pwp_heroes, 1);
+	}
 
 	Direct3D_PerformLighting(0);
 	ClampGlobalColorThing_Thing();
@@ -565,7 +575,6 @@ void CharmyHeroes_Main(ObjectMaster * obj) {
 		break;
 	}
 
-	CharactersCommon_DrawBall(playerdata, data);
 	PSetMotion(&pwp_heroes->mm);
 
 	if (FrameCounterUnpaused % 200 == 0) {

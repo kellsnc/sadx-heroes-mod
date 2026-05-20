@@ -167,7 +167,7 @@ typedef void(__cdecl *PlaySoundFuncPtr)(int);
 typedef void(__cdecl *VoidFunction)();
 
 void HeroesChars_InitPlayer(task* tp, TEX_PVMTABLE pvm, int lifeicontex, PL_ACTION* pl_action);
-void CharactersCommon_DrawBall(EntityData1* playerdata, EntityData1* data);
+void HeroesChars_EffBall(taskwk* twp, playerwk_heroes* pwp_heroes, Uint32 type);
 
 void SonicAnimConverter(mtnjvwk* mtn, int heroes_plno, taskwk* pltwp, playerwk* pwp);
 void KnucklesAnimConverter(mtnjvwk* mtn, int heroes_plno, taskwk* pltwp, playerwk* pwp);

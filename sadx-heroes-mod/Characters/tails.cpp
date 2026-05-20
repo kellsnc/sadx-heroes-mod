@@ -68,6 +68,7 @@ enum {
 	TA_EDGE_OTTO_C,
 	TA_WIN_B,
 	TA_TRAP_JUMP,
+	TA_ROLL
 };
 
 enum {
@@ -380,6 +381,15 @@ void TailsHeroes_Display(ObjectMaster *obj) {
 	njActionWeight(actptr, mm_sub->nframe, TailsMdls[2]->getweightinfo());
 	
 	njPopMatrix(1);
+
+	if (action == TA_JUMP_B || action == TA_ROLL)
+	{
+		HeroesChars_EffBall((taskwk*)entity1, pwp_heroes, 0);
+	}
+	else if (action == TA_FW_JUMP)
+	{
+		HeroesChars_EffBall((taskwk*)entity1, pwp_heroes, 1);
+	}
 
 	Direct3D_PerformLighting(0);
 	ClampGlobalColorThing_Thing();
@@ -761,7 +771,6 @@ void TailsHeroes_Main(ObjectMaster *obj) {
 		break;
 	}
 
-	CharactersCommon_DrawBall(playerdata, data);
 	TailsSippoAnim(&pwp_heroes->mm_sub, pwp_heroes->mm.reqaction);
 
 	PSetMotion(&pwp_heroes->mm);

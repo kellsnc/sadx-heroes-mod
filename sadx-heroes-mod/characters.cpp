@@ -168,7 +168,7 @@ void InitHeroesPlayer(task* tp, int heroes_plno)
 
 		if (HeroesChars[player])
 		{
-			FreeTask((task*)HeroesChars[player]);
+			DestroyTask((task*)HeroesChars[player]);
 			HeroesChars[player] = NULL;
 		}
 
@@ -314,95 +314,39 @@ void HeroesChars_InitPlayer(task* tp, TEX_PVMTABLE pvm, int lifeicontex, PL_ACTI
 	playertp[pnum]->disp = (TaskFuncPtr)DisplayFuncs[pwp_heroes->appearanceno - 1];
 }
 
-//Display the ball and dash effects
-void BallObject(ObjectMaster* obj) {
-	EntityData1* data = obj->Data1;
-
-	if (GameState != 16) {
-		if (data->Index != 0) {
-			DeleteObject_(obj);
-			return;
-		}
-	}
-
-	njPushMatrix(0);
+void HeroesChars_EffBall(taskwk* twp, playerwk_heroes* pwp_heroes, Uint32 type)
+{
+	njPushMatrixEx();
 	njSetTexture(&SHCommonTextures);
-	njTranslateV(0, &obj->Data1->Position);
-	njRotateZ(0, obj->Data1->Rotation.z);
-	njRotateX(0, obj->Data1->Rotation.x);
-	njRotateY(0, -obj->Data1->Rotation.y - 0x4000);
+	njTranslateEx(&twp->pos);
+	njRotateZ(0, twp->ang.z);
+	njRotateX(0, twp->ang.x);
+	njRotateY(0, -twp->ang.y - 0x4000);
 
-	if (data->Action == 0) {
-		njTranslate(0, 0, 5.5f, -2);
-		if (obj->Data1->Scale.x) njScale(0, obj->Data1->Scale.x, obj->Data1->Scale.x, obj->Data1->Scale.x);
-		CharMdls[0]->getmodel()->basicdxmodel->mats[0].diffuse.color = CharColours[obj->Data1->CharID - 1];
-		njDrawModel_SADX(CharMdls[0]->getmodel()->basicdxmodel);
+	NJS_OBJECT* object = CharMdls[0]->getmodel();
+	if (type == 0)
+	{
+		njTranslate(0, 0.0f, 5.0f, -1.0f);
+		njRotateY(0, 0xC000);
 	}
-	else {
+	else
+	{
 		njTranslate(0, 0, 4, -4);
 		njScale(0, 0.9f, 0.9f, 0.9f);
 		njRotateZ(0, 0x4000);
 		njRotateX(0, 0x4000);
 		njRotateY(0, 0x7000);
-		CharMdls[0]->getmodel()->child->basicdxmodel->mats[0].diffuse.color = CharColours[obj->Data1->CharID - 1];
-		njDrawModel_SADX(CharMdls[0]->getmodel()->child->basicdxmodel);
+		object = object->child;
 	}
 
-	njPopMatrix(1);
+	SaveControl3D();
+	OnControl3D(NJD_CONTROL_3D_CONSTANT_MATERIAL);
+	NJS_BGRA* color = (NJS_BGRA*)&CharColours[pwp_heroes->appearanceno - 1];
+	SetMaterial((Float)color->a / 255.0f, (Float)color->r / 255.0f, (Float)color->g / 255.0f, (Float)color->b / 255.0f);
+	late_DrawModelMesh(object->basicdxmodel, LATE_WZ);
+	LoadControl3D();
 
-	obj->Data1->Index = 1;
-}
-
-void CharactersCommon_DrawBall(EntityData1* playerdata, EntityData1* data)
-{
-	if (!JumpBallEnabled)
-		return;
-	
-	playerwk_heroes* pwp_heroes = (playerwk_heroes*)HeroesChars[data->CharIndex]->UnknownB_ptr;
-
-	if (!pwp_heroes)
-		return;
-
-	if (playerdata->CharID == Characters_Sonic)
-	{
-		if (data->Scale.z != 14)
-		{
-			data->Scale.z = playerdata->Action;
-		}
-		else
-		{
-			if (++data->Scale.y > 50 || playerdata->Status & Status_Ground)
-			{
-				data->Scale.z = 0;
-				data->Scale.y = 0;
-			}
-		}
-	}
-
-	mtnjvwk* mtn = &pwp_heroes->mm;
-
-	if ((playerdata->CharID == Characters_Sonic && mtn->reqaction == MTN_SPD_JUMP_B) ||
-		(playerdata->CharID == Characters_Knuckles && mtn->reqaction == MTN_SPD_JUMP_B) ||
-		(playerdata->CharID == Characters_Tails && mtn->reqaction == MTN_SPD_JUMP_TRNGL))
-	{
-
-		ObjectMaster* ball = LoadObject(LoadObj_Data1, 5, BallObject);
-		ball->DisplaySub = ball->MainSub;
-		ball->Data1->Position = playerdata->Position;
-		ball->Data1->Rotation = playerdata->Rotation;
-		ball->Data1->CharID = data->CharID;
-		if (data->CharID == HeroesChars_Big) ball->Data1->Scale.x = 2;
-		if (data->CharID == HeroesChars_Vector) ball->Data1->Scale.x = 1.5f;
-	}
-	else if ((playerdata->CharID == Characters_Sonic && mtn->reqaction == MTN_SPD_FW_JUMP) && data->Scale.z == 14)
-	{
-		ObjectMaster* ball = LoadObject(LoadObj_Data1, 5, BallObject);
-		ball->DisplaySub = ball->MainSub;
-		ball->Data1->Position = playerdata->Position;
-		ball->Data1->Rotation = playerdata->Rotation;
-		ball->Data1->CharID = data->CharID;
-		ball->Data1->Action = 1;
-	}
+	njPopMatrixEx();
 }
 
 void SonicAnimConverter(mtnjvwk* mtn, int heroes_plno, taskwk* pltwp, playerwk* pwp)
@@ -548,48 +492,53 @@ bool CanDoTricks(EntityData1* player) {
 	return false;
 }
 
-//Speed characters tornado trick
-void TornadoObj(ObjectMaster* obj) {	
-	if (GameState != 16) {
-		obj->Data1->Rotation.y += 1000;
-		obj->Data1->Rotation.x += 300;
-		obj->Data1->Rotation.z += 500;
-
-		if (++obj->Data1->InvulnerableTime >= 180) DeleteObject_(obj);
-		if (obj->Data1->InvulnerableTime > 150) {
-			obj->Data1->Scale.x = ((180 - obj->Data1->InvulnerableTime) / 30) * 250;
-
-			obj->Data1->Scale.x = 180 - obj->Data1->InvulnerableTime;
-			obj->Data1->Scale.x /= 30;
-			obj->Data1->Scale.x *= 250;
-		}
-
-		AddToCollisionList(obj->Data1);
-	}
-
+void TornadoObjDisp(ObjectMaster* obj)
+{
 	if (!MissedFrames) {
 		njPushMatrix(0);
 		njSetTexture(&SHCommonTextures);
 		njTranslateV(0, &obj->Data1->Position);
 		njScale(0, 0.8f, 0.7f, 0.8f);
 
+		SaveControl3D();
+		OnControl3D(NJD_CONTROL_3D_CONSTANT_MATERIAL);
+		
+		NJS_BGRA* color = (NJS_BGRA*)&CharColours[obj->Data1->CharID - 1];
+		NJS_ARGB argb = { (Float)color->a / 255.0f, (Float)color->r / 255.0f, (Float)color->g / 255.0f, (Float)color->b / 255.0f };
+		if (obj->Data1->Scale.x) argb.a = obj->Data1->Scale.x;
+		___njSetConstantMaterial(&argb);
+
 		njRotateXYZ(0, 0x4000, obj->Data1->Rotation.y, 0);
-		CharMdls[1]->getmodel()->basicdxmodel->mats[0].diffuse.color = CharColours[obj->Data1->CharID - 1];
-		if (obj->Data1->Scale.x) CharMdls[1]->getmodel()->basicdxmodel->mats[0].diffuse.argb.a = obj->Data1->Scale.x;
-		njDrawModel_SADX(CharMdls[1]->getmodel()->basicdxmodel);
+		late_DrawModelMesh(CharMdls[1]->getmodel()->basicdxmodel, LATE_WZ);
 
 		njRotateY(0, obj->Data1->Rotation.x);
-		CharMdls[1]->getmodel()->child->basicdxmodel->mats[0].diffuse.color = CharColours[obj->Data1->CharID - 1];
-		if (obj->Data1->Scale.x) CharMdls[1]->getmodel()->child->basicdxmodel->mats[0].diffuse.argb.a = obj->Data1->Scale.x;
-		njDrawModel_SADX(CharMdls[1]->getmodel()->child->basicdxmodel);
+		late_DrawModelMesh(CharMdls[1]->getmodel()->child->basicdxmodel, LATE_WZ);
 
 		njRotateY(0, obj->Data1->Rotation.z);
-		CharMdls[1]->getmodel()->child->child->basicdxmodel->mats[0].diffuse.color = CharColours[obj->Data1->CharID - 1];
-		if (obj->Data1->Scale.x) CharMdls[1]->getmodel()->child->child ->basicdxmodel->mats[0].diffuse.argb.a = obj->Data1->Scale.x;
-		njDrawModel_SADX(CharMdls[1]->getmodel()->child->child->basicdxmodel);
+		late_DrawModelMesh(CharMdls[1]->getmodel()->child->child->basicdxmodel, LATE_WZ);
 
+		LoadControl3D();
 		njPopMatrix(1);
 	}
+}
+
+//Speed characters tornado trick
+void TornadoObj(ObjectMaster* obj) {	
+	obj->Data1->Rotation.y += 1000;
+	obj->Data1->Rotation.x += 300;
+	obj->Data1->Rotation.z += 500;
+
+	if (++obj->Data1->InvulnerableTime >= 180) DeleteObject_(obj);
+	if (obj->Data1->InvulnerableTime > 150) {
+		obj->Data1->Scale.x = ((180 - obj->Data1->InvulnerableTime) / 30) * 250;
+
+		obj->Data1->Scale.x = 180 - obj->Data1->InvulnerableTime;
+		obj->Data1->Scale.x /= 30;
+		obj->Data1->Scale.x *= 250;
+	}
+
+	AddToCollisionList(obj->Data1);
+	obj->DisplaySub(obj);
 }
 
 void TornadoTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, EntityData1* playerdata) {
@@ -609,7 +558,7 @@ void TornadoTrick(EntityData1* data, EntityData2* data2, CharObj2* playerco2, En
 			data2->field_28 = 1;
 
 			ObjectMaster * tornado = LoadObject(LoadObj_Data1, 5, TornadoObj);
-			tornado->DisplaySub = tornado->MainSub;
+			tornado->DisplaySub = TornadoObjDisp;
 			tornado->Data1->Position = playerdata->Position;
 
 			if (playerco2->_struct_a3.DistanceMax - tornado->Data1->Position.y > -50)

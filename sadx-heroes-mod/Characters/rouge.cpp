@@ -66,6 +66,7 @@ enum {
 	RO_EDGE_OTTO_A,
 	RO_EDGE_OTTO_B,
 	RO_EDGE_OTTO_C,
+	RO_ROLL
 };
 
 enum {
@@ -287,6 +288,15 @@ void RougeHeroes_Display(ObjectMaster *obj) {
 	njActionWeight(actptr, mm_sub->nframe, RougeMdls[5]->getweightinfo());
 
 	njPopMatrix(1);
+
+	if (action == RO_JUMP_B || action == RO_ROLL)
+	{
+		HeroesChars_EffBall((taskwk*)entity1, pwp_heroes, 0);
+	}
+	else if (action == RO_FW_JUMP)
+	{
+		HeroesChars_EffBall((taskwk*)entity1, pwp_heroes, 1);
+	}
 
 	Direct3D_PerformLighting(0);
 	ClampGlobalColorThing_Thing();
@@ -623,7 +633,6 @@ void RougeHeroes_Main(ObjectMaster *obj) {
 		break;
 	}
 
-	CharactersCommon_DrawBall(playerdata, data);
 	RougeHaneAnim(&pwp_heroes->mm_sub, pwp_heroes->mm.reqaction);
 
 	PSetMotion(&pwp_heroes->mm);
